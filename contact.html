@@ -152,7 +152,7 @@
 
       <div class="contact-form">
         <h2>Écrivez-nous</h2>
-        <p>Remplissez le formulaire ci-dessous, nous revenons vers vous rapidement.</p>
+        <p>Le formulaire ouvre votre messagerie avec le message pré-rempli, prêt à envoyer.</p>
         <form id="contact-form">
           <div class="row-2">
             <div class="field">
@@ -163,10 +163,6 @@
               <label for="email">Email</label>
               <input type="email" id="email" required>
             </div>
-          </div>
-          <div class="field">
-            <label for="phone">Téléphone</label>
-            <input type="tel" id="phone" required>
           </div>
           <div class="field">
             <label for="subject">Sujet</label>
@@ -185,7 +181,7 @@
             <textarea id="message" required></textarea>
           </div>
           <button type="submit" class="btn-submit">Envoyer le message</button>
-          <p id="form-status" class="form-note"></p>
+          <p class="form-note">Vous pouvez aussi écrire directement à contact@soundlightprod.fr</p>
         </form>
       </div>
     </div>
@@ -226,47 +222,15 @@
 </footer>
 
 <script>
-  document.getElementById('contact-form').addEventListener('submit', async function(e){
+  document.getElementById('contact-form').addEventListener('submit', function(e){
     e.preventDefault();
-    var form = this;
-    var btn = form.querySelector('.btn-submit');
-    var statusEl = document.getElementById('form-status');
-
-    var payload = {
-      name: document.getElementById('name').value,
-      email: document.getElementById('email').value,
-      phone: document.getElementById('phone').value,
-      subject: document.getElementById('subject').value,
-      dateEvent: document.getElementById('date-event').value,
-      message: document.getElementById('message').value
-    };
-
-    btn.disabled = true;
-    var originalText = btn.textContent;
-    btn.textContent = 'Envoi...';
-    statusEl.textContent = '';
-    statusEl.style.color = '';
-
-    try {
-      var res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      var data = await res.json();
-
-      if (res.ok && data.ok) {
-        statusEl.textContent = 'Message envoyé — merci, nous revenons vers vous rapidement !';
-        form.reset();
-      } else {
-        throw new Error((data && data.error) || 'Erreur inconnue');
-      }
-    } catch (err) {
-      statusEl.textContent = 'Une erreur est survenue. Vous pouvez aussi écrire directement à contact@soundlightprod.fr.';
-    } finally {
-      btn.disabled = false;
-      btn.textContent = originalText;
-    }
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const subject = document.getElementById('subject').value;
+    const dateEvent = document.getElementById('date-event').value;
+    const message = document.getElementById('message').value;
+    const body = `Nom : ${name}\nEmail : ${email}\nDate de l'événement : ${dateEvent}\n\n${message}`;
+    window.location.href = `mailto:contact@soundlightprod.fr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });
 </script>
 

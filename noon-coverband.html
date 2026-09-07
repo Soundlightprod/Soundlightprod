@@ -78,15 +78,6 @@
   .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
   .banner-photo .txt{font-size:0.82rem; font-weight:500;}
 
-  .photo-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; height:auto;}
-  .photo-grid img{width:100%; aspect-ratio:3/4; height:auto; object-fit:cover; border-radius:16px; display:block; object-position:center 15%;}
-  @media (max-width:700px){ .photo-grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:480px){ .photo-grid{grid-template-columns:1fr;} }
-
-  .videos-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px;}
-  .video-slot{aspect-ratio:16/9; background:var(--ink-2); border:1px solid var(--line); border-radius:16px; overflow:hidden; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.82rem; text-align:center; padding:16px;}
-  .video-slot iframe{width:100%; height:100%; border:0;}
-
   .venues-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;}
   .venue-card{background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:16px 20px; font-size:0.92rem; color:var(--paper);}
 
@@ -179,10 +170,10 @@
 <section>
   <div class="wrap tight narrow">
     <div class="bio-text-full">
-      <p>NooNCoverBand est né il y a trois ans de la rencontre de deux artistes installés en Dordogne, entre une chanteuse et un bassiste. Riches de parcours musicaux variés — soul, reggae, afro et funk — ils ont uni leurs univers pour offrir des soirées mémorables à leur public.</p>
+      <p>NooNCoverBand est né il y a trois ans de la rencontre de deux artistes installés en Dordogne : Cécile Marten Bellec, chanteuse, et Pierre Clauzel, bassiste. Riches de parcours musicaux variés — soul, reggae, afro et funk — ils ont uni leurs univers pour offrir des soirées mémorables à leur public.</p>
       <p>Leur répertoire, pensé pour s'adapter à toutes les ambiances, peut être aussi intimiste (vin d'honneur, réception) que résolument dansant. Chaque prestation, jusqu'à deux heures trente non-stop, démarre en douceur avant de monter en énergie au fil de la soirée.</p>
       <p>Côté musique : une large place à la variété internationale (Rihanna, Dua Lipa, The Weeknd, Justin Timberlake, Daft Punk), à la chanson française (Rita Mitsouko, Niagara, Superbus, Juliette Armanet, -M-) et aux classiques disco/funk des années 80 (Chic, Kool & The Gang, Michael Jackson, Jamiroquai). Un répertoire vivant, régulièrement enrichi de nouveaux titres.</p>
-      <p>Après près de cent-vingt concerts dans des campings, bars, marchés de pays et soirées privées partout en France, NooNCoverBand a fidélisé un public conquis et de nombreux partenaires qui leur renouvellent régulièrement leur confiance.</p>
+      <p>Après près de cent-vingt concerts dans des campings, bars, marchés de pays et soirées privées en Dordogne, Corrèze, Lot et Bretagne, NooNCoverBand a fidélisé un public conquis et de nombreux partenaires qui leur renouvellent régulièrement leur confiance.</p>
     </div>
   </div>
 </section>
@@ -194,32 +185,26 @@
       <h2>Un duo, deux voix complémentaires</h2>
     </div>
     <div class="members-grid">
-      <div class="member-card"><div class="name">Chant</div></div>
-      <div class="member-card"><div class="name">Basse</div></div>
+      <div class="member-card"><div class="name">Cécile Marten Bellec</div><div class="role">Chant</div></div>
+      <div class="member-card"><div class="name">Pierre Clauzel</div><div class="role">Basse</div></div>
     </div>
   </div>
 </section>
 
 <section>
   <div class="wrap tight">
-    <div class="photo-grid">
-      <img src="noon-coverband-photo-1.jpg" alt="NooNCoverBand, le duo sur scène">
-      <img src="noon-coverband-photo-2.jpg" alt="NooNCoverBand en concert, chant">
-      <img src="noon-coverband-photo-3.jpg" alt="NooNCoverBand en concert, chant sur scène">
+    <div class="banner-photo">
+      <div class="icon">🖼</div>
+      <div class="txt">Photo à venir — NooNCoverBand en concert</div>
     </div>
   </div>
 </section>
 
 <section>
-  <div class="wrap tight narrow">
-    <div class="section-head">
-      <span class="label">Teaser</span>
-      <h2>Voir le groupe en action</h2>
-    </div>
-    <div class="videos-grid">
-      <div class="video-slot"><iframe src="https://www.youtube.com/embed/h1sqE5CJxX4" title="NooNCoverBand — extrait live" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
-      <div class="video-slot"><iframe src="https://www.youtube.com/embed/lz2G_UvzbSM" title="NooNCoverBand — extrait live" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
-      <div class="video-slot"><iframe src="https://www.youtube.com/embed/AxXP9Pd6tFs" title="NooNCoverBand — extrait live" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
+  <div class="wrap tight">
+    <div class="banner-photo" style="aspect-ratio:16/9;">
+      <div class="icon">▶</div>
+      <div class="txt">Vidéo à venir — extrait live NooNCoverBand</div>
     </div>
   </div>
 </section>
@@ -235,7 +220,7 @@
       <div class="venue-card">Bars</div>
       <div class="venue-card">Marchés de pays</div>
       <div class="venue-card">Soirées privées</div>
-      <div class="venue-card">Toute la France</div>
+      <div class="venue-card">Dordogne · Corrèze · Lot · Bretagne</div>
     </div>
   </div>
 </section>
@@ -258,7 +243,8 @@
       <h2>Sur le web</h2>
     </div>
     <div class="links-row">
-      <a href="https://noon-coverband.raspy-silence-d4c7.workers.dev/" target="_blank" rel="noopener" class="link-pill">Nouveau site (aperçu) ↗</a>
+      <a href="https://nooncoverband.com/" target="_blank" rel="noopener" class="link-pill">Site officiel ↗</a>
+      <a href="https://www.youtube.com/@NooNCoverBand" target="_blank" rel="noopener" class="link-pill">YouTube ↗</a>
     </div>
   </div>
 </section>
