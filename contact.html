@@ -166,6 +166,10 @@
             </div>
           </div>
           <div class="field">
+            <label for="phone">Téléphone</label>
+            <input type="tel" id="phone" required>
+          </div>
+          <div class="field">
             <label for="subject">Sujet</label>
             <select id="subject">
               <option value="Devis Son & Lumière">Devis Son & Lumière</option>
@@ -233,6 +237,7 @@
     var payload = {
       name: document.getElementById('name').value,
       email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
       subject: document.getElementById('subject').value,
       dateEvent: document.getElementById('date-event').value,
       message: document.getElementById('message').value

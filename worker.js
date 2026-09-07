@@ -17,12 +17,13 @@ async function handleContact(request, env) {
 
     const name = (data.name || '').trim();
     const email = (data.email || '').trim();
+    const phone = (data.phone || '').trim();
     const subject = (data.subject || '').trim();
     const dateEvent = (data.dateEvent || '').trim();
     const message = (data.message || '').trim();
 
-    if (!name || !email || !message) {
-      return json({ ok: false, error: 'Champs requis manquants (nom, e-mail ou message).' }, 400);
+    if (!name || !email || !phone || !message) {
+      return json({ ok: false, error: 'Champs requis manquants (nom, e-mail, téléphone ou message).' }, 400);
     }
 
     const emailSubject = `${subject || 'Nouveau message'} — ${name}`;
@@ -31,6 +32,7 @@ async function handleContact(request, env) {
 
 Nom : ${name}
 E-mail : ${email}
+Téléphone : ${phone}
 Sujet : ${subject || '-'}
 Date de l'événement : ${dateEvent || '-'}
 
