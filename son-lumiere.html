@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Son & Lumière — SLP Sound Light Prod</title>
+<meta name="description" content="Prestations techniques son et lumière pour vos événements : sonorisation, éclairage scénique, régie, en France et en Europe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #0c0b10; --ink-2: #17151e;
+    --paper: #f5f2ec; --muted: #9a93a6;
+    --gold: #cda754;
+    --violet: #8b5cf6; --blue: #2f9bff; --amber: #ffb238; --pink: #ff4d7d;
+    --line: rgba(255,255,255,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; line-height:1.6; overflow-x:hidden;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;} }
+  .label{font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+
+  header{position:sticky; top:0; z-index:50; background:rgba(12,11,16,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{height:58px; width:58px; display:block; border-radius:50%;}
+  .brand-text{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; color:var(--paper);}
+  nav ul{list-style:none; display:flex; gap:26px; flex-wrap:wrap;}
+  nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; letter-spacing:0.01em; transition:color 0.2s ease;}
+  nav a:hover, nav a.current{color:var(--paper);}
+  @media (max-width:960px){ nav ul{display:none;} }
+
+  .page-hero{position:relative; padding:110px 24px 70px; overflow:hidden;}
+  .hero-blocks{position:absolute; inset:0; z-index:0;}
+  .hb{position:absolute; opacity:0.4; filter:blur(2px);}
+  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-25vw; left:-10vw;}
+  .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--blue), transparent 70%); top:-10vw; right:-10vw;}
+  .page-hero-inner{position:relative; z-index:2; max-width:800px;}
+  .page-hero .label{display:block; margin-bottom:20px;}
+  .page-hero h1{font-size:clamp(2.4rem, 6vw, 4.2rem); margin-bottom:22px;}
+  .page-hero p{color:var(--muted); font-size:1.1rem; max-width:600px;}
+
+  section{position:relative; z-index:2;}
+  .wrap{max-width:1220px; margin:0 auto; padding:80px 24px;}
+  .wrap.tight{padding-top:40px; padding-bottom:40px;}
+  .section-head{max-width:680px; margin-bottom:52px;}
+  .section-head .label{margin-bottom:16px; display:block;}
+  .section-head h2{font-size:clamp(2rem, 4.5vw, 2.8rem);}
+
+  .services{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;}
+  .service{
+    position:relative; border-radius:18px; padding:34px 30px; overflow:hidden;
+    background:var(--ink-2); border:1px solid var(--line); transition:transform 0.3s ease, border-color 0.3s ease;
+  }
+  .service:hover{transform:translateY(-4px); border-color:rgba(255,255,255,0.25);}
+  .service .glow{position:absolute; width:200px; height:200px; border-radius:50%; filter:blur(50px); opacity:0.3; top:-70px; right:-70px;}
+  .service:nth-child(6n+1) .glow{background:var(--violet);}
+  .service:nth-child(6n+2) .glow{background:var(--blue);}
+  .service:nth-child(6n+3) .glow{background:var(--amber);}
+  .service:nth-child(6n+4) .glow{background:var(--pink);}
+  .service:nth-child(6n+5) .glow{background:var(--violet);}
+  .service:nth-child(6n+6) .glow{background:var(--blue);}
+  .service-inner{position:relative; z-index:2;}
+  .service .dot{width:44px; height:44px; border-radius:12px; margin-bottom:22px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.06);}
+  .service .dot svg{width:22px; height:22px; stroke:var(--paper); fill:none;}
+  .service h3{font-size:1.25rem; margin-bottom:10px; font-weight:700;}
+  .service p{color:var(--muted); font-size:0.92rem;}
+
+  .banner-photo{
+    background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px);
+    border:2px dashed rgba(255,255,255,0.15); border-radius:16px; aspect-ratio:21/8;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color:var(--muted); text-align:center; padding:20px;
+  }
+  .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
+  .banner-photo .txt{font-size:0.82rem; font-weight:500;}
+
+  .video-wrap{position:relative; width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);}
+  .video-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+
+  .equip-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px;}
+  .equip-card{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:28px;}
+  .equip-card .label{margin-bottom:14px; display:block;}
+  .equip-card ul{list-style:none;}
+  .equip-card li{padding:8px 0; font-size:0.92rem; color:var(--paper); border-top:1px solid var(--line);}
+  .equip-card li:first-of-type{border-top:none;}
+
+  .cta-band{text-align:center; background:linear-gradient(135deg, var(--ink-2) 0%, var(--ink) 100%); border-top:1px solid var(--line);}
+  .cta-band h2{font-size:clamp(2.2rem, 5.5vw, 3.4rem); margin-bottom:20px;}
+  .cta-band p{color:var(--muted); font-size:1.05rem; margin-bottom:36px;}
+  .cta-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:16px 30px; font-family:'Manrope', sans-serif; font-weight:700; font-size:0.95rem; text-decoration:none; border-radius:100px; transition:all 0.25s ease;}
+  .btn-primary{background:var(--paper); color:var(--ink);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(245,242,236,0.15);}
+  .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25);}
+  .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
+  .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-brand{max-width:320px; display:flex; gap:12px;}
+  .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
+  .footer-brand h3{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand p{color:var(--muted); font-size:0.85rem;}
+  .footer-col h4{font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px; transition:color 0.2s ease;}
+  .footer-col a:hover{color:var(--paper);}
+  .social-row{display:flex; gap:10px;}
+  .social-icon{
+    display:flex; align-items:center; justify-content:center;
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    background:rgba(255,255,255,0.06); color:var(--muted);
+    transition:background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .social-icon svg{width:18px; height:18px;}
+  .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
+  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center; letter-spacing:0.02em;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <img src="logo.png" alt="SLP - Sound Light Prod">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="son-lumiere.html" class="current">Son & Lumière</a></li>
+        <li><a href="location.html">Location</a></li>
+        <li><a href="diffusion.html">Notre philosophie de travail</a></li>
+        <li><a href="artistes.html">Nos Artistes</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
+  <div class="page-hero-inner">
+    <span class="label">Prestations techniques</span>
+    <h1>Son & Lumière</h1>
+    <p>Une sonorisation et un éclairage pensés pour votre salle, votre public et l'ambiance que vous voulez créer — installés et gérés par nos soins, du réglage au dernier rappel.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap tight">
+    <div class="section-head">
+      <span class="label">Ce que nous faisons</span>
+      <h2>Une régie complète, de A à Z</h2>
+    </div>
+  </div>
+  <div class="wrap tight" style="padding-top:0;">
+    <div class="services">
+      <div class="service">
+        <div class="glow"></div>
+        <div class="service-inner">
+          <div class="dot"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M12 2v4M4.2 4.2l2.8 2.8M2 12h4M4.2 19.8l2.8-2.8M19.8 19.8l-2.8-2.8M22 12h-4M19.8 4.2l-2.8 2.8" stroke-linecap="round"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <h3>Sonorisation</h3>
+          <p>Diffusion façade, retours de scène et console numérique pilotée en direct, adaptées à la jauge et à l'acoustique du lieu.</p>
+        </div>
+      </div>
+      <div class="service">
+        <div class="glow"></div>
+        <div class="service-inner">
+          <div class="dot"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M4 12c2-3 4-4.5 8-4.5S18 9 20 12c-2 3-4 4.5-8 4.5S6 15 4 12z"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+          <h3>Éclairage scénique</h3>
+          <p>Lyres asservies, wash, effets de fumée et pupitre de contrôle DMX pour une ambiance qui suit le rythme de votre événement.</p>
+        </div>
+      </div>
+      <div class="service">
+        <div class="glow"></div>
+        <div class="service-inner">
+          <div class="dot"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M3 21h18M6 21V9l6-5 6 5v12M10 21v-6h4v6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Structure & rigging</h3>
+          <p>Truss, pieds et levage sécurisé pour supporter éclairages et enceintes dans les règles de l'art.</p>
+        </div>
+      </div>
+      <div class="service">
+        <div class="glow"></div>
+        <div class="service-inner">
+          <div class="dot"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M12 3v6M12 3l-3 3M12 3l3 3M5 21c0-4 3-6 7-6s7 2 7 6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="13" r="1" fill="currentColor" stroke="none"/></svg></div>
+          <h3>Pyrotechnie</h3>
+          <p>Tirs de feux d'artifice et effets scéniques sur mesure, réalisés en toute sécurité avec les autorisations requises.</p>
+        </div>
+      </div>
+      <div class="service">
+        <div class="glow"></div>
+        <div class="service-inner">
+          <div class="dot"><svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Régie technique</h3>
+          <p>Un technicien présent le jour J pour gérer le son et la lumière en direct, du soundcheck au rangement.</p>
+        </div>
+      </div>
+      <div class="service">
+        <div class="glow"></div>
+        <div class="service-inner">
+          <div class="dot"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Conseil & étude</h3>
+          <p>Une visite technique et un plan d'implantation adaptés à votre salle avant même le jour de l'événement.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap tight">
+    <div class="section-head">
+      <span class="label">En conditions réelles</span>
+      <h2>Notre création lumière en action</h2>
+    </div>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/A0KGJ3fGHw4?rel=0&modestbranding=1&iv_load_policy=3" title="SLP — Création lumière pour un spectacle de Cabaret" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap tight">
+    <div class="section-head">
+      <span class="label">Notre parc</span>
+      <h2>Un matériel professionnel et fiable</h2>
+    </div>
+    <div class="equip-grid">
+      <div class="equip-card">
+        <span class="label">Son</span>
+        <ul>
+          <li>Console numérique Behringer X32</li>
+          <li>Diffusion façade et renfort de basses</li>
+          <li>Micros et DI pour tous les instruments</li>
+        </ul>
+      </div>
+      <div class="equip-card">
+        <span class="label">Lumière</span>
+        <ul>
+          <li>Lyres asservies et wash motorisés</li>
+          <li>Machine à fumée / hazer</li>
+          <li>Pupitre DMX</li>
+        </ul>
+      </div>
+      <div class="equip-card">
+        <span class="label">Structure</span>
+        <ul>
+          <li>Truss et ponts de levage</li>
+          <li>Pieds et supports sécurisés</li>
+          <li>Câblage et distribution électrique</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap tight">
+    <span class="label">Un événement à sonoriser ?</span>
+    <h2>Demandez votre<br>devis technique</h2>
+    <p>Visite technique possible avant devis pour les grandes jauges.</p>
+    <div class="cta-row">
+      <a href="mailto:contact@soundlightprod.fr" class="btn btn-primary">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653" class="btn btn-ghost">06 31 94 96 53</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <img src="logo.png" alt="SLP - Sound Light Prod">
+      <div>
+        <h3>Sound Light Prod</h3>
+        <p>Son, lumière, booking et production d'événements en France et en Europe.</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <a href="diffusion.html">Notre philosophie de travail</a>
+      <a href="artistes.html">Nos Artistes</a>
+      <a href="galerie.html">Galerie</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653">06 31 94 96 53</a>
+    </div>
+    <div class="footer-col">
+      <h4>Suivez-nous</h4>
+      <div class="social-row">
+        <a href="https://www.facebook.com/SoundlightP" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.8 8.6h1.9V5.9h-2.2c-2.3 0-3.7 1.5-3.7 3.8v1.6H7.6v2.8h2.2V21h3v-6.9h2.4l.4-2.8h-2.8V9.9c0-.8.3-1.3 1-1.3z"/></svg></a>
+        <a href="https://www.instagram.com/slp_france/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://www.youtube.com/channel/UC6dZffs_G3DbbZPNEhjisLg" target="_blank" rel="noopener" class="social-icon" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><polygon points="10 9.2 15.8 12 10 14.8" fill="currentColor" stroke="none"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 514 912 492 00055 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Mentions légales</a> · <a href="cgv-boutique.html" style="color:inherit;">CGV Boutique</a> · <a href="cgl-location.html" style="color:inherit;">CGL Location</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boutique — SLP Sound Light Prod</title>
+<meta name="description" content="Achetez du matériel son et lumière neuf ou reconditionné, livré partout en France, avec SLP.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #0c0b10; --ink-2: #17151e;
+    --paper: #f5f2ec; --muted: #9a93a6;
+    --gold: #cda754;
+    --violet: #8b5cf6; --blue: #2f9bff; --amber: #ffb238; --pink: #ff4d7d;
+    --line: rgba(255,255,255,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; line-height:1.6; overflow-x:hidden;}
+  .label{font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+
+  header{position:sticky; top:0; z-index:50; background:rgba(12,11,16,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{height:58px; width:58px; display:block; border-radius:50%;}
+  nav ul{list-style:none; display:flex; gap:22px; flex-wrap:wrap;}
+  nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; transition:color 0.2s ease;}
+  nav a:hover, nav a.current{color:var(--paper);}
+  @media (max-width:1080px){ nav ul{display:none;} }
+
+  .page-hero{position:relative; padding:100px 24px 50px; overflow:hidden;}
+  .hero-blocks{position:absolute; inset:0; z-index:0;}
+  .hb{position:absolute; opacity:0.4; filter:blur(2px);}
+  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--blue), transparent 70%); top:-25vw; left:-10vw;}
+  .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--amber), transparent 70%); top:-10vw; right:-10vw;}
+  .page-hero-inner{position:relative; z-index:2; max-width:800px;}
+  .page-hero h1{font-size:clamp(2.4rem, 6vw, 4rem); margin-bottom:16px;}
+  .page-hero p{color:var(--muted); font-size:1.1rem; max-width:600px;}
+
+  section{position:relative; z-index:2;}
+  .wrap{max-width:1220px; margin:0 auto; padding:20px 24px 90px;}
+
+  .filters{display:flex; gap:10px; margin-bottom:32px; flex-wrap:wrap;}
+  .filter-btn{font-family:'JetBrains Mono', monospace; font-size:0.78rem; padding:9px 18px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s ease;}
+  .filter-btn.active, .filter-btn:hover{color:var(--paper); box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:22px;}
+  .card{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:12px;}
+  .card-img{aspect-ratio:4/3; background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.8rem; overflow:hidden;}
+  .card-img img{width:100%; height:100%; object-fit:cover;}
+  .card h3{font-size:1.05rem;}
+  .card .cat{color:var(--amber); font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase;}
+  .card p.desc{color:var(--muted); font-size:0.88rem; flex-grow:1;}
+  .card .price-row{display:flex; align-items:center; justify-content:space-between;}
+  .price{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.2rem;}
+  .stock-low{color:var(--pink); font-size:0.75rem; font-family:'JetBrains Mono', monospace;}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 20px; font-family:'Manrope', sans-serif; font-weight:700; font-size:0.9rem; text-decoration:none; border-radius:100px; border:none; cursor:pointer; transition:all 0.25s ease;}
+  .btn-primary{background:var(--paper); color:var(--ink);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(245,242,236,0.15);}
+  .btn-primary:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+  .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25); background:transparent;}
+  .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  /* Panier flottant */
+  .cart-fab{position:fixed; bottom:24px; right:24px; z-index:60; background:var(--amber); color:var(--ink); width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:800; cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,0.4); border:none;}
+  .cart-fab .count{position:absolute; top:-4px; right:-4px; background:var(--pink); color:#fff; width:22px; height:22px; border-radius:50%; font-size:0.72rem; display:flex; align-items:center; justify-content:center;}
+
+  .cart-panel{position:fixed; top:0; right:0; height:100%; width:min(420px, 100%); background:var(--ink-2); border-left:1px solid var(--line); z-index:70; transform:translateX(100%); transition:transform 0.3s ease; display:flex; flex-direction:column;}
+  .cart-panel.open{transform:translateX(0);}
+  .cart-head{padding:22px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
+  .cart-head h3{font-size:1.2rem;}
+  .cart-close{background:none; border:none; color:var(--muted); font-size:1.4rem; cursor:pointer;}
+  .cart-items{flex:1; overflow-y:auto; padding:16px 24px;}
+  .cart-item{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--line); font-size:0.9rem;}
+  .cart-item .qty-ctrl{display:flex; align-items:center; gap:8px;}
+  .cart-item .qty-ctrl button{width:24px; height:24px; border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--paper); cursor:pointer;}
+  .cart-empty{color:var(--muted); text-align:center; padding:40px 0; font-size:0.9rem;}
+  .cart-foot{padding:20px 24px; border-top:1px solid var(--line);}
+  .cart-total{display:flex; justify-content:space-between; margin-bottom:16px; font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.1rem;}
+  .cart-form input, .cart-form textarea{width:100%; margin-bottom:10px; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; font-size:0.88rem;}
+  .cart-msg{font-size:0.82rem; margin-top:10px;}
+  .cart-msg.error{color:var(--pink);}
+  .cart-msg.ok{color:#6ee7a0;}
+  .overlay{position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:65; opacity:0; pointer-events:none; transition:opacity 0.3s ease;}
+  .overlay.open{opacity:1; pointer-events:auto;}
+
+  footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
+  .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-brand{max-width:320px; display:flex; gap:12px;}
+  .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
+  .footer-brand h3{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand p{color:var(--muted); font-size:0.85rem;}
+  .footer-col h4{font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px;}
+  .footer-col a:hover{color:var(--paper);}
+  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a href="index.html" class="brand"><img src="logo.png" alt="SLP - Sound Light Prod"></a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="son-lumiere.html">Son & Lumière</a></li>
+        <li><a href="location.html">Location</a></li>
+        <li><a href="diffusion.html">Notre philosophie de travail</a></li>
+        <li><a href="artistes.html">Nos Artistes</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
+  <div class="page-hero-inner">
+    <span class="label">Boutique SLP</span>
+    <h1>Matériel son & lumière à l'achat</h1>
+    <p>Câbles, enceintes, projecteurs, accessoires — neuf ou reconditionné, testé et garanti par nos soins, expédié partout en France.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-cat="all">Tout</button>
+      <button class="filter-btn" data-cat="son">Son</button>
+      <button class="filter-btn" data-cat="lumiere">Lumière</button>
+    </div>
+    <div class="grid" id="grid">
+      <p style="color:var(--muted);">Chargement du catalogue…</p>
+    </div>
+  </div>
+</section>
+
+<!-- Panier -->
+<div class="overlay" id="overlay"></div>
+<button class="cart-fab" id="cartFab" aria-label="Panier">
+  🛒<span class="count" id="cartCount" style="display:none;">0</span>
+</button>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-head">
+    <h3>Votre panier</h3>
+    <button class="cart-close" id="cartClose">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <p class="cart-empty">Votre panier est vide.</p>
+  </div>
+  <div class="cart-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total"><span>Total</span><span id="cartTotal">0,00 €</span></div>
+    <div class="cart-form">
+      <input type="text" id="custName" placeholder="Nom et prénom *" required>
+      <input type="email" id="custEmail" placeholder="Email *" required>
+      <input type="tel" id="custPhone" placeholder="Téléphone">
+    </div>
+    <label style="display:flex; align-items:flex-start; gap:8px; font-size:0.8rem; color:var(--muted); margin-bottom:14px; cursor:pointer;">
+      <input type="checkbox" id="acceptCgv" style="margin-top:3px;">
+      <span>J'accepte les <a href="cgv-boutique.html" target="_blank" style="color:var(--paper);">conditions générales de vente</a></span>
+    </label>
+    <button class="btn btn-primary" style="width:100%;" id="checkoutBtn">Payer par carte / PayPal</button>
+    <p class="cart-msg" id="cartMsg"></p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <img src="logo.png" alt="SLP - Sound Light Prod">
+      <div>
+        <h3>Sound Light Prod</h3>
+        <p>Son, lumière, booking et production d'événements en France et en Europe.</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <a href="location.html">Location Matériel</a>
+      <a href="artistes.html">Nos Artistes</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653">06 31 94 96 53</a>
+    </div>
+  </div>
+  <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 514 912 492 00055 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Mentions légales</a> · <a href="cgv-boutique.html" style="color:inherit;">CGV Boutique</a> · <a href="cgl-location.html" style="color:inherit;">CGL Location</a></p>
+</footer>
+
+<script>
+  // ⚠️ À remplacer par l'URL réelle du Worker une fois déployé (ex: https://api.soundlightprod.fr)
+  const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+
+  let products = [];
+  let cart = JSON.parse(sessionStorage.getItem('slp_cart') || '[]');
+
+  function money(cents){ return (cents/100).toFixed(2).replace('.', ',') + ' €'; }
+
+  function saveCart(){ sessionStorage.setItem('slp_cart', JSON.stringify(cart)); renderCart(); }
+
+  async function loadProducts(){
+    try {
+      const res = await fetch(`${API_BASE}/api/products`);
+      products = await res.json();
+      renderGrid('all');
+    } catch(e){
+      document.getElementById('grid').innerHTML = '<p style="color:var(--muted);">Catalogue indisponible pour le moment.</p>';
+    }
+  }
+
+  function renderGrid(cat){
+    const list = cat === 'all' ? products : products.filter(p => p.category === cat);
+    const grid = document.getElementById('grid');
+    if (!list.length){ grid.innerHTML = '<p style="color:var(--muted);">Aucun article dans cette catégorie pour le moment.</p>'; return; }
+    grid.innerHTML = list.map(p => `
+      <div class="card">
+        <div class="card-img">${p.image ? `<img src="${p.image}" alt="${p.name}">` : 'Photo à venir'}</div>
+        <span class="cat">${p.category === 'son' ? 'Son' : 'Lumière'}</span>
+        <h3>${p.name}</h3>
+        <p class="desc">${p.description || ''}</p>
+        ${p.stock_qty <= 3 ? `<span class="stock-low">Plus que ${p.stock_qty} en stock</span>` : ''}
+        <div class="price-row">
+          <span class="price">${money(p.price_cents)}</span>
+          <button class="btn btn-primary" ${p.stock_qty < 1 ? 'disabled' : ''} onclick="addToCart(${p.id})">
+            ${p.stock_qty < 1 ? 'Épuisé' : 'Ajouter'}
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function addToCart(id){
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    const existing = cart.find(c => c.product_id === id);
+    if (existing) existing.qty += 1;
+    else cart.push({ product_id: id, name: p.name, price_cents: p.price_cents, qty: 1 });
+    saveCart();
+    document.getElementById('cartPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function changeQty(id, delta){
+    const item = cart.find(c => c.product_id === id);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) cart = cart.filter(c => c.product_id !== id);
+    saveCart();
+  }
+
+  function renderCart(){
+    const itemsEl = document.getElementById('cartItems');
+    const footEl = document.getElementById('cartFoot');
+    const countEl = document.getElementById('cartCount');
+    const totalEl = document.getElementById('cartTotal');
+
+    if (!cart.length){
+      itemsEl.innerHTML = '<p class="cart-empty">Votre panier est vide.</p>';
+      footEl.style.display = 'none';
+      countEl.style.display = 'none';
+      return;
+    }
+    countEl.style.display = 'flex';
+    countEl.textContent = cart.reduce((s,c)=>s+c.qty,0);
+    footEl.style.display = 'block';
+    let total = 0;
+    itemsEl.innerHTML = cart.map(c => {
+      total += c.price_cents * c.qty;
+      return `
+        <div class="cart-item">
+          <span>${c.name}</span>
+          <div class="qty-ctrl">
+            <button onclick="changeQty(${c.product_id}, -1)">−</button>
+            <span>${c.qty}</span>
+            <button onclick="changeQty(${c.product_id}, 1)">+</button>
+          </div>
+          <span>${money(c.price_cents * c.qty)}</span>
+        </div>
+      `;
+    }).join('');
+    totalEl.textContent = money(total);
+  }
+
+  document.getElementById('cartFab').onclick = () => {
+    document.getElementById('cartPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+  };
+  document.getElementById('cartClose').onclick = closeCart;
+  document.getElementById('overlay').onclick = closeCart;
+  function closeCart(){
+    document.getElementById('cartPanel').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGrid(btn.dataset.cat);
+    };
+  });
+
+  document.getElementById('checkoutBtn').onclick = async () => {
+    const msgEl = document.getElementById('cartMsg');
+    const name = document.getElementById('custName').value.trim();
+    const email = document.getElementById('custEmail').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    if (!document.getElementById('acceptCgv').checked){
+      msgEl.textContent = 'Merci d\'accepter les conditions générales de vente.';
+      msgEl.className = 'cart-msg error';
+      return;
+    }
+    if (!name || !email){
+      msgEl.textContent = 'Merci de renseigner votre nom et votre email.';
+      msgEl.className = 'cart-msg error';
+      return;
+    }
+    msgEl.textContent = 'Redirection vers le paiement…';
+    msgEl.className = 'cart-msg';
+    try {
+      const res = await fetch(`${API_BASE}/api/checkout`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          items: cart.map(c => ({ product_id: c.product_id, qty: c.qty })),
+          customer_name: name, customer_email: email, customer_phone: phone
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erreur');
+      sessionStorage.removeItem('slp_cart');
+      window.location.href = data.url;
+    } catch(e){
+      msgEl.textContent = e.message;
+      msgEl.className = 'cart-msg error';
+    }
+  };
+
+  renderCart();
+  loadProducts();
+</script>
+
+</body>
+</html>

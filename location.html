@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Location de matériel — SLP Sound Light Prod</title>
+<meta name="description" content="Louez du matériel son et lumière avec SLP : dates vérifiées en direct, pré-réservation validée sous 48h.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #0c0b10; --ink-2: #17151e;
+    --paper: #f5f2ec; --muted: #9a93a6;
+    --gold: #cda754;
+    --violet: #8b5cf6; --blue: #2f9bff; --amber: #ffb238; --pink: #ff4d7d;
+    --line: rgba(255,255,255,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; line-height:1.6; overflow-x:hidden;}
+  .label{font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+
+  header{position:sticky; top:0; z-index:50; background:rgba(12,11,16,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{height:58px; width:58px; display:block; border-radius:50%;}
+  nav ul{list-style:none; display:flex; gap:22px; flex-wrap:wrap;}
+  nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; transition:color 0.2s ease;}
+  nav a:hover, nav a.current{color:var(--paper);}
+  @media (max-width:1080px){ nav ul{display:none;} }
+
+  .page-hero{position:relative; padding:100px 24px 50px; overflow:hidden;}
+  .hero-blocks{position:absolute; inset:0; z-index:0;}
+  .hb{position:absolute; opacity:0.4; filter:blur(2px);}
+  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-25vw; left:-10vw;}
+  .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--pink), transparent 70%); top:-10vw; right:-10vw;}
+  .page-hero-inner{position:relative; z-index:2; max-width:800px;}
+  .page-hero h1{font-size:clamp(2.4rem, 6vw, 4rem); margin-bottom:16px;}
+  .page-hero p{color:var(--muted); font-size:1.1rem; max-width:640px;}
+  .steps{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .step-tag{font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--paper); box-shadow:inset 0 0 0 1px var(--line); padding:7px 14px; border-radius:20px;}
+
+  section{position:relative; z-index:2;}
+  .wrap{max-width:1220px; margin:0 auto; padding:20px 24px 90px;}
+
+  .filters{display:flex; gap:10px; margin-bottom:32px; flex-wrap:wrap;}
+  .filter-btn{font-family:'JetBrains Mono', monospace; font-size:0.78rem; padding:9px 18px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s ease;}
+  .filter-btn.active, .filter-btn:hover{color:var(--paper); box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:22px;}
+  .card{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:12px;}
+  .card-img{aspect-ratio:4/3; background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.8rem; overflow:hidden;}
+  .card-img img{width:100%; height:100%; object-fit:cover;}
+  .card h3{font-size:1.05rem;}
+  .card .cat{color:var(--amber); font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase;}
+  .card p.desc{color:var(--muted); font-size:0.88rem; flex-grow:1;}
+  .rate{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.1rem;}
+  .rate span{font-family:'Manrope',sans-serif; font-weight:500; font-size:0.78rem; color:var(--muted);}
+  .deposit{font-size:0.76rem; color:var(--muted); font-family:'JetBrains Mono', monospace;}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 20px; font-family:'Manrope', sans-serif; font-weight:700; font-size:0.9rem; text-decoration:none; border-radius:100px; border:none; cursor:pointer; transition:all 0.25s ease;}
+  .btn-primary{background:var(--paper); color:var(--ink); width:100%;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(245,242,236,0.15);}
+
+  /* Modale réservation */
+  .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:80; display:none; align-items:center; justify-content:center; padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--ink-2); border:1px solid var(--line); border-radius:20px; max-width:480px; width:100%; max-height:90vh; overflow-y:auto; padding:28px;}
+  .modal h3{font-size:1.3rem; margin-bottom:4px;}
+  .modal .sub{color:var(--muted); font-size:0.88rem; margin-bottom:20px;}
+  .modal-close{float:right; background:none; border:none; color:var(--muted); font-size:1.4rem; cursor:pointer;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:0.78rem; color:var(--muted); margin-bottom:6px;}
+  .field input, .field textarea{width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; font-size:0.9rem;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .avail-status{padding:12px 14px; border-radius:10px; font-size:0.86rem; margin-bottom:16px; display:none;}
+  .avail-status.ok{background:rgba(110,231,160,0.12); color:#6ee7a0; display:block;}
+  .avail-status.warn{background:rgba(255,178,56,0.12); color:var(--amber); display:block;}
+  .avail-status.no{background:rgba(255,77,125,0.12); color:var(--pink); display:block;}
+  .modal-msg{font-size:0.85rem; margin-top:12px;}
+  .modal-msg.error{color:var(--pink);}
+  .modal-msg.ok{color:#6ee7a0;}
+
+  .info-strip{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--ink-2); margin-top:20px;}
+  .info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:30px; padding:36px 0;}
+  .info-item{display:flex; gap:14px; align-items:flex-start;}
+  .info-item .mark{color:var(--amber); font-family:'JetBrains Mono', monospace; font-size:0.95rem; flex-shrink:0;}
+  .info-item p{color:var(--paper); font-size:0.93rem;}
+
+  footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
+  .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-brand{max-width:320px; display:flex; gap:12px;}
+  .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
+  .footer-brand h3{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand p{color:var(--muted); font-size:0.85rem;}
+  .footer-col h4{font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px;}
+  .footer-col a:hover{color:var(--paper);}
+  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a href="index.html" class="brand"><img src="logo.png" alt="SLP - Sound Light Prod"></a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="son-lumiere.html">Son & Lumière</a></li>
+        <li><a href="location.html" class="current">Location</a></li>
+        <li><a href="diffusion.html">Notre philosophie de travail</a></li>
+        <li><a href="artistes.html">Nos Artistes</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
+  <div class="page-hero-inner">
+    <span class="label">Location de matériel</span>
+    <h1>Louez votre matériel son & lumière</h1>
+    <p>Choisissez vos dates : la disponibilité est vérifiée en direct sur notre planning. Votre demande est ensuite validée par SLP sous 48h, puis les dates sont bloquées pour vous.</p>
+    <div class="steps">
+      <span class="step-tag">1 · Choisissez vos dates</span>
+      <span class="step-tag">2 · Envoyez la demande</span>
+      <span class="step-tag">3 · SLP valide sous 48h</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-cat="all">Tout</button>
+      <button class="filter-btn" data-cat="son">Son</button>
+      <button class="filter-btn" data-cat="lumiere">Lumière</button>
+    </div>
+    <div class="grid" id="grid">
+      <p style="color:var(--muted);">Chargement du catalogue…</p>
+    </div>
+  </div>
+</section>
+
+<section class="info-strip">
+  <div class="wrap" style="padding-bottom:0;">
+    <div class="info-grid">
+      <div class="info-item"><span class="mark">→</span><p>Disponibilité vérifiée en direct sur notre planning</p></div>
+      <div class="info-item"><span class="mark">→</span><p>Validation de la demande par SLP sous 48h</p></div>
+      <div class="info-item"><span class="mark">→</span><p>Caution demandée au retrait du matériel</p></div>
+      <div class="info-item"><span class="mark">→</span><p>Retrait à Prigonrieux ou livraison sur devis</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Modale de réservation -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <h3 id="modalTitle">Réserver</h3>
+    <p class="sub" id="modalSub"></p>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Date de début</label>
+        <input type="date" id="fStart">
+      </div>
+      <div class="field">
+        <label>Date de fin</label>
+        <input type="date" id="fEnd">
+      </div>
+    </div>
+    <div class="field">
+      <label>Quantité</label>
+      <input type="number" id="fQty" value="1" min="1">
+    </div>
+    <div class="avail-status" id="availStatus"></div>
+
+    <div class="field">
+      <label>Nom et prénom *</label>
+      <input type="text" id="fName">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Email *</label>
+        <input type="email" id="fEmail">
+      </div>
+      <div class="field">
+        <label>Téléphone</label>
+        <input type="tel" id="fPhone">
+      </div>
+    </div>
+    <div class="field">
+      <label>Message (événement, lieu…)</label>
+      <textarea id="fNotes" rows="3"></textarea>
+    </div>
+
+    <label style="display:flex; align-items:flex-start; gap:8px; font-size:0.8rem; color:var(--muted); margin-bottom:14px; cursor:pointer;">
+      <input type="checkbox" id="acceptCgl" style="margin-top:3px;">
+      <span>J'accepte les <a href="cgl-location.html" target="_blank" style="color:var(--paper);">conditions générales de location</a></span>
+    </label>
+    <button class="btn btn-primary" id="submitReservation">Envoyer la demande de pré-réservation</button>
+    <p class="modal-msg" id="modalMsg"></p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <img src="logo.png" alt="SLP - Sound Light Prod">
+      <div>
+        <h3>Sound Light Prod</h3>
+        <p>Son, lumière, booking et production d'événements en France et en Europe.</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <a href="location.html">Location Matériel</a>
+      <a href="artistes.html">Nos Artistes</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653">06 31 94 96 53</a>
+    </div>
+  </div>
+  <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 514 912 492 00055 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Mentions légales</a> · <a href="cgv-boutique.html" style="color:inherit;">CGV Boutique</a> · <a href="cgl-location.html" style="color:inherit;">CGL Location</a></p>
+</footer>
+
+<script>
+  // ⚠️ À remplacer par l'URL réelle du Worker une fois déployé (ex: https://api.soundlightprod.fr)
+  const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+
+  let items = [];
+  let currentItem = null;
+
+  function money(cents){ return (cents/100).toFixed(2).replace('.', ',') + ' €'; }
+
+  async function loadItems(){
+    try {
+      const res = await fetch(`${API_BASE}/api/rental-items`);
+      items = await res.json();
+      renderGrid('all');
+    } catch(e){
+      document.getElementById('grid').innerHTML = '<p style="color:var(--muted);">Catalogue indisponible pour le moment.</p>';
+    }
+  }
+
+  function renderGrid(cat){
+    const list = cat === 'all' ? items : items.filter(i => i.category === cat);
+    const grid = document.getElementById('grid');
+    if (!list.length){ grid.innerHTML = '<p style="color:var(--muted);">Aucun article dans cette catégorie pour le moment.</p>'; return; }
+    grid.innerHTML = list.map(i => `
+      <div class="card">
+        <div class="card-img">${i.image ? `<img src="${i.image}" alt="${i.name}">` : 'Photo à venir'}</div>
+        <span class="cat">${i.category === 'son' ? 'Son' : 'Lumière'}</span>
+        <h3>${i.name}</h3>
+        <p class="desc">${i.description || ''}</p>
+        <div class="rate">${money(i.daily_rate_cents)} <span>/ jour</span></div>
+        ${i.deposit_cents ? `<div class="deposit">Caution : ${money(i.deposit_cents)}</div>` : ''}
+        <button class="btn btn-primary" onclick="openModal(${i.id})">Vérifier les dates</button>
+      </div>
+    `).join('');
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGrid(btn.dataset.cat);
+    };
+  });
+
+  function openModal(id){
+    currentItem = items.find(i => i.id === id);
+    if (!currentItem) return;
+    document.getElementById('modalTitle').textContent = currentItem.name;
+    document.getElementById('modalSub').textContent = `${money(currentItem.daily_rate_cents)} / jour${currentItem.deposit_cents ? ' · Caution ' + money(currentItem.deposit_cents) : ''}`;
+    document.getElementById('fStart').value = '';
+    document.getElementById('fEnd').value = '';
+    document.getElementById('fQty').value = 1;
+    document.getElementById('fName').value = '';
+    document.getElementById('fEmail').value = '';
+    document.getElementById('fPhone').value = '';
+    document.getElementById('fNotes').value = '';
+    document.getElementById('acceptCgl').checked = false;
+    document.getElementById('availStatus').style.display = 'none';
+    document.getElementById('modalMsg').textContent = '';
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('fStart').min = today;
+    document.getElementById('fEnd').min = today;
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+  document.getElementById('modalClose').onclick = () => document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'modalOverlay') document.getElementById('modalOverlay').classList.remove('open');
+  });
+
+  async function checkAvailability(){
+    const start = document.getElementById('fStart').value;
+    const end = document.getElementById('fEnd').value;
+    const qty = parseInt(document.getElementById('fQty').value) || 1;
+    const statusEl = document.getElementById('availStatus');
+    if (!start || !end || !currentItem) { statusEl.style.display = 'none'; return; }
+    if (end < start) { statusEl.className = 'avail-status no'; statusEl.textContent = 'La date de fin doit être après la date de début.'; return; }
+
+    statusEl.className = 'avail-status'; statusEl.style.display = 'block'; statusEl.textContent = 'Vérification en cours…';
+    try {
+      const res = await fetch(`${API_BASE}/api/availability?item_id=${currentItem.id}&start=${start}&end=${end}`);
+      const data = await res.json();
+      if (data.available >= qty) {
+        statusEl.className = 'avail-status ok';
+        statusEl.textContent = `✓ Disponible (${data.available}/${data.total} sur cette période)`;
+      } else if (data.available > 0) {
+        statusEl.className = 'avail-status warn';
+        statusEl.textContent = `Seulement ${data.available} disponible(s) sur cette période — réduisez la quantité.`;
+      } else {
+        statusEl.className = 'avail-status no';
+        statusEl.textContent = `Complet sur cette période. Essayez d'autres dates.`;
+      }
+    } catch(e){
+      statusEl.className = 'avail-status no';
+      statusEl.textContent = 'Impossible de vérifier la disponibilité pour le moment.';
+    }
+  }
+  ['fStart','fEnd','fQty'].forEach(id => document.getElementById(id).addEventListener('change', checkAvailability));
+
+  document.getElementById('submitReservation').onclick = async () => {
+    const msgEl = document.getElementById('modalMsg');
+    if (!document.getElementById('acceptCgl').checked){
+      msgEl.textContent = 'Merci d\'accepter les conditions générales de location.';
+      msgEl.className = 'modal-msg error';
+      return;
+    }
+    const start = document.getElementById('fStart').value;
+    const end = document.getElementById('fEnd').value;
+    const qty = parseInt(document.getElementById('fQty').value) || 1;
+    const name = document.getElementById('fName').value.trim();
+    const email = document.getElementById('fEmail').value.trim();
+    const phone = document.getElementById('fPhone').value.trim();
+    const notes = document.getElementById('fNotes').value.trim();
+
+    if (!start || !end || !name || !email){
+      msgEl.textContent = 'Merci de remplir les dates, le nom et l\'email.';
+      msgEl.className = 'modal-msg error';
+      return;
+    }
+    msgEl.textContent = 'Envoi en cours…';
+    msgEl.className = 'modal-msg';
+    try {
+      const res = await fetch(`${API_BASE}/api/reservations`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          item_id: currentItem.id, qty, start_date: start, end_date: end,
+          customer_name: name, customer_email: email, customer_phone: phone, notes
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erreur');
+      msgEl.textContent = 'Demande envoyée ! SLP vous répond sous 48h pour confirmer.';
+      msgEl.className = 'modal-msg ok';
+      document.getElementById('submitReservation').disabled = true;
+    } catch(e){
+      msgEl.textContent = e.message;
+      msgEl.className = 'modal-msg error';
+    }
+  };
+
+  loadItems();
+</script>
+
+</body>
+</html>

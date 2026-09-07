@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLP — Sound Light Prod | Son, Lumière, Notre philosophie de travail en France & Europe</title>
+<meta name="description" content="SLP - Sound Light Prod : prestations son et lumière, booking et diffusion d'artistes pour vos événements publics ou privés en France et en Europe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #0c0b10; --ink-2: #17151e;
+    --paper: #f5f2ec; --muted: #9a93a6;
+    --gold: #cda754;
+    --violet: #8b5cf6; --blue: #2f9bff; --amber: #ffb238; --pink: #ff4d7d;
+    --line: rgba(255,255,255,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; line-height:1.6; overflow-x:hidden;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;} }
+  .label{font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+
+  header{position:sticky; top:0; z-index:50; background:rgba(12,11,16,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{height:58px; width:58px; display:block; border-radius:50%;}
+  .brand-text{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; color:var(--paper);}
+  nav ul{list-style:none; display:flex; gap:26px; flex-wrap:wrap;}
+  nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; letter-spacing:0.01em; transition:color 0.2s ease;}
+  nav a:hover, nav a.current{color:var(--paper);}
+  @media (max-width:960px){ nav ul{display:none;} }
+
+  /* HERO — bold color-block diagonal */
+  .hero{position:relative; min-height:72vh; display:flex; align-items:center; overflow:hidden; padding:50px 24px;}
+  .hero-blocks{position:absolute; inset:0; z-index:0;}
+  .hb{position:absolute; opacity:0.5; filter:blur(2px);}
+  .hb1{width:60vw; height:60vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-20vw; left:-15vw;}
+  .hb2{width:55vw; height:55vw; background:radial-gradient(circle, var(--pink), transparent 70%); bottom:-25vw; right:-15vw;}
+  .hb3{width:40vw; height:40vw; background:radial-gradient(circle, var(--blue), transparent 70%); top:20%; right:5%; opacity:0.3;}
+  .hero-inner{position:relative; z-index:2; max-width:1220px; margin:0 auto; width:100%; display:flex; align-items:stretch; justify-content:space-between; gap:40px;}
+  .hero-text{flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center;}
+  .hero-logo{flex-shrink:0; display:flex; align-items:center; justify-content:center; opacity:0; animation:riseIn 1.1s ease-out 0.3s forwards;}
+  .hero-logo img{display:block; height:100%; width:auto; max-width:46vw; max-height:640px; object-fit:contain; filter:drop-shadow(0 0 70px rgba(139,92,246,0.35));}
+  @media (max-width:960px){ .hero-logo{display:none;} }
+  .hero .label{display:block; margin-bottom:22px; opacity:0; animation:riseIn 0.9s ease-out 0.2s forwards;}
+  .hero h1{font-size:clamp(2.6rem, 7vw, 5.4rem); margin-bottom:26px; max-width:900px; opacity:0; animation:riseIn 0.9s ease-out 0.4s forwards;}
+  .hero h1 .accent{background:linear-gradient(90deg, var(--violet), var(--pink) 45%, var(--amber)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero p{color:var(--muted); font-size:1.15rem; max-width:560px; margin-bottom:38px; opacity:0; animation:riseIn 0.9s ease-out 0.6s forwards;}
+  @keyframes riseIn{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+  .cta-row{display:flex; gap:16px; flex-wrap:wrap; opacity:0; animation:riseIn 0.9s ease-out 0.8s forwards;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:16px 30px; font-family:'Manrope', sans-serif; font-weight:700; font-size:0.95rem; text-decoration:none; border-radius:100px; transition:all 0.25s ease;}
+  .btn-primary{background:var(--paper); color:var(--ink);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(245,242,236,0.15);}
+  .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25);}
+  .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  section{position:relative; z-index:2;}
+  .wrap{max-width:1220px; margin:0 auto; padding:100px 24px;}
+  .wrap.tight{padding-top:60px; padding-bottom:60px;}
+  .section-head{max-width:680px; margin-bottom:56px;}
+  .section-head .label{margin-bottom:16px; display:block;}
+  .section-head h2{font-size:clamp(2rem, 4.5vw, 3rem);}
+
+  /* STATS BAND */
+  .stats{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--ink-2);}
+  .stats-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line);}
+  .stat{background:var(--ink-2); padding:44px 30px; text-align:center;}
+  .stat .num{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:clamp(2rem, 4vw, 3rem); line-height:1;}
+  .stat .num.v{color:var(--violet);} .stat .num.b{color:var(--blue);} .stat .num.a{color:var(--amber);} .stat .num.p{color:var(--pink);}
+  .stat p{color:var(--muted); font-size:0.86rem; margin-top:10px;}
+  @media (max-width:800px){ .stats-grid{grid-template-columns:1fr;} }
+
+  /* PILLARS — bold cards */
+  .pillars{display:grid; grid-template-columns:repeat(2, 1fr); gap:20px;}
+  @media (max-width:800px){ .pillars{grid-template-columns:1fr;} }
+  .pillar{
+    position:relative; border-radius:20px; padding:44px 38px; overflow:hidden;
+    background:var(--ink-2); border:1px solid var(--line); transition:transform 0.3s ease, border-color 0.3s ease;
+  }
+  .pillar:hover{transform:translateY(-4px); border-color:rgba(255,255,255,0.25);}
+  .pillar .glow{position:absolute; width:280px; height:280px; border-radius:50%; filter:blur(60px); opacity:0.35; top:-100px; right:-100px;}
+  .pillar.p1 .glow{background:var(--violet);}
+  .pillar.p2 .glow{background:var(--pink);}
+  .pillar-inner{position:relative; z-index:2;}
+  .pillar .tag{font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); margin-bottom:18px; display:block;}
+  .pillar h3{font-size:1.7rem; margin-bottom:14px;}
+  .pillar p{color:var(--muted); font-size:0.98rem; margin-bottom:26px; max-width:440px;}
+  .pillar a{color:var(--paper); font-weight:700; text-decoration:none; font-size:0.9rem; display:inline-flex; align-items:center; gap:8px;}
+  .pillar a:hover{gap:12px;}
+
+  /* PROOF BANNER PHOTO */
+  .banner-photo{
+    background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px);
+    border:2px dashed rgba(255,255,255,0.15); border-radius:16px; aspect-ratio:21/8;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color:var(--muted); text-align:center; padding:20px;
+  }
+  .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
+  .banner-photo .txt{font-size:0.82rem; font-weight:500;}
+
+  /* CTA */
+  .cta-band{text-align:center; background:linear-gradient(135deg, var(--ink-2) 0%, var(--ink) 100%); border-top:1px solid var(--line);}
+  .cta-band h2{font-size:clamp(2.2rem, 5.5vw, 3.6rem); margin-bottom:20px;}
+  .cta-band p{color:var(--muted); font-size:1.05rem; margin-bottom:36px;}
+
+  footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
+  .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-brand{max-width:320px; display:flex; gap:12px;}
+  .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
+  .footer-brand h3{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand p{color:var(--muted); font-size:0.85rem;}
+  .footer-col h4{font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px; transition:color 0.2s ease;}
+  .footer-col a:hover{color:var(--paper);}
+  .social-row{display:flex; gap:10px;}
+  .social-icon{
+    display:flex; align-items:center; justify-content:center;
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    background:rgba(255,255,255,0.06); color:var(--muted);
+    transition:background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .social-icon svg{width:18px; height:18px;}
+  .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
+  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center; letter-spacing:0.02em;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <img src="logo.png" alt="SLP - Sound Light Prod">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html" class="current">Accueil</a></li>
+        <li><a href="son-lumiere.html">Son & Lumière</a></li>
+        <li><a href="location.html">Location</a></li>
+        <li><a href="diffusion.html">Notre philosophie de travail</a></li>
+        <li><a href="artistes.html">Nos Artistes</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-blocks" aria-hidden="true">
+    <div class="hb hb1"></div>
+    <div class="hb hb2"></div>
+    <div class="hb hb3"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <span class="label">Son · Lumière · Booking · Diffusion</span>
+      <h1>On produit des<br><span class="accent">événements qui marquent</span></h1>
+      <p>SLP sonorise, éclaire et produit vos événements publics ou privés — et met en scène les artistes qui les feront vivre. Un interlocuteur, une équipe, zéro compromis.</p>
+      <div class="cta-row">
+        <a href="contact.html" class="btn btn-primary">Demander un devis →</a>
+        <a href="galerie.html" class="btn btn-ghost">Voir nos réalisations</a>
+      </div>
+    </div>
+    <div class="hero-logo">
+      <img src="logo.png" alt="SLP - Sound Light Prod">
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stats-grid">
+    <div class="stat"><div class="num v">10+</div><p>années d'expérience terrain</p></div>
+    <div class="stat"><div class="num a">4</div><p>artistes diffusés</p></div>
+    <div class="stat"><div class="num p">1</div><p>interlocuteur, du devis à la scène</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="label">Nos univers</span>
+      <h2>Deux métiers,<br>une même exigence</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar p1">
+        <div class="glow"></div>
+        <div class="pillar-inner">
+          <span class="tag">Prestations techniques</span>
+          <h3>Son & Lumière</h3>
+          <p>Sonorisation, éclairage scénique et régie technique adaptés à votre salle, votre public et votre budget.</p>
+          <a href="son-lumiere.html">Découvrir →</a>
+        </div>
+      </div>
+      <div class="pillar p2">
+        <div class="glow"></div>
+        <div class="pillar-inner">
+          <span class="tag">Programmation & spectacles</span>
+          <h3>Notre philosophie de travail</h3>
+          <p>Une programmation clé en main : sélection d'artistes de notre réseau, contractualisation et coordination jusqu'à la scène.</p>
+          <a href="diffusion.html">Découvrir →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap tight">
+    <div class="banner-photo">
+      <div class="icon">🖼</div>
+      <div class="txt">Photo — Événement SLP en conditions réelles</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap tight">
+    <span class="label">Un projet en tête ?</span>
+    <h2>Parlons de votre<br>prochain événement</h2>
+    <p>Devis gratuit et sans engagement, réponse rapide.</p>
+    <div class="cta-row" style="justify-content:center; opacity:1; animation:none;">
+      <a href="mailto:contact@soundlightprod.fr" class="btn btn-primary">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653" class="btn btn-ghost">06 31 94 96 53</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <img src="logo.png" alt="SLP - Sound Light Prod">
+      <div>
+        <h3>Sound Light Prod</h3>
+        <p>Son, lumière, booking et production d'événements en France et en Europe.</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <a href="son-lumiere.html">Son & Lumière</a>
+      <a href="location.html">Location Matériel</a>
+      <a href="diffusion.html">Notre philosophie de travail</a>
+      <a href="artistes.html">Nos Artistes</a>
+      <a href="galerie.html">Galerie</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653">06 31 94 96 53</a>
+    </div>
+    <div class="footer-col">
+      <h4>Suivez-nous</h4>
+      <div class="social-row">
+        <a href="https://www.facebook.com/SoundlightP" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.8 8.6h1.9V5.9h-2.2c-2.3 0-3.7 1.5-3.7 3.8v1.6H7.6v2.8h2.2V21h3v-6.9h2.4l.4-2.8h-2.8V9.9c0-.8.3-1.3 1-1.3z"/></svg></a>
+        <a href="https://www.instagram.com/slp_france/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://www.youtube.com/channel/UC6dZffs_G3DbbZPNEhjisLg" target="_blank" rel="noopener" class="social-icon" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><polygon points="10 9.2 15.8 12 10 14.8" fill="currentColor" stroke="none"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 514 912 492 00055 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Mentions légales</a> · <a href="cgv-boutique.html" style="color:inherit;">CGV Boutique</a> · <a href="cgl-location.html" style="color:inherit;">CGL Location</a></p>
+</footer>
+
+</body>
+</html>

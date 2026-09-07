@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — SLP</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --line:rgba(255,255,255,0.1); }
+  *{box-sizing:border-box;}
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; margin:0; padding:24px;}
+  h1{font-family:'Space Grotesk',sans-serif; font-size:1.6rem; margin-bottom:20px;}
+  h2{font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin:30px 0 14px;}
+  .login-box{max-width:340px; margin:80px auto; text-align:center;}
+  .login-box input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); margin-bottom:12px;}
+  .login-box button, .btn{background:var(--paper); color:var(--ink); border:none; border-radius:100px; padding:10px 20px; font-weight:700; cursor:pointer; font-family:'Manrope',sans-serif;}
+  table{width:100%; border-collapse:collapse; font-size:0.86rem; margin-bottom:10px;}
+  th, td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line);}
+  th{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase;}
+  .status{padding:4px 10px; border-radius:20px; font-size:0.72rem; font-family:'JetBrains Mono',monospace;}
+  .status.pending{background:rgba(255,178,56,0.15); color:var(--amber);}
+  .status.confirmed{background:rgba(110,231,160,0.15); color:#6ee7a0;}
+  .status.refused, .status.cancelled{background:rgba(255,77,125,0.15); color:var(--pink);}
+  .status.paid{background:rgba(110,231,160,0.15); color:#6ee7a0;}
+  .row-actions button{margin-right:6px; font-size:0.78rem; padding:6px 14px; border-radius:100px; border:none; cursor:pointer;}
+  .btn-yes{background:#6ee7a0; color:var(--ink);}
+  .btn-no{background:var(--pink); color:#fff;}
+  #app{display:none; max-width:1100px; margin:0 auto;}
+  .empty{color:var(--muted); font-size:0.88rem; padding:16px 0;}
+</style>
+</head>
+<body>
+
+<div class="login-box" id="loginBox">
+  <h1>Espace admin SLP</h1>
+  <input type="password" id="pwd" placeholder="Mot de passe">
+  <button onclick="login()">Se connecter</button>
+  <p id="loginMsg" style="color:var(--pink); font-size:0.85rem; margin-top:10px;"></p>
+</div>
+
+<div id="app">
+  <h1>Espace admin SLP</h1>
+
+  <h2>Demandes de location</h2>
+  <table id="resTable">
+    <thead><tr><th>Statut</th><th>Article</th><th>Client</th><th>Dates</th><th>Qté</th><th>Notes</th><th>Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p class="empty" id="resEmpty" style="display:none;">Aucune demande pour le moment.</p>
+
+  <h2>Commandes boutique</h2>
+  <table id="orderTable">
+    <thead><tr><th>Statut</th><th>Client</th><th>Articles</th><th>Total</th><th>Date</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
+</div>
+
+<script>
+  // ⚠️ À remplacer par l'URL réelle du Worker une fois déployé
+  const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+  let token = sessionStorage.getItem('slp_admin_token') || '';
+
+  function money(cents){ return (cents/100).toFixed(2).replace('.', ',') + ' €'; }
+  function statusLabel(s){
+    return { pending:'En attente', confirmed:'Confirmée', refused:'Refusée', cancelled:'Annulée', paid:'Payée' }[s] || s;
+  }
+
+  async function login(){
+    const pwd = document.getElementById('pwd').value;
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/login`, {
+        method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password: pwd })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      token = data.token;
+      sessionStorage.setItem('slp_admin_token', token);
+      showApp();
+    } catch(e){
+      document.getElementById('loginMsg').textContent = 'Mot de passe incorrect.';
+    }
+  }
+
+  async function showApp(){
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    await loadReservations();
+    await loadOrders();
+  }
+
+  async function loadReservations(){
+    const res = await fetch(`${API_BASE}/api/admin/reservations`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    const tbody = document.querySelector('#resTable tbody');
+    if (!data.length){ document.getElementById('resEmpty').style.display='block'; tbody.innerHTML=''; return; }
+    document.getElementById('resEmpty').style.display='none';
+    tbody.innerHTML = data.map(r => `
+      <tr>
+        <td><span class="status ${r.status}">${statusLabel(r.status)}</span></td>
+        <td>${r.item_name}</td>
+        <td>${r.customer_name}<br><span style="color:var(--muted); font-size:0.78rem;">${r.customer_email} ${r.customer_phone || ''}</span></td>
+        <td>${r.start_date} → ${r.end_date}</td>
+        <td>${r.qty}</td>
+        <td style="max-width:200px; color:var(--muted); font-size:0.8rem;">${r.notes || ''}</td>
+        <td class="row-actions">
+          ${r.status === 'pending' ? `
+            <button class="btn-yes" onclick="decide(${r.id}, 'confirmed')">Valider</button>
+            <button class="btn-no" onclick="decide(${r.id}, 'refused')">Refuser</button>
+          ` : ''}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  async function decide(id, decision){
+    await fetch(`${API_BASE}/api/admin/reservations/${id}/decide`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ decision })
+    });
+    loadReservations();
+  }
+
+  async function loadOrders(){
+    const res = await fetch(`${API_BASE}/api/admin/orders`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    const tbody = document.querySelector('#orderTable tbody');
+    if (!data.length){ document.getElementById('orderEmpty').style.display='block'; tbody.innerHTML=''; return; }
+    document.getElementById('orderEmpty').style.display='none';
+    tbody.innerHTML = data.map(o => {
+      const items = JSON.parse(o.items_json);
+      return `
+        <tr>
+          <td><span class="status ${o.status}">${statusLabel(o.status)}</span></td>
+          <td>${o.customer_name}<br><span style="color:var(--muted); font-size:0.78rem;">${o.customer_email}</span></td>
+          <td>${items.map(i => `${i.qty}× ${i.name}`).join(', ')}</td>
+          <td>${money(o.total_cents)}</td>
+          <td>${o.created_at}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  if (token) showApp();
+</script>
+
+</body>
+</html>
