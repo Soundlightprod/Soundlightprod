@@ -78,6 +78,13 @@
   .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
   .banner-photo .txt{font-size:0.82rem; font-weight:500;}
 
+  .photo-grid-flow{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;}
+  .photo-grid-flow img{width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:16px; display:block;}
+
+  .video-wrap{position:relative; width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);}
+  .video-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+  .video-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;}
+
   .venues-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;}
   .venue-card{background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:16px 20px; font-size:0.92rem; color:var(--paper);}
 
@@ -170,9 +177,9 @@
 <section>
   <div class="wrap tight narrow">
     <div class="bio-text-full">
-      <p>NooNCoverBand est né il y a trois ans de la rencontre de deux artistes installés en Dordogne : Cécile Marten Bellec, chanteuse, et Pierre Clauzel, bassiste. Riches de parcours musicaux variés — soul, reggae, afro et funk — ils ont uni leurs univers pour offrir des soirées mémorables à leur public.</p>
+      <p>NooNCoverBand est né il y a trois ans de la rencontre de deux artistes installés en Dordogne — une chanteuse et un bassiste. Riches de parcours musicaux variés — soul, reggae, afro et funk — ils ont uni leurs univers pour offrir des soirées mémorables à leur public.</p>
       <p>Leur répertoire, pensé pour s'adapter à toutes les ambiances, peut être aussi intimiste (vin d'honneur, réception) que résolument dansant. Chaque prestation, jusqu'à deux heures trente non-stop, démarre en douceur avant de monter en énergie au fil de la soirée.</p>
-      <p>Côté musique : une large place à la variété internationale (Rihanna, Dua Lipa, The Weeknd, Justin Timberlake, Daft Punk), à la chanson française (Rita Mitsouko, Niagara, Superbus, Juliette Armanet, -M-) et aux classiques disco/funk des années 80 (Chic, Kool & The Gang, Michael Jackson, Jamiroquai). Un répertoire vivant, régulièrement enrichi de nouveaux titres.</p>
+      <p>Côté musique : une large place à la variété internationale (Rihanna, Dua Lipa, The Weeknd, Justin Timberlake, Daft Punk), à la chanson française (Rita Mitsouko, Niagara, Superbus, Juliette Armanet, -M-) et aux classiques disco/funk des années 80 (Chic, Patrick Hernandez, Kool & The Gang, Michael Jackson, Jamiroquai, Claudio Capéo). Un répertoire vivant, régulièrement enrichi de nouveaux titres.</p>
       <p>Après près de cent-vingt concerts dans des campings, bars, marchés de pays et soirées privées en Dordogne, Corrèze, Lot et Bretagne, NooNCoverBand a fidélisé un public conquis et de nombreux partenaires qui leur renouvellent régulièrement leur confiance.</p>
     </div>
   </div>
@@ -185,26 +192,37 @@
       <h2>Un duo, deux voix complémentaires</h2>
     </div>
     <div class="members-grid">
-      <div class="member-card"><div class="name">Cécile Marten Bellec</div><div class="role">Chant</div></div>
-      <div class="member-card"><div class="name">Pierre Clauzel</div><div class="role">Basse</div></div>
+      <div class="member-card"><div class="name">Chant</div></div>
+      <div class="member-card"><div class="name">Basse</div></div>
     </div>
   </div>
 </section>
 
 <section>
   <div class="wrap tight">
-    <div class="banner-photo">
-      <div class="icon">🖼</div>
-      <div class="txt">Photo à venir — NooNCoverBand en concert</div>
+    <div class="photo-grid-flow">
+      <img src="noon-photo-1.jpg" alt="NooNCoverBand, chanteuse et bassiste en portrait">
+      <img src="noon-photo-2.png" alt="NooNCoverBand, bassiste en concert">
+      <img src="noon-photo-3.png" alt="NooNCoverBand, chanteuse en pleine performance">
+      <img src="noon-photo-4.png" alt="NooNCoverBand en concert, lumière bleutée">
+      <img src="noon-photo-5.png" alt="NooNCoverBand en concert, noir et blanc">
     </div>
   </div>
 </section>
 
 <section>
-  <div class="wrap tight">
-    <div class="banner-photo" style="aspect-ratio:16/9;">
-      <div class="icon">▶</div>
-      <div class="txt">Vidéo à venir — extrait live NooNCoverBand</div>
+  <div class="wrap tight narrow">
+    <div class="section-head">
+      <span class="label">Vidéos</span>
+      <h2>Quelques extraits de scène</h2>
+    </div>
+    <div class="video-grid">
+      <div class="video-wrap">
+        <iframe src="https://www.youtube-nocookie.com/embed/h1sqE5CJxX4?rel=0&modestbranding=1&iv_load_policy=3" title="NooNCoverBand — Extrait live" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube-nocookie.com/embed/lz2G_UvzbSM?rel=0&modestbranding=1&iv_load_policy=3" title="NooNCoverBand — Extrait live" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+      </div>
     </div>
   </div>
 </section>
@@ -244,6 +262,7 @@
     </div>
     <div class="links-row">
       <a href="https://nooncoverband.com/" target="_blank" rel="noopener" class="link-pill">Site officiel ↗</a>
+      <a href="https://www.facebook.com/profile.php?id=100090718356128" target="_blank" rel="noopener" class="link-pill">Facebook ↗</a>
       <a href="https://www.youtube.com/@NooNCoverBand" target="_blank" rel="noopener" class="link-pill">YouTube ↗</a>
     </div>
   </div>

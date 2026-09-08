@@ -75,6 +75,9 @@
   .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
   .banner-photo .txt{font-size:0.82rem; font-weight:500;}
 
+  .video-wrap{position:relative; width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);}
+  .video-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+
   .photo-grid{display:grid; grid-template-columns:repeat(2, 1fr); grid-template-rows:repeat(2, 1fr); gap:14px; height:520px;}
   .photo-grid img{width:100%; height:100%; min-height:0; min-width:0; object-fit:cover; border-radius:16px; display:block;}
   @media (max-width:700px){ .photo-grid{grid-template-columns:1fr; grid-template-rows:none; height:auto;} .photo-grid img{aspect-ratio:4/3; height:auto;} }
@@ -199,6 +202,18 @@
       <img src="fine-allies-photo-2.jpg" alt="The Fine Allies en concert, groupe complet sur scène">
       <img src="fine-allies-photo-3.jpg" alt="The Fine Allies en concert en extérieur">
       <img src="fine-allies-photo-4.jpg" alt="The Fine Allies en concert, tromboniste en solo">
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap tight narrow">
+    <div class="section-head">
+      <span class="label">Teaser</span>
+      <h2>Voir le groupe en action</h2>
+    </div>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/pCBTgx0PCPQ?rel=0&modestbranding=1&iv_load_policy=3" title="The Fine Allies — Teaser" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
     </div>
   </div>
 </section>
