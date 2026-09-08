@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nos Artistes — SLP Sound Light Prod</title>
-<meta name="description" content="Découvrez nos artistes par type de spectacle : Cabaret, Pop Rock, Jazz Soul Funk, Pop Française.">
+<title>DJ — Nos Artistes — SLP Sound Light Prod</title>
+<meta name="description" content="DJ diffusés par SLP : sets sur-mesure pour soirées privées, mariages et événements d'entreprise.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -33,21 +33,21 @@
   nav a:hover, nav a.current{color:var(--paper);}
   @media (max-width:960px){ nav ul{display:none;} }
 
-  .page-hero{position:relative; padding:36px 24px 24px; overflow:hidden;}
+  .page-hero{position:relative; padding:110px 24px 70px; overflow:hidden;}
   .hero-blocks{position:absolute; inset:0; z-index:0;}
   .hb{position:absolute; opacity:0.4; filter:blur(2px);}
-  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--pink), transparent 70%); top:-25vw; left:-10vw;}
+  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--blue), transparent 70%); top:-25vw; left:-10vw;}
   .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-10vw; right:-10vw;}
   .page-hero-inner{position:relative; z-index:2; max-width:800px;}
   .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
   .breadcrumb a{color:var(--muted); text-decoration:none;}
   .breadcrumb a:hover{color:var(--paper);}
-  .page-hero .label{display:block; margin-bottom:10px;}
-  .page-hero h1{font-size:clamp(1.8rem, 4vw, 2.6rem); margin-bottom:8px;}
-  .page-hero p{color:var(--muted); font-size:0.95rem; max-width:600px;}
+  .page-hero .label{display:block; margin-bottom:20px;}
+  .page-hero h1{font-size:clamp(2.4rem, 6vw, 4.2rem); margin-bottom:22px;}
+  .page-hero p{color:var(--muted); font-size:1.1rem; max-width:600px;}
 
   section{position:relative; z-index:2;}
-  .wrap{max-width:1220px; margin:0 auto; padding:0 24px 40px;}
+  .wrap{max-width:1220px; margin:0 auto; padding:20px 24px 90px;}
 
   .artists{display:flex; flex-direction:column; gap:20px;}
   .category-label{display:flex; align-items:center; gap:18px; margin:32px 0 2px;}
@@ -100,30 +100,29 @@
   @media (max-width:700px){ .tags{justify-content:center;} }
   .tag{font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--paper); box-shadow:inset 0 0 0 1px var(--line); padding:7px 14px; border-radius:20px;}
 
-  .cat-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;}
-  @media (max-width:960px){ .cat-grid{grid-template-columns:1fr 1fr;} }
-  @media (max-width:600px){ .cat-grid{grid-template-columns:1fr;} }
+  .cat-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+  @media (max-width:820px){ .cat-grid{grid-template-columns:1fr;} }
   .cat-card{
-    position:relative; display:block; border-radius:18px; overflow:hidden;
-    background:var(--ink-2); border:1px solid var(--line);
-    transition:transform 0.25s ease, border-color 0.3s ease;
+    position:relative; display:flex; flex-direction:column; border-radius:20px; overflow:hidden;
+    background:var(--ink-2); border:1px solid var(--line); padding:36px;
+    transition:border-color 0.3s ease; min-height:300px;
   }
-  .cat-card:hover{transform:translateY(-4px); border-color:rgba(255,255,255,0.3);}
-  .cat-card:nth-child(5n+1) .glow{background:var(--violet);}
-  .cat-card:nth-child(5n+2) .glow{background:var(--blue);}
-  .cat-card:nth-child(5n+3) .glow{background:var(--amber);}
-  .cat-card:nth-child(5n+4) .glow{background:var(--pink);}
-  .cat-card:nth-child(5n+5) .glow{background:var(--violet);}
-  .cat-photo{position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:var(--ink);}
-  .cat-photo img{width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;}
-  .cat-card:hover .cat-photo img{transform:scale(1.05);}
-  .cat-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(0deg, rgba(12,11,16,0.85) 0%, rgba(12,11,16,0) 45%);}
-  .cat-photo img.cat-photo-logo{position:absolute; bottom:16px; right:16px; z-index:3; width:auto !important; height:40px !important; max-width:none; max-height:none; border-radius:4px; opacity:0.95; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5)); transform:none;}
-  .cat-card:hover .cat-photo img.cat-photo-logo{transform:none;}
-  .cat-name-wrap{position:relative; z-index:2; padding:12px 14px 14px;}
-  .cat-name-wrap .glow{position:absolute; width:200px; height:200px; border-radius:50%; filter:blur(60px); opacity:0.35; top:-120px; left:-40px; pointer-events:none; z-index:-1;}
-  .cat-label{font-family:'JetBrains Mono', monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:3px;}
-  .cat-name{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; color:var(--paper); letter-spacing:-0.01em;}
+  .cat-card:hover{border-color:rgba(255,255,255,0.25);}
+  .cat-card:nth-child(4n+1) .glow{background:var(--violet);}
+  .cat-card:nth-child(4n+2) .glow{background:var(--blue);}
+  .cat-card:nth-child(4n+3) .glow{background:var(--amber);}
+  .cat-card:nth-child(4n+4) .glow{background:var(--pink);}
+  .cat-icon{
+    position:relative; z-index:2; width:56px; height:56px; border-radius:16px;
+    background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center;
+    color:var(--gold); margin-bottom:24px; flex-shrink:0;
+  }
+  .cat-icon svg{width:26px; height:26px;}
+  .cat-card .label{position:relative; z-index:2; margin-bottom:10px; display:block;}
+  .cat-card h3{position:relative; z-index:2; font-size:1.5rem; margin-bottom:12px;}
+  .cat-card p{position:relative; z-index:2; color:var(--muted); font-size:0.95rem; margin-bottom:24px; flex:1;}
+  .cat-preview{position:relative; z-index:2; display:flex; align-items:center; gap:10px; margin-bottom:22px; color:var(--muted); font-family:'JetBrains Mono', monospace; font-size:0.78rem;}
+  .cat-preview img{width:30px; height:30px; border-radius:50%; object-fit:cover; background:var(--paper); box-shadow:0 0 0 2px var(--line);}
   .cat-card .discover-row{position:relative; z-index:2; margin-top:0;}
 
   .placeholder-logo{width:100%; aspect-ratio:4/3; background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px); border:2px dashed rgba(255,255,255,0.15); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.8rem; text-align:center; padding:14px;}
@@ -183,70 +182,34 @@
 <section class="page-hero">
   <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
   <div class="page-hero-inner">
-    <span class="label">Notre catalogue</span>
-    <h1>Nos artistes</h1>
-    <p>SLP sélectionne et diffuse des artistes par type de spectacle. Choisissez une catégorie pour découvrir l'artiste correspondant.</p>
+    <span class="breadcrumb"><a href="artistes.html">← Nos Artistes</a></span>
+    <span class="label">Type de spectacle</span>
+    <h1>DJ</h1>
+    <p>Sets sur-mesure du cocktail à la piste de danse, pour vos soirées privées, mariages et événements d'entreprise.</p>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <div class="cat-grid">
-      <a href="cabaret.html" class="cat-card" style="text-decoration:none;">
-        <div class="cat-photo"><img src="cabaret-photo-cropped.jpg" alt="Spectacle Cabaret"></div>
-        <div class="cat-name-wrap">
-          <div class="glow"></div>
-          <span class="cat-label">Type de spectacle</span>
-          <div class="cat-name">Cabaret</div>
+    <div class="artists">
+      <div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo">
+          <div class="placeholder-logo">Logo à venir<br>DJ Provisoire</div>
         </div>
-      </a>
-
-      <a href="groupes-de-reprises.html" class="cat-card" style="text-decoration:none;">
-        <div class="cat-photo"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=800&amp;h=1000&amp;fit=crop&amp;auto=format&amp;q=80" alt="Groupes de reprises"></div>
-        <div class="cat-name-wrap">
-          <div class="glow"></div>
-          <span class="cat-label">Type de spectacle</span>
-          <div class="cat-name">Groupes de reprises</div>
+        <div class="artist-body">
+          <span class="label">DJ</span>
+          <h3>DJ Provisoire</h3>
+          <p>Sets pop, house et disco-funk, pensés pour accompagner toute la soirée : ambiance cocktail en douceur, puis montée en énergie jusqu'à la piste de danse.</p>
+          <div class="tags">
+            <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none;">★ Uniquement chez SLP</span>
+            <span class="tag">Soirées privées</span>
+            <span class="tag">Mariages</span>
+            <span class="tag">Événements d'entreprise</span>
+          </div>
+          <div class="discover-row"><a href="dj-provisoire.html" class="discover-btn" aria-label="Découvrir DJ Provisoire"><span>Découvrir</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
-      </a>
-
-      <a href="jazz-soul-funk.html" class="cat-card" style="text-decoration:none;">
-        <div class="cat-photo"><img src="fine-allies-photo.png" alt="Jazz Soul Funk" style="object-position:center 30%;"></div>
-        <div class="cat-name-wrap">
-          <div class="glow"></div>
-          <span class="cat-label">Type de spectacle</span>
-          <div class="cat-name">Jazz Soul Funk</div>
-        </div>
-      </a>
-
-      <a href="pop-francaise.html" class="cat-card" style="text-decoration:none;">
-        <div class="cat-photo">
-          <img src="cache-candy-photo-cropped.jpg" alt="Pop Française" style="object-fit:contain; background:var(--ink);">
-        </div>
-        <div class="cat-name-wrap">
-          <div class="glow"></div>
-          <span class="cat-label">Type de spectacle</span>
-          <div class="cat-name">Pop Française</div>
-        </div>
-      </a>
-
-      <a href="tributes.html" class="cat-card" style="text-decoration:none;">
-        <div class="cat-photo"><img src="https://images.unsplash.com/photo-1548497557-5c4e6cb1cafd?w=800&amp;h=1000&amp;fit=crop&amp;auto=format&amp;q=80" alt="Tributes"></div>
-        <div class="cat-name-wrap">
-          <div class="glow"></div>
-          <span class="cat-label">Type de spectacle</span>
-          <div class="cat-name">Tributes</div>
-        </div>
-      </a>
-
-      <a href="dj.html" class="cat-card" style="text-decoration:none;">
-        <div class="cat-photo"><img src="https://images.unsplash.com/photo-1571266028243-d220c6a8f4e4?w=800&amp;h=1000&amp;fit=crop&amp;auto=format&amp;q=80" alt="DJ"></div>
-        <div class="cat-name-wrap">
-          <div class="glow"></div>
-          <span class="cat-label">Type de spectacle</span>
-          <div class="cat-name">DJ</div>
-        </div>
-      </a>
+      </div>
     </div>
   </div>
 </section>
