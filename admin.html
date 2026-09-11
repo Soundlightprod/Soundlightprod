@@ -51,7 +51,7 @@
 
   <h2>Commandes boutique</h2>
   <table id="orderTable">
-    <thead><tr><th>Statut</th><th>Client</th><th>Articles</th><th>Total</th><th>Date</th></tr></thead>
+    <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th></tr></thead>
     <tbody></tbody>
   </table>
   <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
@@ -133,7 +133,8 @@
       return `
         <tr>
           <td><span class="status ${o.status}">${statusLabel(o.status)}</span></td>
-          <td>${o.customer_name}<br><span style="color:var(--muted); font-size:0.78rem;">${o.customer_email}</span></td>
+          <td>${o.customer_name}<br><span style="color:var(--muted); font-size:0.78rem;">${o.customer_email} ${o.customer_phone || ''}</span></td>
+          <td style="font-size:0.82rem;">${o.shipping_address || '<span style="color:var(--muted);">—</span>'}</td>
           <td>${items.map(i => `${i.qty}× ${i.name}`).join(', ')}</td>
           <td>${money(o.total_cents)}</td>
           <td>${o.created_at}</td>
