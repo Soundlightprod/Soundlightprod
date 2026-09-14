@@ -118,6 +118,11 @@
   .social-icon svg{width:18px; height:18px;}
   .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
   .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center; letter-spacing:0.02em;}
+
+  .actus-list{display:flex; flex-direction:column; gap:14px;}
+  .actu-item{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:18px 22px; display:flex; gap:18px; align-items:baseline; flex-wrap:wrap;}
+  .actu-item .actu-date{font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--amber); white-space:nowrap; flex-shrink:0; text-transform:uppercase;}
+  .actu-item p{color:var(--paper); font-size:0.94rem; margin:0;}
 </style>
 </head>
 <body>
@@ -153,6 +158,16 @@
       <span class="tag">Casinos & campings</span>
       <span class="tag">Événements privés</span>
     </div>
+  </div>
+</section>
+
+<section id="actus-section" style="display:none;">
+  <div class="wrap tight narrow">
+    <div class="section-head">
+      <span class="label">Actualités</span>
+      <h2>Quoi de neuf</h2>
+    </div>
+    <div class="actus-list" id="actus-list"></div>
   </div>
 </section>
 
@@ -281,5 +296,39 @@
   <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET en cours d'attribution — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Mentions légales</a> · <a href="cgv-boutique.html" style="color:inherit;">CGV Boutique</a></p>
 </footer>
 
+<script>
+(function(){
+  const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+  const ARTIST_SLUG = "panache";
+
+  function formatDate(iso){
+    try {
+      const d = new Date(iso);
+      return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
+    } catch(e){ return ''; }
+  }
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  fetch(`${API_BASE}/api/actualites?artist=${ARTIST_SLUG}`)
+    .then(r => r.ok ? r.json() : [])
+    .then(items => {
+      if (!items || !items.length) return;
+      const list = document.getElementById('actus-list');
+      if (!list) return;
+      list.innerHTML = items.map(a => `
+        <div class="actu-item">
+          <span class="actu-date">${formatDate(a.created_at)}</span>
+          <p>${escapeHtml(a.text)}</p>
+        </div>
+      `).join('');
+      document.getElementById('actus-section').style.display = 'block';
+    })
+    .catch(()=>{});
+})();
+</script>
 </body>
 </html>

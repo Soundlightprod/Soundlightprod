@@ -33,7 +33,7 @@
   nav a:hover, nav a.current{color:var(--paper);}
   @media (max-width:960px){ nav ul{display:none;} }
 
-  .page-hero{position:relative; padding:36px 24px 24px; overflow:hidden;}
+  .page-hero{position:relative; padding:56px 24px 40px; overflow:hidden;}
   .hero-blocks{position:absolute; inset:0; z-index:0;}
   .hb{position:absolute; opacity:0.4; filter:blur(2px);}
   .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--pink), transparent 70%); top:-25vw; left:-10vw;}
@@ -47,7 +47,7 @@
   .page-hero p{color:var(--muted); font-size:0.95rem; max-width:none;}
 
   section{position:relative; z-index:2;}
-  .wrap{max-width:1220px; margin:0 auto; padding:0 24px 40px;}
+  .wrap{max-width:1220px; margin:0 auto; padding:10px 24px 60px;}
 
   .artists{display:flex; flex-direction:column; gap:20px;}
   .category-label{display:flex; align-items:center; gap:18px; margin:32px 0 2px;}
@@ -100,8 +100,8 @@
   @media (max-width:700px){ .tags{justify-content:center;} }
   .tag{font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--paper); box-shadow:inset 0 0 0 1px var(--line); padding:7px 14px; border-radius:20px;}
 
-  .cat-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;}
-  @media (max-width:960px){ .cat-grid{grid-template-columns:1fr 1fr;} }
+  .cat-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:28px;}
+  @media (max-width:960px){ .cat-grid{grid-template-columns:1fr 1fr; gap:22px;} }
   @media (max-width:600px){ .cat-grid{grid-template-columns:1fr;} }
   .cat-card{
     position:relative; display:block; border-radius:18px; overflow:hidden;
@@ -120,7 +120,7 @@
   .cat-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(0deg, rgba(12,11,16,0.85) 0%, rgba(12,11,16,0) 45%);}
   .cat-photo img.cat-photo-logo{position:absolute; bottom:16px; right:16px; z-index:3; width:auto !important; height:40px !important; max-width:none; max-height:none; border-radius:4px; opacity:0.95; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5)); transform:none;}
   .cat-card:hover .cat-photo img.cat-photo-logo{transform:none;}
-  .cat-name-wrap{position:relative; z-index:2; padding:12px 14px 14px;}
+  .cat-name-wrap{position:relative; z-index:2; padding:16px 18px 20px;}
   .cat-name-wrap .glow{position:absolute; width:200px; height:200px; border-radius:50%; filter:blur(60px); opacity:0.35; top:-120px; left:-40px; pointer-events:none; z-index:-1;}
   .cat-label{font-family:'JetBrains Mono', monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:3px;}
   .cat-name{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; color:var(--paper); letter-spacing:-0.01em;}
@@ -190,7 +190,32 @@
 </section>
 
 <section>
+  <div class="wrap" style="padding-bottom:10px;">
+    <div class="artist" style="border-color:var(--gold); box-shadow:0 0 0 1px var(--gold);">
+      <div class="glow" style="background:var(--gold);"></div>
+      <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+        <img src="cache-candy-photo-cropped.jpg" alt="Cache Candy" style="width:100%; height:100%; object-fit:cover; border-radius:14px;">
+        <img src="cache-candy-official-logo.png" alt="Logo Cache Candy" style="position:absolute; bottom:-10px; right:-10px; height:44px; width:auto; max-width:none; max-height:none; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,0.5);">
+      </div>
+      <div class="artist-body">
+        <span class="label" style="color:var(--gold);">★ En ce moment chez SLP</span>
+        <h3>Cache Candy</h3>
+        <p>Duo pop-rock électro né en 2008, entre ballades nostalgiques et titres énergiques et fédérateurs. Plus de 300 concerts à travers la France, du Printemps de Bourges à Garorock — notre plus grosse production actuellement.</p>
+        <div class="tags">
+          <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="logo.png" alt="" style="width:15px; height:15px; border-radius:50%; display:block;">Exclusivité SLP</span>
+          <span class="tag">Festivals</span>
+          <span class="tag">Concerts</span>
+          <span class="tag">Événements publics</span>
+        </div>
+        <div class="discover-row"><a href="cache-candy.html" class="discover-btn" aria-label="Découvrir Cache Candy"><span>Découvrir</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
   <div class="wrap">
+    <div style="margin-bottom:24px;"><span class="label">Parcourir par type de spectacle</span></div>
     <div class="cat-grid">
       <a href="cabaret.html" class="cat-card" style="text-decoration:none;">
         <div class="cat-photo"><img src="cabaret-photo-cropped.jpg" alt="Spectacle Cabaret"></div>

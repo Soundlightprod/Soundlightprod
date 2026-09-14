@@ -28,6 +28,37 @@
   .btn-no{background:var(--pink); color:#fff;}
   #app{display:none; max-width:1100px; margin:0 auto;}
   .empty{color:var(--muted); font-size:0.88rem; padding:16px 0;}
+
+  .agenda-legend{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:16px; font-size:0.8rem; color:var(--muted);}
+  .agenda-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .agenda-dot{width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0;}
+  .agenda-nav{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+  .agenda-nav button{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:8px; padding:6px 14px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.9rem;}
+  .agenda-nav button:hover{border-color:rgba(255,255,255,0.3);}
+  .agenda-month{font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.05rem; text-transform:capitalize;}
+  .agenda-grid{display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin-bottom:34px;}
+  .agenda-dow{text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.66rem; color:var(--muted); text-transform:uppercase; padding-bottom:6px; letter-spacing:0.04em;}
+  .agenda-day{min-height:84px; background:var(--ink-2); border:1px solid var(--line); border-radius:10px; padding:6px; display:flex; flex-direction:column; gap:3px;}
+  .agenda-day.empty{background:transparent; border:none;}
+  .agenda-day.today{border-color:var(--amber);}
+  .agenda-daynum{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:0.68rem;}
+  .agenda-day.today .agenda-daynum{color:var(--amber); font-weight:700;}
+  .agenda-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink); font-weight:700;}
+  .agenda-more{color:var(--muted); font-size:0.62rem; padding-left:2px;}
+  @media (max-width:700px){ .agenda-grid{gap:3px;} .agenda-day{min-height:60px; padding:4px;} .agenda-item{font-size:0.58rem;} }
+
+  .dispo-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink); font-weight:700;}
+  .dispo-item.indisponible{background:repeating-linear-gradient(45deg, currentColor 0 4px, rgba(0,0,0,0.25) 4px 8px) !important; color:var(--ink) !important; opacity:0.85;}
+  .conflict-msg{background:rgba(255,77,125,0.12); border:1px solid var(--pink); color:var(--pink); border-radius:10px; padding:10px 14px; font-size:0.84rem; margin-bottom:16px;}
+
+  .dispo-summary-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px; margin-bottom:30px;}
+  .dispo-summary-card{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:16px 18px;}
+  .dispo-summary-card h3{font-size:0.92rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; font-family:'Space Grotesk',sans-serif; color:var(--paper);}
+  .dispo-summary-dot{width:10px; height:10px; border-radius:50%; display:inline-block; flex-shrink:0;}
+  .dispo-summary-list{display:flex; flex-direction:column; gap:8px;}
+  .dispo-summary-row{display:flex; justify-content:space-between; align-items:baseline; gap:10px; font-size:0.8rem; color:var(--paper);}
+  .dispo-summary-row .range{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.7rem; white-space:nowrap;}
+  .dispo-summary-empty{color:var(--muted); font-size:0.8rem;}
 </style>
 </head>
 <body>
@@ -55,6 +86,83 @@
     <tbody></tbody>
   </table>
   <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
+
+  <h2>Actualités artistes</h2>
+  <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:flex-start;">
+    <select id="actuArtist" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+      <option value="alchimie">Alchimie</option>
+      <option value="cache-candy">Cache Candy</option>
+      <option value="the-fine-allies">The Fine Allies</option>
+      <option value="noon-coverband">NooN Coverband</option>
+      <option value="panache">Panache</option>
+      <option value="voice-of-freedom">Voice of Freedom</option>
+    </select>
+    <textarea id="actuText" placeholder="Nouvelle actualité (ex: nouveau clip sorti !)" style="flex:1; min-width:220px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); resize:vertical; min-height:44px; font-family:'Manrope',sans-serif;"></textarea>
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;">Afficher jusqu'au</label>
+      <input type="date" id="actuExpires" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+    </div>
+    <button class="btn" onclick="publishActu()">Publier</button>
+  </div>
+  <h2>Agenda des actualités</h2>
+  <div class="agenda-legend" id="agendaLegend"></div>
+  <div class="agenda-nav">
+    <button onclick="shiftAgendaMonth(-1)">← Mois préc.</button>
+    <span class="agenda-month" id="agendaMonthLabel"></span>
+    <button onclick="shiftAgendaMonth(1)">Mois suiv. →</button>
+  </div>
+  <div class="agenda-grid" id="agendaGrid"></div>
+
+  <table id="actuTable">
+    <thead><tr><th>Artiste</th><th>Texte</th><th>Affichée jusqu'au</th><th>Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p class="empty" id="actuEmpty" style="display:none;">Aucune actualité pour le moment.</p>
+
+  <h2>Disponibilités artistes</h2>
+  <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Un concert enregistré ici bloque automatiquement le(s) jour(s) correspondant(s) dans l'agenda du groupe — impossible d'ajouter deux fois la même date pour le même artiste.</p>
+  <div id="dispoConflict"></div>
+  <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:flex-start;">
+    <select id="dispoArtist" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+      <option value="alchimie">Alchimie</option>
+      <option value="cache-candy">Cache Candy</option>
+      <option value="the-fine-allies">The Fine Allies</option>
+      <option value="noon-coverband">NooN Coverband</option>
+      <option value="panache">Panache</option>
+      <option value="voice-of-freedom">Voice of Freedom</option>
+    </select>
+    <select id="dispoType" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+      <option value="concert">🎤 Concert</option>
+      <option value="indisponible">🚫 Indisponibilité</option>
+    </select>
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;">Du</label>
+      <input type="date" id="dispoStart" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+    </div>
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;">Au (optionnel)</label>
+      <input type="date" id="dispoEnd" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+    </div>
+    <input type="text" id="dispoLabel" placeholder="Libellé (ex: Mairie de X, Vacances...)" style="flex:1; min-width:180px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+    <button class="btn" onclick="createDispo()">Bloquer ces dates</button>
+  </div>
+
+  <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1rem; margin-bottom:14px;">Résumé — dates à venir par groupe</h3>
+  <div class="dispo-summary-grid" id="dispoSummaryGrid"></div>
+
+  <div class="agenda-legend" id="dispoLegend"></div>
+  <div class="agenda-nav">
+    <button onclick="shiftDispoMonth(-1)">← Mois préc.</button>
+    <span class="agenda-month" id="dispoMonthLabel"></span>
+    <button onclick="shiftDispoMonth(1)">Mois suiv. →</button>
+  </div>
+  <div class="agenda-grid" id="dispoGrid"></div>
+
+  <table id="dispoTable">
+    <thead><tr><th>Artiste</th><th>Type</th><th>Date</th><th>Libellé</th><th>Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p class="empty" id="dispoEmpty" style="display:none;">Aucune date bloquée pour le moment.</p>
 </div>
 
 <script>
@@ -86,8 +194,12 @@
   async function showApp(){
     document.getElementById('loginBox').style.display = 'none';
     document.getElementById('app').style.display = 'block';
+    renderAgendaLegend();
+    renderDispoLegend();
     await loadReservations();
     await loadOrders();
+    await loadActus();
+    await loadDispos();
   }
 
   async function loadReservations(){
@@ -141,6 +253,250 @@
         </tr>
       `;
     }).join('');
+  }
+
+  const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'voice-of-freedom':'Voice of Freedom' };
+  const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'voice-of-freedom':'#cda754' };
+  let agendaDate = new Date();
+  agendaDate.setDate(1);
+
+  function escapeAttr(str){ return (str || '').replace(/"/g, '&quot;'); }
+
+  function renderAgendaLegend(){
+    document.getElementById('agendaLegend').innerHTML = Object.keys(ARTIST_LABELS).map(slug => `
+      <span><span class="agenda-dot" style="background:${ARTIST_COLORS[slug]};"></span>${ARTIST_LABELS[slug]}</span>
+    `).join('');
+  }
+
+  function shiftAgendaMonth(delta){
+    agendaDate.setMonth(agendaDate.getMonth() + delta);
+    renderAgenda();
+  }
+
+  function renderAgenda(){
+    const grid = document.getElementById('agendaGrid');
+    const label = document.getElementById('agendaMonthLabel');
+    const year = agendaDate.getFullYear();
+    const month = agendaDate.getMonth();
+    label.textContent = agendaDate.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+
+    const dows = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    let html = dows.map(d => `<div class="agenda-dow">${d}</div>`).join('');
+
+    const firstDay = new Date(year, month, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7; // lundi = 0
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = new Date().toISOString().slice(0,10);
+    const data = window.actusData || [];
+
+    for (let i = 0; i < startOffset; i++){
+      html += `<div class="agenda-day empty"></div>`;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++){
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const dayActus = data.filter(a => {
+        const created = (a.created_at || '').slice(0,10);
+        return created <= dateStr && a.expires_at >= dateStr;
+      });
+      const isToday = dateStr === todayStr;
+      html += `<div class="agenda-day${isToday ? ' today' : ''}">
+        <div class="agenda-daynum">${day}</div>
+        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}">${ARTIST_LABELS[a.artist_slug] || a.artist_slug}</div>`).join('')}
+        ${dayActus.length > 3 ? `<div class="agenda-more">+${dayActus.length - 3}</div>` : ''}
+      </div>`;
+    }
+
+    grid.innerHTML = html;
+  }
+
+  async function loadActus(){
+    const res = await fetch(`${API_BASE}/api/admin/actualites`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    window.actusData = data;
+    const tbody = document.querySelector('#actuTable tbody');
+    if (!data.length){ document.getElementById('actuEmpty').style.display='block'; tbody.innerHTML=''; renderAgenda(); return; }
+    document.getElementById('actuEmpty').style.display='none';
+    const today = new Date().toISOString().slice(0,10);
+    tbody.innerHTML = data.map(a => {
+      const expired = a.expires_at && a.expires_at < today;
+      return `
+      <tr style="${expired ? 'opacity:0.5;' : ''}">
+        <td>${ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
+        <td style="max-width:340px;">${a.text}</td>
+        <td>${a.expires_at || '—'} ${expired ? '<span class="status refused">Expirée</span>' : ''}</td>
+        <td class="row-actions"><button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button></td>
+      </tr>
+    `;
+    }).join('');
+    renderAgenda();
+  }
+
+  async function publishActu(){
+    const artist_slug = document.getElementById('actuArtist').value;
+    const text = document.getElementById('actuText').value.trim();
+    const expires_at = document.getElementById('actuExpires').value;
+    if (!text || !expires_at) { alert('Merci de renseigner le texte et la date de fin d\'affichage.'); return; }
+    await fetch(`${API_BASE}/api/admin/actualites`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ artist_slug, text, expires_at })
+    });
+    document.getElementById('actuText').value = '';
+    document.getElementById('actuExpires').value = '';
+    loadActus();
+  }
+
+  async function deleteActu(id){
+    await fetch(`${API_BASE}/api/admin/actualites/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    loadActus();
+  }
+
+  const DISPO_TYPE_LABELS = { concert:'🎤 Concert', indisponible:'🚫 Indisponible' };
+  let dispoDate = new Date();
+  dispoDate.setDate(1);
+
+  function renderDispoLegend(){
+    document.getElementById('dispoLegend').innerHTML = Object.keys(ARTIST_LABELS).map(slug => `
+      <span><span class="agenda-dot" style="background:${ARTIST_COLORS[slug]};"></span>${ARTIST_LABELS[slug]}</span>
+    `).join('');
+  }
+
+  function shiftDispoMonth(delta){
+    dispoDate.setMonth(dispoDate.getMonth() + delta);
+    renderDispoCalendar();
+  }
+
+  function renderDispoCalendar(){
+    const grid = document.getElementById('dispoGrid');
+    const label = document.getElementById('dispoMonthLabel');
+    const year = dispoDate.getFullYear();
+    const month = dispoDate.getMonth();
+    label.textContent = dispoDate.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+
+    const dows = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    let html = dows.map(d => `<div class="agenda-dow">${d}</div>`).join('');
+
+    const firstDay = new Date(year, month, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = new Date().toISOString().slice(0,10);
+    const data = window.dispoData || [];
+
+    for (let i = 0; i < startOffset; i++){
+      html += `<div class="agenda-day empty"></div>`;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++){
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const dayEntries = data.filter(d => d.date === dateStr);
+      const isToday = dateStr === todayStr;
+      html += `<div class="agenda-day${isToday ? ' today' : ''}">
+        <div class="agenda-daynum">${day}</div>
+        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}">${d.type === 'concert' ? '🎤' : '🚫'} ${ARTIST_LABELS[d.artist_slug] || d.artist_slug}</div>`).join('')}
+      </div>`;
+    }
+
+    grid.innerHTML = html;
+  }
+
+  function formatShortDate(iso){
+    try {
+      const d = new Date(iso + 'T00:00:00Z');
+      return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short', timeZone:'UTC' });
+    } catch(e){ return iso; }
+  }
+
+  function isNextDay(dateStr, nextStr){
+    const d = new Date(dateStr + 'T00:00:00Z');
+    d.setUTCDate(d.getUTCDate() + 1);
+    return d.toISOString().slice(0,10) === nextStr;
+  }
+
+  function mergeDispoRanges(entries){
+    // entries triées par date croissante, pour un même artiste
+    const ranges = [];
+    for (const e of entries){
+      const last = ranges[ranges.length - 1];
+      if (last && last.type === e.type && last.label === e.label && isNextDay(last.end, e.date)){
+        last.end = e.date;
+      } else {
+        ranges.push({ type: e.type, label: e.label, start: e.date, end: e.date });
+      }
+    }
+    return ranges;
+  }
+
+  function renderDispoSummary(){
+    const container = document.getElementById('dispoSummaryGrid');
+    const data = window.dispoData || [];
+    const todayStr = new Date().toISOString().slice(0,10);
+    container.innerHTML = Object.keys(ARTIST_LABELS).map(slug => {
+      const entries = data
+        .filter(d => d.artist_slug === slug && d.date >= todayStr)
+        .sort((a, b) => a.date.localeCompare(b.date));
+      const ranges = mergeDispoRanges(entries);
+      return `
+        <div class="dispo-summary-card">
+          <h3><span class="dispo-summary-dot" style="background:${ARTIST_COLORS[slug]};"></span>${ARTIST_LABELS[slug]}</h3>
+          <div class="dispo-summary-list">
+            ${ranges.length ? ranges.map(r => `
+              <div class="dispo-summary-row">
+                <span>${r.type === 'concert' ? '🎤' : '🚫'} ${r.label || (r.type === 'concert' ? 'Concert' : 'Indisponible')}</span>
+                <span class="range">${formatShortDate(r.start)}${r.end !== r.start ? ' → ' + formatShortDate(r.end) : ''}</span>
+              </div>
+            `).join('') : '<div class="dispo-summary-empty">Aucune date à venir</div>'}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function loadDispos(){
+    const res = await fetch(`${API_BASE}/api/admin/agenda`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    window.dispoData = data;
+    const tbody = document.querySelector('#dispoTable tbody');
+    if (!data.length){ document.getElementById('dispoEmpty').style.display='block'; tbody.innerHTML=''; renderDispoCalendar(); renderDispoSummary(); return; }
+    document.getElementById('dispoEmpty').style.display='none';
+    tbody.innerHTML = data.map(d => `
+      <tr>
+        <td>${ARTIST_LABELS[d.artist_slug] || d.artist_slug}</td>
+        <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
+        <td>${d.date}</td>
+        <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}</td>
+        <td class="row-actions"><button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button></td>
+      </tr>
+    `).join('');
+    renderDispoCalendar();
+    renderDispoSummary();
+  }
+
+  async function createDispo(){
+    const artist_slug = document.getElementById('dispoArtist').value;
+    const type = document.getElementById('dispoType').value;
+    const start_date = document.getElementById('dispoStart').value;
+    const end_date = document.getElementById('dispoEnd').value || start_date;
+    const label = document.getElementById('dispoLabel').value.trim();
+    const conflictBox = document.getElementById('dispoConflict');
+    conflictBox.innerHTML = '';
+    if (!start_date) { alert('Merci de renseigner au moins une date de début.'); return; }
+
+    const res = await fetch(`${API_BASE}/api/admin/agenda`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ artist_slug, type, start_date, end_date, label })
+    });
+    const data = await res.json();
+
+    if (data.conflicts && data.conflicts.length){
+      conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+    }
+    document.getElementById('dispoLabel').value = '';
+    loadDispos();
+  }
+
+  async function deleteDispo(id){
+    await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    loadDispos();
   }
 
   if (token) showApp();
