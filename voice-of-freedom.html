@@ -127,6 +127,10 @@
   .actu-item .actu-body{flex:1; min-width:200px;}
   .actu-item .actu-date{font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--amber); white-space:nowrap; flex-shrink:0; text-transform:uppercase;}
   .actu-item p{color:var(--paper); font-size:0.94rem; margin:0;}
+  .lightbox-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:300; align-items:center; justify-content:center; padding:24px; cursor:zoom-out;}
+  .lightbox-overlay.open{display:flex;}
+  .lightbox-overlay img{max-width:100%; max-height:100%; border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+  .event-card img, .actu-item img{cursor:zoom-in;}
 </style>
 </head>
 <body>
@@ -367,5 +371,26 @@
     .catch(()=>{});
 })();
 </script>
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="">
+</div>
 </body>
+<script>
+(function(){
+  window.openLightbox = function(src){
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxOverlay').classList.add('open');
+  };
+  window.closeLightbox = function(){
+    document.getElementById('lightboxOverlay').classList.remove('open');
+  };
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('.event-card img, .actu-item img');
+    if (!img) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openLightbox(img.src);
+  });
+})();
+</script>
 </html>
