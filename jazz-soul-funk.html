@@ -260,4 +260,13 @@
 </footer>
 
 </body>
+<script>
+(function(){
+  fetch("https://slp-api.raspy-silence-d4c7.workers.dev/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_slug: "jazz-soul-funk" })
+  }).catch(function(){});
+})();
+</script>
 </html>

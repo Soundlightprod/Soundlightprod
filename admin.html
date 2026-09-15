@@ -84,7 +84,7 @@
   .dispo-item.indisponible{background:repeating-linear-gradient(45deg, currentColor 0 4px, rgba(0,0,0,0.25) 4px 8px) !important; color:var(--ink) !important; opacity:0.85;}
   .conflict-msg{background:rgba(255,77,125,0.12); border:1px solid var(--pink); color:var(--pink); border-radius:10px; padding:10px 14px; font-size:0.84rem; margin-bottom:16px;}
 
-  .gv-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; font-weight:700; background:var(--amber); color:var(--ink);}
+  .gv-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; font-weight:700; background:var(--amber); color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .gv-item.indisponible{background:var(--pink); color:#fff;}
   .gv-item.option{background:transparent; border:1.5px dashed var(--amber); color:var(--amber);}
   .gv-item.indisponible.option{border-color:var(--pink); color:var(--pink);}
@@ -148,7 +148,7 @@
 
 <div class="login-box" id="loginBox">
   <div style="background:#0c0b10; padding:10px 16px; border-radius:12px; display:inline-block; margin-bottom:20px;">
-    <img src="slp-logo-complet.png" alt="SLP" style="height:56px; width:auto; display:block;">
+    <img src="slp-logo-complet.png" alt="SLP" style="height:168px; width:auto; display:block;">
   </div>
   <h1>Espace admin SLP</h1>
   <input type="password" id="pwd" placeholder="Mot de passe">
@@ -159,19 +159,20 @@
 <div id="app">
   <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px;">
     <div style="background:#0c0b10; padding:8px 12px; border-radius:10px; flex-shrink:0;">
-      <img src="slp-logo-complet.png" alt="SLP" style="height:40px; width:auto; display:block;">
+      <img src="slp-logo-complet.png" alt="SLP" style="height:120px; width:auto; display:block;">
     </div>
     <h1 style="margin-bottom:0;">Espace admin SLP</h1>
   </div>
 
   <div class="tabs">
     <button class="tab-btn active" id="tabBtn-events" onclick="switchTab('events')">1. 🗓 Événements à remplir</button>
-    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">2. 📅 Infos diffusées</button>
+    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">2. 📅 Agenda Diffusé en ligne</button>
     <button class="tab-btn" id="tabBtn-overview" onclick="switchTab('overview')">3. 🔭 Planning SLP</button>
     <button class="tab-btn" id="tabBtn-groupview" onclick="switchTab('groupview')">4. 👀 Vue groupe</button>
     <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">5. 🕰 Historique</button>
     <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">6. 🔑 Accès groupes</button>
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">7. 📦 Suivi des commandes</button>
+    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">8. 📊 Visites du site</button>
   </div>
 
   <!-- ============ ONGLET 1 : ÉVÉNEMENTS À REMPLIR ============ -->
@@ -494,6 +495,17 @@
       <tbody></tbody>
     </table>
     <p class="empty" id="gvEmpty" style="display:none;">Aucune date enregistrée pour ce groupe.</p>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+      <h3 style="margin-top:0;">Visites de sa fiche artiste</h3>
+      <p style="color:var(--muted); font-size:0.82rem; margin-bottom:16px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie). Réservé à l'admin — le groupe ne voit jamais ces données.</p>
+      <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.6rem; margin-bottom:14px;"><span id="gvVisitCount">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;">visite(s) au total</span></p>
+      <table id="gvVisitsTable">
+        <thead><tr><th>Date</th><th>Heure</th><th>Ville</th><th>Région</th><th>Pays</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="gvVisitsEmpty" style="display:none;">Aucune visite enregistrée pour le moment.</p>
+    </div>
   </div>
 
   <!-- ============ ONGLET 5 : HISTORIQUE ============ -->
@@ -530,6 +542,28 @@
       <tbody></tbody>
     </table>
     <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
+  </div>
+
+  <!-- ============ ONGLET 8 : VISITES DU SITE ============ -->
+  <div class="tab-content" id="tab-visits">
+    <h2>Visites du site</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie), toutes pages confondues.</p>
+    <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; margin-bottom:20px;"><span id="siteVisitTotal">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;">visite(s) au total, toutes pages</span></p>
+
+    <h3>Par page</h3>
+    <table id="visitsSummaryTable">
+      <thead><tr><th>Page</th><th>Visites</th><th>Dernière visite</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="visitsSummaryEmpty" style="display:none;">Aucune visite enregistrée pour le moment.</p>
+
+    <div id="visitsDetailBox" style="display:none; margin-top:30px; padding-top:24px; border-top:1px solid var(--line);">
+      <h3 id="visitsDetailTitle">Détail</h3>
+      <table id="visitsDetailTable">
+        <thead><tr><th>Date</th><th>Heure</th><th>Ville</th><th>Région</th><th>Pays</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -568,6 +602,7 @@
     document.getElementById('tab-' + name).classList.add('active');
     document.getElementById('tabBtn-' + name).classList.add('active');
     if (name === 'groupview') renderGroupView();
+    if (name === 'visits') loadVisitsSummary();
   }
 
   async function login(){
@@ -718,7 +753,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''}">
         <div class="agenda-daynum">${day}</div>
-        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}">${TYPE_ICONS[a.type] || '📣'} ${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)}</div>`).join('')}
+        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}${entryVenue(a) ? ' — ' + escapeAttr(entryVenue(a)) : ''}">${TYPE_ICONS[a.type] || '📣'} ${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)}${a.venue_city ? ' — ' + escapeAttr(a.venue_city) : ''}</div>`).join('')}
         ${dayActus.length > 3 ? `<div class="agenda-more">+${dayActus.length - 3}</div>` : ''}
       </div>`;
     }
@@ -1314,7 +1349,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''}">
         <div class="agenda-daynum">${day}</div>
-        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}">${d.type === 'concert' ? '🎤' : '🚫'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}</div>`).join('')}
+        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}">${d.type === 'concert' ? '🎤' : '🚫'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</div>`).join('')}
       </div>`;
     }
 
@@ -1414,9 +1449,91 @@
     renderGroupView();
   }
 
+  const PAGE_LABELS = {
+    index:'Accueil', agenda:'Agenda', artistes:'Nos artistes', boutique:'Boutique',
+    'boutique-merci':'Boutique — merci', cabaret:'Cabaret', 'cgv-boutique':'CGV Boutique',
+    contact:'Contact', diffusion:'Notre philosophie de travail', dj:'DJ', galerie:'Galerie',
+    'groupes-de-reprises':'Groupes de reprises', 'jazz-soul-funk':'Jazz Soul Funk',
+    'mentions-legales':'Mentions légales', 'pop-francaise':'Pop Française', 'son-lumiere':'Son & Lumière',
+    tributes:'Tributes',
+  };
+
+  function pageLabel(slug){
+    return PAGE_LABELS[slug] || ARTIST_LABELS[slug] || slug;
+  }
+
+  async function loadVisitsSummary(){
+    document.getElementById('visitsDetailBox').style.display = 'none';
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits-summary`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      document.getElementById('siteVisitTotal').textContent = data.grand_total || 0;
+      const pages = data.pages || [];
+      const tbody = document.querySelector('#visitsSummaryTable tbody');
+      document.getElementById('visitsSummaryEmpty').style.display = pages.length ? 'none' : 'block';
+      tbody.innerHTML = pages.map(p => `
+        <tr>
+          <td>${pageLabel(p.page)}</td>
+          <td>${p.total}</td>
+          <td>${p.last_visit || '—'}</td>
+          <td><button class="btn-info" onclick="showVisitDetail('${p.page}')">Détail</button></td>
+        </tr>
+      `).join('');
+    } catch(e){
+      document.getElementById('siteVisitTotal').textContent = '0';
+    }
+  }
+
+  async function showVisitDetail(page){
+    const res = await fetch(`${API_BASE}/api/admin/visits?artist=${encodeURIComponent(page)}`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    document.getElementById('visitsDetailTitle').textContent = 'Détail — ' + pageLabel(page);
+    const tbody = document.querySelector('#visitsDetailTable tbody');
+    tbody.innerHTML = (data.visits || []).map(v => {
+      const [datePart, timePart] = (v.visited_at || '').split(' ');
+      return `
+        <tr>
+          <td>${datePart || '—'}</td>
+          <td>${(timePart || '').slice(0,5) || '—'}</td>
+          <td>${v.city || '—'}</td>
+          <td>${v.region || '—'}</td>
+          <td>${v.country || '—'}</td>
+        </tr>
+      `;
+    }).join('');
+    document.getElementById('visitsDetailBox').style.display = 'block';
+  }
+
+  async function loadGroupVisits(artistSlug){
+    document.getElementById('gvVisitCount').textContent = '…';
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits?artist=${encodeURIComponent(artistSlug)}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      document.getElementById('gvVisitCount').textContent = data.total || 0;
+      const tbody = document.querySelector('#gvVisitsTable tbody');
+      const visits = data.visits || [];
+      document.getElementById('gvVisitsEmpty').style.display = visits.length ? 'none' : 'block';
+      tbody.innerHTML = visits.map(v => {
+        const [datePart, timePart] = (v.visited_at || '').split(' ');
+        return `
+          <tr>
+            <td>${datePart || '—'}</td>
+            <td>${(timePart || '').slice(0,5) || '—'}</td>
+            <td>${v.city || '—'}</td>
+            <td>${v.region || '—'}</td>
+            <td>${v.country || '—'}</td>
+          </tr>
+        `;
+      }).join('');
+    } catch(e){
+      document.getElementById('gvVisitCount').textContent = '0';
+    }
+  }
+
   function renderGroupView(){
     const artistSlug = document.getElementById('gvArtist').value;
     const entries = (window.dispoData || []).filter(d => d.artist_slug === artistSlug);
+    loadGroupVisits(artistSlug);
 
     // --- calendrier ---
     const grid = document.getElementById('gvGrid');
@@ -1441,7 +1558,7 @@
       const clickAttr = concertEntry ? ` onclick="previewRoadmap(${concertEntry.source_actu_id})"` : '';
       html += `<div class="agenda-day${isToday ? ' today' : ''}${concertEntry ? ' gv-clickable' : ''}"${clickAttr}>
         <div class="agenda-daynum">${day}</div>
-        ${dayEntries.map(e => `<div class="gv-item${e.type === 'indisponible' ? ' indisponible' : ''}${e.status === 'option' ? ' option' : ''}">${e.type === 'concert' ? '🎤' : '🚫'}${e.status === 'option' ? ' ?' : ''}</div>`).join('')}
+        ${dayEntries.map(e => `<div class="gv-item${e.type === 'indisponible' ? ' indisponible' : ''}${e.status === 'option' ? ' option' : ''}" title="${escapeAttr(e.label || '')}${entryVenue(e) ? ' — ' + escapeAttr(entryVenue(e)) : ''}">${e.type === 'concert' ? '🎤' : '🚫'}${e.status === 'option' ? '?' : ''}${e.venue_city ? ' ' + escapeAttr(e.venue_city) : ''}</div>`).join('')}
       </div>`;
     }
     grid.innerHTML = html;
