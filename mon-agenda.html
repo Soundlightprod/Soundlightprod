@@ -11,7 +11,20 @@
   *{box-sizing:border-box;}
   body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; margin:0; padding:24px;}
   .wrap{max-width:760px; margin:0 auto;}
-  h1{font-family:'Space Grotesk',sans-serif; font-size:1.5rem; margin-bottom:4px;}
+  h1{
+    font-family:'Space Grotesk',sans-serif; font-size:1.5rem; margin-bottom:4px;
+    background:linear-gradient(90deg, #2f9bff, #8b5cf6, #ff4d7d, #ffb238, #2f9bff);
+    background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:hueSlide 8s linear infinite;
+  }
+  @keyframes hueSlide{ to{ background-position:300% center; } }
+  @media (prefers-reduced-motion: reduce){ h1{ animation:none; } }
+  #app{ animation:fadeInUp 0.3s ease; }
+  @keyframes fadeInUp{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  .btn{ transition:transform 0.15s ease, box-shadow 0.15s ease; }
+  .btn:hover{ transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.35); }
+  .agenda-day:not(.empty){ transition:transform 0.15s ease, border-color 0.15s ease; }
+  .agenda-day:not(.empty):hover{ border-color:rgba(255,255,255,0.35); }
   .sub{color:var(--muted); font-size:0.9rem; margin-bottom:30px;}
   h2{font-family:'Space Grotesk',sans-serif; font-size:1.05rem; margin:34px 0 14px;}
   .btn{background:var(--paper); color:var(--ink); border:none; border-radius:100px; padding:10px 20px; font-weight:700; cursor:pointer; font-family:'Manrope',sans-serif;}
@@ -39,9 +52,15 @@
   .login-box{max-width:340px; margin:100px auto; text-align:center;}
   .login-box input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); margin-bottom:12px;}
   .login-box button{width:100%;}
+  .artist-photo{width:90px; height:90px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 16px; border:2px solid var(--gold); box-shadow:0 6px 20px rgba(0,0,0,0.4);}
+  .header-row{display:flex; align-items:center; gap:16px; margin-bottom:4px;}
+  .header-row .artist-photo{margin:0;}
+  .header-row h1{margin-bottom:0;}
 
   table{width:100%; border-collapse:collapse; font-size:0.86rem;}
   th, td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line);}
+  tbody tr{transition:background 0.15s ease;}
+  tbody tr:hover{background:rgba(255,255,255,0.03);}
   th{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.68rem; text-transform:uppercase;}
   .btn-no{background:var(--pink); color:#fff; border:none; border-radius:100px; padding:5px 12px; font-size:0.76rem; cursor:pointer;}
   .btn-link{background:none; border:none; color:var(--gold); text-decoration:underline; cursor:pointer; font-size:0.82rem; padding:0; font-family:'Manrope',sans-serif;}
@@ -103,18 +122,30 @@
 <body>
 
 <div class="login-box" id="loginBox" style="display:none;">
+  <div style="background:#0c0b10; padding:8px 14px; border-radius:12px; display:inline-block; margin-bottom:16px;">
+    <img src="slp-logo-complet.png" alt="SLP" style="height:44px; width:auto; display:block;">
+  </div>
+  <img class="artist-photo" id="loginPhoto" src="" alt="" style="display:none;">
+  <p id="welcomeMsg" style="color:var(--gold); font-size:0.9rem; font-weight:600; margin-bottom:2px;">Bienvenue chez SLP 👋</p>
   <h1 id="loginTitle">Mon agenda</h1>
-  <p class="sub" style="margin-bottom:20px;">Entre le mot de passe transmis par SLP.</p>
+  <p class="sub" style="margin-bottom:20px;">Connectez-vous pour accéder à vos dates.</p>
   <input type="password" id="pwd" placeholder="Mot de passe">
   <button class="btn" onclick="login()">Se connecter</button>
-  <p id="loginMsg" style="color:var(--pink); font-size:0.85rem; margin-top:10px;"></p>
+  <p style="color:var(--muted); font-size:0.76rem; margin-top:10px;">Le mot de passe t'a été transmis par SLP.</p>
+  <p id="loginMsg" style="color:var(--pink); font-size:0.85rem; margin-top:6px;"></p>
 </div>
 
 <div class="wrap" id="app" style="display:none;">
-  <h1 id="pageTitle">Mon agenda</h1>
+  <div style="background:#0c0b10; padding:6px 12px; border-radius:10px; display:inline-block; margin-bottom:14px;">
+    <img src="slp-logo-complet.png" alt="SLP" style="height:32px; width:auto; display:block;">
+  </div>
+  <div class="header-row">
+    <img class="artist-photo" id="pagePhoto" src="" alt="" style="display:none;">
+    <h1 id="pageTitle">Mon agenda</h1>
+  </div>
   <p class="sub">Consulte tes dates et ajoute tes indisponibilités. Clique sur une date de concert pour voir sa feuille de route. Les concerts sont gérés par SLP et ne peuvent pas être modifiés ici.</p>
 
-  <details class="help-box" open>
+  <details class="help-box">
     <summary>Comment ça marche ?</summary>
     <h4>Lire le calendrier</h4>
     <ul>
@@ -147,7 +178,7 @@
   <div class="agenda-grid" id="grid"></div>
   <p class="sub" style="margin-top:-10px;">🎤 plein = validé · 🎤? en pointillés = option (pas encore confirmée)</p>
 
-  <h2>Ajouter une indisponibilité</h2>
+  <h2>🗓 Ajouter une indisponibilité</h2>
   <div id="conflictBox"></div>
   <div class="form-row">
     <div class="field-group">
@@ -162,7 +193,7 @@
     <button class="btn" onclick="addIndispo()">Ajouter</button>
   </div>
 
-  <h2>Toutes mes dates</h2>
+  <h2>📋 Toutes mes dates</h2>
   <table>
     <thead><tr><th>Date</th><th>Type</th><th>Statut</th><th>Détail</th><th></th></tr></thead>
     <tbody id="listBody"></tbody>
@@ -200,6 +231,24 @@
     return { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'voice-of-freedom':'Voice of Freedom' }[slug] || slug;
   }
 
+  function photoFor(slug){
+    return {
+      'alchimie':'alchimie-logo.png',
+      'cache-candy':'cache-candy-circles-transparent.png',
+      'the-fine-allies':'fine-allies-logo.png',
+      'noon-coverband':'noon-coverband-new-logo.png',
+      'panache':'panache-logo.png',
+      'voice-of-freedom':'voice-of-freedom-photo.png',
+    }[slug] || '';
+  }
+
+  function setPhoto(elId, slug){
+    const img = document.getElementById(elId);
+    const src = photoFor(slug);
+    if (src){ img.src = src; img.style.display = 'block'; }
+    else { img.style.display = 'none'; }
+  }
+
   function showError(){
     document.getElementById('loginBox').style.display = 'none';
     document.getElementById('app').style.display = 'none';
@@ -228,6 +277,8 @@
     if (!ARTIST_SLUG){ showError(); return; }
     if (!TOKEN){
       document.getElementById('loginTitle').textContent = 'Mon agenda — ' + labelFor(ARTIST_SLUG);
+      document.getElementById('welcomeMsg').textContent = 'Bienvenue chez SLP, ' + labelFor(ARTIST_SLUG) + ' 👋';
+      setPhoto('loginPhoto', ARTIST_SLUG);
       document.getElementById('loginBox').style.display = 'block';
       return;
     }
@@ -238,12 +289,15 @@
         sessionStorage.removeItem('slp_band_token_' + ARTIST_SLUG);
         TOKEN = null;
         document.getElementById('loginTitle').textContent = 'Mon agenda — ' + labelFor(ARTIST_SLUG);
+      document.getElementById('welcomeMsg').textContent = 'Bienvenue chez SLP, ' + labelFor(ARTIST_SLUG) + ' 👋';
+        setPhoto('loginPhoto', ARTIST_SLUG);
         document.getElementById('loginBox').style.display = 'block';
         return;
       }
       const data = await res.json();
       entries = data.entries || [];
       document.getElementById('pageTitle').textContent = 'Mon agenda — ' + labelFor(data.artist_slug);
+      setPhoto('pagePhoto', data.artist_slug);
       document.getElementById('app').style.display = 'block';
       renderCalendar();
       renderList();

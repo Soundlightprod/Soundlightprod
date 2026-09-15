@@ -10,7 +10,14 @@
   :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --line:rgba(255,255,255,0.1); }
   *{box-sizing:border-box;}
   body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; margin:0; padding:24px;}
-  h1{font-family:'Space Grotesk',sans-serif; font-size:1.6rem; margin-bottom:20px;}
+  h1{
+    font-family:'Space Grotesk',sans-serif; font-size:1.6rem; margin-bottom:20px;
+    background:linear-gradient(90deg, #2f9bff, #8b5cf6, #ff4d7d, #ffb238, #2f9bff);
+    background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:hueSlide 8s linear infinite;
+  }
+  @keyframes hueSlide{ to{ background-position:300% center; } }
+  @media (prefers-reduced-motion: reduce){ h1{ animation:none; } }
   h2{font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin:30px 0 14px;}
   h3{font-family:'Space Grotesk',sans-serif; font-size:1rem;}
   .login-box{max-width:340px; margin:80px auto; text-align:center;}
@@ -36,6 +43,12 @@
   .tab-btn{background:none; border:none; color:var(--muted); font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.95rem; padding:12px 18px; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px;}
   .tab-btn:hover{color:var(--paper);}
   .tab-btn.active{color:var(--paper); border-bottom-color:var(--amber);}
+  .tab-btn{transition:transform 0.15s ease, color 0.2s ease, border-color 0.2s ease;}
+  .tab-btn:hover{transform:translateY(-1px);}
+  .tab-content.active{animation:tabIn 0.25s ease;}
+  @keyframes tabIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .btn{transition:transform 0.15s ease, box-shadow 0.15s ease;}
+  .btn:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.3);}
   .tab-content{display:none;}
   .tab-content.active{display:block;}
 
@@ -79,7 +92,8 @@
   .agenda-day.gv-clickable:hover{border-color:var(--amber);}
 
   .dispo-summary-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px; margin-bottom:30px;}
-  .dispo-summary-card{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:16px 18px;}
+  .dispo-summary-card{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:16px 18px; transition:transform 0.15s ease, border-color 0.15s ease;}
+  .dispo-summary-card:hover{transform:translateY(-2px); border-color:var(--amber);}
   .dispo-summary-card h3{font-size:0.92rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; font-family:'Space Grotesk',sans-serif; color:var(--paper);}
   .dispo-summary-dot{width:10px; height:10px; border-radius:50%; display:inline-block; flex-shrink:0;}
   .dispo-summary-list{display:flex; flex-direction:column; gap:8px;}
@@ -133,6 +147,9 @@
 <body>
 
 <div class="login-box" id="loginBox">
+  <div style="background:#0c0b10; padding:10px 16px; border-radius:12px; display:inline-block; margin-bottom:20px;">
+    <img src="slp-logo-complet.png" alt="SLP" style="height:56px; width:auto; display:block;">
+  </div>
   <h1>Espace admin SLP</h1>
   <input type="password" id="pwd" placeholder="Mot de passe">
   <button onclick="login()">Se connecter</button>
@@ -140,15 +157,21 @@
 </div>
 
 <div id="app">
-  <h1>Espace admin SLP</h1>
+  <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px;">
+    <div style="background:#0c0b10; padding:8px 12px; border-radius:10px; flex-shrink:0;">
+      <img src="slp-logo-complet.png" alt="SLP" style="height:40px; width:auto; display:block;">
+    </div>
+    <h1 style="margin-bottom:0;">Espace admin SLP</h1>
+  </div>
 
   <div class="tabs">
-    <button class="tab-btn active" id="tabBtn-events" onclick="switchTab('events')">1. Événements à remplir</button>
-    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">2. Agenda global</button>
-    <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">3. Commandes boutiques</button>
-    <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">4. Historique</button>
-    <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">5. Accès groupes</button>
-    <button class="tab-btn" id="tabBtn-groupview" onclick="switchTab('groupview')">6. Vue groupe</button>
+    <button class="tab-btn active" id="tabBtn-events" onclick="switchTab('events')">1. 🗓 Événements à remplir</button>
+    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">2. 📅 Agenda global</button>
+    <button class="tab-btn" id="tabBtn-overview" onclick="switchTab('overview')">3. 🔭 Vision globale agenda</button>
+    <button class="tab-btn" id="tabBtn-groupview" onclick="switchTab('groupview')">4. 👀 Vue groupe</button>
+    <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">5. 🕰 Historique</button>
+    <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">6. 🔑 Accès groupes</button>
+    <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">7. 📦 Suivi des commandes</button>
   </div>
 
   <!-- ============ ONGLET 1 : ÉVÉNEMENTS À REMPLIR ============ -->
@@ -383,25 +406,6 @@
       <button class="btn" onclick="submitEvent()" id="evtSubmitBtn">Enregistrer</button>
       <button onclick="cancelEdit()" id="evtCancelBtn" class="btn-outline" style="display:none;">Annuler la modification</button>
     </div>
-
-    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
-      <h2 style="margin-top:0;">Toutes les dates à venir</h2>
-      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Concerts et indisponibilités, tous artistes confondus (invités inclus), triés par date. Une ligne disparaît d'ici à la date de suppression, comme dans les agendas.</p>
-
-      <h3>🟡 Options</h3>
-      <table id="optionsTable">
-        <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Détail</th><th>Actions</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <p class="empty" id="optionsEmpty" style="display:none;">Aucune option en cours.</p>
-
-      <h3 style="margin-top:30px;">🟢 Validées</h3>
-      <table id="validatedTable">
-        <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Détail</th><th>Actions</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <p class="empty" id="validatedEmpty" style="display:none;">Aucune date validée à venir.</p>
-    </div>
   </div>
 
   <!-- ============ ONGLET 2 : AGENDA GLOBAL ============ -->
@@ -422,8 +426,24 @@
     </table>
     <p class="empty" id="actuEmpty" style="display:none;">Aucune actualité pour le moment.</p>
 
-    <h2>Résumé — dates à venir par groupe</h2>
-    <div class="dispo-summary-grid" id="dispoSummaryGrid"></div>
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+      <h2 style="margin-top:0;">Toutes les dates à venir</h2>
+      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Concerts et indisponibilités, tous artistes confondus (invités inclus), triés par date. Une ligne disparaît d'ici à la date de suppression, comme dans les agendas.</p>
+
+      <h3>🟡 Options</h3>
+      <table id="optionsTable">
+        <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Détail</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="optionsEmpty" style="display:none;">Aucune option en cours.</p>
+
+      <h3 style="margin-top:30px;">🟢 Validées</h3>
+      <table id="validatedTable">
+        <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Détail</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="validatedEmpty" style="display:none;">Aucune date validée à venir.</p>
+    </div>
 
     <h2>Calendrier disponibilités</h2>
     <div class="agenda-legend" id="dispoLegend"></div>
@@ -441,43 +461,14 @@
     <p class="empty" id="dispoEmpty" style="display:none;">Aucune date bloquée pour le moment.</p>
   </div>
 
-  <!-- ============ ONGLET 3 : COMMANDES BOUTIQUES ============ -->
-  <div class="tab-content" id="tab-orders">
-
-    <h2>Demandes de location</h2>
-    <table id="resTable">
-      <thead><tr><th>Statut</th><th>Article</th><th>Client</th><th>Dates</th><th>Qté</th><th>Notes</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <p class="empty" id="resEmpty" style="display:none;">Aucune demande pour le moment.</p>
-
-    <h2>Commandes boutique</h2>
-    <table id="orderTable">
-      <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
+  <!-- ============ ONGLET 3 : VISION GLOBALE AGENDA ============ -->
+  <div class="tab-content" id="tab-overview">
+    <h2>Vision globale agenda</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Un coup d'œil sur les prochaines dates de chaque groupe.</p>
+    <div class="dispo-summary-grid" id="dispoSummaryGrid"></div>
   </div>
 
-  <!-- ============ ONGLET 4 : HISTORIQUE ============ -->
-  <div class="tab-content" id="tab-history">
-    <h2>Historique — dates passées</h2>
-    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:24px;">Toutes les dates passées (concerts, indisponibilités, invités inclus), classées par mois — conservées ici indépendamment de leur date de suppression, pour garder une mémoire complète.</p>
-    <div id="historyContainer"></div>
-    <p class="empty" id="historyEmpty" style="display:none;">Aucune date passée pour le moment.</p>
-  </div>
-
-  <!-- ============ ONGLET 5 : ACCÈS GROUPES ============ -->
-  <div class="tab-content" id="tab-access">
-    <h2>Accès agenda des groupes</h2>
-    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Chaque groupe se connecte avec son propre mot de passe sur son lien dédié, pour consulter son agenda et ajouter ses propres indisponibilités (jamais de concert, jamais sur un autre artiste).</p>
-    <table id="tokenTable">
-      <thead><tr><th>Artiste</th><th>Lien</th><th>Mot de passe</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <!-- ============ ONGLET 6 : VUE GROUPE (lecture seule, ce que voit le groupe) ============ -->
+  <!-- ============ ONGLET 4 : VUE GROUPE (lecture seule, ce que voit le groupe) ============ -->
   <div class="tab-content" id="tab-groupview">
     <h2>Vue groupe</h2>
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Exactement ce que voit un groupe sur sa page "Mon agenda" — en lecture seule, sans avoir besoin de te connecter avec son mot de passe.</p>
@@ -507,6 +498,42 @@
       <tbody></tbody>
     </table>
     <p class="empty" id="gvEmpty" style="display:none;">Aucune date enregistrée pour ce groupe.</p>
+  </div>
+
+  <!-- ============ ONGLET 5 : HISTORIQUE ============ -->
+  <div class="tab-content" id="tab-history">
+    <h2>Historique — dates passées</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:24px;">Toutes les dates passées (concerts, indisponibilités, invités inclus), classées par mois — conservées ici indépendamment de leur date de suppression, pour garder une mémoire complète.</p>
+    <div id="historyContainer"></div>
+    <p class="empty" id="historyEmpty" style="display:none;">Aucune date passée pour le moment.</p>
+  </div>
+
+  <!-- ============ ONGLET 6 : ACCÈS GROUPES ============ -->
+  <div class="tab-content" id="tab-access">
+    <h2>Accès agenda des groupes</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Chaque groupe se connecte avec son propre mot de passe sur son lien dédié, pour consulter son agenda et ajouter ses propres indisponibilités (jamais de concert, jamais sur un autre artiste).</p>
+    <table id="tokenTable">
+      <thead><tr><th>Artiste</th><th>Lien</th><th>Mot de passe</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- ============ ONGLET 7 : SUIVI DES COMMANDES ============ -->
+  <div class="tab-content" id="tab-orders">
+
+    <h2>Demandes de location</h2>
+    <table id="resTable">
+      <thead><tr><th>Statut</th><th>Article</th><th>Client</th><th>Dates</th><th>Qté</th><th>Notes</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="resEmpty" style="display:none;">Aucune demande pour le moment.</p>
+
+    <h2>Commandes boutique</h2>
+    <table id="orderTable">
+      <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
   </div>
 </div>
 
