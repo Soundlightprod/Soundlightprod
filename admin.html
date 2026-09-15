@@ -29,6 +29,20 @@
   #app{display:none; max-width:1100px; margin:0 auto;}
   .empty{color:var(--muted); font-size:0.88rem; padding:16px 0;}
 
+  .tabs{display:flex; gap:8px; border-bottom:1px solid var(--line); margin-bottom:30px; flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; color:var(--muted); font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.95rem; padding:12px 18px; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn:hover{color:var(--paper);}
+  .tab-btn.active{color:var(--paper); border-bottom-color:var(--amber);}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+
+  .field-group{display:flex; flex-direction:column; gap:4px;}
+  .field-group label{font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .field-group input, .field-group select{padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);}
+  .form-row{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:flex-end;}
+  .form-row select, .form-row textarea, .form-row input[type=text]{padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);}
+  .form-row textarea{flex:1; min-width:220px; resize:vertical; min-height:44px; font-family:'Manrope',sans-serif;}
+
   .agenda-legend{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:16px; font-size:0.8rem; color:var(--muted);}
   .agenda-legend span{display:inline-flex; align-items:center; gap:6px;}
   .agenda-dot{width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0;}
@@ -73,96 +87,138 @@
 <div id="app">
   <h1>Espace admin SLP</h1>
 
-  <h2>Demandes de location</h2>
-  <table id="resTable">
-    <thead><tr><th>Statut</th><th>Article</th><th>Client</th><th>Dates</th><th>Qté</th><th>Notes</th><th>Actions</th></tr></thead>
-    <tbody></tbody>
-  </table>
-  <p class="empty" id="resEmpty" style="display:none;">Aucune demande pour le moment.</p>
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtn-events" onclick="switchTab('events')">1. Événements à remplir</button>
+    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">2. Agenda global</button>
+    <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">3. Commandes boutiques</button>
+  </div>
 
-  <h2>Commandes boutique</h2>
-  <table id="orderTable">
-    <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead>
-    <tbody></tbody>
-  </table>
-  <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
+  <!-- ============ ONGLET 1 : ÉVÉNEMENTS À REMPLIR ============ -->
+  <div class="tab-content active" id="tab-events">
 
-  <h2>Actualités artistes</h2>
-  <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:flex-start;">
-    <select id="actuArtist" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
-      <option value="alchimie">Alchimie</option>
-      <option value="cache-candy">Cache Candy</option>
-      <option value="the-fine-allies">The Fine Allies</option>
-      <option value="noon-coverband">NooN Coverband</option>
-      <option value="panache">Panache</option>
-      <option value="voice-of-freedom">Voice of Freedom</option>
-    </select>
-    <textarea id="actuText" placeholder="Nouvelle actualité (ex: nouveau clip sorti !)" style="flex:1; min-width:220px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); resize:vertical; min-height:44px; font-family:'Manrope',sans-serif;"></textarea>
-    <div style="display:flex; flex-direction:column; gap:4px;">
-      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;">Afficher jusqu'au</label>
-      <input type="date" id="actuExpires" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+    <h2>Publier une actualité</h2>
+    <div class="form-row">
+      <select id="actuArtist">
+        <option value="alchimie">Alchimie</option>
+        <option value="cache-candy">Cache Candy</option>
+        <option value="the-fine-allies">The Fine Allies</option>
+        <option value="noon-coverband">NooN Coverband</option>
+        <option value="panache">Panache</option>
+        <option value="voice-of-freedom">Voice of Freedom</option>
+      </select>
+      <textarea id="actuText" placeholder="Nouvelle actualité (ex: nouveau clip sorti !)"></textarea>
     </div>
-    <button class="btn" onclick="publishActu()">Publier</button>
-  </div>
-  <h2>Agenda des actualités</h2>
-  <div class="agenda-legend" id="agendaLegend"></div>
-  <div class="agenda-nav">
-    <button onclick="shiftAgendaMonth(-1)">← Mois préc.</button>
-    <span class="agenda-month" id="agendaMonthLabel"></span>
-    <button onclick="shiftAgendaMonth(1)">Mois suiv. →</button>
-  </div>
-  <div class="agenda-grid" id="agendaGrid"></div>
-
-  <table id="actuTable">
-    <thead><tr><th>Artiste</th><th>Texte</th><th>Affichée jusqu'au</th><th>Actions</th></tr></thead>
-    <tbody></tbody>
-  </table>
-  <p class="empty" id="actuEmpty" style="display:none;">Aucune actualité pour le moment.</p>
-
-  <h2>Disponibilités artistes</h2>
-  <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Un concert enregistré ici bloque automatiquement le(s) jour(s) correspondant(s) dans l'agenda du groupe — impossible d'ajouter deux fois la même date pour le même artiste.</p>
-  <div id="dispoConflict"></div>
-  <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:flex-start;">
-    <select id="dispoArtist" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
-      <option value="alchimie">Alchimie</option>
-      <option value="cache-candy">Cache Candy</option>
-      <option value="the-fine-allies">The Fine Allies</option>
-      <option value="noon-coverband">NooN Coverband</option>
-      <option value="panache">Panache</option>
-      <option value="voice-of-freedom">Voice of Freedom</option>
-    </select>
-    <select id="dispoType" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
-      <option value="concert">🎤 Concert</option>
-      <option value="indisponible">🚫 Indisponibilité</option>
-    </select>
-    <div style="display:flex; flex-direction:column; gap:4px;">
-      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;">Du</label>
-      <input type="date" id="dispoStart" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+    <div class="form-row">
+      <div class="field-group">
+        <label>Date de publication</label>
+        <input type="date" id="actuPublish">
+      </div>
+      <div class="field-group">
+        <label>Date de l'événement (optionnel)</label>
+        <input type="date" id="actuEventDate">
+      </div>
+      <div class="field-group">
+        <label>Afficher jusqu'au (suppression)</label>
+        <input type="date" id="actuExpires">
+      </div>
+      <button class="btn" onclick="publishActu()">Publier</button>
     </div>
-    <div style="display:flex; flex-direction:column; gap:4px;">
-      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;">Au (optionnel)</label>
-      <input type="date" id="dispoEnd" style="padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px; margin-bottom:24px;">Si la date de publication est laissée vide, l'actualité est visible immédiatement.</p>
+
+    <h2>Bloquer des dates (concert / indisponibilité)</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Un concert enregistré ici bloque automatiquement le(s) jour(s) correspondant(s) dans l'agenda du groupe — impossible d'ajouter deux fois la même date pour le même artiste.</p>
+    <div id="dispoConflict"></div>
+    <div class="form-row">
+      <select id="dispoArtist">
+        <option value="alchimie">Alchimie</option>
+        <option value="cache-candy">Cache Candy</option>
+        <option value="the-fine-allies">The Fine Allies</option>
+        <option value="noon-coverband">NooN Coverband</option>
+        <option value="panache">Panache</option>
+        <option value="voice-of-freedom">Voice of Freedom</option>
+      </select>
+      <select id="dispoType">
+        <option value="concert">🎤 Concert</option>
+        <option value="indisponible">🚫 Indisponibilité</option>
+      </select>
+      <input type="text" id="dispoLabel" placeholder="Libellé (ex: Mairie de X, Vacances...)">
     </div>
-    <input type="text" id="dispoLabel" placeholder="Libellé (ex: Mairie de X, Vacances...)" style="flex:1; min-width:180px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
-    <button class="btn" onclick="createDispo()">Bloquer ces dates</button>
+    <div class="form-row">
+      <div class="field-group">
+        <label>Date de l'événement — du</label>
+        <input type="date" id="dispoStart">
+      </div>
+      <div class="field-group">
+        <label>au (optionnel)</label>
+        <input type="date" id="dispoEnd">
+      </div>
+      <div class="field-group">
+        <label>Date de publication</label>
+        <input type="date" id="dispoPublish">
+      </div>
+      <div class="field-group">
+        <label>Date de suppression</label>
+        <input type="date" id="dispoExpires">
+      </div>
+      <button class="btn" onclick="createDispo()">Bloquer ces dates</button>
+    </div>
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Date de publication/suppression optionnelles : elles n'affectent pas encore l'affichage public, mais sont enregistrées pour une future utilisation.</p>
   </div>
 
-  <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1rem; margin-bottom:14px;">Résumé — dates à venir par groupe</h3>
-  <div class="dispo-summary-grid" id="dispoSummaryGrid"></div>
+  <!-- ============ ONGLET 2 : AGENDA GLOBAL ============ -->
+  <div class="tab-content" id="tab-agenda">
 
-  <div class="agenda-legend" id="dispoLegend"></div>
-  <div class="agenda-nav">
-    <button onclick="shiftDispoMonth(-1)">← Mois préc.</button>
-    <span class="agenda-month" id="dispoMonthLabel"></span>
-    <button onclick="shiftDispoMonth(1)">Mois suiv. →</button>
+    <h2>Agenda des actualités</h2>
+    <div class="agenda-legend" id="agendaLegend"></div>
+    <div class="agenda-nav">
+      <button onclick="shiftAgendaMonth(-1)">← Mois préc.</button>
+      <span class="agenda-month" id="agendaMonthLabel"></span>
+      <button onclick="shiftAgendaMonth(1)">Mois suiv. →</button>
+    </div>
+    <div class="agenda-grid" id="agendaGrid"></div>
+
+    <table id="actuTable">
+      <thead><tr><th>Artiste</th><th>Texte</th><th>Publication</th><th>Événement</th><th>Suppression</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="actuEmpty" style="display:none;">Aucune actualité pour le moment.</p>
+
+    <h2>Résumé — dates à venir par groupe</h2>
+    <div class="dispo-summary-grid" id="dispoSummaryGrid"></div>
+
+    <h2>Calendrier disponibilités</h2>
+    <div class="agenda-legend" id="dispoLegend"></div>
+    <div class="agenda-nav">
+      <button onclick="shiftDispoMonth(-1)">← Mois préc.</button>
+      <span class="agenda-month" id="dispoMonthLabel"></span>
+      <button onclick="shiftDispoMonth(1)">Mois suiv. →</button>
+    </div>
+    <div class="agenda-grid" id="dispoGrid"></div>
+
+    <table id="dispoTable">
+      <thead><tr><th>Artiste</th><th>Type</th><th>Événement</th><th>Publication</th><th>Suppression</th><th>Libellé</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="dispoEmpty" style="display:none;">Aucune date bloquée pour le moment.</p>
   </div>
-  <div class="agenda-grid" id="dispoGrid"></div>
 
-  <table id="dispoTable">
-    <thead><tr><th>Artiste</th><th>Type</th><th>Date</th><th>Libellé</th><th>Actions</th></tr></thead>
-    <tbody></tbody>
-  </table>
-  <p class="empty" id="dispoEmpty" style="display:none;">Aucune date bloquée pour le moment.</p>
+  <!-- ============ ONGLET 3 : COMMANDES BOUTIQUES ============ -->
+  <div class="tab-content" id="tab-orders">
+
+    <h2>Demandes de location</h2>
+    <table id="resTable">
+      <thead><tr><th>Statut</th><th>Article</th><th>Client</th><th>Dates</th><th>Qté</th><th>Notes</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="resEmpty" style="display:none;">Aucune demande pour le moment.</p>
+
+    <h2>Commandes boutique</h2>
+    <table id="orderTable">
+      <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
+  </div>
 </div>
 
 <script>
@@ -173,6 +229,13 @@
   function money(cents){ return (cents/100).toFixed(2).replace('.', ',') + ' €'; }
   function statusLabel(s){
     return { pending:'En attente', confirmed:'Confirmée', refused:'Refusée', cancelled:'Annulée', paid:'Payée' }[s] || s;
+  }
+
+  function switchTab(name){
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('tabBtn-' + name).classList.add('active');
   }
 
   async function login(){
@@ -291,7 +354,7 @@
     let html = dows.map(d => `<div class="agenda-dow">${d}</div>`).join('');
 
     const firstDay = new Date(year, month, 1);
-    const startOffset = (firstDay.getDay() + 6) % 7; // lundi = 0
+    const startOffset = (firstDay.getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const todayStr = new Date().toISOString().slice(0,10);
     const data = window.actusData || [];
@@ -327,10 +390,13 @@
     const today = new Date().toISOString().slice(0,10);
     tbody.innerHTML = data.map(a => {
       const expired = a.expires_at && a.expires_at < today;
+      const scheduled = a.publish_at && a.publish_at > today;
       return `
       <tr style="${expired ? 'opacity:0.5;' : ''}">
         <td>${ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
-        <td style="max-width:340px;">${a.text}</td>
+        <td style="max-width:280px;">${a.text}</td>
+        <td>${a.publish_at || '—'} ${scheduled ? '<span class="status pending">Programmée</span>' : ''}</td>
+        <td>${a.event_date || '—'}</td>
         <td>${a.expires_at || '—'} ${expired ? '<span class="status refused">Expirée</span>' : ''}</td>
         <td class="row-actions"><button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button></td>
       </tr>
@@ -342,13 +408,17 @@
   async function publishActu(){
     const artist_slug = document.getElementById('actuArtist').value;
     const text = document.getElementById('actuText').value.trim();
+    const publish_at = document.getElementById('actuPublish').value;
+    const event_date = document.getElementById('actuEventDate').value;
     const expires_at = document.getElementById('actuExpires').value;
     if (!text || !expires_at) { alert('Merci de renseigner le texte et la date de fin d\'affichage.'); return; }
     await fetch(`${API_BASE}/api/admin/actualites`, {
       method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-      body: JSON.stringify({ artist_slug, text, expires_at })
+      body: JSON.stringify({ artist_slug, text, publish_at, event_date, expires_at })
     });
     document.getElementById('actuText').value = '';
+    document.getElementById('actuPublish').value = '';
+    document.getElementById('actuEventDate').value = '';
     document.getElementById('actuExpires').value = '';
     loadActus();
   }
@@ -470,6 +540,8 @@
         <td>${ARTIST_LABELS[d.artist_slug] || d.artist_slug}</td>
         <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
         <td>${d.date}</td>
+        <td>${d.publish_at || '—'}</td>
+        <td>${d.expires_at || '—'}</td>
         <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}</td>
         <td class="row-actions"><button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button></td>
       </tr>
@@ -484,13 +556,15 @@
     const start_date = document.getElementById('dispoStart').value;
     const end_date = document.getElementById('dispoEnd').value || start_date;
     const label = document.getElementById('dispoLabel').value.trim();
+    const publish_at = document.getElementById('dispoPublish').value;
+    const expires_at = document.getElementById('dispoExpires').value;
     const conflictBox = document.getElementById('dispoConflict');
     conflictBox.innerHTML = '';
     if (!start_date) { alert('Merci de renseigner au moins une date de début.'); return; }
 
     const res = await fetch(`${API_BASE}/api/admin/agenda`, {
       method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-      body: JSON.stringify({ artist_slug, type, start_date, end_date, label })
+      body: JSON.stringify({ artist_slug, type, start_date, end_date, label, publish_at, expires_at })
     });
     const data = await res.json();
 
@@ -498,6 +572,8 @@
       conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
     }
     document.getElementById('dispoLabel').value = '';
+    document.getElementById('dispoPublish').value = '';
+    document.getElementById('dispoExpires').value = '';
     loadDispos();
   }
 
