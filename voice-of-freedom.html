@@ -122,7 +122,9 @@
   .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center; letter-spacing:0.02em;}
 
   .actus-list{display:flex; flex-direction:column; gap:14px;}
-  .actu-item{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:18px 22px; display:flex; gap:18px; align-items:baseline; flex-wrap:wrap;}
+  .actu-item{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:18px 22px; display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;}
+  .actu-item img{width:64px; height:64px; object-fit:cover; border-radius:10px; flex-shrink:0;}
+  .actu-item .actu-body{flex:1; min-width:200px;}
   .actu-item .actu-date{font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--amber); white-space:nowrap; flex-shrink:0; text-transform:uppercase;}
   .actu-item p{color:var(--paper); font-size:0.94rem; margin:0;}
 </style>
@@ -140,6 +142,7 @@
         <li><a href="son-lumiere.html">Son & Lumière</a></li>
         <li><a href="diffusion.html">Notre philosophie de travail</a></li>
         <li><a href="artistes.html" class="current">Nos Artistes</a></li>
+        <li><a href="agenda.html">Agenda</a></li>
         <li><a href="contact.html">Contact</a></li>
         <li><a href="boutique.html">Boutique</a></li>
       </ul>
@@ -300,6 +303,7 @@
     <div class="footer-col">
       <h4>Navigation</h4>
       <a href="artistes.html">Nos Artistes</a>
+      <a href="agenda.html">Agenda</a>
       <a href="diffusion.html">Notre philosophie de travail</a>
     </div>
     <div class="footer-col">
@@ -326,7 +330,7 @@
 
   function formatDate(iso){
     try {
-      const d = new Date(iso);
+      const d = new Date(iso.slice(0,10) + 'T00:00:00');
       return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
     } catch(e){ return ''; }
   }
@@ -342,12 +346,22 @@
       if (!items || !items.length) return;
       const list = document.getElementById('actus-list');
       if (!list) return;
-      list.innerHTML = items.map(a => `
-        <div class="actu-item">
-          <span class="actu-date">${formatDate(a.created_at)}</span>
-          <p>${escapeHtml(a.text)}</p>
-        </div>
-      `).join('');
+      list.innerHTML = items.map(a => {
+        const icon = a.type === 'concert' ? '🎤' : '📣';
+        const dateLabel = a.event_date
+          ? formatDate(a.event_date) + (a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + formatDate(a.event_end_date) : '')
+          : formatDate(a.created_at);
+        const photo = a.photo_url ? `<img src="${a.photo_url}" alt="">` : '';
+        return `
+          <div class="actu-item">
+            ${photo}
+            <div class="actu-body">
+              <span class="actu-date">${icon} ${dateLabel}</span>
+              <p>${escapeHtml(a.text)}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
       document.getElementById('actus-section').style.display = 'block';
     })
     .catch(()=>{});
