@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon agenda — SLP</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --gold:#cda754; --line:rgba(255,255,255,0.1); }
+  *{box-sizing:border-box;}
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; margin:0; padding:24px;}
+  .wrap{max-width:760px; margin:0 auto;}
+  h1{font-family:'Space Grotesk',sans-serif; font-size:1.5rem; margin-bottom:4px;}
+  .sub{color:var(--muted); font-size:0.9rem; margin-bottom:30px;}
+  h2{font-family:'Space Grotesk',sans-serif; font-size:1.05rem; margin:34px 0 14px;}
+  .btn{background:var(--paper); color:var(--ink); border:none; border-radius:100px; padding:10px 20px; font-weight:700; cursor:pointer; font-family:'Manrope',sans-serif;}
+  .field-group{display:flex; flex-direction:column; gap:4px;}
+  .field-group label{font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .field-group input{padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);}
+  .form-row{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:flex-end;}
+  .conflict-msg{background:rgba(255,77,125,0.12); border:1px solid var(--pink); color:var(--pink); border-radius:10px; padding:10px 14px; font-size:0.84rem; margin-bottom:16px;}
+  .error-box{text-align:center; padding:80px 20px; color:var(--muted);}
+
+  .agenda-nav{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+  .agenda-nav button{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:8px; padding:6px 14px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.9rem;}
+  .agenda-month{font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.05rem; text-transform:capitalize;}
+  .agenda-grid{display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin-bottom:20px;}
+  .agenda-dow{text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.66rem; color:var(--muted); text-transform:uppercase; padding-bottom:6px;}
+  .agenda-day{min-height:64px; background:var(--ink-2); border:1px solid var(--line); border-radius:10px; padding:6px; display:flex; flex-direction:column; gap:3px;}
+  .agenda-day.empty{background:transparent; border:none;}
+  .agenda-day.today{border-color:var(--amber);}
+  .agenda-daynum{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:0.68rem;}
+  .agenda-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; font-weight:700; background:var(--gold); color:var(--ink);}
+  .agenda-item.indisponible{background:var(--pink); color:#fff;}
+
+  .login-box{max-width:340px; margin:100px auto; text-align:center;}
+  .login-box input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); margin-bottom:12px;}
+  .login-box button{width:100%;}
+
+  table{width:100%; border-collapse:collapse; font-size:0.86rem;}
+  th, td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line);}
+  th{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.68rem; text-transform:uppercase;}
+  .btn-no{background:var(--pink); color:#fff; border:none; border-radius:100px; padding:5px 12px; font-size:0.76rem; cursor:pointer;}
+  .btn-link{background:none; border:none; color:var(--gold); text-decoration:underline; cursor:pointer; font-size:0.82rem; padding:0; font-family:'Manrope',sans-serif;}
+  .empty{color:var(--muted); font-size:0.86rem; padding:14px 0;}
+
+  .agenda-day.has-concert{cursor:pointer;}
+  .agenda-day.has-concert:hover{border-color:var(--gold);}
+
+  .modal-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100; align-items:center; justify-content:center; padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:30px; max-width:560px; width:100%; max-height:86vh; overflow-y:auto;}
+  .modal-box h2{margin:0 0 4px;}
+  .modal-close{float:right; background:none; border:none; color:var(--muted); font-size:1.4rem; cursor:pointer; line-height:1;}
+  .roadmap-row{margin-bottom:16px;}
+  .roadmap-row .rlabel{font-family:'JetBrains Mono',monospace; font-size:0.68rem; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:4px;}
+  .roadmap-row p{white-space:pre-wrap; margin:0;}
+  .modal-actions{display:flex; gap:10px; margin-top:20px;}
+
+  @media print{
+    body *{visibility:hidden;}
+    #roadmapModal, #roadmapModal *{visibility:visible;}
+    #roadmapModal{position:absolute; inset:0; background:#fff; color:#000; padding:20px; max-height:none; overflow:visible;}
+    #roadmapModal .rlabel{color:#555 !important;}
+    #roadmapModal p{color:#000 !important;}
+    .modal-overlay{position:static; background:none;}
+    .modal-close, .modal-actions{display:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="login-box" id="loginBox" style="display:none;">
+  <h1 id="loginTitle">Mon agenda</h1>
+  <p class="sub" style="margin-bottom:20px;">Entre le mot de passe transmis par SLP.</p>
+  <input type="password" id="pwd" placeholder="Mot de passe">
+  <button class="btn" onclick="login()">Se connecter</button>
+  <p id="loginMsg" style="color:var(--pink); font-size:0.85rem; margin-top:10px;"></p>
+</div>
+
+<div class="wrap" id="app" style="display:none;">
+  <h1 id="pageTitle">Mon agenda</h1>
+  <p class="sub">Consulte tes dates et ajoute tes indisponibilités. Clique sur une date de concert pour voir sa feuille de route. Les concerts sont gérés par SLP et ne peuvent pas être modifiés ici.</p>
+
+  <div class="agenda-nav">
+    <button onclick="shiftMonth(-1)">← Mois préc.</button>
+    <span class="agenda-month" id="monthLabel"></span>
+    <button onclick="shiftMonth(1)">Mois suiv. →</button>
+  </div>
+  <div class="agenda-grid" id="grid"></div>
+
+  <h2>Ajouter une indisponibilité</h2>
+  <div id="conflictBox"></div>
+  <div class="form-row">
+    <div class="field-group">
+      <label>Du</label>
+      <input type="date" id="start">
+    </div>
+    <div class="field-group">
+      <label>Au (optionnel)</label>
+      <input type="date" id="end">
+    </div>
+    <input type="text" id="label" placeholder="Motif (optionnel)" style="flex:1; min-width:160px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+    <button class="btn" onclick="addIndispo()">Ajouter</button>
+  </div>
+
+  <h2>Toutes mes dates</h2>
+  <table>
+    <thead><tr><th>Date</th><th>Type</th><th>Détail</th><th></th></tr></thead>
+    <tbody id="listBody"></tbody>
+  </table>
+  <p class="empty" id="listEmpty" style="display:none;">Aucune date enregistrée pour le moment.</p>
+</div>
+
+<div class="error-box" id="errorBox" style="display:none;">
+  <h1>Lien invalide</h1>
+  <p>Ce lien n'est plus valide. Contacte SLP pour en obtenir un nouveau.</p>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box" id="roadmapModal">
+    <button class="modal-close" onclick="closeRoadmap()">×</button>
+    <span class="label" style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--amber); text-transform:uppercase;">Feuille de route</span>
+    <h2 id="rmTitle"></h2>
+    <p class="sub" id="rmDate" style="margin-bottom:20px;"></p>
+    <div id="rmContent"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="window.print()">🖨 Imprimer / Enregistrer en PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+  const ARTIST_SLUG = new URLSearchParams(location.search).get('artist');
+  let TOKEN = ARTIST_SLUG ? sessionStorage.getItem('slp_band_token_' + ARTIST_SLUG) : null;
+  let entries = [];
+  let calDate = new Date();
+  calDate.setDate(1);
+
+  function labelFor(slug){
+    return { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'voice-of-freedom':'Voice of Freedom' }[slug] || slug;
+  }
+
+  function showError(){
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('errorBox').style.display = 'block';
+  }
+
+  async function login(){
+    const pwd = document.getElementById('pwd').value;
+    try {
+      const res = await fetch(`${API_BASE}/api/band-agenda/login`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ artist_slug: ARTIST_SLUG, password: pwd })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      TOKEN = data.token;
+      sessionStorage.setItem('slp_band_token_' + ARTIST_SLUG, TOKEN);
+      document.getElementById('loginBox').style.display = 'none';
+      load();
+    } catch(e){
+      document.getElementById('loginMsg').textContent = 'Mot de passe incorrect.';
+    }
+  }
+
+  async function load(){
+    if (!ARTIST_SLUG){ showError(); return; }
+    if (!TOKEN){
+      document.getElementById('loginTitle').textContent = 'Mon agenda — ' + labelFor(ARTIST_SLUG);
+      document.getElementById('loginBox').style.display = 'block';
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/api/band-agenda?token=${encodeURIComponent(TOKEN)}`);
+      if (!res.ok){
+        // Jeton de session invalide/expiré : redemande le mot de passe
+        sessionStorage.removeItem('slp_band_token_' + ARTIST_SLUG);
+        TOKEN = null;
+        document.getElementById('loginTitle').textContent = 'Mon agenda — ' + labelFor(ARTIST_SLUG);
+        document.getElementById('loginBox').style.display = 'block';
+        return;
+      }
+      const data = await res.json();
+      entries = data.entries || [];
+      document.getElementById('pageTitle').textContent = 'Mon agenda — ' + labelFor(data.artist_slug);
+      document.getElementById('app').style.display = 'block';
+      renderCalendar();
+      renderList();
+    } catch(e){ showError(); }
+  }
+
+  function shiftMonth(delta){
+    calDate.setMonth(calDate.getMonth() + delta);
+    renderCalendar();
+  }
+
+  function renderCalendar(){
+    const grid = document.getElementById('grid');
+    const year = calDate.getFullYear();
+    const month = calDate.getMonth();
+    document.getElementById('monthLabel').textContent = calDate.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+
+    const dows = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    let html = dows.map(d => `<div class="agenda-dow">${d}</div>`).join('');
+
+    const firstDay = new Date(year, month, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = new Date().toISOString().slice(0,10);
+
+    for (let i = 0; i < startOffset; i++) html += `<div class="agenda-day empty"></div>`;
+
+    for (let day = 1; day <= daysInMonth; day++){
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const dayEntries = entries.filter(e => e.date === dateStr);
+      const isToday = dateStr === todayStr;
+      const concertEntry = dayEntries.find(e => e.type === 'concert' && e.source_actu_id);
+      const clickAttr = concertEntry ? ` onclick="openRoadmap(${concertEntry.source_actu_id}, '${dateStr}')"` : '';
+      html += `<div class="agenda-day${isToday ? ' today' : ''}${concertEntry ? ' has-concert' : ''}"${clickAttr}>
+        <div class="agenda-daynum">${day}</div>
+        ${dayEntries.map(e => `<div class="agenda-item${e.type === 'indisponible' ? ' indisponible' : ''}">${e.type === 'concert' ? '🎤' : '🚫'}</div>`).join('')}
+      </div>`;
+    }
+    grid.innerHTML = html;
+  }
+
+  function renderList(){
+    const tbody = document.getElementById('listBody');
+    if (!entries.length){ document.getElementById('listEmpty').style.display = 'block'; tbody.innerHTML=''; return; }
+    document.getElementById('listEmpty').style.display = 'none';
+    const sorted = [...entries].sort((a,b) => a.date.localeCompare(b.date));
+    tbody.innerHTML = sorted.map(e => `
+      <tr>
+        <td>${e.date}</td>
+        <td>${e.type === 'concert' ? '🎤 Concert' : '🚫 Indisponible'}</td>
+        <td style="color:var(--muted);">${e.label || '—'}</td>
+        <td>
+          ${e.type === 'concert' && e.source_actu_id ? `<button class="btn-link" onclick="openRoadmap(${e.source_actu_id}, '${e.date}')">Feuille de route</button>` : ''}
+          ${e.type === 'indisponible' ? `<button class="btn-no" onclick="removeIndispo(${e.id})">Supprimer</button>` : ''}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  async function openRoadmap(actuId, dateStr){
+    try {
+      const res = await fetch(`${API_BASE}/api/band-agenda/roadmap?token=${encodeURIComponent(TOKEN)}&actu_id=${actuId}`);
+      if (!res.ok){ alert('Feuille de route introuvable.'); return; }
+      const r = await res.json();
+      document.getElementById('rmTitle').textContent = r.text || 'Concert';
+      const dateRange = r.event_end_date && r.event_end_date !== r.event_date ? `${r.event_date} → ${r.event_end_date}` : (r.event_date || dateStr);
+      document.getElementById('rmDate').textContent = dateRange + (r.event_time ? ' — ' + r.event_time : '');
+
+      const rows = [
+        ['Lieu', r.venue],
+        ['Type de prestation', r.show_type],
+        ['Timing / planning', r.timing_notes],
+        ['Éléments techniques', r.technical_notes],
+        ['Confort (repas, hôtel, transport)', r.comfort_notes],
+        ['Contact sur place', [r.contact_name, r.contact_phone].filter(Boolean).join(' — ')],
+      ].filter(([, val]) => val);
+
+      document.getElementById('rmContent').innerHTML = rows.length
+        ? rows.map(([label, val]) => `
+            <div class="roadmap-row">
+              <span class="rlabel">${label}</span>
+              <p>${escapeHtml(val)}</p>
+            </div>
+          `).join('')
+        : '<p class="sub">Aucun détail supplémentaire renseigné pour cette date.</p>';
+
+      document.getElementById('modalOverlay').classList.add('open');
+    } catch(e){ alert('Erreur lors du chargement de la feuille de route.'); }
+  }
+
+  function closeRoadmap(){
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  async function addIndispo(){
+    const start_date = document.getElementById('start').value;
+    const end_date = document.getElementById('end').value || start_date;
+    const label = document.getElementById('label').value.trim();
+    const conflictBox = document.getElementById('conflictBox');
+    conflictBox.innerHTML = '';
+    if (!start_date){ alert('Merci de renseigner au moins une date.'); return; }
+
+    const res = await fetch(`${API_BASE}/api/band-agenda`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ token: TOKEN, start_date, end_date, label })
+    });
+    const data = await res.json();
+    if (data.conflicts && data.conflicts.length){
+      conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà prises et n'ont pas été modifiées : ${data.conflicts.join(', ')}.</div>`;
+    }
+    document.getElementById('start').value = '';
+    document.getElementById('end').value = '';
+    document.getElementById('label').value = '';
+    load();
+  }
+
+  async function removeIndispo(id){
+    if (!confirm('Supprimer cette indisponibilité ?')) return;
+    await fetch(`${API_BASE}/api/band-agenda/${id}?token=${encodeURIComponent(TOKEN)}`, { method:'DELETE' });
+    load();
+  }
+
+  load();
+</script>
+</body>
+</html>

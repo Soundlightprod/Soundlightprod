@@ -96,7 +96,7 @@
   <!-- ============ ONGLET 1 : ÉVÉNEMENTS À REMPLIR ============ -->
   <div class="tab-content active" id="tab-events">
 
-    <h2>Ajouter un événement</h2>
+    <h2 id="evtFormTitle">Ajouter un événement</h2>
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Un <strong>concert</strong> publie une actualité sur la fiche de l'artiste (et sur l'agenda public si "Visible au public" est coché) <em>et</em> bloque automatiquement le(s) jour(s) correspondant(s) dans son agenda. Une <strong>indisponibilité</strong> bloque juste le(s) jour(s), sans rien publier. Une <strong>actu libre</strong> ne bloque aucune date.</p>
     <div id="eventConflict"></div>
 
@@ -151,9 +151,57 @@
         <label>Date de suppression</label>
         <input type="date" id="evtExpires">
       </div>
-      <button class="btn" onclick="submitEvent()">Enregistrer</button>
+      <button class="btn" onclick="submitEvent()" id="evtSubmitBtn">Enregistrer</button>
+      <button onclick="cancelEdit()" id="evtCancelBtn" style="display:none; background:none; border:1px solid var(--line); color:var(--paper); border-radius:100px; padding:10px 20px; cursor:pointer; font-family:'Manrope',sans-serif;">Annuler la modification</button>
     </div>
     <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Date de publication vide = visible tout de suite. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site (le blocage de l'agenda, lui, reste définitif).</p>
+
+    <div id="roadmapSection" style="display:none; margin-top:26px; padding-top:20px; border-top:1px solid var(--line);">
+      <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1rem; margin-bottom:6px;">Feuille de route (optionnel)</h3>
+      <p style="color:var(--muted); font-size:0.82rem; margin-bottom:16px;">Consultable et imprimable par le groupe en cliquant sur la date dans son agenda.</p>
+      <div class="form-row">
+        <div class="field-group" style="flex:1; min-width:220px;">
+          <label>Lieu</label>
+          <input type="text" id="evtVenue" placeholder="Nom et adresse du lieu">
+        </div>
+        <div class="field-group">
+          <label>Heure</label>
+          <input type="text" id="evtEventTime" placeholder="ex: 21h00">
+        </div>
+        <div class="field-group" style="flex:1; min-width:180px;">
+          <label>Type de prestation</label>
+          <input type="text" id="evtShowType" placeholder="ex: Concert assis, DJ set...">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Timing / planning</label>
+          <textarea id="evtTiming" placeholder="ex: 18h montage, 19h balances, 21h début du set..." style="width:100%; min-height:60px;"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Éléments techniques</label>
+          <textarea id="evtTechnical" placeholder="Matériel fourni sur place, contraintes techniques..." style="width:100%; min-height:60px;"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Confort (repas, hôtel, transport)</label>
+          <textarea id="evtComfort" placeholder="ex: Repas prévu à 19h, hôtel réservé..." style="width:100%; min-height:60px;"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group">
+          <label>Contact sur place</label>
+          <input type="text" id="evtContactName" placeholder="Nom">
+        </div>
+        <div class="field-group">
+          <label>Téléphone</label>
+          <input type="text" id="evtContactPhone" placeholder="06...">
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ============ ONGLET 2 : AGENDA GLOBAL ============ -->
@@ -191,6 +239,13 @@
       <tbody></tbody>
     </table>
     <p class="empty" id="dispoEmpty" style="display:none;">Aucune date bloquée pour le moment.</p>
+
+    <h2>Accès agenda des groupes</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Chaque groupe se connecte avec son propre mot de passe sur son lien dédié, pour consulter son agenda et ajouter ses propres indisponibilités (jamais de concert, jamais sur un autre artiste).</p>
+    <table id="tokenTable">
+      <thead><tr><th>Artiste</th><th>Lien</th><th>Mot de passe</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
   </div>
 
   <!-- ============ ONGLET 3 : COMMANDES BOUTIQUES ============ -->
@@ -255,6 +310,7 @@
     await loadOrders();
     await loadActus();
     await loadDispos();
+    await loadTokens();
   }
 
   async function loadReservations(){
@@ -396,7 +452,7 @@
         <td>${a.event_date || '—'}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + a.event_end_date : ''}</td>
         <td>${a.expires_at || '—'} ${expired ? '<span class="status refused">Expirée</span>' : ''}</td>
         <td><button class="btn-no" style="background:${a.is_public ? '#6ee7a0' : 'var(--muted)'}; color:var(--ink);" onclick="toggleActuPublic(${a.id}, ${a.is_public ? 0 : 1})">${a.is_public ? 'Public' : 'Masqué'}</button></td>
-        <td class="row-actions"><button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button></td>
+        <td class="row-actions"><button class="btn-yes" onclick="editActu(${a.id})">Modifier</button><button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button></td>
       </tr>
     `;
     }).join('');
@@ -405,16 +461,20 @@
 
   const TYPE_ICONS = { concert:'🎤', indisponible:'🚫', actu:'📣' };
   let evtPhotoBase64 = null;
+  let editingActuId = null;
+  let editingDispoId = null;
 
   function onEventTypeChange(){
     const type = document.getElementById('evtType').value;
     const isIndispo = type === 'indisponible';
+    const isConcert = type === 'concert';
     document.getElementById('evtTextRow').style.display = isIndispo ? 'none' : 'flex';
     document.getElementById('evtLabelRow').style.display = isIndispo ? 'flex' : 'none';
     document.getElementById('evtPhotoRow').style.display = isIndispo ? 'none' : 'flex';
     document.getElementById('evtPublishGroup').style.display = isIndispo ? 'none' : 'flex';
     document.getElementById('evtExpiresGroup').style.display = isIndispo ? 'none' : 'flex';
     document.getElementById('evtEndGroup').style.display = 'flex';
+    document.getElementById('roadmapSection').style.display = isConcert ? 'block' : 'none';
   }
 
   function handlePhotoSelect(evt){
@@ -440,6 +500,103 @@
     reader.readAsDataURL(file);
   }
 
+  function scrollToForm(){
+    document.getElementById('evtFormTitle').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function editActu(id){
+    const a = (window.actusData || []).find(x => x.id === id);
+    if (!a) return;
+    switchTab('events');
+    editingActuId = id;
+    editingDispoId = null;
+    document.getElementById('evtArtist').value = a.artist_slug;
+    document.getElementById('evtType').value = a.type;
+    document.getElementById('evtType').disabled = true;
+    document.getElementById('evtText').value = a.text || '';
+    document.getElementById('evtPublic').checked = !!a.is_public;
+    document.getElementById('evtStart').value = a.event_date || '';
+    document.getElementById('evtEnd').value = a.event_end_date || '';
+    document.getElementById('evtPublish').value = a.publish_at || '';
+    document.getElementById('evtExpires').value = a.expires_at || '';
+    document.getElementById('evtVenue').value = a.venue || '';
+    document.getElementById('evtEventTime').value = a.event_time || '';
+    document.getElementById('evtShowType').value = a.show_type || '';
+    document.getElementById('evtTiming').value = a.timing_notes || '';
+    document.getElementById('evtTechnical').value = a.technical_notes || '';
+    document.getElementById('evtComfort').value = a.comfort_notes || '';
+    document.getElementById('evtContactName').value = a.contact_name || '';
+    document.getElementById('evtContactPhone').value = a.contact_phone || '';
+    evtPhotoBase64 = a.photo_url || null;
+    const preview = document.getElementById('evtPhotoPreview');
+    if (a.photo_url){ preview.src = a.photo_url; preview.style.display = 'inline-block'; }
+    else { preview.style.display = 'none'; }
+    onEventTypeChange();
+    document.getElementById('evtFormTitle').textContent = 'Modifier un événement';
+    document.getElementById('evtSubmitBtn').textContent = 'Enregistrer les modifications';
+    document.getElementById('evtCancelBtn').style.display = 'inline-block';
+    scrollToForm();
+  }
+
+  function editDispo(id){
+    const d = (window.dispoData || []).find(x => x.id === id);
+    if (!d) return;
+    if (d.source_actu_id){
+      // Cette date vient d'un concert : on édite l'actu correspondante, pas la ligne d'agenda.
+      editActu(d.source_actu_id);
+      return;
+    }
+    switchTab('events');
+    editingDispoId = id;
+    editingActuId = null;
+    document.getElementById('evtArtist').value = d.artist_slug;
+    document.getElementById('evtType').value = 'indisponible';
+    document.getElementById('evtType').disabled = true;
+    document.getElementById('evtLabel').value = d.label || '';
+    document.getElementById('evtStart').value = d.date;
+    document.getElementById('evtEnd').value = d.date;
+    document.getElementById('evtPublish').value = d.publish_at || '';
+    document.getElementById('evtExpires').value = d.expires_at || '';
+    onEventTypeChange();
+    document.getElementById('evtFormTitle').textContent = "Modifier une indisponibilité";
+    document.getElementById('evtSubmitBtn').textContent = 'Enregistrer les modifications';
+    document.getElementById('evtCancelBtn').style.display = 'inline-block';
+    scrollToForm();
+  }
+
+  function resetEventForm(){
+    document.getElementById('evtText').value = '';
+    document.getElementById('evtLabel').value = '';
+    document.getElementById('evtStart').value = '';
+    document.getElementById('evtEnd').value = '';
+    document.getElementById('evtPublish').value = '';
+    document.getElementById('evtExpires').value = '';
+    document.getElementById('evtPhoto').value = '';
+    document.getElementById('evtPhotoPreview').style.display = 'none';
+    document.getElementById('evtPublic').checked = true;
+    document.getElementById('evtVenue').value = '';
+    document.getElementById('evtEventTime').value = '';
+    document.getElementById('evtShowType').value = '';
+    document.getElementById('evtTiming').value = '';
+    document.getElementById('evtTechnical').value = '';
+    document.getElementById('evtComfort').value = '';
+    document.getElementById('evtContactName').value = '';
+    document.getElementById('evtContactPhone').value = '';
+    evtPhotoBase64 = null;
+  }
+
+  function cancelEdit(){
+    editingActuId = null;
+    editingDispoId = null;
+    document.getElementById('evtType').disabled = false;
+    document.getElementById('evtFormTitle').textContent = 'Ajouter un événement';
+    document.getElementById('evtSubmitBtn').textContent = 'Enregistrer';
+    document.getElementById('evtCancelBtn').style.display = 'none';
+    document.getElementById('eventConflict').innerHTML = '';
+    resetEventForm();
+    onEventTypeChange();
+  }
+
   async function submitEvent(){
     const artist_slug = document.getElementById('evtArtist').value;
     const type = document.getElementById('evtType').value;
@@ -450,6 +607,14 @@
     const end_date = document.getElementById('evtEnd').value || start_date;
     const publish_at = document.getElementById('evtPublish').value;
     const expires_at = document.getElementById('evtExpires').value;
+    const venue = document.getElementById('evtVenue').value.trim();
+    const event_time = document.getElementById('evtEventTime').value.trim();
+    const show_type = document.getElementById('evtShowType').value.trim();
+    const timing_notes = document.getElementById('evtTiming').value.trim();
+    const technical_notes = document.getElementById('evtTechnical').value.trim();
+    const comfort_notes = document.getElementById('evtComfort').value.trim();
+    const contact_name = document.getElementById('evtContactName').value.trim();
+    const contact_phone = document.getElementById('evtContactPhone').value.trim();
     const conflictBox = document.getElementById('eventConflict');
     conflictBox.innerHTML = '';
 
@@ -462,29 +627,48 @@
       return;
     }
 
-    const res = await fetch(`${API_BASE}/api/admin/actualites`, {
-      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-      body: JSON.stringify({
-        artist_slug, type, text, label, is_public,
-        photo_url: evtPhotoBase64,
-        start_date, end_date, publish_at, expires_at
-      })
-    });
-    const data = await res.json();
-
-    if (data.conflicts && data.conflicts.length){
-      conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+    let res, data;
+    if (editingDispoId){
+      res = await fetch(`${API_BASE}/api/admin/agenda/${editingDispoId}`, {
+        method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+        body: JSON.stringify({ date: start_date, label, publish_at, expires_at })
+      });
+      data = await res.json();
+      if (!res.ok){ alert(data.error || 'Erreur lors de la modification.'); return; }
+    } else if (editingActuId){
+      res = await fetch(`${API_BASE}/api/admin/actualites/${editingActuId}`, {
+        method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+        body: JSON.stringify({
+          artist_slug, type, text, is_public,
+          photo_url: evtPhotoBase64,
+          start_date, end_date, publish_at, expires_at,
+          venue, event_time, show_type, timing_notes, technical_notes, comfort_notes, contact_name, contact_phone
+        })
+      });
+      data = await res.json();
+      if (!res.ok){ alert(data.error || 'Erreur lors de la modification.'); return; }
+      if (data.conflicts && data.conflicts.length){
+        conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+      }
+    } else {
+      res = await fetch(`${API_BASE}/api/admin/actualites`, {
+        method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+        body: JSON.stringify({
+          artist_slug, type, text, label, is_public,
+          photo_url: evtPhotoBase64,
+          start_date, end_date, publish_at, expires_at,
+          venue, event_time, show_type, timing_notes, technical_notes, comfort_notes, contact_name, contact_phone
+        })
+      });
+      data = await res.json();
+      if (data.conflicts && data.conflicts.length){
+        conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+      }
     }
 
-    document.getElementById('evtText').value = '';
-    document.getElementById('evtLabel').value = '';
-    document.getElementById('evtStart').value = '';
-    document.getElementById('evtEnd').value = '';
-    document.getElementById('evtPublish').value = '';
-    document.getElementById('evtExpires').value = '';
-    document.getElementById('evtPhoto').value = '';
-    document.getElementById('evtPhotoPreview').style.display = 'none';
-    evtPhotoBase64 = null;
+    const wasEditing = editingActuId || editingDispoId;
+    if (wasEditing) cancelEdit();
+    else resetEventForm();
 
     loadActus();
     loadDispos();
@@ -620,7 +804,7 @@
         <td>${d.publish_at || '—'}</td>
         <td>${d.expires_at || '—'}</td>
         <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}</td>
-        <td class="row-actions"><button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button></td>
+        <td class="row-actions"><button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button><button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button></td>
       </tr>
     `).join('');
     renderDispoCalendar();
@@ -630,6 +814,44 @@
   async function deleteDispo(id){
     await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
     loadDispos();
+  }
+
+  const SITE_BASE = "https://soundlightprod.fr";
+
+  async function loadTokens(){
+    const res = await fetch(`${API_BASE}/api/admin/artist-tokens`, { headers:{ Authorization:`Bearer ${token}` } });
+    window.tokensData = await res.json();
+    renderTokens();
+  }
+
+  function renderTokens(){
+    const tbody = document.querySelector('#tokenTable tbody');
+    tbody.innerHTML = (window.tokensData || []).map(t => {
+      const link = `${SITE_BASE}/mon-agenda.html?artist=${t.artist_slug}`;
+      return `
+        <tr>
+          <td>${ARTIST_LABELS[t.artist_slug] || t.artist_slug}</td>
+          <td><input type="text" readonly value="${link}" onclick="this.select()" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); font-size:0.78rem;"></td>
+          <td style="font-family:'JetBrains Mono',monospace; font-weight:700;">${t.password || '—'}</td>
+          <td class="row-actions">
+            <button class="btn-yes" onclick="copyTokenLink('${link}')">Copier le lien</button>
+            <button class="btn-no" onclick="regenerateToken('${t.artist_slug}')">Régénérer le mot de passe</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function copyTokenLink(link){
+    navigator.clipboard.writeText(link).then(() => alert('Lien copié !')).catch(() => prompt('Copie manuelle :', link));
+  }
+
+  async function regenerateToken(slug){
+    if (!confirm("Régénérer le mot de passe de ce groupe ? L'ancien cessera de fonctionner immédiatement.")) return;
+    const res = await fetch(`${API_BASE}/api/admin/artist-tokens/${slug}/regenerate`, { method:'POST', headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    loadTokens();
+    if (data.password) alert(`Nouveau mot de passe pour ${ARTIST_LABELS[slug] || slug} : ${data.password}`);
   }
 
   if (token) showApp();
