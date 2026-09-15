@@ -12,9 +12,11 @@
   body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; margin:0; padding:24px;}
   h1{font-family:'Space Grotesk',sans-serif; font-size:1.6rem; margin-bottom:20px;}
   h2{font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin:30px 0 14px;}
+  h3{font-family:'Space Grotesk',sans-serif; font-size:1rem;}
   .login-box{max-width:340px; margin:80px auto; text-align:center;}
   .login-box input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); margin-bottom:12px;}
   .login-box button, .btn{background:var(--paper); color:var(--ink); border:none; border-radius:100px; padding:10px 20px; font-weight:700; cursor:pointer; font-family:'Manrope',sans-serif;}
+  .btn-outline{background:none; border:1px solid var(--line); color:var(--paper); border-radius:100px; padding:10px 20px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.9rem;}
   table{width:100%; border-collapse:collapse; font-size:0.86rem; margin-bottom:10px;}
   th, td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line);}
   th{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase;}
@@ -26,6 +28,7 @@
   .row-actions button{margin-right:6px; font-size:0.78rem; padding:6px 14px; border-radius:100px; border:none; cursor:pointer;}
   .btn-yes{background:#6ee7a0; color:var(--ink);}
   .btn-no{background:var(--pink); color:#fff;}
+  .btn-info{background:var(--amber); color:var(--ink);}
   #app{display:none; max-width:1100px; margin:0 auto;}
   .empty{color:var(--muted); font-size:0.88rem; padding:16px 0;}
 
@@ -42,6 +45,9 @@
   .form-row{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:flex-end;}
   .form-row select, .form-row textarea, .form-row input[type=text]{padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);}
   .form-row textarea{flex:1; min-width:220px; resize:vertical; min-height:44px; font-family:'Manrope',sans-serif;}
+  .check-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:10px; margin-bottom:16px;}
+  .check-grid label{display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;}
+  .check-grid input{width:auto;}
 
   .agenda-legend{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:16px; font-size:0.8rem; color:var(--muted);}
   .agenda-legend span{display:inline-flex; align-items:center; gap:6px;}
@@ -73,6 +79,48 @@
   .dispo-summary-row{display:flex; justify-content:space-between; align-items:baseline; gap:10px; font-size:0.8rem; color:var(--paper);}
   .dispo-summary-row .range{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.7rem; white-space:nowrap;}
   .dispo-summary-empty{color:var(--muted); font-size:0.8rem;}
+
+  /* ---- Feuille de route : gabarit clair fidèle au modèle Word ---- */
+  .modal-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:200; align-items:flex-start; justify-content:center; padding:30px 20px; overflow-y:auto;}
+  .modal-overlay.open{display:flex;}
+  .modal-shell{background:#fff; border-radius:10px; max-width:760px; width:100%; overflow:hidden;}
+  .modal-toolbar{display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background:var(--ink-2);}
+  .modal-toolbar button{font-size:0.85rem;}
+  .rm-doc{background:#fff; color:#111; font-family:'Manrope',Arial,sans-serif; padding:30px 34px;}
+  .rm-header{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; gap:16px;}
+  .rm-brand-name{font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.5rem; color:#111;}
+  .rm-brand-name span{font-size:0.66rem; font-weight:700; letter-spacing:0.06em; margin-left:8px; color:#333;}
+  .rm-brand-sub{font-style:italic; font-size:0.78rem; color:#555; margin-top:3px;}
+  .rm-title-box{background:#e6e6e6; padding:12px 20px; text-align:right; font-weight:800; font-size:0.8rem; letter-spacing:0.03em; color:#111; white-space:nowrap;}
+  .rm-title-box div:last-child{font-size:0.72rem; margin-top:2px;}
+  .rm-hr-thick{height:3px; background:#333; margin:6px 0 18px;}
+  .rm-section-title{font-weight:800; font-size:0.84rem; letter-spacing:0.03em; margin:20px 0 8px; border-bottom:1px solid #999; padding-bottom:5px; color:#111; text-transform:uppercase;}
+  .rm-section-title:first-of-type{margin-top:0;}
+  .rm-box{border:1px solid #ccc; padding:8px 12px; margin-bottom:8px;}
+  .rm-row2{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;}
+  .rm-row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px;}
+  .rm-cell{border:1px solid #ccc; padding:8px 12px;}
+  .rm-label{display:block; font-size:0.6rem; text-transform:uppercase; letter-spacing:0.04em; color:#666; font-weight:700; margin-bottom:4px;}
+  .rm-value{font-size:0.86rem; min-height:1.1em; color:#111; white-space:pre-wrap;}
+  .rm-table{width:100%; border-collapse:collapse; margin-bottom:8px;}
+  .rm-table th{background:#1a1a1a; color:#fff; text-align:left; padding:7px 12px; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.03em;}
+  .rm-table td{border:1px solid #ccc; padding:7px 12px; font-size:0.84rem; color:#111;}
+  .rm-table tr:nth-child(even) td{background:#f3f3f3;}
+  .rm-italic{font-style:italic; font-size:0.72rem; color:#555; margin:6px 0 0;}
+  .rm-checks{display:grid; grid-template-columns:1fr 1fr; gap:7px 24px; margin-bottom:12px; font-size:0.86rem; color:#111;}
+  .rm-checks span{display:inline-flex; align-items:center; gap:8px;}
+  .rm-checkbox{width:13px; height:13px; border:1.5px solid #333; display:inline-block; flex-shrink:0; text-align:center; line-height:12px; font-size:11px;}
+  .rm-checkbox.on{background:#111; color:#fff;}
+  .rm-footer{display:flex; justify-content:space-between; border-top:1px solid #ccc; margin-top:24px; padding-top:10px; font-size:0.68rem; color:#666;}
+
+  @media print{
+    body *{visibility:hidden;}
+    #rmDoc, #rmDoc *{visibility:visible;}
+    #rmDoc{position:absolute; inset:0;}
+    .modal-overlay{position:static; background:none; padding:0;}
+    .modal-shell{max-width:none;}
+    .modal-toolbar{display:none !important;}
+  }
 </style>
 </head>
 <body>
@@ -152,53 +200,128 @@
         <input type="date" id="evtExpires">
       </div>
       <button class="btn" onclick="submitEvent()" id="evtSubmitBtn">Enregistrer</button>
-      <button onclick="cancelEdit()" id="evtCancelBtn" style="display:none; background:none; border:1px solid var(--line); color:var(--paper); border-radius:100px; padding:10px 20px; cursor:pointer; font-family:'Manrope',sans-serif;">Annuler la modification</button>
+      <button onclick="cancelEdit()" id="evtCancelBtn" class="btn-outline" style="display:none;">Annuler la modification</button>
     </div>
     <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Date de publication vide = visible tout de suite. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site (le blocage de l'agenda, lui, reste définitif).</p>
 
+    <!-- ============ FEUILLE DE ROUTE (concert uniquement) ============ -->
     <div id="roadmapSection" style="display:none; margin-top:26px; padding-top:20px; border-top:1px solid var(--line);">
-      <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1rem; margin-bottom:6px;">Feuille de route (optionnel)</h3>
-      <p style="color:var(--muted); font-size:0.82rem; margin-bottom:16px;">Consultable et imprimable par le groupe en cliquant sur la date dans son agenda.</p>
+      <h3 style="margin-bottom:6px;">Feuille de route (optionnel)</h3>
+      <p style="color:var(--muted); font-size:0.82rem; margin-bottom:16px;">Reprend le modèle SLP. Consultable et imprimable par le groupe en cliquant sur la date dans son agenda, et par toi depuis le tableau ci-dessous.</p>
+
       <div class="form-row">
         <div class="field-group" style="flex:1; min-width:220px;">
-          <label>Lieu</label>
-          <input type="text" id="evtVenue" placeholder="Nom et adresse du lieu">
-        </div>
-        <div class="field-group">
-          <label>Heure</label>
-          <input type="text" id="evtEventTime" placeholder="ex: 21h00">
+          <label>Lieu (nom + adresse complète)</label>
+          <input type="text" id="rmVenue">
         </div>
         <div class="field-group" style="flex:1; min-width:180px;">
           <label>Type de prestation</label>
-          <input type="text" id="evtShowType" placeholder="ex: Concert assis, DJ set...">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="field-group" style="flex:1;">
-          <label>Timing / planning</label>
-          <textarea id="evtTiming" placeholder="ex: 18h montage, 19h balances, 21h début du set..." style="width:100%; min-height:60px;"></textarea>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="field-group" style="flex:1;">
-          <label>Éléments techniques</label>
-          <textarea id="evtTechnical" placeholder="Matériel fourni sur place, contraintes techniques..." style="width:100%; min-height:60px;"></textarea>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="field-group" style="flex:1;">
-          <label>Confort (repas, hôtel, transport)</label>
-          <textarea id="evtComfort" placeholder="ex: Repas prévu à 19h, hôtel réservé..." style="width:100%; min-height:60px;"></textarea>
+          <input type="text" id="rmShowType" placeholder="ex: Concert assis, DJ set...">
         </div>
       </div>
       <div class="form-row">
         <div class="field-group">
-          <label>Contact sur place</label>
-          <input type="text" id="evtContactName" placeholder="Nom">
+          <label>Heure de rendez-vous / arrivée</label>
+          <input type="text" id="rmArrival" placeholder="ex: 17h00">
+        </div>
+        <div class="field-group">
+          <label>Heure de la prestation</label>
+          <input type="text" id="rmEventTime" placeholder="ex: 21h00">
+        </div>
+        <div class="field-group">
+          <label>Durée prévue</label>
+          <input type="text" id="rmDuration" placeholder="ex: 1h30">
+        </div>
+      </div>
+
+      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace; display:block; margin-bottom:8px;">Timing de la journée</label>
+      <div id="timingRows" style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px;"></div>
+      <button type="button" class="btn-outline" onclick="addTimingRow()" style="margin-bottom:18px;">+ Ajouter une étape</button>
+
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Matériel fourni par SLP</label>
+          <textarea id="rmTechProvided" style="width:100%; min-height:50px;"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Matériel / besoins spécifiques de l'artiste</label>
+          <textarea id="rmTechNeeds" style="width:100%; min-height:50px;"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group">
+          <label>Contact régie / technicien sur place</label>
+          <input type="text" id="rmTechContactName" placeholder="Nom">
+        </div>
+        <div class="field-group">
+          <label>Téléphone régie</label>
+          <input type="text" id="rmTechContactPhone" placeholder="06...">
+        </div>
+      </div>
+
+      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace; display:block; margin-bottom:8px;">Confort artiste</label>
+      <div class="check-grid">
+        <label><input type="checkbox" id="cfMeal"> Repas prévu</label>
+        <label><input type="checkbox" id="cfTransport"> Transport assuré</label>
+        <label><input type="checkbox" id="cfCatering"> Boissons / catering loge</label>
+        <label><input type="checkbox" id="cfDressing"> Loge / espace privatif</label>
+        <label><input type="checkbox" id="cfHotel"> Hôtel réservé</label>
+        <label><input type="checkbox" id="cfParking"> Parking réservé</label>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Repas — horaire & lieu</label>
+          <input type="text" id="rmMealDetails">
+        </div>
+        <div class="field-group">
+          <label>Nombre de personnes</label>
+          <input type="text" id="rmMealCount">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Hôtel — nom & adresse</label>
+          <input type="text" id="rmHotelDetails">
+        </div>
+        <div class="field-group">
+          <label>Nombre de chambres</label>
+          <input type="text" id="rmHotelRooms">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Transport — mode & horaires (aller / retour)</label>
+          <input type="text" id="rmTransport">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field-group">
+          <label>Nom du référent organisateur (sur place)</label>
+          <input type="text" id="rmVenueContactName">
         </div>
         <div class="field-group">
           <label>Téléphone</label>
-          <input type="text" id="evtContactPhone" placeholder="06...">
+          <input type="text" id="rmVenueContactPhone">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group">
+          <label>Nom du référent SLP / régie</label>
+          <input type="text" id="rmSlpContactName">
+        </div>
+        <div class="field-group">
+          <label>Téléphone</label>
+          <input type="text" id="rmSlpContactPhone">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Notes complémentaires</label>
+          <textarea id="rmNotes" style="width:100%; min-height:50px;"></textarea>
         </div>
       </div>
     </div>
@@ -267,8 +390,21 @@
   </div>
 </div>
 
+<!-- ============ MODAL : APERÇU / IMPRESSION FEUILLE DE ROUTE ============ -->
+<div class="modal-overlay" id="rmOverlay">
+  <div class="modal-shell">
+    <div class="modal-toolbar">
+      <strong style="color:var(--paper); font-family:'Space Grotesk',sans-serif;">Aperçu feuille de route</strong>
+      <div>
+        <button class="btn" onclick="window.print()">🖨 Imprimer / Télécharger en PDF</button>
+        <button class="btn-outline" onclick="closeRoadmapPreview()">Fermer</button>
+      </div>
+    </div>
+    <div id="rmDoc"></div>
+  </div>
+</div>
+
 <script>
-  // ⚠️ À remplacer par l'URL réelle du Worker une fois déployé
   const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
   let token = sessionStorage.getItem('slp_admin_token') || '';
 
@@ -276,6 +412,12 @@
   function statusLabel(s){
     return { pending:'En attente', confirmed:'Confirmée', refused:'Refusée', cancelled:'Annulée', paid:'Payée' }[s] || s;
   }
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function escapeAttr(str){ return (str || '').replace(/"/g, '&quot;'); }
 
   function switchTab(name){
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -375,10 +517,9 @@
 
   const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'voice-of-freedom':'Voice of Freedom' };
   const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'voice-of-freedom':'#cda754' };
+  const TYPE_ICONS = { concert:'🎤', indisponible:'🚫', actu:'📣' };
   let agendaDate = new Date();
   agendaDate.setDate(1);
-
-  function escapeAttr(str){ return (str || '').replace(/"/g, '&quot;'); }
 
   function renderAgendaLegend(){
     document.getElementById('agendaLegend').innerHTML = Object.keys(ARTIST_LABELS).map(slug => `
@@ -452,17 +593,230 @@
         <td>${a.event_date || '—'}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + a.event_end_date : ''}</td>
         <td>${a.expires_at || '—'} ${expired ? '<span class="status refused">Expirée</span>' : ''}</td>
         <td><button class="btn-no" style="background:${a.is_public ? '#6ee7a0' : 'var(--muted)'}; color:var(--ink);" onclick="toggleActuPublic(${a.id}, ${a.is_public ? 0 : 1})">${a.is_public ? 'Public' : 'Masqué'}</button></td>
-        <td class="row-actions"><button class="btn-yes" onclick="editActu(${a.id})">Modifier</button><button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button></td>
+        <td class="row-actions">
+          ${a.type === 'concert' ? `<button class="btn-info" onclick="previewRoadmap(${a.id})">Feuille de route</button>` : ''}
+          <button class="btn-yes" onclick="editActu(${a.id})">Modifier</button>
+          <button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button>
+        </td>
       </tr>
     `;
     }).join('');
     renderAgenda();
   }
 
-  const TYPE_ICONS = { concert:'🎤', indisponible:'🚫', actu:'📣' };
-  let evtPhotoBase64 = null;
-  let editingActuId = null;
-  let editingDispoId = null;
+  // ---------- Feuille de route : lignes de timing dynamiques ----------
+  function addTimingRow(heure, etape){
+    const container = document.getElementById('timingRows');
+    const row = document.createElement('div');
+    row.className = 'timing-row';
+    row.style.cssText = 'display:flex; gap:8px; align-items:center;';
+    row.innerHTML = `
+      <input type="text" class="timing-heure" placeholder="ex: 16h00" value="${escapeAttr(heure || '')}" style="width:100px; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+      <input type="text" class="timing-etape" placeholder="ex: Montage" value="${escapeAttr(etape || '')}" style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+      <button type="button" class="btn-no" onclick="this.parentElement.remove()" style="padding:6px 12px; border-radius:100px; border:none; cursor:pointer;">✕</button>
+    `;
+    container.appendChild(row);
+  }
+
+  function getTimingSteps(){
+    return Array.from(document.querySelectorAll('#timingRows .timing-row')).map(row => ({
+      heure: row.querySelector('.timing-heure').value.trim(),
+      etape: row.querySelector('.timing-etape').value.trim(),
+    })).filter(s => s.heure || s.etape);
+  }
+
+  function setTimingSteps(steps){
+    document.getElementById('timingRows').innerHTML = '';
+    (steps && steps.length ? steps : defaultTimingSteps()).forEach(s => addTimingRow(s.heure, s.etape));
+  }
+
+  function defaultTimingSteps(){
+    return [
+      { heure:'', etape:'Arrivée artiste(s) sur site' },
+      { heure:'', etape:'Installation / balances' },
+      { heure:'', etape:'Repas' },
+      { heure:'', etape:'Début de prestation' },
+      { heure:'', etape:'Fin de prestation' },
+      { heure:'', etape:'Démontage / départ' },
+    ];
+  }
+
+  const COMFORT_CHECKBOX_IDS = { meal:'cfMeal', transport:'cfTransport', catering:'cfCatering', dressing_room:'cfDressing', hotel:'cfHotel', parking:'cfParking' };
+
+  function getComfortFlags(){
+    return Object.keys(COMFORT_CHECKBOX_IDS).filter(key => document.getElementById(COMFORT_CHECKBOX_IDS[key]).checked);
+  }
+
+  function setComfortFlags(flags){
+    const active = new Set(flags || []);
+    Object.keys(COMFORT_CHECKBOX_IDS).forEach(key => {
+      document.getElementById(COMFORT_CHECKBOX_IDS[key]).checked = active.has(key);
+    });
+  }
+
+  function parseJsonSafe(raw){
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch(e){ return null; }
+  }
+
+  function getRoadmapFields(){
+    return {
+      venue: document.getElementById('rmVenue').value.trim(),
+      show_type: document.getElementById('rmShowType').value.trim(),
+      arrival_time: document.getElementById('rmArrival').value.trim(),
+      event_time: document.getElementById('rmEventTime').value.trim(),
+      duration: document.getElementById('rmDuration').value.trim(),
+      timing_steps: getTimingSteps(),
+      technical_notes: document.getElementById('rmTechProvided').value.trim(),
+      tech_artist_needs: document.getElementById('rmTechNeeds').value.trim(),
+      tech_contact_name: document.getElementById('rmTechContactName').value.trim(),
+      tech_contact_phone: document.getElementById('rmTechContactPhone').value.trim(),
+      comfort_flags: getComfortFlags(),
+      meal_details: document.getElementById('rmMealDetails').value.trim(),
+      meal_count: document.getElementById('rmMealCount').value.trim(),
+      hotel_details: document.getElementById('rmHotelDetails').value.trim(),
+      hotel_rooms: document.getElementById('rmHotelRooms').value.trim(),
+      transport_details: document.getElementById('rmTransport').value.trim(),
+      venue_contact_name: document.getElementById('rmVenueContactName').value.trim(),
+      venue_contact_phone: document.getElementById('rmVenueContactPhone').value.trim(),
+      slp_contact_name: document.getElementById('rmSlpContactName').value.trim(),
+      slp_contact_phone: document.getElementById('rmSlpContactPhone').value.trim(),
+      additional_notes: document.getElementById('rmNotes').value.trim(),
+    };
+  }
+
+  function setRoadmapFields(a){
+    document.getElementById('rmVenue').value = a.venue || '';
+    document.getElementById('rmShowType').value = a.show_type || '';
+    document.getElementById('rmArrival').value = a.arrival_time || '';
+    document.getElementById('rmEventTime').value = a.event_time || '';
+    document.getElementById('rmDuration').value = a.duration || '';
+    setTimingSteps(parseJsonSafe(a.timing_steps));
+    document.getElementById('rmTechProvided').value = a.technical_notes || '';
+    document.getElementById('rmTechNeeds').value = a.tech_artist_needs || '';
+    document.getElementById('rmTechContactName').value = a.tech_contact_name || '';
+    document.getElementById('rmTechContactPhone').value = a.tech_contact_phone || '';
+    setComfortFlags(parseJsonSafe(a.comfort_flags));
+    document.getElementById('rmMealDetails').value = a.meal_details || '';
+    document.getElementById('rmMealCount').value = a.meal_count || '';
+    document.getElementById('rmHotelDetails').value = a.hotel_details || '';
+    document.getElementById('rmHotelRooms').value = a.hotel_rooms || '';
+    document.getElementById('rmTransport').value = a.transport_details || '';
+    document.getElementById('rmVenueContactName').value = a.venue_contact_name || '';
+    document.getElementById('rmVenueContactPhone').value = a.venue_contact_phone || '';
+    document.getElementById('rmSlpContactName').value = a.slp_contact_name || '';
+    document.getElementById('rmSlpContactPhone').value = a.slp_contact_phone || '';
+    document.getElementById('rmNotes').value = a.additional_notes || '';
+  }
+
+  function resetRoadmapFields(){
+    setRoadmapFields({});
+    setTimingSteps(null);
+  }
+
+  // ---------- Gabarit visuel exact de la feuille de route (aperçu + impression) ----------
+  function formatDateRange(a){
+    if (!a.event_date) return '—';
+    return a.event_end_date && a.event_end_date !== a.event_date ? `${a.event_date} → ${a.event_end_date}` : a.event_date;
+  }
+
+  function buildRoadmapDoc(a){
+    const flags = parseJsonSafe(a.comfort_flags) || [];
+    const steps = parseJsonSafe(a.timing_steps) || [];
+    const checkbox = (key, label) => `<span><span class="rm-checkbox${flags.includes(key) ? ' on' : ''}">${flags.includes(key) ? '✓' : ''}</span>${label}</span>`;
+
+    return `
+      <div class="rm-doc">
+        <div class="rm-header">
+          <div>
+            <div class="rm-brand-name">SLP <span>SOUND LIGHT PROD</span></div>
+            <div class="rm-brand-sub">Régie son &amp; lumière — Booking artistes</div>
+          </div>
+          <div class="rm-title-box"><div>FEUILLE DE ROUTE</div><div>ARTISTE</div></div>
+        </div>
+        <div class="rm-hr-thick"></div>
+
+        <div class="rm-section-title">Événement</div>
+        <div class="rm-box"><span class="rm-label">Nom de la prestation / artiste</span><div class="rm-value">${escapeHtml(a.text)}</div></div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Date</span><div class="rm-value">${escapeHtml(formatDateRange(a))}</div></div>
+          <div class="rm-cell"><span class="rm-label">Type de prestation</span><div class="rm-value">${escapeHtml(a.show_type)}</div></div>
+        </div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Lieu (nom + adresse complète)</span><div class="rm-value">${escapeHtml(a.venue)}</div></div>
+          <div class="rm-cell"></div>
+        </div>
+        <div class="rm-row3">
+          <div class="rm-cell"><span class="rm-label">Heure de rendez-vous / arrivée</span><div class="rm-value">${escapeHtml(a.arrival_time)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Heure de la prestation</span><div class="rm-value">${escapeHtml(a.event_time)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Durée prévue</span><div class="rm-value">${escapeHtml(a.duration)}</div></div>
+        </div>
+
+        <div class="rm-section-title">Timing de la journée</div>
+        <table class="rm-table">
+          <thead><tr><th>Heure</th><th>Étape</th></tr></thead>
+          <tbody>${steps.length ? steps.map(s => `<tr><td>${escapeHtml(s.heure)}</td><td>${escapeHtml(s.etape)}</td></tr>`).join('') : '<tr><td colspan="2" style="color:#999;">Non renseigné</td></tr>'}</tbody>
+        </table>
+
+        <div class="rm-section-title">Éléments techniques</div>
+        <div class="rm-box"><span class="rm-label">Matériel fourni par SLP</span><div class="rm-value">${escapeHtml(a.technical_notes)}</div></div>
+        <div class="rm-box"><span class="rm-label">Matériel / besoins spécifiques de l'artiste</span><div class="rm-value">${escapeHtml(a.tech_artist_needs)}</div></div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Contact régie / technicien sur place</span><div class="rm-value">${escapeHtml(a.tech_contact_name)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Téléphone régie</span><div class="rm-value">${escapeHtml(a.tech_contact_phone)}</div></div>
+        </div>
+        <p class="rm-italic">Fiche technique détaillée (plan de scène, patch, besoins électriques) à joindre en annexe si nécessaire.</p>
+
+        <div class="rm-section-title">Confort artiste</div>
+        <div class="rm-checks">
+          ${checkbox('meal','Repas prévu')}
+          ${checkbox('transport','Transport assuré')}
+          ${checkbox('catering','Boissons / catering loge')}
+          ${checkbox('dressing_room','Loge / espace privatif')}
+          ${checkbox('hotel','Hôtel réservé')}
+          ${checkbox('parking','Parking réservé')}
+        </div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Repas — horaire &amp; lieu</span><div class="rm-value">${escapeHtml(a.meal_details)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Nombre de personnes</span><div class="rm-value">${escapeHtml(a.meal_count)}</div></div>
+        </div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Hôtel — nom &amp; adresse</span><div class="rm-value">${escapeHtml(a.hotel_details)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Nombre de chambres</span><div class="rm-value">${escapeHtml(a.hotel_rooms)}</div></div>
+        </div>
+        <div class="rm-box"><span class="rm-label">Transport — mode &amp; horaires (aller / retour)</span><div class="rm-value">${escapeHtml(a.transport_details)}</div></div>
+
+        <div class="rm-section-title">Contact sur place le jour J</div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Nom du référent organisateur</span><div class="rm-value">${escapeHtml(a.venue_contact_name)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Téléphone</span><div class="rm-value">${escapeHtml(a.venue_contact_phone)}</div></div>
+        </div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Nom du référent SLP / régie</span><div class="rm-value">${escapeHtml(a.slp_contact_name)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Téléphone</span><div class="rm-value">${escapeHtml(a.slp_contact_phone)}</div></div>
+        </div>
+
+        <div class="rm-section-title">Notes complémentaires</div>
+        <div class="rm-box" style="min-height:50px;">${escapeHtml(a.additional_notes)}</div>
+
+        <div class="rm-footer">
+          <span>SLP — Sound Light Prod</span>
+          <span>contact@soundlightprod.fr · 06 31 94 96 53 · soundlightprod.fr</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function previewRoadmap(id){
+    const a = (window.actusData || []).find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('rmDoc').innerHTML = buildRoadmapDoc(a);
+    document.getElementById('rmOverlay').classList.add('open');
+  }
+
+  function closeRoadmapPreview(){
+    document.getElementById('rmOverlay').classList.remove('open');
+  }
 
   function onEventTypeChange(){
     const type = document.getElementById('evtType').value;
@@ -475,6 +829,7 @@
     document.getElementById('evtExpiresGroup').style.display = isIndispo ? 'none' : 'flex';
     document.getElementById('evtEndGroup').style.display = 'flex';
     document.getElementById('roadmapSection').style.display = isConcert ? 'block' : 'none';
+    if (isConcert && !document.querySelector('#timingRows .timing-row')) setTimingSteps(null);
   }
 
   function handlePhotoSelect(evt){
@@ -504,6 +859,10 @@
     document.getElementById('evtFormTitle').scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
+  let evtPhotoBase64 = null;
+  let editingActuId = null;
+  let editingDispoId = null;
+
   function editActu(id){
     const a = (window.actusData || []).find(x => x.id === id);
     if (!a) return;
@@ -519,14 +878,7 @@
     document.getElementById('evtEnd').value = a.event_end_date || '';
     document.getElementById('evtPublish').value = a.publish_at || '';
     document.getElementById('evtExpires').value = a.expires_at || '';
-    document.getElementById('evtVenue').value = a.venue || '';
-    document.getElementById('evtEventTime').value = a.event_time || '';
-    document.getElementById('evtShowType').value = a.show_type || '';
-    document.getElementById('evtTiming').value = a.timing_notes || '';
-    document.getElementById('evtTechnical').value = a.technical_notes || '';
-    document.getElementById('evtComfort').value = a.comfort_notes || '';
-    document.getElementById('evtContactName').value = a.contact_name || '';
-    document.getElementById('evtContactPhone').value = a.contact_phone || '';
+    setRoadmapFields(a);
     evtPhotoBase64 = a.photo_url || null;
     const preview = document.getElementById('evtPhotoPreview');
     if (a.photo_url){ preview.src = a.photo_url; preview.style.display = 'inline-block'; }
@@ -542,7 +894,6 @@
     const d = (window.dispoData || []).find(x => x.id === id);
     if (!d) return;
     if (d.source_actu_id){
-      // Cette date vient d'un concert : on édite l'actu correspondante, pas la ligne d'agenda.
       editActu(d.source_actu_id);
       return;
     }
@@ -574,14 +925,7 @@
     document.getElementById('evtPhoto').value = '';
     document.getElementById('evtPhotoPreview').style.display = 'none';
     document.getElementById('evtPublic').checked = true;
-    document.getElementById('evtVenue').value = '';
-    document.getElementById('evtEventTime').value = '';
-    document.getElementById('evtShowType').value = '';
-    document.getElementById('evtTiming').value = '';
-    document.getElementById('evtTechnical').value = '';
-    document.getElementById('evtComfort').value = '';
-    document.getElementById('evtContactName').value = '';
-    document.getElementById('evtContactPhone').value = '';
+    resetRoadmapFields();
     evtPhotoBase64 = null;
   }
 
@@ -607,14 +951,6 @@
     const end_date = document.getElementById('evtEnd').value || start_date;
     const publish_at = document.getElementById('evtPublish').value;
     const expires_at = document.getElementById('evtExpires').value;
-    const venue = document.getElementById('evtVenue').value.trim();
-    const event_time = document.getElementById('evtEventTime').value.trim();
-    const show_type = document.getElementById('evtShowType').value.trim();
-    const timing_notes = document.getElementById('evtTiming').value.trim();
-    const technical_notes = document.getElementById('evtTechnical').value.trim();
-    const comfort_notes = document.getElementById('evtComfort').value.trim();
-    const contact_name = document.getElementById('evtContactName').value.trim();
-    const contact_phone = document.getElementById('evtContactPhone').value.trim();
     const conflictBox = document.getElementById('eventConflict');
     conflictBox.innerHTML = '';
 
@@ -626,6 +962,8 @@
       alert("Merci de renseigner la date de l'événement.");
       return;
     }
+
+    const roadmap = type === 'concert' ? getRoadmapFields() : {};
 
     let res, data;
     if (editingDispoId){
@@ -642,7 +980,7 @@
           artist_slug, type, text, is_public,
           photo_url: evtPhotoBase64,
           start_date, end_date, publish_at, expires_at,
-          venue, event_time, show_type, timing_notes, technical_notes, comfort_notes, contact_name, contact_phone
+          ...roadmap
         })
       });
       data = await res.json();
@@ -657,7 +995,7 @@
           artist_slug, type, text, label, is_public,
           photo_url: evtPhotoBase64,
           start_date, end_date, publish_at, expires_at,
-          venue, event_time, show_type, timing_notes, technical_notes, comfort_notes, contact_name, contact_phone
+          ...roadmap
         })
       });
       data = await res.json();
@@ -751,7 +1089,6 @@
   }
 
   function mergeDispoRanges(entries){
-    // entries triées par date croissante, pour un même artiste
     const ranges = [];
     for (const e of entries){
       const last = ranges[ranges.length - 1];
