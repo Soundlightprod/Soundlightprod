@@ -71,6 +71,13 @@
   .dispo-item.indisponible{background:repeating-linear-gradient(45deg, currentColor 0 4px, rgba(0,0,0,0.25) 4px 8px) !important; color:var(--ink) !important; opacity:0.85;}
   .conflict-msg{background:rgba(255,77,125,0.12); border:1px solid var(--pink); color:var(--pink); border-radius:10px; padding:10px 14px; font-size:0.84rem; margin-bottom:16px;}
 
+  .gv-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; font-weight:700; background:var(--amber); color:var(--ink);}
+  .gv-item.indisponible{background:var(--pink); color:#fff;}
+  .gv-item.option{background:transparent; border:1.5px dashed var(--amber); color:var(--amber);}
+  .gv-item.indisponible.option{border-color:var(--pink); color:var(--pink);}
+  .agenda-day.gv-clickable{cursor:pointer;}
+  .agenda-day.gv-clickable:hover{border-color:var(--amber);}
+
   .dispo-summary-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px; margin-bottom:30px;}
   .dispo-summary-card{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:16px 18px;}
   .dispo-summary-card h3{font-size:0.92rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; font-family:'Space Grotesk',sans-serif; color:var(--paper);}
@@ -140,6 +147,8 @@
     <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">2. Agenda global</button>
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">3. Commandes boutiques</button>
     <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">4. Historique</button>
+    <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">5. Accès groupes</button>
+    <button class="tab-btn" id="tabBtn-groupview" onclick="switchTab('groupview')">6. Vue groupe</button>
   </div>
 
   <!-- ============ ONGLET 1 : ÉVÉNEMENTS À REMPLIR ============ -->
@@ -430,13 +439,6 @@
       <tbody></tbody>
     </table>
     <p class="empty" id="dispoEmpty" style="display:none;">Aucune date bloquée pour le moment.</p>
-
-    <h2>Accès agenda des groupes</h2>
-    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Chaque groupe se connecte avec son propre mot de passe sur son lien dédié, pour consulter son agenda et ajouter ses propres indisponibilités (jamais de concert, jamais sur un autre artiste).</p>
-    <table id="tokenTable">
-      <thead><tr><th>Artiste</th><th>Lien</th><th>Mot de passe</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
-    </table>
   </div>
 
   <!-- ============ ONGLET 3 : COMMANDES BOUTIQUES ============ -->
@@ -463,6 +465,48 @@
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:24px;">Toutes les dates passées (concerts, indisponibilités, invités inclus), classées par mois — conservées ici indépendamment de leur date de suppression, pour garder une mémoire complète.</p>
     <div id="historyContainer"></div>
     <p class="empty" id="historyEmpty" style="display:none;">Aucune date passée pour le moment.</p>
+  </div>
+
+  <!-- ============ ONGLET 5 : ACCÈS GROUPES ============ -->
+  <div class="tab-content" id="tab-access">
+    <h2>Accès agenda des groupes</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Chaque groupe se connecte avec son propre mot de passe sur son lien dédié, pour consulter son agenda et ajouter ses propres indisponibilités (jamais de concert, jamais sur un autre artiste).</p>
+    <table id="tokenTable">
+      <thead><tr><th>Artiste</th><th>Lien</th><th>Mot de passe</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- ============ ONGLET 6 : VUE GROUPE (lecture seule, ce que voit le groupe) ============ -->
+  <div class="tab-content" id="tab-groupview">
+    <h2>Vue groupe</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Exactement ce que voit un groupe sur sa page "Mon agenda" — en lecture seule, sans avoir besoin de te connecter avec son mot de passe.</p>
+
+    <div class="form-row">
+      <select id="gvArtist" onchange="renderGroupView()">
+        <option value="alchimie">Alchimie</option>
+        <option value="cache-candy">Cache Candy</option>
+        <option value="the-fine-allies">The Fine Allies</option>
+        <option value="noon-coverband">NooN Coverband</option>
+        <option value="panache">Panache</option>
+        <option value="voice-of-freedom">Voice of Freedom</option>
+      </select>
+    </div>
+
+    <div class="agenda-nav">
+      <button onclick="shiftGvMonth(-1)">← Mois préc.</button>
+      <span class="agenda-month" id="gvMonthLabel"></span>
+      <button onclick="shiftGvMonth(1)">Mois suiv. →</button>
+    </div>
+    <div class="agenda-grid" id="gvGrid"></div>
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-10px; margin-bottom:24px;">🎤 plein = validé · 🎤┄ en pointillés = option (pas encore confirmée) · 🚫 = indisponible</p>
+
+    <h3>Toutes ses dates</h3>
+    <table id="gvTable">
+      <thead><tr><th>Date</th><th>Type</th><th>Statut</th><th>Détail</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="gvEmpty" style="display:none;">Aucune date enregistrée pour ce groupe.</p>
   </div>
 </div>
 
@@ -500,6 +544,7 @@
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     document.getElementById('tabBtn-' + name).classList.add('active');
+    if (name === 'groupview') renderGroupView();
   }
 
   async function login(){
@@ -1292,7 +1337,7 @@
         <td>${d.date}</td>
         <td>${d.publish_at || '—'}</td>
         <td>${d.expires_at || '—'}</td>
-        <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}</td>
+        <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
         <td class="row-actions"><button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button><button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button></td>
       </tr>
     `).join('');
@@ -1308,6 +1353,62 @@
 
   function entryVenue(d){
     return [d.venue_name, d.venue_city].filter(Boolean).join(', ');
+  }
+
+  let gvDate = new Date();
+  gvDate.setDate(1);
+
+  function shiftGvMonth(delta){
+    gvDate.setMonth(gvDate.getMonth() + delta);
+    renderGroupView();
+  }
+
+  function renderGroupView(){
+    const artistSlug = document.getElementById('gvArtist').value;
+    const entries = (window.dispoData || []).filter(d => d.artist_slug === artistSlug);
+
+    // --- calendrier ---
+    const grid = document.getElementById('gvGrid');
+    const year = gvDate.getFullYear();
+    const month = gvDate.getMonth();
+    document.getElementById('gvMonthLabel').textContent = gvDate.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+
+    const dows = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    let html = dows.map(d => `<div class="agenda-dow">${d}</div>`).join('');
+    const firstDay = new Date(year, month, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = new Date().toISOString().slice(0,10);
+
+    for (let i = 0; i < startOffset; i++) html += `<div class="agenda-day empty"></div>`;
+
+    for (let day = 1; day <= daysInMonth; day++){
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const dayEntries = entries.filter(e => e.date === dateStr);
+      const isToday = dateStr === todayStr;
+      const concertEntry = dayEntries.find(e => e.type === 'concert' && e.source_actu_id);
+      const clickAttr = concertEntry ? ` onclick="previewRoadmap(${concertEntry.source_actu_id})"` : '';
+      html += `<div class="agenda-day${isToday ? ' today' : ''}${concertEntry ? ' gv-clickable' : ''}"${clickAttr}>
+        <div class="agenda-daynum">${day}</div>
+        ${dayEntries.map(e => `<div class="gv-item${e.type === 'indisponible' ? ' indisponible' : ''}${e.status === 'option' ? ' option' : ''}">${e.type === 'concert' ? '🎤' : '🚫'}${e.status === 'option' ? ' ?' : ''}</div>`).join('')}
+      </div>`;
+    }
+    grid.innerHTML = html;
+
+    // --- tableau ---
+    const tbody = document.querySelector('#gvTable tbody');
+    if (!entries.length){ document.getElementById('gvEmpty').style.display = 'block'; tbody.innerHTML = ''; return; }
+    document.getElementById('gvEmpty').style.display = 'none';
+    const sorted = [...entries].sort((a,b) => a.date.localeCompare(b.date));
+    tbody.innerHTML = sorted.map(e => `
+      <tr>
+        <td>${e.date}</td>
+        <td>${e.type === 'concert' ? '🎤 Concert' : '🚫 Indisponible'}</td>
+        <td>${e.status === 'option' ? '🟡 Option' : '🟢 Validée'}</td>
+        <td style="color:var(--muted); font-size:0.85rem;">${e.label || '—'}${entryVenue(e) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(e)}</span>` : ''}</td>
+        <td>${e.type === 'concert' && e.source_actu_id ? `<button class="btn-info" onclick="previewRoadmap(${e.source_actu_id})">Feuille de route</button>` : ''}</td>
+      </tr>
+    `).join('');
   }
 
   function renderAllDatesOverview(){
