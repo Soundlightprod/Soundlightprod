@@ -288,7 +288,7 @@
       <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace; display:block; margin-bottom:8px;">Confort artiste</label>
       <div class="check-grid">
         <label><input type="checkbox" id="cfMeal"> Repas prévu</label>
-        <label><input type="checkbox" id="cfTransport"> Transport assuré</label>
+        <label><input type="checkbox" id="cfTransport" onchange="onTransportToggle()"> Transport assuré</label>
         <label><input type="checkbox" id="cfCatering"> Boissons / catering loge</label>
         <label><input type="checkbox" id="cfDressing"> Loge / espace privatif</label>
         <label><input type="checkbox" id="cfHotel" onchange="onHotelToggle()"> Hôtel réservé</label>
@@ -321,10 +321,10 @@
           </label>
         </div>
       </div>
-      <div class="form-row">
+      <div class="form-row" id="rmTransportGroup" style="display:none;">
         <div class="field-group" style="flex:1;">
           <label>Transport — mode & horaires (aller / retour)</label>
-          <input type="text" id="rmTransport">
+          <input type="text" id="rmTransport" placeholder="ex: Train 14h32 gare de X, retour navette 23h30">
         </div>
       </div>
 
@@ -683,6 +683,10 @@
     document.getElementById('rmHotelGroup').style.display = document.getElementById('cfHotel').checked ? 'block' : 'none';
   }
 
+  function onTransportToggle(){
+    document.getElementById('rmTransportGroup').style.display = document.getElementById('cfTransport').checked ? 'flex' : 'none';
+  }
+
   function getComfortFlags(){
     return Object.keys(COMFORT_CHECKBOX_IDS).filter(key => document.getElementById(COMFORT_CHECKBOX_IDS[key]).checked);
   }
@@ -761,6 +765,7 @@
     document.getElementById('rmTechContactPhone').value = a.tech_contact_phone || '';
     setComfortFlags(parseJsonSafe(a.comfort_flags));
     onHotelToggle();
+    onTransportToggle();
     document.getElementById('rmMealDetails').value = a.meal_details || '';
     document.getElementById('rmMealCount').value = a.meal_count || '';
     document.getElementById('rmHotelDetails').value = a.hotel_details || '';
