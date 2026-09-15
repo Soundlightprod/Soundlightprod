@@ -96,40 +96,12 @@
   <!-- ============ ONGLET 1 : ÉVÉNEMENTS À REMPLIR ============ -->
   <div class="tab-content active" id="tab-events">
 
-    <h2>Publier une actualité</h2>
-    <div class="form-row">
-      <select id="actuArtist">
-        <option value="alchimie">Alchimie</option>
-        <option value="cache-candy">Cache Candy</option>
-        <option value="the-fine-allies">The Fine Allies</option>
-        <option value="noon-coverband">NooN Coverband</option>
-        <option value="panache">Panache</option>
-        <option value="voice-of-freedom">Voice of Freedom</option>
-      </select>
-      <textarea id="actuText" placeholder="Nouvelle actualité (ex: nouveau clip sorti !)"></textarea>
-    </div>
-    <div class="form-row">
-      <div class="field-group">
-        <label>Date de publication</label>
-        <input type="date" id="actuPublish">
-      </div>
-      <div class="field-group">
-        <label>Date de l'événement (optionnel)</label>
-        <input type="date" id="actuEventDate">
-      </div>
-      <div class="field-group">
-        <label>Afficher jusqu'au (suppression)</label>
-        <input type="date" id="actuExpires">
-      </div>
-      <button class="btn" onclick="publishActu()">Publier</button>
-    </div>
-    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px; margin-bottom:24px;">Si la date de publication est laissée vide, l'actualité est visible immédiatement.</p>
+    <h2>Ajouter un événement</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Un <strong>concert</strong> publie une actualité sur la fiche de l'artiste (et sur l'agenda public si "Visible au public" est coché) <em>et</em> bloque automatiquement le(s) jour(s) correspondant(s) dans son agenda. Une <strong>indisponibilité</strong> bloque juste le(s) jour(s), sans rien publier. Une <strong>actu libre</strong> ne bloque aucune date.</p>
+    <div id="eventConflict"></div>
 
-    <h2>Bloquer des dates (concert / indisponibilité)</h2>
-    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Un concert enregistré ici bloque automatiquement le(s) jour(s) correspondant(s) dans l'agenda du groupe — impossible d'ajouter deux fois la même date pour le même artiste.</p>
-    <div id="dispoConflict"></div>
     <div class="form-row">
-      <select id="dispoArtist">
+      <select id="evtArtist">
         <option value="alchimie">Alchimie</option>
         <option value="cache-candy">Cache Candy</option>
         <option value="the-fine-allies">The Fine Allies</option>
@@ -137,32 +109,51 @@
         <option value="panache">Panache</option>
         <option value="voice-of-freedom">Voice of Freedom</option>
       </select>
-      <select id="dispoType">
+      <select id="evtType" onchange="onEventTypeChange()">
         <option value="concert">🎤 Concert</option>
         <option value="indisponible">🚫 Indisponibilité</option>
+        <option value="actu">📣 Actu libre</option>
       </select>
-      <input type="text" id="dispoLabel" placeholder="Libellé (ex: Mairie de X, Vacances...)">
     </div>
+
+    <div class="form-row" id="evtTextRow">
+      <textarea id="evtText" placeholder="Texte affiché sur la fiche artiste (ex: Concert Brasserie Le Saint André 21h)"></textarea>
+    </div>
+    <div class="form-row" id="evtLabelRow" style="display:none;">
+      <input type="text" id="evtLabel" placeholder="Libellé interne (ex: Vacances, indispo perso...)" style="flex:1;">
+    </div>
+
+    <div class="form-row" id="evtPhotoRow">
+      <div class="field-group">
+        <label>Photo (optionnel)</label>
+        <input type="file" id="evtPhoto" accept="image/*" onchange="handlePhotoSelect(event)">
+      </div>
+      <img id="evtPhotoPreview" style="display:none; height:60px; border-radius:8px;">
+      <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
+        <input type="checkbox" id="evtPublic" checked style="width:auto;"> Visible au public
+      </label>
+    </div>
+
     <div class="form-row">
-      <div class="field-group">
+      <div class="field-group" id="evtStartGroup">
         <label>Date de l'événement — du</label>
-        <input type="date" id="dispoStart">
+        <input type="date" id="evtStart">
       </div>
-      <div class="field-group">
+      <div class="field-group" id="evtEndGroup">
         <label>au (optionnel)</label>
-        <input type="date" id="dispoEnd">
+        <input type="date" id="evtEnd">
       </div>
-      <div class="field-group">
+      <div class="field-group" id="evtPublishGroup">
         <label>Date de publication</label>
-        <input type="date" id="dispoPublish">
+        <input type="date" id="evtPublish">
       </div>
-      <div class="field-group">
+      <div class="field-group" id="evtExpiresGroup">
         <label>Date de suppression</label>
-        <input type="date" id="dispoExpires">
+        <input type="date" id="evtExpires">
       </div>
-      <button class="btn" onclick="createDispo()">Bloquer ces dates</button>
+      <button class="btn" onclick="submitEvent()">Enregistrer</button>
     </div>
-    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Date de publication/suppression optionnelles : elles n'affectent pas encore l'affichage public, mais sont enregistrées pour une future utilisation.</p>
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Date de publication vide = visible tout de suite. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site (le blocage de l'agenda, lui, reste définitif).</p>
   </div>
 
   <!-- ============ ONGLET 2 : AGENDA GLOBAL ============ -->
@@ -178,7 +169,7 @@
     <div class="agenda-grid" id="agendaGrid"></div>
 
     <table id="actuTable">
-      <thead><tr><th>Artiste</th><th>Texte</th><th>Publication</th><th>Événement</th><th>Suppression</th><th>Actions</th></tr></thead>
+      <thead><tr><th></th><th>Photo</th><th>Artiste</th><th>Texte</th><th>Publication</th><th>Événement</th><th>Suppression</th><th>Public</th><th>Actions</th></tr></thead>
       <tbody></tbody>
     </table>
     <p class="empty" id="actuEmpty" style="display:none;">Aucune actualité pour le moment.</p>
@@ -259,6 +250,7 @@
     document.getElementById('app').style.display = 'block';
     renderAgendaLegend();
     renderDispoLegend();
+    onEventTypeChange();
     await loadReservations();
     await loadOrders();
     await loadActus();
@@ -366,13 +358,16 @@
     for (let day = 1; day <= daysInMonth; day++){
       const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
       const dayActus = data.filter(a => {
+        if (a.event_date){
+          return dateStr >= a.event_date && dateStr <= (a.event_end_date || a.event_date);
+        }
         const created = (a.created_at || '').slice(0,10);
         return created <= dateStr && a.expires_at >= dateStr;
       });
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''}">
         <div class="agenda-daynum">${day}</div>
-        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}">${ARTIST_LABELS[a.artist_slug] || a.artist_slug}</div>`).join('')}
+        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}">${TYPE_ICONS[a.type] || '📣'} ${ARTIST_LABELS[a.artist_slug] || a.artist_slug}</div>`).join('')}
         ${dayActus.length > 3 ? `<div class="agenda-more">+${dayActus.length - 3}</div>` : ''}
       </div>`;
     }
@@ -393,11 +388,14 @@
       const scheduled = a.publish_at && a.publish_at > today;
       return `
       <tr style="${expired ? 'opacity:0.5;' : ''}">
+        <td>${TYPE_ICONS[a.type] || '📣'}</td>
+        <td>${a.photo_url ? `<img src="${a.photo_url}" style="width:44px; height:44px; object-fit:cover; border-radius:6px;">` : '—'}</td>
         <td>${ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
-        <td style="max-width:280px;">${a.text}</td>
+        <td style="max-width:260px;">${a.text}</td>
         <td>${a.publish_at || '—'} ${scheduled ? '<span class="status pending">Programmée</span>' : ''}</td>
-        <td>${a.event_date || '—'}</td>
+        <td>${a.event_date || '—'}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + a.event_end_date : ''}</td>
         <td>${a.expires_at || '—'} ${expired ? '<span class="status refused">Expirée</span>' : ''}</td>
+        <td><button class="btn-no" style="background:${a.is_public ? '#6ee7a0' : 'var(--muted)'}; color:var(--ink);" onclick="toggleActuPublic(${a.id}, ${a.is_public ? 0 : 1})">${a.is_public ? 'Public' : 'Masqué'}</button></td>
         <td class="row-actions"><button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button></td>
       </tr>
     `;
@@ -405,27 +403,106 @@
     renderAgenda();
   }
 
-  async function publishActu(){
-    const artist_slug = document.getElementById('actuArtist').value;
-    const text = document.getElementById('actuText').value.trim();
-    const publish_at = document.getElementById('actuPublish').value;
-    const event_date = document.getElementById('actuEventDate').value;
-    const expires_at = document.getElementById('actuExpires').value;
-    if (!text || !expires_at) { alert('Merci de renseigner le texte et la date de fin d\'affichage.'); return; }
-    await fetch(`${API_BASE}/api/admin/actualites`, {
+  const TYPE_ICONS = { concert:'🎤', indisponible:'🚫', actu:'📣' };
+  let evtPhotoBase64 = null;
+
+  function onEventTypeChange(){
+    const type = document.getElementById('evtType').value;
+    const isIndispo = type === 'indisponible';
+    document.getElementById('evtTextRow').style.display = isIndispo ? 'none' : 'flex';
+    document.getElementById('evtLabelRow').style.display = isIndispo ? 'flex' : 'none';
+    document.getElementById('evtPhotoRow').style.display = isIndispo ? 'none' : 'flex';
+    document.getElementById('evtPublishGroup').style.display = isIndispo ? 'none' : 'flex';
+    document.getElementById('evtExpiresGroup').style.display = isIndispo ? 'none' : 'flex';
+    document.getElementById('evtEndGroup').style.display = 'flex';
+  }
+
+  function handlePhotoSelect(evt){
+    const file = evt.target.files[0];
+    if (!file) { evtPhotoBase64 = null; return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 900;
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        evtPhotoBase64 = canvas.toDataURL('image/jpeg', 0.72);
+        const preview = document.getElementById('evtPhotoPreview');
+        preview.src = evtPhotoBase64;
+        preview.style.display = 'inline-block';
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function submitEvent(){
+    const artist_slug = document.getElementById('evtArtist').value;
+    const type = document.getElementById('evtType').value;
+    const text = document.getElementById('evtText').value.trim();
+    const label = document.getElementById('evtLabel').value.trim();
+    const is_public = document.getElementById('evtPublic').checked;
+    const start_date = document.getElementById('evtStart').value;
+    const end_date = document.getElementById('evtEnd').value || start_date;
+    const publish_at = document.getElementById('evtPublish').value;
+    const expires_at = document.getElementById('evtExpires').value;
+    const conflictBox = document.getElementById('eventConflict');
+    conflictBox.innerHTML = '';
+
+    if (type !== 'indisponible' && (!text || !expires_at)){
+      alert('Merci de renseigner le texte et la date de suppression.');
+      return;
+    }
+    if ((type === 'concert' || type === 'indisponible') && !start_date){
+      alert("Merci de renseigner la date de l'événement.");
+      return;
+    }
+
+    const res = await fetch(`${API_BASE}/api/admin/actualites`, {
       method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-      body: JSON.stringify({ artist_slug, text, publish_at, event_date, expires_at })
+      body: JSON.stringify({
+        artist_slug, type, text, label, is_public,
+        photo_url: evtPhotoBase64,
+        start_date, end_date, publish_at, expires_at
+      })
     });
-    document.getElementById('actuText').value = '';
-    document.getElementById('actuPublish').value = '';
-    document.getElementById('actuEventDate').value = '';
-    document.getElementById('actuExpires').value = '';
+    const data = await res.json();
+
+    if (data.conflicts && data.conflicts.length){
+      conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+    }
+
+    document.getElementById('evtText').value = '';
+    document.getElementById('evtLabel').value = '';
+    document.getElementById('evtStart').value = '';
+    document.getElementById('evtEnd').value = '';
+    document.getElementById('evtPublish').value = '';
+    document.getElementById('evtExpires').value = '';
+    document.getElementById('evtPhoto').value = '';
+    document.getElementById('evtPhotoPreview').style.display = 'none';
+    evtPhotoBase64 = null;
+
+    loadActus();
+    loadDispos();
+  }
+
+  async function toggleActuPublic(id, newValue){
+    await fetch(`${API_BASE}/api/admin/actualites/${id}/visibility`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ is_public: newValue })
+    });
     loadActus();
   }
 
   async function deleteActu(id){
+    if (!confirm('Supprimer cette actualité ? Si elle a bloqué des dates dans l\'agenda, elles seront libérées aussi.')) return;
     await fetch(`${API_BASE}/api/admin/actualites/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
     loadActus();
+    loadDispos();
   }
 
   const DISPO_TYPE_LABELS = { concert:'🎤 Concert', indisponible:'🚫 Indisponible' };
@@ -548,33 +625,6 @@
     `).join('');
     renderDispoCalendar();
     renderDispoSummary();
-  }
-
-  async function createDispo(){
-    const artist_slug = document.getElementById('dispoArtist').value;
-    const type = document.getElementById('dispoType').value;
-    const start_date = document.getElementById('dispoStart').value;
-    const end_date = document.getElementById('dispoEnd').value || start_date;
-    const label = document.getElementById('dispoLabel').value.trim();
-    const publish_at = document.getElementById('dispoPublish').value;
-    const expires_at = document.getElementById('dispoExpires').value;
-    const conflictBox = document.getElementById('dispoConflict');
-    conflictBox.innerHTML = '';
-    if (!start_date) { alert('Merci de renseigner au moins une date de début.'); return; }
-
-    const res = await fetch(`${API_BASE}/api/admin/agenda`, {
-      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-      body: JSON.stringify({ artist_slug, type, start_date, end_date, label, publish_at, expires_at })
-    });
-    const data = await res.json();
-
-    if (data.conflicts && data.conflicts.length){
-      conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
-    }
-    document.getElementById('dispoLabel').value = '';
-    document.getElementById('dispoPublish').value = '';
-    document.getElementById('dispoExpires').value = '';
-    loadDispos();
   }
 
   async function deleteDispo(id){
