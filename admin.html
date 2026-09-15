@@ -82,7 +82,7 @@
 
   <h2>Commandes boutique</h2>
   <table id="orderTable">
-    <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th></tr></thead>
+    <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead>
     <tbody></tbody>
   </table>
   <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
@@ -250,9 +250,16 @@
           <td>${items.map(i => `${i.qty}× ${i.name}`).join(', ')}</td>
           <td>${money(o.total_cents)}</td>
           <td>${o.created_at}</td>
+          <td class="row-actions"><button class="btn-no" onclick="deleteOrder(${o.id})">Supprimer</button></td>
         </tr>
       `;
     }).join('');
+  }
+
+  async function deleteOrder(id){
+    if (!confirm('Supprimer définitivement cette commande ?')) return;
+    await fetch(`${API_BASE}/api/admin/orders/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    loadOrders();
   }
 
   const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'voice-of-freedom':'Voice of Freedom' };
