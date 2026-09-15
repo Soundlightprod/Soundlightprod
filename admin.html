@@ -296,7 +296,7 @@
       </div>
       <div class="form-row">
         <div class="field-group" style="flex:1;">
-          <label>Repas — horaire & lieu</label>
+          <label>Repas — lieu</label>
           <input type="text" id="rmMealDetails">
         </div>
         <div class="field-group">
@@ -805,8 +805,10 @@
       <div class="rm-doc">
         <div class="rm-header">
           <div>
-            <div class="rm-brand-name">SLP <span>SOUND LIGHT PROD</span></div>
-            <div class="rm-brand-sub">Régie son &amp; lumière — Booking artistes</div>
+            <div style="background:#0c0b10; padding:8px 14px; border-radius:10px; display:inline-block;">
+              <img src="slp-logo-complet.png" alt="SLP Sound Light Production" style="height:58px; width:auto; display:block;">
+            </div>
+            <div class="rm-brand-sub">Régie son &amp; lumière — Production et diffusion de spectacles</div>
           </div>
           <div class="rm-title-box"><div>FEUILLE DE ROUTE</div><div>ARTISTE</div></div>
         </div>
@@ -818,10 +820,7 @@
           <div class="rm-cell"><span class="rm-label">Date</span><div class="rm-value">${escapeHtml(formatDateRange(a))}</div></div>
           <div class="rm-cell"><span class="rm-label">Type de prestation</span><div class="rm-value">${escapeHtml(a.show_type)}</div></div>
         </div>
-        <div class="rm-row2">
-          <div class="rm-cell"><span class="rm-label">Lieu (nom + adresse complète)</span><div class="rm-value">${escapeHtml(formatVenue(a))}</div></div>
-          <div class="rm-cell"></div>
-        </div>
+        <div class="rm-box"><span class="rm-label">Lieu (nom + adresse complète)</span><div class="rm-value">${escapeHtml(formatVenue(a))}</div></div>
         <div class="rm-row3">
           <div class="rm-cell"><span class="rm-label">Heure de rendez-vous / arrivée</span><div class="rm-value">${escapeHtml(a.arrival_time)}</div></div>
           <div class="rm-cell"><span class="rm-label">Heure de la prestation</span><div class="rm-value">${escapeHtml(a.event_time)}</div></div>
@@ -853,7 +852,7 @@
           ${checkbox('parking','Parking réservé')}
         </div>
         <div class="rm-row2">
-          <div class="rm-cell"><span class="rm-label">Repas — horaire &amp; lieu</span><div class="rm-value">${escapeHtml(a.meal_details)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Repas — lieu</span><div class="rm-value">${escapeHtml(a.meal_details)}</div></div>
           <div class="rm-cell"><span class="rm-label">Nombre de personnes</span><div class="rm-value">${escapeHtml(a.meal_count)}</div></div>
         </div>
         <div class="rm-row2">
