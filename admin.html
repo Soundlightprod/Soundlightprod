@@ -199,8 +199,6 @@
         <label>Date de suppression</label>
         <input type="date" id="evtExpires">
       </div>
-      <button class="btn" onclick="submitEvent()" id="evtSubmitBtn">Enregistrer</button>
-      <button onclick="cancelEdit()" id="evtCancelBtn" class="btn-outline" style="display:none;">Annuler la modification</button>
     </div>
     <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Date de publication vide = visible tout de suite. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site (le blocage de l'agenda, lui, reste définitif).</p>
 
@@ -211,12 +209,38 @@
 
       <div class="form-row">
         <div class="field-group" style="flex:1; min-width:220px;">
-          <label>Lieu (nom + adresse complète)</label>
-          <input type="text" id="rmVenue">
+          <label>Nom du lieu</label>
+          <input type="text" id="rmVenueName" placeholder="ex: La Cave à Manger">
         </div>
+        <div class="field-group" style="flex:2; min-width:220px;">
+          <label>Adresse</label>
+          <input type="text" id="rmVenueAddress" placeholder="ex: 38 avenue du Périgord">
+        </div>
+        <div class="field-group" style="width:110px;">
+          <label>Code postal</label>
+          <input type="text" id="rmVenuePostal" placeholder="24230">
+        </div>
+        <div class="field-group" style="flex:1; min-width:140px;">
+          <label>Ville</label>
+          <input type="text" id="rmVenueCity" placeholder="Vélines">
+        </div>
+      </div>
+      <div class="form-row">
         <div class="field-group" style="flex:1; min-width:180px;">
           <label>Type de prestation</label>
-          <input type="text" id="rmShowType" placeholder="ex: Concert assis, DJ set...">
+          <select id="rmShowType" onchange="onShowTypeChange()">
+            <option value="Concert">Concert</option>
+            <option value="Concert assis">Concert assis</option>
+            <option value="DJ set">DJ set</option>
+            <option value="Showcase">Showcase</option>
+            <option value="Soirée dansante">Soirée dansante</option>
+            <option value="Cérémonie">Cérémonie</option>
+            <option value="autre">Autre...</option>
+          </select>
+        </div>
+        <div class="field-group" style="flex:1; min-width:180px; display:none;" id="rmShowTypeOtherGroup">
+          <label>Précise le type</label>
+          <input type="text" id="rmShowTypeOther" placeholder="ex: Bœuf improvisé">
         </div>
       </div>
       <div class="form-row">
@@ -267,7 +291,7 @@
         <label><input type="checkbox" id="cfTransport"> Transport assuré</label>
         <label><input type="checkbox" id="cfCatering"> Boissons / catering loge</label>
         <label><input type="checkbox" id="cfDressing"> Loge / espace privatif</label>
-        <label><input type="checkbox" id="cfHotel"> Hôtel réservé</label>
+        <label><input type="checkbox" id="cfHotel" onchange="onHotelToggle()"> Hôtel réservé</label>
         <label><input type="checkbox" id="cfParking"> Parking réservé</label>
       </div>
       <div class="form-row">
@@ -280,14 +304,21 @@
           <input type="text" id="rmMealCount">
         </div>
       </div>
-      <div class="form-row">
-        <div class="field-group" style="flex:1;">
-          <label>Hôtel — nom & adresse</label>
-          <input type="text" id="rmHotelDetails">
+      <div id="rmHotelGroup" style="display:none;">
+        <div class="form-row">
+          <div class="field-group" style="flex:1;">
+            <label>Hôtel — nom & adresse</label>
+            <input type="text" id="rmHotelDetails">
+          </div>
+          <div class="field-group">
+            <label>Nombre de chambres</label>
+            <input type="text" id="rmHotelRooms">
+          </div>
         </div>
-        <div class="field-group">
-          <label>Nombre de chambres</label>
-          <input type="text" id="rmHotelRooms">
+        <div class="form-row">
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;">
+            <input type="checkbox" id="cfBreakfast" style="width:auto;"> Petit déjeuner inclus
+          </label>
         </div>
       </div>
       <div class="form-row">
@@ -324,6 +355,11 @@
           <textarea id="rmNotes" style="width:100%; min-height:50px;"></textarea>
         </div>
       </div>
+    </div>
+
+    <div class="form-row" style="margin-top:20px;">
+      <button class="btn" onclick="submitEvent()" id="evtSubmitBtn">Enregistrer</button>
+      <button onclick="cancelEdit()" id="evtCancelBtn" class="btn-outline" style="display:none;">Annuler la modification</button>
     </div>
   </div>
 
@@ -643,6 +679,10 @@
 
   const COMFORT_CHECKBOX_IDS = { meal:'cfMeal', transport:'cfTransport', catering:'cfCatering', dressing_room:'cfDressing', hotel:'cfHotel', parking:'cfParking' };
 
+  function onHotelToggle(){
+    document.getElementById('rmHotelGroup').style.display = document.getElementById('cfHotel').checked ? 'block' : 'none';
+  }
+
   function getComfortFlags(){
     return Object.keys(COMFORT_CHECKBOX_IDS).filter(key => document.getElementById(COMFORT_CHECKBOX_IDS[key]).checked);
   }
@@ -659,10 +699,22 @@
     try { return JSON.parse(raw); } catch(e){ return null; }
   }
 
+  const SHOW_TYPE_PRESETS = ["Concert", "Concert assis", "DJ set", "Showcase", "Soirée dansante", "Cérémonie"];
+
+  function onShowTypeChange(){
+    const isOther = document.getElementById('rmShowType').value === 'autre';
+    document.getElementById('rmShowTypeOtherGroup').style.display = isOther ? 'flex' : 'none';
+  }
+
   function getRoadmapFields(){
+    const showTypeSel = document.getElementById('rmShowType').value;
+    const show_type = showTypeSel === 'autre' ? document.getElementById('rmShowTypeOther').value.trim() : showTypeSel;
     return {
-      venue: document.getElementById('rmVenue').value.trim(),
-      show_type: document.getElementById('rmShowType').value.trim(),
+      venue_name: document.getElementById('rmVenueName').value.trim(),
+      venue_address: document.getElementById('rmVenueAddress').value.trim(),
+      venue_postal_code: document.getElementById('rmVenuePostal').value.trim(),
+      venue_city: document.getElementById('rmVenueCity').value.trim(),
+      show_type,
       arrival_time: document.getElementById('rmArrival').value.trim(),
       event_time: document.getElementById('rmEventTime').value.trim(),
       duration: document.getElementById('rmDuration').value.trim(),
@@ -676,6 +728,7 @@
       meal_count: document.getElementById('rmMealCount').value.trim(),
       hotel_details: document.getElementById('rmHotelDetails').value.trim(),
       hotel_rooms: document.getElementById('rmHotelRooms').value.trim(),
+      hotel_breakfast: document.getElementById('cfBreakfast').checked,
       transport_details: document.getElementById('rmTransport').value.trim(),
       venue_contact_name: document.getElementById('rmVenueContactName').value.trim(),
       venue_contact_phone: document.getElementById('rmVenueContactPhone').value.trim(),
@@ -686,8 +739,18 @@
   }
 
   function setRoadmapFields(a){
-    document.getElementById('rmVenue').value = a.venue || '';
-    document.getElementById('rmShowType').value = a.show_type || '';
+    document.getElementById('rmVenueName').value = a.venue_name || '';
+    document.getElementById('rmVenueAddress').value = a.venue_address || '';
+    document.getElementById('rmVenuePostal').value = a.venue_postal_code || '';
+    document.getElementById('rmVenueCity').value = a.venue_city || '';
+    if (a.show_type && SHOW_TYPE_PRESETS.includes(a.show_type)){
+      document.getElementById('rmShowType').value = a.show_type;
+      document.getElementById('rmShowTypeOther').value = '';
+    } else {
+      document.getElementById('rmShowType').value = a.show_type ? 'autre' : 'Concert';
+      document.getElementById('rmShowTypeOther').value = a.show_type || '';
+    }
+    onShowTypeChange();
     document.getElementById('rmArrival').value = a.arrival_time || '';
     document.getElementById('rmEventTime').value = a.event_time || '';
     document.getElementById('rmDuration').value = a.duration || '';
@@ -697,10 +760,12 @@
     document.getElementById('rmTechContactName').value = a.tech_contact_name || '';
     document.getElementById('rmTechContactPhone').value = a.tech_contact_phone || '';
     setComfortFlags(parseJsonSafe(a.comfort_flags));
+    onHotelToggle();
     document.getElementById('rmMealDetails').value = a.meal_details || '';
     document.getElementById('rmMealCount').value = a.meal_count || '';
     document.getElementById('rmHotelDetails').value = a.hotel_details || '';
     document.getElementById('rmHotelRooms').value = a.hotel_rooms || '';
+    document.getElementById('cfBreakfast').checked = !!a.hotel_breakfast;
     document.getElementById('rmTransport').value = a.transport_details || '';
     document.getElementById('rmVenueContactName').value = a.venue_contact_name || '';
     document.getElementById('rmVenueContactPhone').value = a.venue_contact_phone || '';
@@ -720,10 +785,16 @@
     return a.event_end_date && a.event_end_date !== a.event_date ? `${a.event_date} → ${a.event_end_date}` : a.event_date;
   }
 
+  function formatVenue(a){
+    const line2 = [a.venue_address, [a.venue_postal_code, a.venue_city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    return [a.venue_name, line2].filter(Boolean).join('\n');
+  }
+
   function buildRoadmapDoc(a){
     const flags = parseJsonSafe(a.comfort_flags) || [];
     const steps = parseJsonSafe(a.timing_steps) || [];
     const checkbox = (key, label) => `<span><span class="rm-checkbox${flags.includes(key) ? ' on' : ''}">${flags.includes(key) ? '✓' : ''}</span>${label}</span>`;
+    const boolCheck = (val, label) => `<span><span class="rm-checkbox${val ? ' on' : ''}">${val ? '✓' : ''}</span>${label}</span>`;
 
     return `
       <div class="rm-doc">
@@ -743,7 +814,7 @@
           <div class="rm-cell"><span class="rm-label">Type de prestation</span><div class="rm-value">${escapeHtml(a.show_type)}</div></div>
         </div>
         <div class="rm-row2">
-          <div class="rm-cell"><span class="rm-label">Lieu (nom + adresse complète)</span><div class="rm-value">${escapeHtml(a.venue)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Lieu (nom + adresse complète)</span><div class="rm-value">${escapeHtml(formatVenue(a))}</div></div>
           <div class="rm-cell"></div>
         </div>
         <div class="rm-row3">
@@ -783,6 +854,9 @@
         <div class="rm-row2">
           <div class="rm-cell"><span class="rm-label">Hôtel — nom &amp; adresse</span><div class="rm-value">${escapeHtml(a.hotel_details)}</div></div>
           <div class="rm-cell"><span class="rm-label">Nombre de chambres</span><div class="rm-value">${escapeHtml(a.hotel_rooms)}</div></div>
+        </div>
+        <div class="rm-checks" style="margin-bottom:12px;">
+          ${boolCheck(a.hotel_breakfast, 'Petit déjeuner inclus')}
         </div>
         <div class="rm-box"><span class="rm-label">Transport — mode &amp; horaires (aller / retour)</span><div class="rm-value">${escapeHtml(a.transport_details)}</div></div>
 

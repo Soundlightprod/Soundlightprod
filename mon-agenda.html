@@ -282,10 +282,16 @@
     return r.event_end_date && r.event_end_date !== r.event_date ? `${r.event_date} → ${r.event_end_date}` : r.event_date;
   }
 
+  function formatVenue(a){
+    const line2 = [a.venue_address, [a.venue_postal_code, a.venue_city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    return [a.venue_name, line2].filter(Boolean).join('\n');
+  }
+
   function buildRoadmapDoc(a){
     const flags = parseJsonSafe(a.comfort_flags) || [];
     const steps = parseJsonSafe(a.timing_steps) || [];
     const checkbox = (key, label) => `<span><span class="rm-checkbox${flags.includes(key) ? ' on' : ''}">${flags.includes(key) ? '✓' : ''}</span>${label}</span>`;
+    const boolCheck = (val, label) => `<span><span class="rm-checkbox${val ? ' on' : ''}">${val ? '✓' : ''}</span>${label}</span>`;
 
     return `
       <div class="rm-doc">
@@ -305,7 +311,7 @@
           <div class="rm-cell"><span class="rm-label">Type de prestation</span><div class="rm-value">${escapeHtml(a.show_type)}</div></div>
         </div>
         <div class="rm-row2">
-          <div class="rm-cell"><span class="rm-label">Lieu (nom + adresse complète)</span><div class="rm-value">${escapeHtml(a.venue)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Lieu (nom + adresse complète)</span><div class="rm-value">${escapeHtml(formatVenue(a))}</div></div>
           <div class="rm-cell"></div>
         </div>
         <div class="rm-row3">
@@ -345,6 +351,9 @@
         <div class="rm-row2">
           <div class="rm-cell"><span class="rm-label">Hôtel — nom &amp; adresse</span><div class="rm-value">${escapeHtml(a.hotel_details)}</div></div>
           <div class="rm-cell"><span class="rm-label">Nombre de chambres</span><div class="rm-value">${escapeHtml(a.hotel_rooms)}</div></div>
+        </div>
+        <div class="rm-checks" style="margin-bottom:12px;">
+          ${boolCheck(a.hotel_breakfast, 'Petit déjeuner inclus')}
         </div>
         <div class="rm-box"><span class="rm-label">Transport — mode &amp; horaires (aller / retour)</span><div class="rm-value">${escapeHtml(a.transport_details)}</div></div>
 
