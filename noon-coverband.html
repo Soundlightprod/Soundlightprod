@@ -135,6 +135,7 @@
   .actu-item .actu-body{flex:1; min-width:200px;}
   .actu-item .actu-date{font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--amber); white-space:nowrap; flex-shrink:0; text-transform:uppercase;}
   .actu-item p{color:var(--paper); font-size:0.94rem; margin:0;}
+  .actu-item .actu-meta{color:var(--muted); font-size:0.8rem; margin-top:4px;}
   .lightbox-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:300; align-items:center; justify-content:center; padding:24px; cursor:zoom-out;}
   .lightbox-overlay.open{display:flex;}
   .lightbox-overlay img{max-width:100%; max-height:100%; border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,0.6);}
@@ -363,12 +364,17 @@
           ? formatDate(a.event_date) + (a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + formatDate(a.event_end_date) : '')
           : formatDate(a.created_at);
         const photo = a.photo_url ? `<img src="${a.photo_url}" alt="">` : '';
+        const meta = [
+          a.event_time ? `🕐 ${escapeHtml(a.event_time)}` : '',
+          [a.venue_name, a.venue_city].filter(Boolean).length ? `📍 ${escapeHtml([a.venue_name, a.venue_city].filter(Boolean).join(', '))}` : '',
+        ].filter(Boolean).join('  ·  ');
         return `
           <div class="actu-item">
             ${photo}
             <div class="actu-body">
               <span class="actu-date">${icon} ${dateLabel}</span>
               <p>${escapeHtml(a.text)}</p>
+              ${meta ? `<p class="actu-meta">${meta}</p>` : ''}
             </div>
           </div>
         `;

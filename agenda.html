@@ -63,6 +63,7 @@
   .event-body{flex:1; min-width:200px;}
   .event-body .artist{font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:4px; display:block;}
   .event-body p{color:var(--paper); font-size:1rem;}
+  .event-body .event-meta{color:var(--muted); font-size:0.82rem; margin-top:4px;}
   .event-empty{color:var(--muted); padding:40px 0; text-align:center; font-size:1.05rem;}
 
   footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
@@ -187,20 +188,29 @@
         return;
       }
       list.innerHTML = items.map(e => {
-        const page = ARTIST_PAGES[e.artist_slug] || 'artistes.html';
+        const hasPage = !!ARTIST_PAGES[e.artist_slug];
+        const page = ARTIST_PAGES[e.artist_slug] || null;
+        const label = e.guest_name || ARTIST_LABELS[e.artist_slug] || e.artist_slug;
         const photo = e.photo_url ? `<img src="${e.photo_url}" alt="">` : '';
+        const meta = [
+          e.event_time ? `🕐 ${escapeHtml(e.event_time)}` : '',
+          [e.venue_name, e.venue_city].filter(Boolean).length ? `📍 ${escapeHtml([e.venue_name, e.venue_city].filter(Boolean).join(', '))}` : '',
+        ].filter(Boolean).join('  ·  ');
+        const tag = hasPage ? 'a' : 'div';
+        const hrefAttr = hasPage ? `href="${page}"` : '';
         return `
-          <a href="${page}" class="event-card" style="text-decoration:none;">
+          <${tag} ${hrefAttr} class="event-card" style="text-decoration:none;">
             <div class="event-date">
               <div class="day">${formatDay(e.event_date)}</div>
               <div class="month">${formatMonth(e.event_date)}</div>
             </div>
             ${photo}
             <div class="event-body">
-              <span class="artist">${ARTIST_LABELS[e.artist_slug] || e.artist_slug}</span>
+              <span class="artist">${escapeHtml(label)}</span>
               <p>${escapeHtml(e.text)}</p>
+              ${meta ? `<p class="event-meta">${meta}</p>` : ''}
             </div>
-          </a>
+          </${tag}>
         `;
       }).join('');
     })

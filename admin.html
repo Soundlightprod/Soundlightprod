@@ -139,6 +139,7 @@
     <button class="tab-btn active" id="tabBtn-events" onclick="switchTab('events')">1. Événements à remplir</button>
     <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">2. Agenda global</button>
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">3. Commandes boutiques</button>
+    <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">4. Historique</button>
   </div>
 
   <!-- ============ ONGLET 1 : ÉVÉNEMENTS À REMPLIR ============ -->
@@ -149,13 +150,14 @@
     <div id="eventConflict"></div>
 
     <div class="form-row">
-      <select id="evtArtist">
+      <select id="evtArtist" onchange="onArtistChange()">
         <option value="alchimie">Alchimie</option>
         <option value="cache-candy">Cache Candy</option>
         <option value="the-fine-allies">The Fine Allies</option>
         <option value="noon-coverband">NooN Coverband</option>
         <option value="panache">Panache</option>
         <option value="voice-of-freedom">Voice of Freedom</option>
+        <option value="_guest">👤 Invité (pas de fiche sur le site)</option>
       </select>
       <select id="evtType" onchange="onEventTypeChange()">
         <option value="concert">🎤 Concert</option>
@@ -163,6 +165,10 @@
         <option value="actu">📣 Actu libre</option>
       </select>
     </div>
+    <div class="form-row" id="evtGuestNameRow" style="display:none;">
+      <input type="text" id="evtGuestName" placeholder="Nom de l'artiste invité" style="flex:1;">
+    </div>
+    <p id="evtGuestNote" style="display:none; color:var(--muted); font-size:0.8rem; margin-top:-8px; margin-bottom:16px;">Un invité sans fiche n'apparaît jamais dans un "Quoi de neuf" — juste sur l'agenda public si coché "Visible au public", avec une feuille de route complète.</p>
 
     <div class="form-row" id="evtTextRow">
       <textarea id="evtText" placeholder="Texte affiché sur la fiche artiste (ex: Concert Brasserie Le Saint André 21h)"></textarea>
@@ -183,6 +189,13 @@
     </div>
 
     <div class="form-row">
+      <div class="field-group" id="evtStatusGroup">
+        <label>Statut</label>
+        <select id="evtStatus">
+          <option value="option">🟡 Option</option>
+          <option value="validee">🟢 Validée</option>
+        </select>
+      </div>
       <div class="field-group" id="evtStartGroup">
         <label>Date de l'événement — du</label>
         <input type="date" id="evtStart">
@@ -200,7 +213,7 @@
         <input type="date" id="evtExpires">
       </div>
     </div>
-    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Date de publication vide = visible tout de suite. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site (le blocage de l'agenda, lui, reste définitif).</p>
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Une date en <strong>option</strong> bloque déjà le créneau (anti-doublon actif) mais reste à confirmer — bascule-la en "Validée" une fois certaine. Date de publication vide = visible tout de suite. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site ; pour tous les types, elle détermine aussi jusqu'à quand la date apparaît dans les vues "Toutes les dates" et l'agenda du groupe.</p>
 
     <!-- ============ FEUILLE DE ROUTE (concert uniquement) ============ -->
     <div id="roadmapSection" style="display:none; margin-top:26px; padding-top:20px; border-top:1px solid var(--line);">
@@ -361,6 +374,25 @@
       <button class="btn" onclick="submitEvent()" id="evtSubmitBtn">Enregistrer</button>
       <button onclick="cancelEdit()" id="evtCancelBtn" class="btn-outline" style="display:none;">Annuler la modification</button>
     </div>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+      <h2 style="margin-top:0;">Toutes les dates à venir</h2>
+      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Concerts et indisponibilités, tous artistes confondus (invités inclus), triés par date. Une ligne disparaît d'ici à la date de suppression, comme dans les agendas.</p>
+
+      <h3>🟡 Options</h3>
+      <table id="optionsTable">
+        <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Détail</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="optionsEmpty" style="display:none;">Aucune option en cours.</p>
+
+      <h3 style="margin-top:30px;">🟢 Validées</h3>
+      <table id="validatedTable">
+        <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Détail</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="validatedEmpty" style="display:none;">Aucune date validée à venir.</p>
+    </div>
   </div>
 
   <!-- ============ ONGLET 2 : AGENDA GLOBAL ============ -->
@@ -394,7 +426,7 @@
     <div class="agenda-grid" id="dispoGrid"></div>
 
     <table id="dispoTable">
-      <thead><tr><th>Artiste</th><th>Type</th><th>Événement</th><th>Publication</th><th>Suppression</th><th>Libellé</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Artiste</th><th>Type</th><th>Statut</th><th>Événement</th><th>Publication</th><th>Suppression</th><th>Libellé</th><th>Actions</th></tr></thead>
       <tbody></tbody>
     </table>
     <p class="empty" id="dispoEmpty" style="display:none;">Aucune date bloquée pour le moment.</p>
@@ -423,6 +455,14 @@
       <tbody></tbody>
     </table>
     <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
+  </div>
+
+  <!-- ============ ONGLET 4 : HISTORIQUE ============ -->
+  <div class="tab-content" id="tab-history">
+    <h2>Historique — dates passées</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:24px;">Toutes les dates passées (concerts, indisponibilités, invités inclus), classées par mois — conservées ici indépendamment de leur date de suppression, pour garder une mémoire complète.</p>
+    <div id="historyContainer"></div>
+    <p class="empty" id="historyEmpty" style="display:none;">Aucune date passée pour le moment.</p>
   </div>
 </div>
 
@@ -600,7 +640,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''}">
         <div class="agenda-daynum">${day}</div>
-        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}">${TYPE_ICONS[a.type] || '📣'} ${ARTIST_LABELS[a.artist_slug] || a.artist_slug}</div>`).join('')}
+        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}">${TYPE_ICONS[a.type] || '📣'} ${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)}</div>`).join('')}
         ${dayActus.length > 3 ? `<div class="agenda-more">+${dayActus.length - 3}</div>` : ''}
       </div>`;
     }
@@ -623,7 +663,7 @@
       <tr style="${expired ? 'opacity:0.5;' : ''}">
         <td>${TYPE_ICONS[a.type] || '📣'}</td>
         <td>${a.photo_url ? `<img src="${a.photo_url}" style="width:44px; height:44px; object-fit:cover; border-radius:6px;">` : '—'}</td>
-        <td>${ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
+        <td>${a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
         <td style="max-width:260px;">${a.text}</td>
         <td>${a.publish_at || '—'} ${scheduled ? '<span class="status pending">Programmée</span>' : ''}</td>
         <td>${a.event_date || '—'}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + a.event_end_date : ''}</td>
@@ -896,15 +936,31 @@
     document.getElementById('rmOverlay').classList.remove('open');
   }
 
+  function onArtistChange(){
+    const isGuest = document.getElementById('evtArtist').value === '_guest';
+    document.getElementById('evtGuestNameRow').style.display = isGuest ? 'flex' : 'none';
+    document.getElementById('evtGuestNote').style.display = isGuest ? 'block' : 'none';
+  }
+
+  function slugifyGuest(name){
+    const base = (name || '').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-+|-+$)/g, '');
+    return 'invite-' + (base || 'anonyme');
+  }
+
   function onEventTypeChange(){
     const type = document.getElementById('evtType').value;
     const isIndispo = type === 'indisponible';
     const isConcert = type === 'concert';
+    const isActu = type === 'actu';
     document.getElementById('evtTextRow').style.display = isIndispo ? 'none' : 'flex';
     document.getElementById('evtLabelRow').style.display = isIndispo ? 'flex' : 'none';
     document.getElementById('evtPhotoRow').style.display = isIndispo ? 'none' : 'flex';
-    document.getElementById('evtPublishGroup').style.display = isIndispo ? 'none' : 'flex';
-    document.getElementById('evtExpiresGroup').style.display = isIndispo ? 'none' : 'flex';
+    document.getElementById('evtStatusGroup').style.display = isActu ? 'none' : 'flex';
+    document.getElementById('evtPublishGroup').style.display = 'flex';
+    document.getElementById('evtExpiresGroup').style.display = 'flex';
     document.getElementById('evtEndGroup').style.display = 'flex';
     document.getElementById('roadmapSection').style.display = isConcert ? 'block' : 'none';
     if (isConcert && !document.querySelector('#timingRows .timing-row')) setTimingSteps(null);
@@ -947,7 +1003,9 @@
     switchTab('events');
     editingActuId = id;
     editingDispoId = null;
-    document.getElementById('evtArtist').value = a.artist_slug;
+    document.getElementById('evtArtist').value = a.guest_name ? '_guest' : a.artist_slug;
+    document.getElementById('evtGuestName').value = a.guest_name || '';
+    onArtistChange();
     document.getElementById('evtType').value = a.type;
     document.getElementById('evtType').disabled = true;
     document.getElementById('evtText').value = a.text || '';
@@ -956,6 +1014,8 @@
     document.getElementById('evtEnd').value = a.event_end_date || '';
     document.getElementById('evtPublish').value = a.publish_at || '';
     document.getElementById('evtExpires').value = a.expires_at || '';
+    const linkedDispo = (window.dispoData || []).find(x => x.source_actu_id === a.id);
+    document.getElementById('evtStatus').value = linkedDispo ? linkedDispo.status : 'validee';
     setRoadmapFields(a);
     evtPhotoBase64 = a.photo_url || null;
     const preview = document.getElementById('evtPhotoPreview');
@@ -986,6 +1046,7 @@
     document.getElementById('evtEnd').value = d.date;
     document.getElementById('evtPublish').value = d.publish_at || '';
     document.getElementById('evtExpires').value = d.expires_at || '';
+    document.getElementById('evtStatus').value = d.status || 'validee';
     onEventTypeChange();
     document.getElementById('evtFormTitle').textContent = "Modifier une indisponibilité";
     document.getElementById('evtSubmitBtn').textContent = 'Enregistrer les modifications';
@@ -996,6 +1057,9 @@
   function resetEventForm(){
     document.getElementById('evtText').value = '';
     document.getElementById('evtLabel').value = '';
+    document.getElementById('evtGuestName').value = '';
+    onArtistChange();
+    document.getElementById('evtStatus').value = 'option';
     document.getElementById('evtStart').value = '';
     document.getElementById('evtEnd').value = '';
     document.getElementById('evtPublish').value = '';
@@ -1020,7 +1084,11 @@
   }
 
   async function submitEvent(){
-    const artist_slug = document.getElementById('evtArtist').value;
+    const artistSel = document.getElementById('evtArtist').value;
+    const isGuest = artistSel === '_guest';
+    const guest_name = isGuest ? document.getElementById('evtGuestName').value.trim() : '';
+    if (isGuest && !guest_name){ alert("Merci de renseigner le nom de l'artiste invité."); return; }
+    const artist_slug = isGuest ? slugifyGuest(guest_name) : artistSel;
     const type = document.getElementById('evtType').value;
     const text = document.getElementById('evtText').value.trim();
     const label = document.getElementById('evtLabel').value.trim();
@@ -1029,11 +1097,16 @@
     const end_date = document.getElementById('evtEnd').value || start_date;
     const publish_at = document.getElementById('evtPublish').value;
     const expires_at = document.getElementById('evtExpires').value;
+    const status = document.getElementById('evtStatus').value;
     const conflictBox = document.getElementById('eventConflict');
     conflictBox.innerHTML = '';
 
     if (type !== 'indisponible' && (!text || !expires_at)){
       alert('Merci de renseigner le texte et la date de suppression.');
+      return;
+    }
+    if (type === 'indisponible' && !expires_at){
+      alert('Merci de renseigner la date de suppression.');
       return;
     }
     if ((type === 'concert' || type === 'indisponible') && !start_date){
@@ -1047,7 +1120,7 @@
     if (editingDispoId){
       res = await fetch(`${API_BASE}/api/admin/agenda/${editingDispoId}`, {
         method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-        body: JSON.stringify({ date: start_date, label, publish_at, expires_at })
+        body: JSON.stringify({ date: start_date, label, publish_at, expires_at, status })
       });
       data = await res.json();
       if (!res.ok){ alert(data.error || 'Erreur lors de la modification.'); return; }
@@ -1055,30 +1128,30 @@
       res = await fetch(`${API_BASE}/api/admin/actualites/${editingActuId}`, {
         method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
         body: JSON.stringify({
-          artist_slug, type, text, is_public,
+          artist_slug, guest_name, type, text, is_public,
           photo_url: evtPhotoBase64,
-          start_date, end_date, publish_at, expires_at,
+          start_date, end_date, publish_at, expires_at, status,
           ...roadmap
         })
       });
       data = await res.json();
       if (!res.ok){ alert(data.error || 'Erreur lors de la modification.'); return; }
       if (data.conflicts && data.conflicts.length){
-        conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+        conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${guest_name || ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
       }
     } else {
       res = await fetch(`${API_BASE}/api/admin/actualites`, {
         method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
         body: JSON.stringify({
-          artist_slug, type, text, label, is_public,
+          artist_slug, guest_name, type, text, label, is_public,
           photo_url: evtPhotoBase64,
-          start_date, end_date, publish_at, expires_at,
+          start_date, end_date, publish_at, expires_at, status,
           ...roadmap
         })
       });
       data = await res.json();
       if (data.conflicts && data.conflicts.length){
-        conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+        conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${guest_name || ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
       }
     }
 
@@ -1146,7 +1219,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''}">
         <div class="agenda-daynum">${day}</div>
-        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}">${d.type === 'concert' ? '🎤' : '🚫'} ${ARTIST_LABELS[d.artist_slug] || d.artist_slug}</div>`).join('')}
+        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}">${d.type === 'concert' ? '🎤' : '🚫'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}</div>`).join('')}
       </div>`;
     }
 
@@ -1213,8 +1286,9 @@
     document.getElementById('dispoEmpty').style.display='none';
     tbody.innerHTML = data.map(d => `
       <tr>
-        <td>${ARTIST_LABELS[d.artist_slug] || d.artist_slug}</td>
+        <td>${d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug}</td>
         <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
+        <td><button class="btn-no" style="background:${d.status === 'validee' ? '#6ee7a0' : 'var(--amber)'}; color:var(--ink);" onclick="toggleDispoStatus(${d.id}, '${d.status === 'validee' ? 'option' : 'validee'}')">${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</button></td>
         <td>${d.date}</td>
         <td>${d.publish_at || '—'}</td>
         <td>${d.expires_at || '—'}</td>
@@ -1224,6 +1298,85 @@
     `).join('');
     renderDispoCalendar();
     renderDispoSummary();
+    renderAllDatesOverview();
+    renderHistory();
+  }
+
+  function entryLabel(d){
+    return d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug;
+  }
+
+  function renderAllDatesOverview(){
+    const todayStr = new Date().toISOString().slice(0,10);
+    const data = (window.dispoData || [])
+      .filter(d => d.date >= todayStr && (!d.expires_at || d.expires_at >= todayStr))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    const options = data.filter(d => d.status !== 'validee');
+    const validated = data.filter(d => d.status === 'validee');
+
+    const renderRows = (list) => list.map(d => `
+      <tr>
+        <td>${d.date}</td>
+        <td>${entryLabel(d)}</td>
+        <td>${d.type === 'concert' ? '🎤 Concert' : '🚫 Indisponible'}</td>
+        <td style="max-width:260px; color:var(--muted); font-size:0.85rem;">${d.label || '—'}</td>
+        <td class="row-actions">
+          <button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>
+          <button class="btn-no" style="background:${d.status === 'validee' ? 'var(--amber)' : '#6ee7a0'}; color:var(--ink);" onclick="toggleDispoStatus(${d.id}, '${d.status === 'validee' ? 'option' : 'validee'}')">${d.status === 'validee' ? '🟡 Repasser en option' : '🟢 Valider'}</button>
+        </td>
+      </tr>
+    `).join('');
+
+    document.querySelector('#optionsTable tbody').innerHTML = renderRows(options);
+    document.getElementById('optionsEmpty').style.display = options.length ? 'none' : 'block';
+    document.querySelector('#validatedTable tbody').innerHTML = renderRows(validated);
+    document.getElementById('validatedEmpty').style.display = validated.length ? 'none' : 'block';
+  }
+
+  function renderHistory(){
+    const todayStr = new Date().toISOString().slice(0,10);
+    const past = (window.dispoData || []).filter(d => d.date < todayStr);
+    const container = document.getElementById('historyContainer');
+    document.getElementById('historyEmpty').style.display = past.length ? 'none' : 'block';
+    if (!past.length){ container.innerHTML = ''; return; }
+
+    const groups = {};
+    past.forEach(d => {
+      const monthKey = d.date.slice(0,7);
+      (groups[monthKey] = groups[monthKey] || []).push(d);
+    });
+
+    const monthKeys = Object.keys(groups).sort().reverse();
+    container.innerHTML = monthKeys.map(monthKey => {
+      const entries = groups[monthKey].sort((a, b) => b.date.localeCompare(a.date));
+      const monthLabel = new Date(monthKey + '-01T00:00:00').toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+      return `
+        <h3 style="text-transform:capitalize;">${monthLabel}</h3>
+        <table>
+          <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Statut</th><th>Détail</th></tr></thead>
+          <tbody>
+            ${entries.map(d => `
+              <tr>
+                <td>${d.date}</td>
+                <td>${entryLabel(d)}</td>
+                <td>${d.type === 'concert' ? '🎤 Concert' : '🚫 Indisponible'}</td>
+                <td>${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</td>
+                <td style="max-width:260px; color:var(--muted); font-size:0.85rem;">${d.label || '—'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }).join('');
+  }
+
+  async function toggleDispoStatus(id, newStatus){
+    await fetch(`${API_BASE}/api/admin/agenda/${id}/status`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ status: newStatus })
+    });
+    loadDispos();
   }
 
   async function deleteDispo(id){
