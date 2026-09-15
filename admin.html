@@ -6,6 +6,8 @@
 <title>Admin — SLP</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --line:rgba(255,255,255,0.1); }
   *{box-sizing:border-box;}
@@ -101,6 +103,9 @@
   .dispo-summary-row .range{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.7rem; white-space:nowrap;}
   .dispo-summary-empty{color:var(--muted); font-size:0.8rem;}
 
+  .period-btn{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:8px 18px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.86rem; transition:background 0.15s ease, color 0.15s ease;}
+  .period-btn.active{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
+
   /* ---- Feuille de route : gabarit clair fidèle au modèle Word ---- */
   .modal-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:200; align-items:flex-start; justify-content:center; padding:30px 20px; overflow-y:auto;}
   .modal-overlay.open{display:flex;}
@@ -148,7 +153,7 @@
 
 <div class="login-box" id="loginBox">
   <div style="background:#0c0b10; padding:10px 16px; border-radius:12px; display:inline-block; margin-bottom:20px;">
-    <img src="slp-logo-complet.png" alt="SLP" style="height:168px; width:auto; display:block;">
+    <img src="slp-logo-complet.png" alt="SLP" style="height:336px; width:auto; display:block;">
   </div>
   <h1>Espace admin SLP</h1>
   <input type="password" id="pwd" placeholder="Mot de passe">
@@ -548,7 +553,33 @@
   <div class="tab-content" id="tab-visits">
     <h2>Visites du site</h2>
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie), toutes pages confondues.</p>
-    <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; margin-bottom:20px;"><span id="siteVisitTotal">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;">visite(s) au total, toutes pages</span></p>
+    <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; margin-bottom:14px;"><span id="siteVisitTotal">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;">visite(s) au total, toutes pages</span></p>
+
+    <div class="form-row" style="margin-bottom:20px;">
+      <button class="period-btn active" id="periodBtn-today" onclick="setVisitsPeriod('today')">Aujourd'hui</button>
+      <button class="period-btn" id="periodBtn-week" onclick="setVisitsPeriod('week')">7 derniers jours</button>
+      <button class="period-btn" id="periodBtn-month" onclick="setVisitsPeriod('month')">30 derniers jours</button>
+      <button class="period-btn" id="periodBtn-all" onclick="setVisitsPeriod('all')">Tout</button>
+    </div>
+
+    <h3>Carte des visites</h3>
+    <div id="visitsMap" style="height:380px; border-radius:14px; overflow:hidden; margin-bottom:30px; border:1px solid var(--line);"></div>
+
+    <h3>Répartition <span id="periodTotalLabel" style="color:var(--muted); font-size:0.8rem; font-weight:400;"></span></h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; margin-bottom:30px;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Par pays</div>
+        <table id="breakdownCountryTable"><tbody></tbody></table>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Par région</div>
+        <table id="breakdownRegionTable"><tbody></tbody></table>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Par ville</div>
+        <table id="breakdownCityTable"><tbody></tbody></table>
+      </div>
+    </div>
 
     <h3>Par page</h3>
     <table id="visitsSummaryTable">
@@ -1462,8 +1493,63 @@
     return PAGE_LABELS[slug] || ARTIST_LABELS[slug] || slug;
   }
 
+  let visitsMapInstance = null;
+
+  let currentVisitsPeriod = 'today';
+
+  function setVisitsPeriod(period){
+    currentVisitsPeriod = period;
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('periodBtn-' + period).classList.add('active');
+    loadVisitsMap();
+    loadVisitsBreakdown();
+  }
+
+  async function loadVisitsMap(){
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits-map?period=${currentVisitsPeriod}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const points = await res.json();
+      if (!visitsMapInstance){
+        visitsMapInstance = L.map('visitsMap').setView([46.6, 2.5], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 18,
+        }).addTo(visitsMapInstance);
+        visitsMapInstance.markerLayer = L.layerGroup().addTo(visitsMapInstance);
+      }
+      visitsMapInstance.markerLayer.clearLayers();
+      (points || []).forEach(p => {
+        if (p.latitude == null || p.longitude == null) return;
+        const marker = L.circleMarker([p.latitude, p.longitude], {
+          radius: 6, color: '#ffb238', fillColor: '#ffb238', fillOpacity: 0.7, weight: 1,
+        });
+        marker.bindPopup(`<strong>${pageLabel(p.page)}</strong><br>${[p.city, p.region, p.country].filter(Boolean).join(', ')}<br>${p.visited_at}`);
+        marker.addTo(visitsMapInstance.markerLayer);
+      });
+      setTimeout(() => visitsMapInstance.invalidateSize(), 50);
+    } catch(e){ /* silencieux */ }
+  }
+
+  async function loadVisitsBreakdown(){
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits-breakdown?period=${currentVisitsPeriod}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      document.getElementById('periodTotalLabel').textContent = `— ${data.total || 0} visite(s) sur la période`;
+      const renderList = (sel, list) => {
+        document.querySelector(sel + ' tbody').innerHTML = (list || []).map(row => `
+          <tr><td>${row.label}</td><td style="text-align:right; color:var(--muted);">${row.total}</td></tr>
+        `).join('');
+      };
+      renderList('#breakdownCountryTable', data.by_country);
+      renderList('#breakdownRegionTable', data.by_region);
+      renderList('#breakdownCityTable', data.by_city);
+    } catch(e){ /* silencieux */ }
+  }
+
   async function loadVisitsSummary(){
     document.getElementById('visitsDetailBox').style.display = 'none';
+    loadVisitsMap();
+    loadVisitsBreakdown();
     try {
       const res = await fetch(`${API_BASE}/api/admin/visits-summary`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
