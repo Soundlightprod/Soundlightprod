@@ -410,8 +410,9 @@
 
   <!-- ============ ONGLET 2 : AGENDA GLOBAL ============ -->
   <div class="tab-content" id="tab-agenda">
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Ce qui est réellement visible sur le site en ce moment — les "Quoi de neuf" des fiches artistes et l'agenda public. Une option, une date masquée ou une indisponibilité n'apparaissent jamais ici, même si elles existent dans ton planning (vois l'onglet "Vision globale agenda" pour tout, y compris le privé).</p>
 
-    <h2>Agenda des actualités</h2>
+    <h2>Agenda des actualités (aperçu public)</h2>
     <div class="agenda-legend" id="agendaLegend"></div>
     <div class="agenda-nav">
       <button onclick="shiftAgendaMonth(-1)">← Mois préc.</button>
@@ -420,30 +421,32 @@
     </div>
     <div class="agenda-grid" id="agendaGrid"></div>
 
-    <table id="actuTable">
-      <thead><tr><th></th><th>Photo</th><th>Artiste</th><th>Texte</th><th>Publication</th><th>Événement</th><th>Suppression</th><th>Public</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <p class="empty" id="actuEmpty" style="display:none;">Aucune actualité pour le moment.</p>
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+      <h2 style="margin-top:0;">Prochains événements publics</h2>
+      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Exactement ce que voient les visiteurs sur la page Agenda du site — concerts validés, publics, et déjà publiés.</p>
+      <table id="publicUpcomingTable">
+        <thead><tr><th>Date</th><th>Artiste</th><th>Détail</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="publicUpcomingEmpty" style="display:none;">Aucun événement public à venir pour le moment.</p>
+    </div>
 
     <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
-      <h2 style="margin-top:0;">Toutes les dates à venir</h2>
-      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Concerts et indisponibilités, tous artistes confondus (invités inclus), triés par date. Une ligne disparaît d'ici à la date de suppression, comme dans les agendas.</p>
-
-      <h3>🟡 Options</h3>
-      <table id="optionsTable">
-        <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Détail</th><th>Actions</th></tr></thead>
+      <h2 style="margin-top:0;">Gestion des actualités</h2>
+      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Toutes les actus, y compris masquées ou en option — pour modifier, supprimer ou basculer leur visibilité.</p>
+      <table id="actuTable">
+        <thead><tr><th></th><th>Photo</th><th>Artiste</th><th>Texte</th><th>Publication</th><th>Événement</th><th>Suppression</th><th>Public</th><th>Actions</th></tr></thead>
         <tbody></tbody>
       </table>
-      <p class="empty" id="optionsEmpty" style="display:none;">Aucune option en cours.</p>
-
-      <h3 style="margin-top:30px;">🟢 Validées</h3>
-      <table id="validatedTable">
-        <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Détail</th><th>Actions</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <p class="empty" id="validatedEmpty" style="display:none;">Aucune date validée à venir.</p>
+      <p class="empty" id="actuEmpty" style="display:none;">Aucune actualité pour le moment.</p>
     </div>
+  </div>
+
+  <!-- ============ ONGLET 3 : VISION GLOBALE AGENDA ============ -->
+  <div class="tab-content" id="tab-overview">
+    <h2>Vision globale agenda</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Absolument tout ce qui occupe chaque groupe — concerts publics, soirées privées, prestations techniques ou DJ, options comme validées — que ce soit affiché sur le site ou pas. C'est ta vue de planning complète.</p>
+    <div class="dispo-summary-grid" id="dispoSummaryGrid"></div>
 
     <h2>Calendrier disponibilités</h2>
     <div class="agenda-legend" id="dispoLegend"></div>
@@ -459,13 +462,6 @@
       <tbody></tbody>
     </table>
     <p class="empty" id="dispoEmpty" style="display:none;">Aucune date bloquée pour le moment.</p>
-  </div>
-
-  <!-- ============ ONGLET 3 : VISION GLOBALE AGENDA ============ -->
-  <div class="tab-content" id="tab-overview">
-    <h2>Vision globale agenda</h2>
-    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Un coup d'œil sur les prochaines dates de chaque groupe.</p>
-    <div class="dispo-summary-grid" id="dispoSummaryGrid"></div>
   </div>
 
   <!-- ============ ONGLET 4 : VUE GROUPE (lecture seule, ce que voit le groupe) ============ -->
@@ -680,6 +676,16 @@
     renderAgenda();
   }
 
+  function isActuPublicNow(a){
+    const today = new Date().toISOString().slice(0,10);
+    if (!a.is_public) return false;
+    if (a.publish_at && a.publish_at > today) return false;
+    if (a.expires_at && a.expires_at < today) return false;
+    const hasOption = (window.dispoData || []).some(d => d.source_actu_id === a.id && d.status === 'option');
+    if (hasOption) return false;
+    return true;
+  }
+
   function renderAgenda(){
     const grid = document.getElementById('agendaGrid');
     const label = document.getElementById('agendaMonthLabel');
@@ -694,7 +700,7 @@
     const startOffset = (firstDay.getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const todayStr = new Date().toISOString().slice(0,10);
-    const data = window.actusData || [];
+    const data = (window.actusData || []).filter(isActuPublicNow);
 
     for (let i = 0; i < startOffset; i++){
       html += `<div class="agenda-day empty"></div>`;
@@ -720,12 +726,28 @@
     grid.innerHTML = html;
   }
 
+  function renderPublicUpcoming(){
+    const today = new Date().toISOString().slice(0,10);
+    const list = (window.actusData || [])
+      .filter(a => a.type === 'concert' && a.event_date && a.event_date >= today && isActuPublicNow(a))
+      .sort((a, b) => a.event_date.localeCompare(b.event_date));
+    const tbody = document.querySelector('#publicUpcomingTable tbody');
+    document.getElementById('publicUpcomingEmpty').style.display = list.length ? 'none' : 'block';
+    tbody.innerHTML = list.map(a => `
+      <tr>
+        <td>${a.event_date}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + a.event_end_date : ''}</td>
+        <td>${a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
+        <td style="color:var(--muted);">${a.text}${entryVenue(a) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(a)}</span>` : ''}</td>
+      </tr>
+    `).join('');
+  }
+
   async function loadActus(){
     const res = await fetch(`${API_BASE}/api/admin/actualites`, { headers:{ Authorization:`Bearer ${token}` } });
     const data = await res.json();
     window.actusData = data;
     const tbody = document.querySelector('#actuTable tbody');
-    if (!data.length){ document.getElementById('actuEmpty').style.display='block'; tbody.innerHTML=''; renderAgenda(); return; }
+    if (!data.length){ document.getElementById('actuEmpty').style.display='block'; tbody.innerHTML=''; renderAgenda(); renderPublicUpcoming(); return; }
     document.getElementById('actuEmpty').style.display='none';
     const today = new Date().toISOString().slice(0,10);
     tbody.innerHTML = data.map(a => {
@@ -750,6 +772,7 @@
     `;
     }).join('');
     renderAgenda();
+    renderPublicUpcoming();
   }
 
   // ---------- Feuille de route : lignes de timing dynamiques ----------
@@ -1354,7 +1377,7 @@
     const data = await res.json();
     window.dispoData = data;
     const tbody = document.querySelector('#dispoTable tbody');
-    if (!data.length){ document.getElementById('dispoEmpty').style.display='block'; tbody.innerHTML=''; renderDispoCalendar(); renderDispoSummary(); return; }
+    if (!data.length){ document.getElementById('dispoEmpty').style.display='block'; tbody.innerHTML=''; renderDispoCalendar(); renderDispoSummary(); renderAgenda(); renderPublicUpcoming(); renderHistory(); return; }
     document.getElementById('dispoEmpty').style.display='none';
     tbody.innerHTML = data.map(d => `
       <tr>
@@ -1370,7 +1393,8 @@
     `).join('');
     renderDispoCalendar();
     renderDispoSummary();
-    renderAllDatesOverview();
+    renderAgenda();
+    renderPublicUpcoming();
     renderHistory();
   }
 
@@ -1436,34 +1460,6 @@
         <td>${e.type === 'concert' && e.source_actu_id ? `<button class="btn-info" onclick="previewRoadmap(${e.source_actu_id})">Feuille de route</button>` : ''}</td>
       </tr>
     `).join('');
-  }
-
-  function renderAllDatesOverview(){
-    const todayStr = new Date().toISOString().slice(0,10);
-    const data = (window.dispoData || [])
-      .filter(d => d.date >= todayStr && (!d.expires_at || d.expires_at >= todayStr))
-      .sort((a, b) => a.date.localeCompare(b.date));
-
-    const options = data.filter(d => d.status !== 'validee');
-    const validated = data.filter(d => d.status === 'validee');
-
-    const renderRows = (list) => list.map(d => `
-      <tr>
-        <td>${d.date}</td>
-        <td>${entryLabel(d)}</td>
-        <td>${d.type === 'concert' ? '🎤 Concert' : '🚫 Indisponible'}</td>
-        <td style="max-width:260px; color:var(--muted); font-size:0.85rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
-        <td class="row-actions">
-          <button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>
-          <button class="btn-no" style="background:${d.status === 'validee' ? 'var(--amber)' : '#6ee7a0'}; color:var(--ink);" onclick="toggleDispoStatus(${d.id}, '${d.status === 'validee' ? 'option' : 'validee'}')">${d.status === 'validee' ? '🟡 Repasser en option' : '🟢 Valider'}</button>
-        </td>
-      </tr>
-    `).join('');
-
-    document.querySelector('#optionsTable tbody').innerHTML = renderRows(options);
-    document.getElementById('optionsEmpty').style.display = options.length ? 'none' : 'block';
-    document.querySelector('#validatedTable tbody').innerHTML = renderRows(validated);
-    document.getElementById('validatedEmpty').style.display = validated.length ? 'none' : 'block';
   }
 
   function renderHistory(){
