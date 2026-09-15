@@ -213,7 +213,7 @@
         <input type="date" id="evtExpires">
       </div>
     </div>
-    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Une date en <strong>option</strong> bloque déjà le créneau (anti-doublon actif) mais reste à confirmer — bascule-la en "Validée" une fois certaine. Date de publication vide = visible tout de suite. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site ; pour tous les types, elle détermine aussi jusqu'à quand la date apparaît dans les vues "Toutes les dates" et l'agenda du groupe.</p>
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Une date en <strong>option</strong> bloque déjà le créneau (anti-doublon actif) mais reste à confirmer — et n'apparaît jamais publiquement (fiche artiste, agenda du site), même si "Visible au public" est coché. Bascule-la en "Validée" pour qu'elle se publie. Date de publication vide = visible tout de suite une fois validée. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site ; pour tous les types, elle détermine aussi jusqu'à quand la date apparaît dans les vues "Toutes les dates" et l'agenda du groupe.</p>
 
     <!-- ============ FEUILLE DE ROUTE (concert uniquement) ============ -->
     <div id="roadmapSection" style="display:none; margin-top:26px; padding-top:20px; border-top:1px solid var(--line);">
@@ -1306,6 +1306,10 @@
     return d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug;
   }
 
+  function entryVenue(d){
+    return [d.venue_name, d.venue_city].filter(Boolean).join(', ');
+  }
+
   function renderAllDatesOverview(){
     const todayStr = new Date().toISOString().slice(0,10);
     const data = (window.dispoData || [])
@@ -1320,7 +1324,7 @@
         <td>${d.date}</td>
         <td>${entryLabel(d)}</td>
         <td>${d.type === 'concert' ? '🎤 Concert' : '🚫 Indisponible'}</td>
-        <td style="max-width:260px; color:var(--muted); font-size:0.85rem;">${d.label || '—'}</td>
+        <td style="max-width:260px; color:var(--muted); font-size:0.85rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
         <td class="row-actions">
           <button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>
           <button class="btn-no" style="background:${d.status === 'validee' ? 'var(--amber)' : '#6ee7a0'}; color:var(--ink);" onclick="toggleDispoStatus(${d.id}, '${d.status === 'validee' ? 'option' : 'validee'}')">${d.status === 'validee' ? '🟡 Repasser en option' : '🟢 Valider'}</button>
@@ -1362,7 +1366,7 @@
                 <td>${entryLabel(d)}</td>
                 <td>${d.type === 'concert' ? '🎤 Concert' : '🚫 Indisponible'}</td>
                 <td>${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</td>
-                <td style="max-width:260px; color:var(--muted); font-size:0.85rem;">${d.label || '—'}</td>
+                <td style="max-width:260px; color:var(--muted); font-size:0.85rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
               </tr>
             `).join('')}
           </tbody>

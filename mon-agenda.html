@@ -47,6 +47,15 @@
   .btn-link{background:none; border:none; color:var(--gold); text-decoration:underline; cursor:pointer; font-size:0.82rem; padding:0; font-family:'Manrope',sans-serif;}
   .empty{color:var(--muted); font-size:0.86rem; padding:14px 0;}
 
+  .help-box{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:6px 20px 18px; margin-bottom:26px;}
+  .help-box summary{cursor:pointer; font-weight:700; padding:14px 0; list-style:none; display:flex; align-items:center; gap:8px;}
+  .help-box summary::-webkit-details-marker{display:none;}
+  .help-box summary::before{content:'▸'; color:var(--gold); transition:transform 0.15s ease;}
+  .help-box[open] summary::before{transform:rotate(90deg);}
+  .help-box h4{font-family:'Space Grotesk',sans-serif; font-size:0.92rem; margin:14px 0 6px;}
+  .help-box ul{margin:0 0 10px; padding-left:20px; color:var(--paper); font-size:0.86rem; line-height:1.6;}
+  .help-box li{margin-bottom:4px;}
+
   .agenda-day.has-concert{cursor:pointer;}
   .agenda-day.has-concert:hover{border-color:var(--gold);}
 
@@ -104,6 +113,31 @@
 <div class="wrap" id="app" style="display:none;">
   <h1 id="pageTitle">Mon agenda</h1>
   <p class="sub">Consulte tes dates et ajoute tes indisponibilités. Clique sur une date de concert pour voir sa feuille de route. Les concerts sont gérés par SLP et ne peuvent pas être modifiés ici.</p>
+
+  <details class="help-box" open>
+    <summary>Comment ça marche ?</summary>
+    <h4>Lire le calendrier</h4>
+    <ul>
+      <li>🎤 = un concert · 🚫 = une indisponibilité</li>
+      <li>Fond plein = date <strong>validée</strong> (confirmée par SLP)</li>
+      <li>Contour en pointillés avec un « ? » = date en <strong>option</strong>, pas encore confirmée</li>
+      <li>Clique sur une date de concert pour ouvrir sa feuille de route</li>
+    </ul>
+    <h4>Ajouter une indisponibilité</h4>
+    <ul>
+      <li>Remplis « Du » (et « Au » si plusieurs jours), un motif si tu veux, puis clique « Ajouter »</li>
+      <li>Si la date est déjà prise, un message te le signale et rien n'est écrasé</li>
+    </ul>
+    <h4>Ce que tu ne peux pas faire ici</h4>
+    <ul>
+      <li>Modifier ou supprimer un concert — c'est géré par SLP</li>
+      <li>Voir l'agenda d'un autre groupe</li>
+    </ul>
+    <h4>Besoin d'aide ?</h4>
+    <ul>
+      <li>contact@soundlightprod.fr · 06 31 94 96 53</li>
+    </ul>
+  </details>
 
   <div class="agenda-nav">
     <button onclick="shiftMonth(-1)">← Mois préc.</button>
@@ -261,7 +295,7 @@
         <td>${e.date}</td>
         <td>${e.type === 'concert' ? '🎤 Concert' : '🚫 Indisponible'}</td>
         <td>${e.status === 'option' ? '🟡 Option' : '🟢 Validée'}</td>
-        <td style="color:var(--muted);">${e.label || '—'}</td>
+        <td style="color:var(--muted);">${e.label || '—'}${[e.venue_name, e.venue_city].filter(Boolean).length ? `<br><span style="color:var(--gold);">📍 ${escapeHtml([e.venue_name, e.venue_city].filter(Boolean).join(', '))}</span>` : ''}</td>
         <td>
           ${e.type === 'concert' && e.source_actu_id ? `<button class="btn-link" onclick="openRoadmap(${e.source_actu_id}, '${e.date}')">Feuille de route</button>` : ''}
           ${e.type === 'indisponible' ? `<button class="btn-no" onclick="removeIndispo(${e.id})">Supprimer</button>` : ''}
