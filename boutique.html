@@ -130,7 +130,7 @@
 
 <section>
   <div class="wrap" style="padding-top:0; padding-bottom:0;">
-    <div style="margin-bottom:40px;">
+    <div id="amazonAdBlock" style="display:none; margin-bottom:40px;">
       <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
         <h2 style="font-size:1.2rem; margin:0;">Aussi disponible sur Amazon</h2>
         <span style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; text-transform:uppercase; color:var(--muted); letter-spacing:0.08em;">Publicité · Liens affiliés</span>
@@ -150,11 +150,11 @@
           <p class="desc">Sonorisation active pour bars, salles et petits événements, prêtes à brancher.</p>
           <div class="price-row"><span style="background:#ff9900; color:#111; font-weight:700; padding:8px 16px; border-radius:100px; font-size:0.82rem;">Voir sur Amazon ↗</span></div>
         </a>
-        <a href="https://www.amazon.fr/s?k=projecteur+led+dmx&tag=soundlightprod-21" target="_blank" rel="noopener sponsored" class="card" style="text-decoration:none;">
-          <div class="card-img" style="background:linear-gradient(135deg, #2a2333, #1a1620); font-size:2.4rem;">💡</div>
+        <a href="https://www.amazon.fr/s?k=microphone+sans+fil&tag=soundlightprod-21" target="_blank" rel="noopener sponsored" class="card" style="text-decoration:none;">
+          <div class="card-img" style="background:linear-gradient(135deg, #2a2333, #1a1620); font-size:2.4rem;">🎤</div>
           <span class="cat">Publicité</span>
-          <h3>Projecteurs LED DMX</h3>
-          <p class="desc">Éclairage scénique piloté DMX, pour compléter ou dépanner ton parc lumière.</p>
+          <h3>Microphones sans fil</h3>
+          <p class="desc">Micros HF pour prise de parole, chant ou animation, sans contrainte de câble.</p>
           <div class="price-row"><span style="background:#ff9900; color:#111; font-weight:700; padding:8px 16px; border-radius:100px; font-size:0.82rem;">Voir sur Amazon ↗</span></div>
         </a>
         <a href="https://www.amazon.fr/s?k=cable+xlr&tag=soundlightprod-21" target="_blank" rel="noopener sponsored" class="card" style="text-decoration:none;">
@@ -344,6 +344,7 @@
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderGrid(btn.dataset.cat);
+      document.getElementById('amazonAdBlock').style.display = btn.dataset.cat === 'son' ? 'block' : 'none';
     };
   });
 
