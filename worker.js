@@ -952,6 +952,13 @@ export default {
         return json({ ok: true }, 200, origin);
       }
 
+      // Toute route non gérée : si ce n'est pas un appel /api/*, on sert le fichier statique
+      // correspondant (site + admin). C'est indispensable avec run_worker_first: true — sans ça,
+      // le Worker intercepte TOUTES les requêtes, y compris les pages du site, avant les assets.
+      if (!url.pathname.startsWith("/api/")) {
+        return env.ASSETS.fetch(request);
+      }
+
       return json({ error: "Route inconnue" }, 404, origin);
     } catch (err) {
       return json({ error: err.message || "Erreur serveur" }, 500, origin);
