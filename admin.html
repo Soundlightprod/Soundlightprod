@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Admin — SLP</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="admin-manifest.json">
+<meta name="theme-color" content="#0c0b10">
+<link rel="icon" href="admin-icon-192.png">
+<link rel="apple-touch-icon" href="admin-icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SLP Admin">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --line:rgba(255,255,255,0.1); }
+  *{box-sizing:border-box;}
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; margin:0; padding:24px;}
+  h1{
+    font-family:'Space Grotesk',sans-serif; font-size:1.6rem; margin-bottom:20px;
+    background:linear-gradient(90deg, #2f9bff, #8b5cf6, #ff4d7d, #ffb238, #2f9bff);
+    background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:hueSlide 8s linear infinite;
+  }
+  @keyframes hueSlide{ to{ background-position:300% center; } }
+  @media (prefers-reduced-motion: reduce){ h1{ animation:none; } }
+  h2{font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin:30px 0 14px;}
+  h3{font-family:'Space Grotesk',sans-serif; font-size:1rem;}
+  .login-box{max-width:340px; margin:80px auto; text-align:center;}
+  .login-box input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); margin-bottom:12px;}
+  .login-box button, .btn{background:var(--paper); color:var(--ink); border:none; border-radius:100px; padding:10px 20px; font-weight:700; cursor:pointer; font-family:'Manrope',sans-serif;}
+  .btn-outline{background:none; border:1px solid var(--line); color:var(--paper); border-radius:100px; padding:10px 20px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.9rem;}
+  table{width:100%; border-collapse:collapse; font-size:0.86rem; margin-bottom:10px;}
+  th, td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line);}
+  th{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase;}
+  .status{padding:4px 10px; border-radius:20px; font-size:0.72rem; font-family:'JetBrains Mono',monospace;}
+  .status.pending{background:rgba(255,178,56,0.15); color:var(--amber);}
+  .status.confirmed{background:rgba(110,231,160,0.15); color:#6ee7a0;}
+  .status.refused, .status.cancelled{background:rgba(255,77,125,0.15); color:var(--pink);}
+  .status.paid{background:rgba(110,231,160,0.15); color:#6ee7a0;}
+  .row-actions button{margin-right:6px; font-size:0.78rem; padding:6px 14px; border-radius:100px; border:none; cursor:pointer;}
+  .btn-yes{background:#6ee7a0; color:var(--ink);}
+  .btn-no{background:var(--pink); color:#fff;}
+  .btn-info{background:var(--amber); color:var(--ink);}
+  #app{display:none; max-width:1100px; margin:0 auto;}
+  .empty{color:var(--muted); font-size:0.88rem; padding:16px 0;}
+
+  .tabs{display:flex; gap:8px; border-bottom:1px solid var(--line); margin-bottom:30px; flex-wrap:wrap;}
+  .tab-btn{background:none; border:none; color:var(--muted); font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.95rem; padding:12px 18px; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .tab-btn:hover{color:var(--paper);}
+  .tab-btn.active{color:var(--paper); border-bottom-color:var(--amber);}
+  .tab-btn{transition:transform 0.15s ease, color 0.2s ease, border-color 0.2s ease;}
+  .tab-btn:hover{transform:translateY(-1px);}
+  .tab-content.active{animation:tabIn 0.25s ease;}
+  @keyframes tabIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .btn{transition:transform 0.15s ease, box-shadow 0.15s ease;}
+  .btn:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.3);}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+
+  .field-group{display:flex; flex-direction:column; gap:4px;}
+  .field-group label{font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .field-group input, .field-group select{padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);}
+  .form-row{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:flex-end;}
+  .form-row select, .form-row textarea, .form-row input[type=text]{padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);}
+  .form-row textarea{flex:1; min-width:220px; resize:vertical; min-height:44px; font-family:'Manrope',sans-serif;}
+  .check-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:10px; margin-bottom:16px;}
+  .check-grid label{display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;}
+  .check-grid input{width:auto;}
+
+  .agenda-legend{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:16px; font-size:0.8rem; color:var(--muted);}
+  .agenda-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .agenda-dot{width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0;}
+  .agenda-nav{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+  .agenda-nav button{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:8px; padding:6px 14px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.9rem;}
+  .agenda-nav button:hover{border-color:rgba(255,255,255,0.3);}
+  .agenda-month{font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.05rem; text-transform:capitalize;}
+  .agenda-grid{display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin-bottom:34px;}
+  .agenda-dow{text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.66rem; color:var(--muted); text-transform:uppercase; padding-bottom:6px; letter-spacing:0.04em;}
+  .agenda-day{min-height:84px; background:var(--ink-2); border:1px solid var(--line); border-radius:10px; padding:6px; display:flex; flex-direction:column; gap:3px;}
+  .agenda-day.empty{background:transparent; border:none;}
+  .agenda-day.today{border-color:var(--amber);}
+  .agenda-daynum{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:0.68rem;}
+  .agenda-day.today .agenda-daynum{color:var(--amber); font-weight:700;}
+  .agenda-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink); font-weight:700;}
+  .agenda-more{color:var(--muted); font-size:0.62rem; padding-left:2px;}
+  @media (max-width:700px){ .agenda-grid{gap:3px;} .agenda-day{min-height:60px; padding:4px;} .agenda-item{font-size:0.58rem;} }
+
+  .dispo-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink); font-weight:700;}
+  .dispo-item.indisponible{background:repeating-linear-gradient(45deg, currentColor 0 4px, rgba(0,0,0,0.25) 4px 8px) !important; color:var(--ink) !important; opacity:0.85;}
+  .conflict-msg{background:rgba(255,77,125,0.12); border:1px solid var(--pink); color:var(--pink); border-radius:10px; padding:10px 14px; font-size:0.84rem; margin-bottom:16px;}
+
+  .gv-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; font-weight:700; background:var(--amber); color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .gv-item.indisponible{background:var(--pink); color:#fff;}
+  .gv-item.option{background:transparent; border:1.5px dashed var(--amber); color:var(--amber);}
+  .gv-item.indisponible.option{border-color:var(--pink); color:var(--pink);}
+  .agenda-day.gv-clickable{cursor:pointer;}
+  .agenda-day.gv-clickable:hover{border-color:var(--amber);}
+
+  .dispo-summary-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px; margin-bottom:30px;}
+  .dispo-summary-card{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:16px 18px; transition:transform 0.15s ease, border-color 0.15s ease;}
+  .dispo-summary-card:hover{transform:translateY(-2px); border-color:var(--amber);}
+  .dispo-summary-card h3{font-size:0.92rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; font-family:'Space Grotesk',sans-serif; color:var(--paper);}
+  .dispo-summary-dot{width:10px; height:10px; border-radius:50%; display:inline-block; flex-shrink:0;}
+  .dispo-summary-list{display:flex; flex-direction:column; gap:8px;}
+  .dispo-summary-row{display:flex; justify-content:space-between; align-items:baseline; gap:10px; font-size:0.8rem; color:var(--paper);}
+  .dispo-summary-row .range{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.7rem; white-space:nowrap;}
+  .dispo-summary-empty{color:var(--muted); font-size:0.8rem;}
+
+  .period-btn{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:8px 18px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.86rem; transition:background 0.15s ease, color 0.15s ease;}
+  .period-btn.active{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
+
+  /* ---- Feuille de route : gabarit clair fidèle au modèle Word ---- */
+  .modal-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:200; align-items:flex-start; justify-content:center; padding:30px 20px; overflow-y:auto;}
+  .modal-overlay.open{display:flex;}
+  .modal-shell{background:#fff; border-radius:10px; max-width:760px; width:100%; overflow:hidden;}
+  .modal-toolbar{display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background:var(--ink-2);}
+  .modal-toolbar button{font-size:0.85rem;}
+  .rm-doc{background:#fff; color:#111; font-family:'Manrope',Arial,sans-serif; padding:30px 34px;}
+  .rm-header{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; gap:16px;}
+  .rm-brand-name{font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.5rem; color:#111;}
+  .rm-brand-name span{font-size:0.66rem; font-weight:700; letter-spacing:0.06em; margin-left:8px; color:#333;}
+  .rm-brand-sub{font-style:italic; font-size:0.78rem; color:#555; margin-top:3px;}
+  .rm-title-box{background:#e6e6e6; padding:12px 20px; text-align:right; font-weight:800; font-size:0.8rem; letter-spacing:0.03em; color:#111; white-space:nowrap;}
+  .rm-title-box div:last-child{font-size:0.72rem; margin-top:2px;}
+  .rm-hr-thick{height:3px; background:#333; margin:6px 0 18px;}
+  .rm-section-title{font-weight:800; font-size:0.84rem; letter-spacing:0.03em; margin:20px 0 8px; border-bottom:1px solid #999; padding-bottom:5px; color:#111; text-transform:uppercase;}
+  .rm-section-title:first-of-type{margin-top:0;}
+  .rm-box{border:1px solid #ccc; padding:8px 12px; margin-bottom:8px;}
+  .rm-row2{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;}
+  .rm-row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px;}
+  .rm-cell{border:1px solid #ccc; padding:8px 12px;}
+  .rm-label{display:block; font-size:0.6rem; text-transform:uppercase; letter-spacing:0.04em; color:#666; font-weight:700; margin-bottom:4px;}
+  .rm-value{font-size:0.86rem; min-height:1.1em; color:#111; white-space:pre-wrap;}
+  .rm-table{width:100%; border-collapse:collapse; margin-bottom:8px;}
+  .rm-table th{background:#1a1a1a; color:#fff; text-align:left; padding:7px 12px; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.03em;}
+  .rm-table td{border:1px solid #ccc; padding:7px 12px; font-size:0.84rem; color:#111;}
+  .rm-table tr:nth-child(even) td{background:#f3f3f3;}
+  .rm-italic{font-style:italic; font-size:0.72rem; color:#555; margin:6px 0 0;}
+  .rm-checks{display:grid; grid-template-columns:1fr 1fr; gap:7px 24px; margin-bottom:12px; font-size:0.86rem; color:#111;}
+  .rm-checks span{display:inline-flex; align-items:center; gap:8px;}
+  .rm-checkbox{width:13px; height:13px; border:1.5px solid #333; display:inline-block; flex-shrink:0; text-align:center; line-height:12px; font-size:11px;}
+  .rm-checkbox.on{background:#111; color:#fff;}
+  .rm-footer{display:flex; justify-content:space-between; border-top:1px solid #ccc; margin-top:24px; padding-top:10px; font-size:0.68rem; color:#666;}
+
+  @media print{
+    body *{visibility:hidden;}
+    #rmDoc, #rmDoc *{visibility:visible;}
+    #rmDoc{position:absolute; inset:0;}
+    .modal-overlay{position:static; background:none; padding:0;}
+    .modal-shell{max-width:none;}
+    .modal-toolbar{display:none !important;}
+  }
+
+  /* ---------- Optimisation tactile / petits écrans ---------- */
+  @media (max-width:760px){
+    body{padding:14px;}
+    table{display:block; overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;}
+    .form-row{flex-direction:column; align-items:stretch;}
+    .form-row > select, .form-row > input, .form-row > textarea, .form-row > .field-group, .form-row > button{width:100%;}
+    .field-group{width:100%;}
+    .btn, .btn-outline{width:100%; text-align:center; padding:14px 20px; font-size:1rem;}
+    .tab-btn{padding:10px 14px; font-size:0.88rem;}
+    .row-actions{display:flex; flex-direction:column; gap:6px;}
+    .row-actions button{width:100%;}
+    .dispo-summary-grid{grid-template-columns:1fr;}
+    .agenda-grid{gap:2px;}
+    .agenda-day{min-height:48px; padding:3px;}
+    .agenda-daynum{font-size:0.6rem;}
+    #visitsMap{height:280px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="login-box" id="loginBox">
+  <div style="background:#0c0b10; padding:10px 16px; border-radius:12px; display:inline-block; margin-bottom:20px;">
+    <img src="slp-logo-complet.png" alt="SLP" style="height:336px; width:auto; display:block;">
+  </div>
+  <h1>Espace admin SLP</h1>
+  <div style="position:relative;">
+    <input type="password" id="pwd" placeholder="Mot de passe" autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false" style="padding-right:70px;">
+    <button type="button" onclick="togglePwdVisibility()" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); font-size:0.78rem; cursor:pointer; padding:6px 8px;">Afficher</button>
+  </div>
+  <label style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:0.84rem; color:var(--muted); margin:12px 0; cursor:pointer;">
+    <input type="checkbox" id="rememberMe" checked style="width:auto;"> Garder ma connexion sur cet appareil
+  </label>
+  <button onclick="login()">Se connecter</button>
+  <p id="loginMsg" style="color:var(--pink); font-size:0.85rem; margin-top:10px;"></p>
+</div>
+
+<div id="app">
+  <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px;">
+    <div style="background:#0c0b10; padding:8px 12px; border-radius:10px; flex-shrink:0;">
+      <img src="slp-logo-complet.png" alt="SLP" style="height:120px; width:auto; display:block;">
+    </div>
+    <h1 style="margin-bottom:0; flex:1;">Espace admin SLP</h1>
+    <button onclick="logout()" style="background:none; border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:8px 16px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.82rem; flex-shrink:0;">Déconnexion</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtn-events" onclick="switchTab('events')">1. 🗓 Événements à remplir</button>
+    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">2. 📅 Agenda Diffusé en ligne</button>
+    <button class="tab-btn" id="tabBtn-overview" onclick="switchTab('overview')">3. 🔭 Planning SLP</button>
+    <button class="tab-btn" id="tabBtn-groupview" onclick="switchTab('groupview')">4. 👀 Vue groupe</button>
+    <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">5. 🕰 Historique</button>
+    <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">6. 🔑 Accès groupes</button>
+    <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">7. 📦 Suivi des commandes</button>
+    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">8. 📊 Visites du site</button>
+  </div>
+
+  <!-- ============ ONGLET 1 : ÉVÉNEMENTS À REMPLIR ============ -->
+  <div class="tab-content active" id="tab-events">
+
+  <div id="eventFormSlotEvents"><div id="eventFormContainer">
+    <h2 id="evtFormTitle">Ajouter un événement</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Un <strong>concert</strong> publie une actualité sur la fiche de l'artiste (et sur l'agenda public si "Visible au public" est coché) <em>et</em> bloque automatiquement le(s) jour(s) correspondant(s) dans son agenda. Une <strong>indisponibilité</strong> bloque juste le(s) jour(s), sans rien publier. Une <strong>actu libre</strong> ne bloque aucune date.</p>
+    <div id="eventConflict"></div>
+
+    <div class="form-row">
+      <select id="evtArtist" onchange="onArtistChange()">
+        <option value="alchimie">Alchimie</option>
+        <option value="cache-candy">Cache Candy</option>
+        <option value="the-fine-allies">The Fine Allies</option>
+        <option value="noon-coverband">NooN Coverband</option>
+        <option value="panache">Panache</option>
+        <option value="voice-of-freedom">Voice of Freedom</option>
+        <option value="presta-technique">🔧 Prestation technique</option>
+        <option value="_guest">👤 Invité (pas de fiche sur le site)</option>
+      </select>
+      <select id="evtType" onchange="onEventTypeChange()">
+        <option value="concert">🎤 Concert</option>
+        <option value="cabaret">🎭 Cabaret</option>
+        <option value="dj">🎧 DJ</option>
+        <option value="indisponible">🚫 Indisponibilité</option>
+        <option value="actu">📣 Actu libre</option>
+      </select>
+    </div>
+    <div class="form-row" id="evtGuestNameRow" style="display:none;">
+      <input type="text" id="evtGuestName" placeholder="Nom de l'artiste invité" style="flex:1;">
+    </div>
+    <p id="evtGuestNote" style="display:none; color:var(--muted); font-size:0.8rem; margin-top:-8px; margin-bottom:16px;">Un invité sans fiche n'apparaît jamais dans un "Quoi de neuf" — juste sur l'agenda public si coché "Visible au public", avec une feuille de route complète.</p>
+
+    <div class="form-row" id="evtTextRow">
+      <textarea id="evtText" placeholder="Texte affiché sur la fiche artiste (ex: Concert Brasserie Le Saint André 21h)"></textarea>
+    </div>
+    <div class="form-row" id="evtLabelRow" style="display:none;">
+      <input type="text" id="evtLabel" placeholder="Libellé interne (ex: Vacances, indispo perso...)" style="flex:1;">
+    </div>
+
+    <div class="form-row" id="evtPhotoRow">
+      <div class="field-group">
+        <label>Photo (optionnel)</label>
+        <input type="file" id="evtPhoto" accept="image/*" onchange="handlePhotoSelect(event)">
+      </div>
+      <img id="evtPhotoPreview" style="display:none; height:60px; border-radius:8px;">
+      <label id="evtPublicLabel" style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer;">
+        <input type="checkbox" id="evtPublic" checked style="width:auto;"> Visible au public
+      </label>
+      <p id="evtPublicNote" style="display:none; color:var(--muted); font-size:0.8rem; margin:0;">🔧 Une prestation technique n'apparaît jamais sur le site, quel que soit ce réglage.</p>
+    </div>
+
+    <div class="form-row">
+      <div class="field-group" id="evtStatusGroup">
+        <label>Statut</label>
+        <select id="evtStatus">
+          <option value="option">🟡 Option</option>
+          <option value="validee">🟢 Validée</option>
+        </select>
+      </div>
+      <div class="field-group" id="evtStartGroup">
+        <label>Date de l'événement — du</label>
+        <input type="date" id="evtStart">
+      </div>
+      <div class="field-group" id="evtEndGroup">
+        <label>au (optionnel)</label>
+        <input type="date" id="evtEnd">
+      </div>
+      <div class="field-group" id="evtPublishGroup">
+        <label>Date de publication</label>
+        <input type="date" id="evtPublish">
+      </div>
+      <div class="field-group" id="evtExpiresGroup">
+        <label>Date de suppression</label>
+        <input type="date" id="evtExpires">
+      </div>
+    </div>
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Une date en <strong>option</strong> bloque déjà le créneau (anti-doublon actif) mais reste à confirmer — et n'apparaît jamais publiquement (fiche artiste, agenda du site), même si "Visible au public" est coché. Bascule-la en "Validée" pour qu'elle se publie. Date de publication vide = visible tout de suite une fois validée. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site ; pour tous les types, elle détermine aussi jusqu'à quand la date apparaît dans les vues "Toutes les dates" et l'agenda du groupe.</p>
+
+    <!-- ============ FEUILLE DE ROUTE (concert uniquement) ============ -->
+    <details id="roadmapSection" style="display:none; margin-top:26px; padding-top:20px; border-top:1px solid var(--line);">
+      <summary style="cursor:pointer; font-weight:700; font-family:'Space Grotesk',sans-serif; font-size:1rem; margin-bottom:6px; list-style:none;">▸ Feuille de route (optionnel) — cliquer pour déplier</summary>
+      <p style="color:var(--muted); font-size:0.82rem; margin:10px 0 16px;">Reprend le modèle SLP. Consultable et imprimable par le groupe en cliquant sur la date dans son agenda, et par toi depuis le tableau ci-dessous.</p>
+
+      <div class="form-row">
+        <div class="field-group" style="flex:1; min-width:220px;">
+          <label>Nom du lieu</label>
+          <input type="text" id="rmVenueName" placeholder="ex: La Cave à Manger">
+        </div>
+        <div class="field-group" style="flex:2; min-width:220px;">
+          <label>Adresse</label>
+          <input type="text" id="rmVenueAddress" placeholder="ex: 38 avenue du Périgord">
+        </div>
+        <div class="field-group" style="width:110px;">
+          <label>Code postal</label>
+          <input type="text" id="rmVenuePostal" placeholder="24230">
+        </div>
+        <div class="field-group" style="flex:1; min-width:140px;">
+          <label>Ville</label>
+          <input type="text" id="rmVenueCity" placeholder="Vélines">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1; min-width:180px;">
+          <label>Type de prestation</label>
+          <select id="rmShowType" onchange="onShowTypeChange()">
+            <option value="Concert">Concert</option>
+            <option value="Concert assis">Concert assis</option>
+            <option value="DJ set">DJ set</option>
+            <option value="Showcase">Showcase</option>
+            <option value="Soirée dansante">Soirée dansante</option>
+            <option value="Cérémonie">Cérémonie</option>
+            <option value="autre">Autre...</option>
+          </select>
+        </div>
+        <div class="field-group" style="flex:1; min-width:180px; display:none;" id="rmShowTypeOtherGroup">
+          <label>Précise le type</label>
+          <input type="text" id="rmShowTypeOther" placeholder="ex: Bœuf improvisé">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group">
+          <label>Heure de rendez-vous / arrivée</label>
+          <input type="text" id="rmArrival" placeholder="ex: 17h00">
+        </div>
+        <div class="field-group">
+          <label>Heure de la prestation</label>
+          <input type="text" id="rmEventTime" placeholder="ex: 21h00">
+        </div>
+        <div class="field-group">
+          <label>Durée prévue</label>
+          <input type="text" id="rmDuration" placeholder="ex: 1h30">
+        </div>
+      </div>
+
+      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace; display:block; margin-bottom:8px;">Timing de la journée</label>
+      <div id="timingRows" style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px;"></div>
+      <button type="button" class="btn-outline" onclick="addTimingRow()" style="margin-bottom:18px;">+ Ajouter une étape</button>
+
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Matériel fourni par SLP</label>
+          <textarea id="rmTechProvided" style="width:100%; min-height:50px;"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Matériel / besoins spécifiques de l'artiste</label>
+          <textarea id="rmTechNeeds" style="width:100%; min-height:50px;"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group">
+          <label>Contact régie / technicien sur place</label>
+          <input type="text" id="rmTechContactName" placeholder="Nom">
+        </div>
+        <div class="field-group">
+          <label>Téléphone régie</label>
+          <input type="text" id="rmTechContactPhone" placeholder="06...">
+        </div>
+      </div>
+
+      <label style="font-size:0.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace; display:block; margin-bottom:8px;">Confort artiste</label>
+      <div class="check-grid">
+        <label><input type="checkbox" id="cfMeal"> Repas prévu</label>
+        <label><input type="checkbox" id="cfTransport" onchange="onTransportToggle()"> Transport assuré</label>
+        <label><input type="checkbox" id="cfCatering"> Boissons / catering loge</label>
+        <label><input type="checkbox" id="cfDressing"> Loge / espace privatif</label>
+        <label><input type="checkbox" id="cfHotel" onchange="onHotelToggle()"> Hôtel réservé</label>
+        <label><input type="checkbox" id="cfParking"> Parking réservé</label>
+      </div>
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Repas — lieu</label>
+          <input type="text" id="rmMealDetails">
+        </div>
+        <div class="field-group">
+          <label>Nombre de personnes</label>
+          <input type="text" id="rmMealCount">
+        </div>
+      </div>
+      <div id="rmHotelGroup" style="display:none;">
+        <div class="form-row">
+          <div class="field-group" style="flex:1;">
+            <label>Hôtel — nom & adresse</label>
+            <input type="text" id="rmHotelDetails">
+          </div>
+          <div class="field-group">
+            <label>Nombre de chambres</label>
+            <input type="text" id="rmHotelRooms">
+          </div>
+        </div>
+        <div class="form-row">
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;">
+            <input type="checkbox" id="cfBreakfast" style="width:auto;"> Petit déjeuner inclus
+          </label>
+        </div>
+      </div>
+      <div class="form-row" id="rmTransportGroup" style="display:none;">
+        <div class="field-group" style="flex:1;">
+          <label>Transport — mode & horaires (aller / retour)</label>
+          <input type="text" id="rmTransport" placeholder="ex: Train 14h32 gare de X, retour navette 23h30">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field-group">
+          <label>Nom du référent organisateur (sur place)</label>
+          <input type="text" id="rmVenueContactName">
+        </div>
+        <div class="field-group">
+          <label>Téléphone</label>
+          <input type="text" id="rmVenueContactPhone">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-group">
+          <label>Nom du référent SLP / régie</label>
+          <input type="text" id="rmSlpContactName">
+        </div>
+        <div class="field-group">
+          <label>Téléphone</label>
+          <input type="text" id="rmSlpContactPhone">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field-group" style="flex:1;">
+          <label>Notes complémentaires</label>
+          <textarea id="rmNotes" style="width:100%; min-height:50px;"></textarea>
+        </div>
+      </div>
+    </details>
+
+    <div class="form-row" style="margin-top:20px;">
+      <button class="btn" onclick="submitEvent()" id="evtSubmitBtn">Enregistrer</button>
+      <button onclick="cancelEdit()" id="evtCancelBtn" class="btn-outline" style="display:none;">Annuler la modification</button>
+    </div>
+  </div></div>
+  </div>
+
+  <!-- ============ ONGLET 2 : AGENDA GLOBAL ============ -->
+  <div class="tab-content" id="tab-agenda">
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Ce qui est réellement visible sur le site en ce moment — les "Quoi de neuf" des fiches artistes et l'agenda public. Une option, une date masquée ou une indisponibilité n'apparaissent jamais ici, même si elles existent dans ton planning (vois l'onglet "Vision globale agenda" pour tout, y compris le privé).</p>
+
+    <h2>Agenda des actualités (aperçu public)</h2>
+    <div class="agenda-legend" id="agendaLegend"></div>
+    <div class="agenda-nav">
+      <button onclick="shiftAgendaMonth(-1)">← Mois préc.</button>
+      <span class="agenda-month" id="agendaMonthLabel"></span>
+      <button onclick="shiftAgendaMonth(1)">Mois suiv. →</button>
+    </div>
+    <div class="agenda-grid" id="agendaGrid"></div>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+      <h2 style="margin-top:0;">Prochains événements publics</h2>
+      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Exactement ce que voient les visiteurs sur la page Agenda du site — concerts validés, publics, et déjà publiés.</p>
+      <table id="publicUpcomingTable">
+        <thead><tr><th>Date</th><th>Artiste</th><th>Détail</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="publicUpcomingEmpty" style="display:none;">Aucun événement public à venir pour le moment.</p>
+    </div>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+      <h2 style="margin-top:0;">Gestion des actualités</h2>
+      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Toutes les actus, y compris masquées ou en option — pour modifier, supprimer ou basculer leur visibilité.</p>
+      <table id="actuTable">
+        <thead><tr><th></th><th>Photo</th><th>Artiste</th><th>Texte</th><th>Publication</th><th>Événement</th><th>Suppression</th><th>Public</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="actuEmpty" style="display:none;">Aucune actualité pour le moment.</p>
+    </div>
+  </div>
+
+  <!-- ============ ONGLET 3 : VISION GLOBALE AGENDA ============ -->
+  <div class="tab-content" id="tab-overview">
+    <h2>Planning SLP</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Absolument tout ce qui occupe chaque groupe — concerts publics, soirées privées, prestations techniques ou DJ, options comme validées — que ce soit affiché sur le site ou pas. C'est ta vue de planning complète.</p>
+
+    <div id="eventFormSlotOverview"></div>
+
+    <div class="dispo-summary-grid" id="dispoSummaryGrid"></div>
+
+    <h2>Calendrier disponibilités</h2>
+    <div class="agenda-legend" id="dispoLegend"></div>
+    <div class="agenda-nav">
+      <button onclick="shiftDispoMonth(-1)">← Mois préc.</button>
+      <span class="agenda-month" id="dispoMonthLabel"></span>
+      <button onclick="shiftDispoMonth(1)">Mois suiv. →</button>
+    </div>
+    <div class="agenda-grid" id="dispoGrid"></div>
+
+    <table id="dispoTable">
+      <thead><tr><th>Artiste</th><th>Type</th><th>Statut</th><th>Événement</th><th>Publication</th><th>Suppression</th><th>Libellé</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="dispoEmpty" style="display:none;">Aucune date bloquée pour le moment.</p>
+  </div>
+
+  <!-- ============ ONGLET 4 : VUE GROUPE (lecture seule, ce que voit le groupe) ============ -->
+  <div class="tab-content" id="tab-groupview">
+    <h2>Vue groupe</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Exactement ce que voit un groupe sur sa page "Mon agenda" — en lecture seule, sans avoir besoin de te connecter avec son mot de passe.</p>
+
+    <div class="form-row">
+      <select id="gvArtist" onchange="renderGroupView()">
+        <option value="alchimie">Alchimie</option>
+        <option value="cache-candy">Cache Candy</option>
+        <option value="the-fine-allies">The Fine Allies</option>
+        <option value="noon-coverband">NooN Coverband</option>
+        <option value="panache">Panache</option>
+        <option value="voice-of-freedom">Voice of Freedom</option>
+      </select>
+    </div>
+
+    <div class="agenda-nav">
+      <button onclick="shiftGvMonth(-1)">← Mois préc.</button>
+      <span class="agenda-month" id="gvMonthLabel"></span>
+      <button onclick="shiftGvMonth(1)">Mois suiv. →</button>
+    </div>
+    <div class="agenda-grid" id="gvGrid"></div>
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-10px; margin-bottom:24px;">🎤 plein = validé · 🎤┄ en pointillés = option (pas encore confirmée) · 🚫 = indisponible</p>
+
+    <h3>Toutes ses dates</h3>
+    <table id="gvTable">
+      <thead><tr><th>Date</th><th>Type</th><th>Statut</th><th>Détail</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="gvEmpty" style="display:none;">Aucune date enregistrée pour ce groupe.</p>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+      <h3 style="margin-top:0;">Visites de sa fiche artiste</h3>
+      <p style="color:var(--muted); font-size:0.82rem; margin-bottom:16px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie). Réservé à l'admin — le groupe ne voit jamais ces données.</p>
+      <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.6rem; margin-bottom:14px;"><span id="gvVisitCount">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;">visite(s) au total</span></p>
+      <table id="gvVisitsTable">
+        <thead><tr><th>Date</th><th>Heure</th><th>Ville</th><th>Région</th><th>Pays</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="gvVisitsEmpty" style="display:none;">Aucune visite enregistrée pour le moment.</p>
+    </div>
+  </div>
+
+  <!-- ============ ONGLET 5 : HISTORIQUE ============ -->
+  <div class="tab-content" id="tab-history">
+    <h2>Historique — dates passées</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:24px;">Toutes les dates passées (concerts, indisponibilités, invités inclus), classées par mois — conservées ici indépendamment de leur date de suppression, pour garder une mémoire complète.</p>
+    <div id="historyContainer"></div>
+    <p class="empty" id="historyEmpty" style="display:none;">Aucune date passée pour le moment.</p>
+  </div>
+
+  <!-- ============ ONGLET 6 : ACCÈS GROUPES ============ -->
+  <div class="tab-content" id="tab-access">
+    <h2>Accès agenda des groupes</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Chaque groupe se connecte avec son propre mot de passe sur son lien dédié, pour consulter son agenda et ajouter ses propres indisponibilités (jamais de concert, jamais sur un autre artiste).</p>
+    <table id="tokenTable">
+      <thead><tr><th>Artiste</th><th>Lien</th><th>Mot de passe</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <div style="margin-top:36px; padding-top:24px; border-top:1px solid var(--line);">
+      <h2 style="margin-top:0;">Synchroniser vers un autre calendrier</h2>
+      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Colle ce lien dans Google Calendar, Apple Calendar ou Outlook ("S'abonner à partir d'une URL") pour voir tout le planning SLP se mettre à jour tout seul ailleurs. Pour TimeTree : leur API a fermé en 2023 — passe par Google Calendar comme intermédiaire (connecte d'abord ce flux à Google Calendar, puis importe ce calendrier Google dans TimeTree via "Importer les événements d'un calendrier externe").</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <input type="text" id="icsFeedUrl" readonly onclick="this.select()" style="flex:1; min-width:260px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); font-size:0.82rem;">
+        <button class="btn-yes" onclick="copyIcsFeedUrl()">Copier le lien</button>
+      </div>
+      <p style="color:var(--muted); font-size:0.78rem; margin-top:10px;">Ce lien contient ton mot de passe admin en clair dans l'URL — ne le partage qu'avec toi-même, et régénère ton mot de passe si jamais il fuite.</p>
+    </div>
+  </div>
+
+  <!-- ============ ONGLET 7 : SUIVI DES COMMANDES ============ -->
+  <div class="tab-content" id="tab-orders">
+
+    <h2>Demandes de location</h2>
+    <table id="resTable">
+      <thead><tr><th>Statut</th><th>Article</th><th>Client</th><th>Dates</th><th>Qté</th><th>Notes</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="resEmpty" style="display:none;">Aucune demande pour le moment.</p>
+
+    <h2>Commandes boutique</h2>
+    <table id="orderTable">
+      <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
+  </div>
+
+  <!-- ============ ONGLET 8 : VISITES DU SITE ============ -->
+  <div class="tab-content" id="tab-visits">
+    <h2>Visites du site</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie), toutes pages confondues.</p>
+    <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; margin-bottom:14px;"><span id="siteVisitTotal">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;">visite(s) au total, toutes pages</span></p>
+
+    <h3>Évolution des visites</h3>
+    <div class="form-row" style="margin-bottom:16px;">
+      <button class="period-btn active" id="tsBtn-day" onclick="setTimeseriesGranularity('day')">Par jour</button>
+      <button class="period-btn" id="tsBtn-month" onclick="setTimeseriesGranularity('month')">Par mois</button>
+    </div>
+    <div style="background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:30px;">
+      <canvas id="visitsChart" height="90"></canvas>
+    </div>
+
+    <div class="form-row" style="margin-bottom:20px;">
+      <button class="period-btn active" id="periodBtn-today" onclick="setVisitsPeriod('today')">Aujourd'hui</button>
+      <button class="period-btn" id="periodBtn-week" onclick="setVisitsPeriod('week')">7 derniers jours</button>
+      <button class="period-btn" id="periodBtn-month" onclick="setVisitsPeriod('month')">30 derniers jours</button>
+      <button class="period-btn" id="periodBtn-all" onclick="setVisitsPeriod('all')">Tout</button>
+    </div>
+
+    <h3>Carte des visites</h3>
+    <div id="visitsMap" style="height:380px; border-radius:14px; overflow:hidden; margin-bottom:30px; border:1px solid var(--line);"></div>
+
+    <h3>Répartition <span id="periodTotalLabel" style="color:var(--muted); font-size:0.8rem; font-weight:400;"></span></h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; margin-bottom:30px;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Par pays</div>
+        <table id="breakdownCountryTable"><tbody></tbody></table>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Par région</div>
+        <table id="breakdownRegionTable"><tbody></tbody></table>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Par ville</div>
+        <table id="breakdownCityTable"><tbody></tbody></table>
+      </div>
+    </div>
+
+    <h3>Par page</h3>
+    <table id="visitsSummaryTable">
+      <thead><tr><th>Page</th><th>Visites</th><th>Dernière visite</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="visitsSummaryEmpty" style="display:none;">Aucune visite enregistrée pour le moment.</p>
+
+    <div id="visitsDetailBox" style="display:none; margin-top:30px; padding-top:24px; border-top:1px solid var(--line);">
+      <h3 id="visitsDetailTitle">Détail</h3>
+      <table id="visitsDetailTable">
+        <thead><tr><th>Date</th><th>Heure</th><th>Ville</th><th>Région</th><th>Pays</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL : APERÇU / IMPRESSION FEUILLE DE ROUTE ============ -->
+<div class="modal-overlay" id="rmOverlay">
+  <div class="modal-shell">
+    <div class="modal-toolbar">
+      <strong style="color:var(--paper); font-family:'Space Grotesk',sans-serif;">Aperçu feuille de route</strong>
+      <div>
+        <button class="btn" onclick="window.print()">🖨 Imprimer / Télécharger en PDF</button>
+        <button class="btn-outline" onclick="closeRoadmapPreview()">Fermer</button>
+      </div>
+    </div>
+    <div id="rmDoc"></div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+  let token = localStorage.getItem('slp_admin_token') || sessionStorage.getItem('slp_admin_token') || '';
+
+  function money(cents){ return (cents/100).toFixed(2).replace('.', ',') + ' €'; }
+  function statusLabel(s){
+    return { pending:'En attente', confirmed:'Confirmée', refused:'Refusée', cancelled:'Annulée', paid:'Payée' }[s] || s;
+  }
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function escapeAttr(str){ return (str || '').replace(/"/g, '&quot;'); }
+
+  function showToast(msg){
+    let toast = document.getElementById('toastMsg');
+    if (!toast){
+      toast = document.createElement('div');
+      toast.id = 'toastMsg';
+      toast.style.cssText = 'position:fixed; bottom:28px; left:50%; transform:translateX(-50%); background:#6ee7a0; color:#0c0b10; padding:13px 24px; border-radius:100px; font-weight:700; font-family:Manrope,sans-serif; font-size:0.9rem; box-shadow:0 10px 28px rgba(0,0,0,0.45); z-index:999; opacity:0; transition:opacity 0.25s ease, transform 0.25s ease; pointer-events:none; max-width:90vw; text-align:center;';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = '✅ ' + msg;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => { toast.style.opacity = '0'; }, 2600);
+  }
+
+  function switchTab(name){
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('tabBtn-' + name).classList.add('active');
+    if (name === 'events' || name === 'overview'){
+      const slotId = name === 'events' ? 'eventFormSlotEvents' : 'eventFormSlotOverview';
+      const slot = document.getElementById(slotId);
+      const form = document.getElementById('eventFormContainer');
+      if (slot && form && form.parentElement !== slot) slot.appendChild(form);
+    }
+    if (name === 'groupview') renderGroupView();
+    if (name === 'visits') loadVisitsSummary();
+    if (name === 'access'){
+      document.getElementById('icsFeedUrl').value = `${API_BASE}/api/agenda.ics?key=${encodeURIComponent(token)}`;
+    }
+  }
+
+  function togglePwdVisibility(){
+    const pwd = document.getElementById('pwd');
+    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+  }
+
+  function logout(){
+    localStorage.removeItem('slp_admin_token');
+    sessionStorage.removeItem('slp_admin_token');
+    token = '';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'block';
+    document.getElementById('pwd').value = '';
+  }
+
+  async function login(){
+    const pwd = document.getElementById('pwd').value.trim();
+    document.getElementById('loginMsg').textContent = '';
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/login`, {
+        method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password: pwd })
+      });
+      let data;
+      try { data = await res.json(); } catch(parseErr){ data = {}; }
+      if (!res.ok){
+        document.getElementById('loginMsg').textContent = res.status === 401
+          ? 'Mot de passe incorrect.'
+          : `Erreur serveur (${res.status}). Réessaie dans un instant.`;
+        return;
+      }
+      token = data.token;
+      if (document.getElementById('rememberMe').checked){
+        localStorage.setItem('slp_admin_token', token);
+        sessionStorage.removeItem('slp_admin_token');
+      } else {
+        sessionStorage.setItem('slp_admin_token', token);
+        localStorage.removeItem('slp_admin_token');
+      }
+      showApp();
+    } catch(e){
+      document.getElementById('loginMsg').textContent = 'Connexion impossible (réseau). Vérifie ta connexion internet et réessaie.';
+    }
+  }
+
+  async function showApp(){
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    renderAgendaLegend();
+    renderDispoLegend();
+    onEventTypeChange();
+    await loadReservations();
+    await loadOrders();
+    await loadActus();
+    await loadDispos();
+    await loadTokens();
+  }
+
+  async function loadReservations(){
+    const res = await fetch(`${API_BASE}/api/admin/reservations`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    const tbody = document.querySelector('#resTable tbody');
+    if (!data.length){ document.getElementById('resEmpty').style.display='block'; tbody.innerHTML=''; return; }
+    document.getElementById('resEmpty').style.display='none';
+    tbody.innerHTML = data.map(r => `
+      <tr>
+        <td><span class="status ${r.status}">${statusLabel(r.status)}</span></td>
+        <td>${r.item_name}</td>
+        <td>${r.customer_name}<br><span style="color:var(--muted); font-size:0.78rem;">${r.customer_email} ${r.customer_phone || ''}</span></td>
+        <td>${r.start_date} → ${r.end_date}</td>
+        <td>${r.qty}</td>
+        <td style="max-width:200px; color:var(--muted); font-size:0.8rem;">${r.notes || ''}</td>
+        <td class="row-actions">
+          ${r.status === 'pending' ? `
+            <button class="btn-yes" onclick="decide(${r.id}, 'confirmed')">Valider</button>
+            <button class="btn-no" onclick="decide(${r.id}, 'refused')">Refuser</button>
+          ` : ''}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  async function decide(id, decision){
+    await fetch(`${API_BASE}/api/admin/reservations/${id}/decide`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ decision })
+    });
+    loadReservations();
+    showToast(decision === 'confirmed' ? 'Réservation validée' : 'Réservation refusée');
+  }
+
+  async function loadOrders(){
+    const res = await fetch(`${API_BASE}/api/admin/orders`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    const tbody = document.querySelector('#orderTable tbody');
+    if (!data.length){ document.getElementById('orderEmpty').style.display='block'; tbody.innerHTML=''; return; }
+    document.getElementById('orderEmpty').style.display='none';
+    tbody.innerHTML = data.map(o => {
+      const items = JSON.parse(o.items_json);
+      return `
+        <tr>
+          <td><span class="status ${o.status}">${statusLabel(o.status)}</span></td>
+          <td>${o.customer_name}<br><span style="color:var(--muted); font-size:0.78rem;">${o.customer_email} ${o.customer_phone || ''}</span></td>
+          <td style="font-size:0.82rem;">${o.shipping_address || '<span style="color:var(--muted);">—</span>'}</td>
+          <td>${items.map(i => `${i.qty}× ${i.name}`).join(', ')}</td>
+          <td>${money(o.total_cents)}</td>
+          <td>${o.created_at}</td>
+          <td class="row-actions"><button class="btn-no" onclick="deleteOrder(${o.id})">Supprimer</button></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function deleteOrder(id){
+    if (!confirm('Supprimer définitivement cette commande ?')) return;
+    await fetch(`${API_BASE}/api/admin/orders/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    loadOrders();
+    showToast('Commande supprimée');
+  }
+
+  const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'voice-of-freedom':'Voice of Freedom', 'presta-technique':'Prestation technique' };
+  const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'voice-of-freedom':'#cda754', 'presta-technique':'#9a93a6' };
+  const TYPE_ICONS = { concert:'🎤', cabaret:'🎭', dj:'🎧', indisponible:'🚫', actu:'📣' };
+  const ROADMAP_TYPES = ['concert', 'cabaret', 'dj'];
+  let agendaDate = new Date();
+  agendaDate.setDate(1);
+
+  function renderAgendaLegend(){
+    document.getElementById('agendaLegend').innerHTML = Object.keys(ARTIST_LABELS).map(slug => `
+      <span><span class="agenda-dot" style="background:${ARTIST_COLORS[slug]};"></span>${ARTIST_LABELS[slug]}</span>
+    `).join('');
+  }
+
+  function shiftAgendaMonth(delta){
+    agendaDate.setMonth(agendaDate.getMonth() + delta);
+    renderAgenda();
+  }
+
+  function isActuPublicNow(a){
+    const today = new Date().toISOString().slice(0,10);
+    if (!a.is_public) return false;
+    if (a.publish_at && a.publish_at > today) return false;
+    if (a.expires_at && a.expires_at < today) return false;
+    const hasOption = (window.dispoData || []).some(d => d.source_actu_id === a.id && d.status === 'option');
+    if (hasOption) return false;
+    return true;
+  }
+
+  function renderAgenda(){
+    const grid = document.getElementById('agendaGrid');
+    const label = document.getElementById('agendaMonthLabel');
+    const year = agendaDate.getFullYear();
+    const month = agendaDate.getMonth();
+    label.textContent = agendaDate.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+
+    const dows = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    let html = dows.map(d => `<div class="agenda-dow">${d}</div>`).join('');
+
+    const firstDay = new Date(year, month, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = new Date().toISOString().slice(0,10);
+    const data = (window.actusData || []).filter(isActuPublicNow);
+
+    for (let i = 0; i < startOffset; i++){
+      html += `<div class="agenda-day empty"></div>`;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++){
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const dayActus = data.filter(a => {
+        if (a.event_date){
+          return dateStr >= a.event_date && dateStr <= (a.event_end_date || a.event_date);
+        }
+        const created = (a.created_at || '').slice(0,10);
+        return created <= dateStr && a.expires_at >= dateStr;
+      });
+      const isToday = dateStr === todayStr;
+      html += `<div class="agenda-day${isToday ? ' today' : ''}">
+        <div class="agenda-daynum">${day}</div>
+        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}${entryVenue(a) ? ' — ' + escapeAttr(entryVenue(a)) : ''}">${TYPE_ICONS[a.type] || '📣'} ${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)}${a.venue_city ? ' — ' + escapeAttr(a.venue_city) : ''}</div>`).join('')}
+        ${dayActus.length > 3 ? `<div class="agenda-more">+${dayActus.length - 3}</div>` : ''}
+      </div>`;
+    }
+
+    grid.innerHTML = html;
+  }
+
+  function renderPublicUpcoming(){
+    const today = new Date().toISOString().slice(0,10);
+    const list = (window.actusData || [])
+      .filter(a => ROADMAP_TYPES.includes(a.type) && a.event_date && a.event_date >= today && isActuPublicNow(a))
+      .sort((a, b) => a.event_date.localeCompare(b.event_date));
+    const tbody = document.querySelector('#publicUpcomingTable tbody');
+    document.getElementById('publicUpcomingEmpty').style.display = list.length ? 'none' : 'block';
+    tbody.innerHTML = list.map(a => `
+      <tr>
+        <td>${a.event_date}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + a.event_end_date : ''}</td>
+        <td>${a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
+        <td style="color:var(--muted);">${a.text}${entryVenue(a) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(a)}</span>` : ''}</td>
+      </tr>
+    `).join('');
+  }
+
+  async function loadActus(){
+    const res = await fetch(`${API_BASE}/api/admin/actualites`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    window.actusData = data;
+    const tbody = document.querySelector('#actuTable tbody');
+    if (!data.length){ document.getElementById('actuEmpty').style.display='block'; tbody.innerHTML=''; renderAgenda(); renderPublicUpcoming(); return; }
+    document.getElementById('actuEmpty').style.display='none';
+    const today = new Date().toISOString().slice(0,10);
+    tbody.innerHTML = data.map(a => {
+      const expired = a.expires_at && a.expires_at < today;
+      const scheduled = a.publish_at && a.publish_at > today;
+      return `
+      <tr style="${expired ? 'opacity:0.5;' : ''}">
+        <td>${TYPE_ICONS[a.type] || '📣'}</td>
+        <td>${a.photo_url ? `<img src="${a.photo_url}" style="width:44px; height:44px; object-fit:cover; border-radius:6px;">` : '—'}</td>
+        <td>${a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
+        <td style="max-width:260px;">${a.text}</td>
+        <td>${a.publish_at || '—'} ${scheduled ? '<span class="status pending">Programmée</span>' : ''}</td>
+        <td>${a.event_date || '—'}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + a.event_end_date : ''}</td>
+        <td>${a.expires_at || '—'} ${expired ? '<span class="status refused">Expirée</span>' : ''}</td>
+        <td><button class="btn-no" style="background:${a.is_public ? '#6ee7a0' : 'var(--muted)'}; color:var(--ink);" onclick="toggleActuPublic(${a.id}, ${a.is_public ? 0 : 1})">${a.is_public ? 'Public' : 'Masqué'}</button></td>
+        <td class="row-actions">
+          ${ROADMAP_TYPES.includes(a.type) ? `<button class="btn-info" onclick="previewRoadmap(${a.id})">Feuille de route</button>` : ''}
+          <button class="btn-yes" onclick="editActu(${a.id})">Modifier</button>
+          <button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button>
+        </td>
+      </tr>
+    `;
+    }).join('');
+    renderAgenda();
+    renderPublicUpcoming();
+  }
+
+  // ---------- Feuille de route : lignes de timing dynamiques ----------
+  function addTimingRow(heure, etape){
+    const container = document.getElementById('timingRows');
+    const row = document.createElement('div');
+    row.className = 'timing-row';
+    row.style.cssText = 'display:flex; gap:8px; align-items:center;';
+    row.innerHTML = `
+      <input type="text" class="timing-heure" placeholder="ex: 16h00" value="${escapeAttr(heure || '')}" style="width:100px; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+      <input type="text" class="timing-etape" placeholder="ex: Montage" value="${escapeAttr(etape || '')}" style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);">
+      <button type="button" class="btn-no" onclick="this.parentElement.remove()" style="padding:6px 12px; border-radius:100px; border:none; cursor:pointer;">✕</button>
+    `;
+    container.appendChild(row);
+  }
+
+  function getTimingSteps(){
+    return Array.from(document.querySelectorAll('#timingRows .timing-row')).map(row => ({
+      heure: row.querySelector('.timing-heure').value.trim(),
+      etape: row.querySelector('.timing-etape').value.trim(),
+    })).filter(s => s.heure || s.etape);
+  }
+
+  function setTimingSteps(steps){
+    document.getElementById('timingRows').innerHTML = '';
+    (steps && steps.length ? steps : defaultTimingSteps()).forEach(s => addTimingRow(s.heure, s.etape));
+  }
+
+  function defaultTimingSteps(){
+    return [
+      { heure:'', etape:'Arrivée artiste(s) sur site' },
+      { heure:'', etape:'Installation / balances' },
+      { heure:'', etape:'Repas' },
+      { heure:'', etape:'Début de prestation' },
+      { heure:'', etape:'Fin de prestation' },
+      { heure:'', etape:'Démontage / départ' },
+    ];
+  }
+
+  const COMFORT_CHECKBOX_IDS = { meal:'cfMeal', transport:'cfTransport', catering:'cfCatering', dressing_room:'cfDressing', hotel:'cfHotel', parking:'cfParking' };
+
+  function onHotelToggle(){
+    document.getElementById('rmHotelGroup').style.display = document.getElementById('cfHotel').checked ? 'block' : 'none';
+  }
+
+  function onTransportToggle(){
+    document.getElementById('rmTransportGroup').style.display = document.getElementById('cfTransport').checked ? 'flex' : 'none';
+  }
+
+  function getComfortFlags(){
+    return Object.keys(COMFORT_CHECKBOX_IDS).filter(key => document.getElementById(COMFORT_CHECKBOX_IDS[key]).checked);
+  }
+
+  function setComfortFlags(flags){
+    const active = new Set(flags || []);
+    Object.keys(COMFORT_CHECKBOX_IDS).forEach(key => {
+      document.getElementById(COMFORT_CHECKBOX_IDS[key]).checked = active.has(key);
+    });
+  }
+
+  function parseJsonSafe(raw){
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch(e){ return null; }
+  }
+
+  const SHOW_TYPE_PRESETS = ["Concert", "Concert assis", "DJ set", "Showcase", "Soirée dansante", "Cérémonie"];
+
+  function onShowTypeChange(){
+    const isOther = document.getElementById('rmShowType').value === 'autre';
+    document.getElementById('rmShowTypeOtherGroup').style.display = isOther ? 'flex' : 'none';
+  }
+
+  function getRoadmapFields(){
+    const showTypeSel = document.getElementById('rmShowType').value;
+    const show_type = showTypeSel === 'autre' ? document.getElementById('rmShowTypeOther').value.trim() : showTypeSel;
+    return {
+      venue_name: document.getElementById('rmVenueName').value.trim(),
+      venue_address: document.getElementById('rmVenueAddress').value.trim(),
+      venue_postal_code: document.getElementById('rmVenuePostal').value.trim(),
+      venue_city: document.getElementById('rmVenueCity').value.trim(),
+      show_type,
+      arrival_time: document.getElementById('rmArrival').value.trim(),
+      event_time: document.getElementById('rmEventTime').value.trim(),
+      duration: document.getElementById('rmDuration').value.trim(),
+      timing_steps: getTimingSteps(),
+      technical_notes: document.getElementById('rmTechProvided').value.trim(),
+      tech_artist_needs: document.getElementById('rmTechNeeds').value.trim(),
+      tech_contact_name: document.getElementById('rmTechContactName').value.trim(),
+      tech_contact_phone: document.getElementById('rmTechContactPhone').value.trim(),
+      comfort_flags: getComfortFlags(),
+      meal_details: document.getElementById('rmMealDetails').value.trim(),
+      meal_count: document.getElementById('rmMealCount').value.trim(),
+      hotel_details: document.getElementById('rmHotelDetails').value.trim(),
+      hotel_rooms: document.getElementById('rmHotelRooms').value.trim(),
+      hotel_breakfast: document.getElementById('cfBreakfast').checked,
+      transport_details: document.getElementById('rmTransport').value.trim(),
+      venue_contact_name: document.getElementById('rmVenueContactName').value.trim(),
+      venue_contact_phone: document.getElementById('rmVenueContactPhone').value.trim(),
+      slp_contact_name: document.getElementById('rmSlpContactName').value.trim(),
+      slp_contact_phone: document.getElementById('rmSlpContactPhone').value.trim(),
+      additional_notes: document.getElementById('rmNotes').value.trim(),
+    };
+  }
+
+  function setRoadmapFields(a){
+    document.getElementById('rmVenueName').value = a.venue_name || '';
+    document.getElementById('rmVenueAddress').value = a.venue_address || '';
+    document.getElementById('rmVenuePostal').value = a.venue_postal_code || '';
+    document.getElementById('rmVenueCity').value = a.venue_city || '';
+    if (a.show_type && SHOW_TYPE_PRESETS.includes(a.show_type)){
+      document.getElementById('rmShowType').value = a.show_type;
+      document.getElementById('rmShowTypeOther').value = '';
+    } else {
+      document.getElementById('rmShowType').value = a.show_type ? 'autre' : 'Concert';
+      document.getElementById('rmShowTypeOther').value = a.show_type || '';
+    }
+    onShowTypeChange();
+    document.getElementById('rmArrival').value = a.arrival_time || '';
+    document.getElementById('rmEventTime').value = a.event_time || '';
+    document.getElementById('rmDuration').value = a.duration || '';
+    setTimingSteps(parseJsonSafe(a.timing_steps));
+    document.getElementById('rmTechProvided').value = a.technical_notes || '';
+    document.getElementById('rmTechNeeds').value = a.tech_artist_needs || '';
+    document.getElementById('rmTechContactName').value = a.tech_contact_name || '';
+    document.getElementById('rmTechContactPhone').value = a.tech_contact_phone || '';
+    setComfortFlags(parseJsonSafe(a.comfort_flags));
+    onHotelToggle();
+    onTransportToggle();
+    document.getElementById('rmMealDetails').value = a.meal_details || '';
+    document.getElementById('rmMealCount').value = a.meal_count || '';
+    document.getElementById('rmHotelDetails').value = a.hotel_details || '';
+    document.getElementById('rmHotelRooms').value = a.hotel_rooms || '';
+    document.getElementById('cfBreakfast').checked = !!a.hotel_breakfast;
+    document.getElementById('rmTransport').value = a.transport_details || '';
+    document.getElementById('rmVenueContactName').value = a.venue_contact_name || '';
+    document.getElementById('rmVenueContactPhone').value = a.venue_contact_phone || '';
+    document.getElementById('rmSlpContactName').value = a.slp_contact_name || '';
+    document.getElementById('rmSlpContactPhone').value = a.slp_contact_phone || '';
+    document.getElementById('rmNotes').value = a.additional_notes || '';
+  }
+
+  function resetRoadmapFields(){
+    setRoadmapFields({});
+    setTimingSteps(null);
+  }
+
+  // ---------- Gabarit visuel exact de la feuille de route (aperçu + impression) ----------
+  function formatDateRange(a){
+    if (!a.event_date) return '—';
+    return a.event_end_date && a.event_end_date !== a.event_date ? `${a.event_date} → ${a.event_end_date}` : a.event_date;
+  }
+
+  function formatVenue(a){
+    const line2 = [a.venue_address, [a.venue_postal_code, a.venue_city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    return [a.venue_name, line2].filter(Boolean).join('\n');
+  }
+
+  function buildRoadmapDoc(a){
+    const flags = parseJsonSafe(a.comfort_flags) || [];
+    const steps = parseJsonSafe(a.timing_steps) || [];
+    const checkbox = (key, label) => `<span><span class="rm-checkbox${flags.includes(key) ? ' on' : ''}">${flags.includes(key) ? '✓' : ''}</span>${label}</span>`;
+    const boolCheck = (val, label) => `<span><span class="rm-checkbox${val ? ' on' : ''}">${val ? '✓' : ''}</span>${label}</span>`;
+
+    return `
+      <div class="rm-doc">
+        <div class="rm-header">
+          <div>
+            <div style="background:#0c0b10; padding:8px 14px; border-radius:10px; display:inline-block;">
+              <img src="slp-logo-complet.png" alt="SLP Sound Light Production" style="height:58px; width:auto; display:block;">
+            </div>
+            <div class="rm-brand-sub">Régie son &amp; lumière — Production et diffusion de spectacles</div>
+          </div>
+          <div class="rm-title-box"><div>FEUILLE DE ROUTE</div><div>ARTISTE</div></div>
+        </div>
+        <div class="rm-hr-thick"></div>
+
+        <div class="rm-section-title">Événement</div>
+        <div class="rm-box"><span class="rm-label">Nom de la prestation / artiste</span><div class="rm-value">${escapeHtml(a.text)}</div></div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Date</span><div class="rm-value">${escapeHtml(formatDateRange(a))}</div></div>
+          <div class="rm-cell"><span class="rm-label">Type de prestation</span><div class="rm-value">${escapeHtml(a.show_type)}</div></div>
+        </div>
+        <div class="rm-box"><span class="rm-label">Lieu (nom + adresse complète)</span><div class="rm-value">${escapeHtml(formatVenue(a))}</div></div>
+        <div class="rm-row3">
+          <div class="rm-cell"><span class="rm-label">Heure de rendez-vous / arrivée</span><div class="rm-value">${escapeHtml(a.arrival_time)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Heure de la prestation</span><div class="rm-value">${escapeHtml(a.event_time)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Durée prévue</span><div class="rm-value">${escapeHtml(a.duration)}</div></div>
+        </div>
+
+        <div class="rm-section-title">Timing de la journée</div>
+        <table class="rm-table">
+          <thead><tr><th>Heure</th><th>Étape</th></tr></thead>
+          <tbody>${steps.length ? steps.map(s => `<tr><td>${escapeHtml(s.heure)}</td><td>${escapeHtml(s.etape)}</td></tr>`).join('') : '<tr><td colspan="2" style="color:#999;">Non renseigné</td></tr>'}</tbody>
+        </table>
+
+        <div class="rm-section-title">Éléments techniques</div>
+        <div class="rm-box"><span class="rm-label">Matériel fourni par SLP</span><div class="rm-value">${escapeHtml(a.technical_notes)}</div></div>
+        <div class="rm-box"><span class="rm-label">Matériel / besoins spécifiques de l'artiste</span><div class="rm-value">${escapeHtml(a.tech_artist_needs)}</div></div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Contact régie / technicien sur place</span><div class="rm-value">${escapeHtml(a.tech_contact_name)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Téléphone régie</span><div class="rm-value">${escapeHtml(a.tech_contact_phone)}</div></div>
+        </div>
+        <p class="rm-italic">Fiche technique détaillée (plan de scène, patch, besoins électriques) à joindre en annexe si nécessaire.</p>
+
+        <div class="rm-section-title">Confort artiste</div>
+        <div class="rm-checks">
+          ${checkbox('meal','Repas prévu')}
+          ${checkbox('transport','Transport assuré')}
+          ${checkbox('catering','Boissons / catering loge')}
+          ${checkbox('dressing_room','Loge / espace privatif')}
+          ${checkbox('hotel','Hôtel réservé')}
+          ${checkbox('parking','Parking réservé')}
+        </div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Repas — lieu</span><div class="rm-value">${escapeHtml(a.meal_details)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Nombre de personnes</span><div class="rm-value">${escapeHtml(a.meal_count)}</div></div>
+        </div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Hôtel — nom &amp; adresse</span><div class="rm-value">${escapeHtml(a.hotel_details)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Nombre de chambres</span><div class="rm-value">${escapeHtml(a.hotel_rooms)}</div></div>
+        </div>
+        <div class="rm-checks" style="margin-bottom:12px;">
+          ${boolCheck(a.hotel_breakfast, 'Petit déjeuner inclus')}
+        </div>
+        <div class="rm-box"><span class="rm-label">Transport — mode &amp; horaires (aller / retour)</span><div class="rm-value">${escapeHtml(a.transport_details)}</div></div>
+
+        <div class="rm-section-title">Contact sur place le jour J</div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Nom du référent organisateur</span><div class="rm-value">${escapeHtml(a.venue_contact_name)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Téléphone</span><div class="rm-value">${escapeHtml(a.venue_contact_phone)}</div></div>
+        </div>
+        <div class="rm-row2">
+          <div class="rm-cell"><span class="rm-label">Nom du référent SLP / régie</span><div class="rm-value">${escapeHtml(a.slp_contact_name)}</div></div>
+          <div class="rm-cell"><span class="rm-label">Téléphone</span><div class="rm-value">${escapeHtml(a.slp_contact_phone)}</div></div>
+        </div>
+
+        <div class="rm-section-title">Notes complémentaires</div>
+        <div class="rm-box" style="min-height:50px;">${escapeHtml(a.additional_notes)}</div>
+
+        <div class="rm-footer">
+          <span>SLP — Sound Light Prod</span>
+          <span>contact@soundlightprod.fr · 06 31 94 96 53 · soundlightprod.fr</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function previewRoadmap(id){
+    const a = (window.actusData || []).find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('rmDoc').innerHTML = buildRoadmapDoc(a);
+    document.getElementById('rmOverlay').classList.add('open');
+  }
+
+  function closeRoadmapPreview(){
+    document.getElementById('rmOverlay').classList.remove('open');
+  }
+
+  function onArtistChange(){
+    const artistVal = document.getElementById('evtArtist').value;
+    const isGuest = artistVal === '_guest';
+    const isPresta = artistVal === 'presta-technique';
+    document.getElementById('evtGuestNameRow').style.display = isGuest ? 'flex' : 'none';
+    document.getElementById('evtGuestNote').style.display = isGuest ? 'block' : 'none';
+    document.getElementById('evtPublicLabel').style.display = isPresta ? 'none' : 'flex';
+    document.getElementById('evtPublicNote').style.display = isPresta ? 'block' : 'none';
+    if (isPresta) document.getElementById('evtPublic').checked = false;
+  }
+
+  function slugifyGuest(name){
+    const base = (name || '').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-+|-+$)/g, '');
+    return 'invite-' + (base || 'anonyme');
+  }
+
+  function onEventTypeChange(){
+    const type = document.getElementById('evtType').value;
+    const isIndispo = type === 'indisponible';
+    const isConcertLike = type === 'concert' || type === 'cabaret' || type === 'dj';
+    const isActu = type === 'actu';
+    document.getElementById('evtTextRow').style.display = isIndispo ? 'none' : 'flex';
+    document.getElementById('evtLabelRow').style.display = isIndispo ? 'flex' : 'none';
+    document.getElementById('evtPhotoRow').style.display = isIndispo ? 'none' : 'flex';
+    document.getElementById('evtStatusGroup').style.display = isActu ? 'none' : 'flex';
+    document.getElementById('evtPublishGroup').style.display = 'flex';
+    document.getElementById('evtExpiresGroup').style.display = 'flex';
+    document.getElementById('evtEndGroup').style.display = 'flex';
+    document.getElementById('roadmapSection').style.display = isConcertLike ? 'block' : 'none';
+    if (isConcertLike && !document.querySelector('#timingRows .timing-row')) setTimingSteps(null);
+  }
+
+  function handlePhotoSelect(evt){
+    const file = evt.target.files[0];
+    if (!file) { evtPhotoBase64 = null; return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 900;
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        evtPhotoBase64 = canvas.toDataURL('image/jpeg', 0.72);
+        const preview = document.getElementById('evtPhotoPreview');
+        preview.src = evtPhotoBase64;
+        preview.style.display = 'inline-block';
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function scrollToForm(){
+    document.getElementById('evtFormTitle').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  let evtPhotoBase64 = null;
+  let editingActuId = null;
+  let pendingRequalify = false;
+  let editingDispoId = null;
+
+  function editActu(id){
+    const a = (window.actusData || []).find(x => x.id === id);
+    if (!a) return;
+    switchTab('events');
+    editingActuId = id;
+    editingDispoId = null;
+    document.getElementById('evtArtist').value = a.guest_name ? '_guest' : a.artist_slug;
+    document.getElementById('evtGuestName').value = a.guest_name || '';
+    onArtistChange();
+    document.getElementById('evtType').value = a.type;
+    document.getElementById('evtType').disabled = true;
+    document.getElementById('evtText').value = a.text || '';
+    document.getElementById('evtPublic').checked = !!a.is_public;
+    document.getElementById('evtStart').value = a.event_date || '';
+    document.getElementById('evtEnd').value = a.event_end_date || '';
+    document.getElementById('evtPublish').value = a.publish_at || '';
+    document.getElementById('evtExpires').value = a.expires_at || '';
+    const linkedDispo = (window.dispoData || []).find(x => x.source_actu_id === a.id);
+    document.getElementById('evtStatus').value = linkedDispo ? linkedDispo.status : 'validee';
+    setRoadmapFields(a);
+    evtPhotoBase64 = a.photo_url || null;
+    const preview = document.getElementById('evtPhotoPreview');
+    if (a.photo_url){ preview.src = a.photo_url; preview.style.display = 'inline-block'; }
+    else { preview.style.display = 'none'; }
+    onEventTypeChange();
+    if (ROADMAP_TYPES.includes(a.type)) document.getElementById('roadmapSection').open = true;
+    document.getElementById('evtFormTitle').textContent = 'Modifier un événement';
+    document.getElementById('evtSubmitBtn').textContent = 'Enregistrer les modifications';
+    document.getElementById('evtCancelBtn').style.display = 'inline-block';
+    scrollToForm();
+  }
+
+  async function requalifyToConcert(id){
+    const d = (window.dispoData || []).find(x => x.id === id);
+    if (!d || d.type !== 'indisponible') return;
+    const label = ARTIST_LABELS[d.artist_slug] || d.artist_slug;
+    if (!confirm(`Requalifier cette indisponibilité de ${label} (${d.date}) en concert ? Le blocage actuel sera libéré puis recréé en tant que concert une fois le formulaire enregistré.`)) return;
+
+    await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    await loadDispos();
+
+    cancelEdit();
+    pendingRequalify = true;
+    switchTab('events');
+    if (ARTIST_LABELS[d.artist_slug]){
+      document.getElementById('evtArtist').value = d.artist_slug;
+    } else {
+      document.getElementById('evtArtist').value = '_guest';
+      document.getElementById('evtGuestName').value = d.guest_name || d.artist_slug;
+    }
+    onArtistChange();
+    document.getElementById('evtType').value = 'concert';
+    onEventTypeChange();
+    document.getElementById('evtText').value = d.label || '';
+    document.getElementById('evtStart').value = d.date;
+    document.getElementById('evtEnd').value = d.date;
+    document.getElementById('evtStatus').value = 'validee';
+    document.getElementById('evtPublic').checked = true;
+    const dayAfter = new Date(d.date + 'T00:00:00Z');
+    dayAfter.setUTCDate(dayAfter.getUTCDate() + 1);
+    document.getElementById('evtExpires').value = dayAfter.toISOString().slice(0,10);
+    document.getElementById('evtFormTitle').textContent = 'Requalifier en concert';
+    scrollToForm();
+  }
+
+  function editDispo(id){
+    const d = (window.dispoData || []).find(x => x.id === id);
+    if (!d) return;
+    if (d.source_actu_id){
+      editActu(d.source_actu_id);
+      return;
+    }
+    switchTab('events');
+    editingDispoId = id;
+    editingActuId = null;
+    document.getElementById('evtArtist').value = d.artist_slug;
+    document.getElementById('evtType').value = 'indisponible';
+    document.getElementById('evtType').disabled = true;
+    document.getElementById('evtLabel').value = d.label || '';
+    document.getElementById('evtStart').value = d.date;
+    document.getElementById('evtEnd').value = d.date;
+    document.getElementById('evtPublish').value = d.publish_at || '';
+    document.getElementById('evtExpires').value = d.expires_at || '';
+    document.getElementById('evtStatus').value = d.status || 'validee';
+    onEventTypeChange();
+    document.getElementById('evtFormTitle').textContent = "Modifier une indisponibilité";
+    document.getElementById('evtSubmitBtn').textContent = 'Enregistrer les modifications';
+    document.getElementById('evtCancelBtn').style.display = 'inline-block';
+    scrollToForm();
+  }
+
+  function resetEventForm(){
+    document.getElementById('evtText').value = '';
+    document.getElementById('evtLabel').value = '';
+    document.getElementById('evtGuestName').value = '';
+    onArtistChange();
+    document.getElementById('evtStatus').value = 'option';
+    document.getElementById('evtStart').value = '';
+    document.getElementById('evtEnd').value = '';
+    document.getElementById('evtPublish').value = '';
+    document.getElementById('evtExpires').value = '';
+    document.getElementById('evtPhoto').value = '';
+    document.getElementById('evtPhotoPreview').style.display = 'none';
+    document.getElementById('evtPublic').checked = true;
+    resetRoadmapFields();
+    document.getElementById('roadmapSection').open = false;
+    evtPhotoBase64 = null;
+  }
+
+  function cancelEdit(){
+    editingActuId = null;
+    editingDispoId = null;
+    pendingRequalify = false;
+    document.getElementById('evtType').disabled = false;
+    document.getElementById('evtFormTitle').textContent = 'Ajouter un événement';
+    document.getElementById('evtSubmitBtn').textContent = 'Enregistrer';
+    document.getElementById('evtCancelBtn').style.display = 'none';
+    document.getElementById('eventConflict').innerHTML = '';
+    resetEventForm();
+    onEventTypeChange();
+  }
+
+  async function submitEvent(){
+    const wasRequalify = pendingRequalify;
+    const artistSel = document.getElementById('evtArtist').value;
+    const isGuest = artistSel === '_guest';
+    const guest_name = isGuest ? document.getElementById('evtGuestName').value.trim() : '';
+    if (isGuest && !guest_name){ alert("Merci de renseigner le nom de l'artiste invité."); return; }
+    const artist_slug = isGuest ? slugifyGuest(guest_name) : artistSel;
+    const type = document.getElementById('evtType').value;
+    const text = document.getElementById('evtText').value.trim();
+    const label = document.getElementById('evtLabel').value.trim();
+    const is_public = document.getElementById('evtPublic').checked;
+    const start_date = document.getElementById('evtStart').value;
+    const end_date = document.getElementById('evtEnd').value || start_date;
+    const publish_at = document.getElementById('evtPublish').value;
+    const expires_at = document.getElementById('evtExpires').value;
+    const status = document.getElementById('evtStatus').value;
+    const conflictBox = document.getElementById('eventConflict');
+    conflictBox.innerHTML = '';
+
+    if (type !== 'indisponible' && (!text || !expires_at)){
+      alert('Merci de renseigner le texte et la date de suppression.');
+      return;
+    }
+    if (type === 'indisponible' && !expires_at){
+      alert('Merci de renseigner la date de suppression.');
+      return;
+    }
+    if ((ROADMAP_TYPES.includes(type) || type === 'indisponible') && !start_date){
+      alert("Merci de renseigner la date de l'événement.");
+      return;
+    }
+
+    const roadmap = ROADMAP_TYPES.includes(type) ? getRoadmapFields() : {};
+
+    let res, data;
+    if (editingDispoId){
+      res = await fetch(`${API_BASE}/api/admin/agenda/${editingDispoId}`, {
+        method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+        body: JSON.stringify({ date: start_date, label, publish_at, expires_at, status })
+      });
+      data = await res.json();
+      if (!res.ok){ alert(data.error || 'Erreur lors de la modification.'); return; }
+    } else if (editingActuId){
+      res = await fetch(`${API_BASE}/api/admin/actualites/${editingActuId}`, {
+        method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+        body: JSON.stringify({
+          artist_slug, guest_name, type, text, is_public,
+          photo_url: evtPhotoBase64,
+          start_date, end_date, publish_at, expires_at, status,
+          ...roadmap
+        })
+      });
+      data = await res.json();
+      if (!res.ok){ alert(data.error || 'Erreur lors de la modification.'); return; }
+      if (data.conflicts && data.conflicts.length){
+        conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${guest_name || ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+      }
+    } else {
+      res = await fetch(`${API_BASE}/api/admin/actualites`, {
+        method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+        body: JSON.stringify({
+          artist_slug, guest_name, type, text, label, is_public,
+          requalified: pendingRequalify,
+          photo_url: evtPhotoBase64,
+          start_date, end_date, publish_at, expires_at, status,
+          ...roadmap
+        })
+      });
+      data = await res.json();
+      pendingRequalify = false;
+      if (data.conflicts && data.conflicts.length){
+        conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${guest_name || ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+      }
+    }
+
+    const wasEditing = editingActuId || editingDispoId;
+    if (wasEditing) cancelEdit();
+    else resetEventForm();
+
+    loadActus();
+    loadDispos();
+
+    if (wasRequalify) showToast('Concert enregistré à la place de l\'indisponibilité');
+    else if (wasEditing) showToast('Modifications enregistrées');
+    else showToast('Événement enregistré');
+  }
+
+  async function toggleActuPublic(id, newValue){
+    await fetch(`${API_BASE}/api/admin/actualites/${id}/visibility`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ is_public: newValue })
+    });
+    loadActus();
+    showToast(newValue ? 'Actu rendue publique' : 'Actu masquée');
+  }
+
+  async function deleteActu(id){
+    if (!confirm('Supprimer cette actualité ? Si elle a bloqué des dates dans l\'agenda, elles seront libérées aussi.')) return;
+    await fetch(`${API_BASE}/api/admin/actualites/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    loadActus();
+    loadDispos();
+    showToast('Actualité supprimée');
+  }
+
+  const DISPO_TYPE_LABELS = { concert:'🎤 Concert', cabaret:'🎭 Cabaret', dj:'🎧 DJ', indisponible:'🚫 Indisponible' };
+  const DISPO_TYPE_PLAIN = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', indisponible:'Indisponible' };
+  let dispoDate = new Date();
+  dispoDate.setDate(1);
+
+  function renderDispoLegend(){
+    document.getElementById('dispoLegend').innerHTML = Object.keys(ARTIST_LABELS).map(slug => `
+      <span><span class="agenda-dot" style="background:${ARTIST_COLORS[slug]};"></span>${ARTIST_LABELS[slug]}</span>
+    `).join('');
+  }
+
+  function shiftDispoMonth(delta){
+    dispoDate.setMonth(dispoDate.getMonth() + delta);
+    renderDispoCalendar();
+  }
+
+  function renderDispoCalendar(){
+    const grid = document.getElementById('dispoGrid');
+    const label = document.getElementById('dispoMonthLabel');
+    const year = dispoDate.getFullYear();
+    const month = dispoDate.getMonth();
+    label.textContent = dispoDate.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+
+    const dows = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    let html = dows.map(d => `<div class="agenda-dow">${d}</div>`).join('');
+
+    const firstDay = new Date(year, month, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = new Date().toISOString().slice(0,10);
+    const data = window.dispoData || [];
+
+    for (let i = 0; i < startOffset; i++){
+      html += `<div class="agenda-day empty"></div>`;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++){
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const dayEntries = data.filter(d => d.date === dateStr);
+      const isToday = dateStr === todayStr;
+      html += `<div class="agenda-day${isToday ? ' today' : ''}">
+        <div class="agenda-daynum">${day}</div>
+        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}">${TYPE_ICONS[d.type] || '🎤'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</div>`).join('')}
+      </div>`;
+    }
+
+    grid.innerHTML = html;
+  }
+
+  function formatShortDate(iso){
+    try {
+      const d = new Date(iso + 'T00:00:00Z');
+      return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short', timeZone:'UTC' });
+    } catch(e){ return iso; }
+  }
+
+  function isNextDay(dateStr, nextStr){
+    const d = new Date(dateStr + 'T00:00:00Z');
+    d.setUTCDate(d.getUTCDate() + 1);
+    return d.toISOString().slice(0,10) === nextStr;
+  }
+
+  function mergeDispoRanges(entries){
+    const ranges = [];
+    for (const e of entries){
+      const last = ranges[ranges.length - 1];
+      if (last && last.type === e.type && last.label === e.label && isNextDay(last.end, e.date)){
+        last.end = e.date;
+      } else {
+        ranges.push({ type: e.type, label: e.label, start: e.date, end: e.date });
+      }
+    }
+    return ranges;
+  }
+
+  function renderDispoSummary(){
+    const container = document.getElementById('dispoSummaryGrid');
+    const data = window.dispoData || [];
+    const todayStr = new Date().toISOString().slice(0,10);
+    container.innerHTML = Object.keys(ARTIST_LABELS).map(slug => {
+      const entries = data
+        .filter(d => d.artist_slug === slug && d.date >= todayStr)
+        .sort((a, b) => a.date.localeCompare(b.date));
+      const ranges = mergeDispoRanges(entries);
+      return `
+        <div class="dispo-summary-card">
+          <h3><span class="dispo-summary-dot" style="background:${ARTIST_COLORS[slug]};"></span>${ARTIST_LABELS[slug]}</h3>
+          <div class="dispo-summary-list">
+            ${ranges.length ? ranges.map(r => `
+              <div class="dispo-summary-row">
+                <span>${TYPE_ICONS[r.type] || '🎤'} ${r.label || DISPO_TYPE_PLAIN[r.type] || r.type}</span>
+                <span class="range">${formatShortDate(r.start)}${r.end !== r.start ? ' → ' + formatShortDate(r.end) : ''}</span>
+              </div>
+            `).join('') : '<div class="dispo-summary-empty">Aucune date à venir</div>'}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function loadDispos(){
+    const res = await fetch(`${API_BASE}/api/admin/agenda`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    window.dispoData = data;
+    const tbody = document.querySelector('#dispoTable tbody');
+    if (!data.length){ document.getElementById('dispoEmpty').style.display='block'; tbody.innerHTML=''; renderDispoCalendar(); renderDispoSummary(); renderAgenda(); renderPublicUpcoming(); renderHistory(); return; }
+    document.getElementById('dispoEmpty').style.display='none';
+    tbody.innerHTML = data.map(d => `
+      <tr>
+        <td>${d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug}</td>
+        <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
+        <td><button class="btn-no" style="background:${d.status === 'validee' ? '#6ee7a0' : 'var(--amber)'}; color:var(--ink);" onclick="toggleDispoStatus(${d.id}, '${d.status === 'validee' ? 'option' : 'validee'}')">${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</button></td>
+        <td>${d.date}</td>
+        <td>${d.publish_at || '—'}</td>
+        <td>${d.expires_at || '—'}</td>
+        <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
+        <td class="row-actions"><button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>${d.type === 'indisponible' ? `<button class="btn-info" onclick="requalifyToConcert(${d.id})">🔁 Requalifier en concert</button>` : ''}<button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button></td>
+      </tr>
+    `).join('');
+    renderDispoCalendar();
+    renderDispoSummary();
+    renderAgenda();
+    renderPublicUpcoming();
+    renderHistory();
+  }
+
+  function entryLabel(d){
+    return d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug;
+  }
+
+  function entryVenue(d){
+    return [d.venue_name, d.venue_city].filter(Boolean).join(', ');
+  }
+
+  let gvDate = new Date();
+  gvDate.setDate(1);
+
+  function shiftGvMonth(delta){
+    gvDate.setMonth(gvDate.getMonth() + delta);
+    renderGroupView();
+  }
+
+  const PAGE_LABELS = {
+    index:'Accueil', agenda:'Agenda', artistes:'Nos artistes', boutique:'Boutique',
+    'boutique-merci':'Boutique — merci', cabaret:'Cabaret', 'cgv-boutique':'CGV Boutique',
+    contact:'Contact', diffusion:'Notre philosophie de travail', dj:'DJ', galerie:'Galerie',
+    'groupes-de-reprises':'Groupes de reprises', 'jazz-soul-funk':'Jazz Soul Funk',
+    'mentions-legales':'Mentions légales', 'pop-francaise':'Pop Française', 'son-lumiere':'Prestation technique',
+    tributes:'Tributes',
+  };
+
+  function pageLabel(slug){
+    return PAGE_LABELS[slug] || ARTIST_LABELS[slug] || slug;
+  }
+
+  let visitsMapInstance = null;
+
+  let currentVisitsPeriod = 'today';
+
+  function setVisitsPeriod(period){
+    currentVisitsPeriod = period;
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('periodBtn-' + period).classList.add('active');
+    loadVisitsMap();
+    loadVisitsBreakdown();
+  }
+
+  async function loadVisitsMap(){
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits-map?period=${currentVisitsPeriod}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const points = await res.json();
+      if (!visitsMapInstance){
+        visitsMapInstance = L.map('visitsMap').setView([46.6, 2.5], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 18,
+        }).addTo(visitsMapInstance);
+        visitsMapInstance.markerLayer = L.layerGroup().addTo(visitsMapInstance);
+      }
+      visitsMapInstance.markerLayer.clearLayers();
+      (points || []).forEach(p => {
+        if (p.latitude == null || p.longitude == null) return;
+        const marker = L.circleMarker([p.latitude, p.longitude], {
+          radius: 6, color: '#ffb238', fillColor: '#ffb238', fillOpacity: 0.7, weight: 1,
+        });
+        marker.bindPopup(`<strong>${pageLabel(p.page)}</strong><br>${[p.city, p.region, p.country].filter(Boolean).join(', ')}<br>${p.visited_at}`);
+        marker.addTo(visitsMapInstance.markerLayer);
+      });
+      setTimeout(() => visitsMapInstance.invalidateSize(), 50);
+    } catch(e){ /* silencieux */ }
+  }
+
+  async function loadVisitsBreakdown(){
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits-breakdown?period=${currentVisitsPeriod}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      document.getElementById('periodTotalLabel').textContent = `— ${data.total || 0} visite(s) sur la période`;
+      const renderList = (sel, list) => {
+        document.querySelector(sel + ' tbody').innerHTML = (list || []).map(row => `
+          <tr><td>${row.label}</td><td style="text-align:right; color:var(--muted);">${row.total}</td></tr>
+        `).join('');
+      };
+      renderList('#breakdownCountryTable', data.by_country);
+      renderList('#breakdownRegionTable', data.by_region);
+      renderList('#breakdownCityTable', data.by_city);
+    } catch(e){ /* silencieux */ }
+  }
+
+  let visitsChartInstance = null;
+  let currentTimeseriesGranularity = 'day';
+
+  function setTimeseriesGranularity(g){
+    currentTimeseriesGranularity = g;
+    document.querySelectorAll('#tsBtn-day, #tsBtn-month').forEach(b => b.classList.remove('active'));
+    document.getElementById('tsBtn-' + g).classList.add('active');
+    loadVisitsTimeseries();
+  }
+
+  async function loadVisitsTimeseries(){
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits-timeseries?granularity=${currentTimeseriesGranularity}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      const points = data.points || [];
+      // Sur "par jour", on garde les 30 dernières entrées pour rester lisible
+      const shown = currentTimeseriesGranularity === 'day' ? points.slice(-30) : points;
+      const labels = shown.map(p => {
+        if (currentTimeseriesGranularity === 'month'){
+          return new Date(p.period + '-01T00:00:00').toLocaleDateString('fr-FR', { month:'short', year:'numeric' });
+        }
+        return new Date(p.period + 'T00:00:00').toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
+      });
+      const counts = shown.map(p => p.count);
+
+      const ctx = document.getElementById('visitsChart').getContext('2d');
+      if (visitsChartInstance) visitsChartInstance.destroy();
+      visitsChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Visites',
+            data: counts,
+            borderColor: '#ffb238',
+            backgroundColor: 'rgba(255,178,56,0.15)',
+            fill: true,
+            tension: 0.25,
+            pointRadius: 3,
+            pointBackgroundColor: '#ffb238',
+          }],
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#9a93a6' }, grid: { color: 'rgba(255,255,255,0.06)' } },
+            y: { beginAtZero: true, ticks: { color: '#9a93a6', precision: 0 }, grid: { color: 'rgba(255,255,255,0.06)' } },
+          },
+        },
+      });
+    } catch(e){
+      showToast('Erreur lors du chargement du graphique');
+    }
+  }
+
+  async function loadVisitsSummary(){
+    document.getElementById('visitsDetailBox').style.display = 'none';
+    loadVisitsMap();
+    loadVisitsBreakdown();
+    loadVisitsTimeseries();
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits-summary`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      document.getElementById('siteVisitTotal').textContent = data.grand_total || 0;
+      const pages = data.pages || [];
+      const tbody = document.querySelector('#visitsSummaryTable tbody');
+      document.getElementById('visitsSummaryEmpty').style.display = pages.length ? 'none' : 'block';
+      tbody.innerHTML = pages.map(p => `
+        <tr>
+          <td>${pageLabel(p.page)}</td>
+          <td>${p.total}</td>
+          <td>${p.last_visit || '—'}</td>
+          <td><button class="btn-info" onclick="showVisitDetail('${p.page}')">Détails</button></td>
+        </tr>
+      `).join('');
+    } catch(e){
+      document.getElementById('siteVisitTotal').textContent = '0';
+    }
+  }
+
+  async function showVisitDetail(page){
+    window.currentVisitDetailPage = page;
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits?artist=${encodeURIComponent(page)}`, { headers:{ Authorization:`Bearer ${token}` } });
+      if (!res.ok){ showToast(`Erreur (${res.status}) lors du chargement du détail`); return; }
+      const data = await res.json();
+      document.getElementById('visitsDetailTitle').textContent = 'Détails — ' + pageLabel(page);
+      const tbody = document.querySelector('#visitsDetailTable tbody');
+      tbody.innerHTML = (data.visits || []).map(v => {
+        const [datePart, timePart] = (v.visited_at || '').split(' ');
+        return `
+          <tr>
+            <td>${datePart || '—'}</td>
+            <td>${(timePart || '').slice(0,5) || '—'}</td>
+            <td>${v.city || '—'}</td>
+            <td>${v.region || '—'}</td>
+            <td>${v.country || '—'}</td>
+            <td class="row-actions">
+              ${v.session_id ? `<button class="btn-yes" onclick="showJourney('${v.session_id}')">Voir le parcours</button>` : ''}
+              <button class="btn-no" onclick="deleteVisit(${v.id}, 'detail')">Supprimer</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      document.getElementById('visitsDetailBox').style.display = 'block';
+      document.getElementById('visitsDetailBox').scrollIntoView({ behavior:'smooth', block:'start' });
+    } catch(e){
+      showToast('Erreur réseau lors du chargement du détail');
+    }
+  }
+
+  async function showJourney(sessionId){
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits-journey?session=${encodeURIComponent(sessionId)}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      const visits = data.visits || [];
+      if (!visits.length){ alert('Aucun autre passage retrouvé pour cette session.'); return; }
+      const lines = visits.map(v => {
+        const timePart = (v.visited_at || '').split(' ')[1] || '';
+        return `${timePart.slice(0,5)} — ${pageLabel(v.page)}`;
+      });
+      alert('Parcours sur le site :\n\n' + lines.join('\n'));
+    } catch(e){
+      showToast('Erreur lors du chargement du parcours');
+    }
+  }
+
+  async function loadGroupVisits(artistSlug){
+    document.getElementById('gvVisitCount').textContent = '…';
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/visits?artist=${encodeURIComponent(artistSlug)}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      document.getElementById('gvVisitCount').textContent = data.total || 0;
+      const tbody = document.querySelector('#gvVisitsTable tbody');
+      const visits = data.visits || [];
+      document.getElementById('gvVisitsEmpty').style.display = visits.length ? 'none' : 'block';
+      tbody.innerHTML = visits.map(v => {
+        const [datePart, timePart] = (v.visited_at || '').split(' ');
+        return `
+          <tr>
+            <td>${datePart || '—'}</td>
+            <td>${(timePart || '').slice(0,5) || '—'}</td>
+            <td>${v.city || '—'}</td>
+            <td>${v.region || '—'}</td>
+            <td>${v.country || '—'}</td>
+            <td class="row-actions">
+              ${v.session_id ? `<button class="btn-yes" onclick="showJourney('${v.session_id}')">Voir le parcours</button>` : ''}
+              <button class="btn-no" onclick="deleteVisit(${v.id}, 'group')">Supprimer</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    } catch(e){
+      document.getElementById('gvVisitCount').textContent = '0';
+    }
+  }
+
+  async function deleteVisit(id, context){
+    await fetch(`${API_BASE}/api/admin/visits/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    showToast('Visite supprimée');
+    if (context === 'detail' && window.currentVisitDetailPage){
+      showVisitDetail(window.currentVisitDetailPage);
+      loadVisitsSummary();
+    } else if (context === 'group'){
+      loadGroupVisits(document.getElementById('gvArtist').value);
+    }
+  }
+
+  function renderGroupView(){
+    const artistSlug = document.getElementById('gvArtist').value;
+    const entries = (window.dispoData || []).filter(d => d.artist_slug === artistSlug);
+    loadGroupVisits(artistSlug);
+
+    // --- calendrier ---
+    const grid = document.getElementById('gvGrid');
+    const year = gvDate.getFullYear();
+    const month = gvDate.getMonth();
+    document.getElementById('gvMonthLabel').textContent = gvDate.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+
+    const dows = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    let html = dows.map(d => `<div class="agenda-dow">${d}</div>`).join('');
+    const firstDay = new Date(year, month, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = new Date().toISOString().slice(0,10);
+
+    for (let i = 0; i < startOffset; i++) html += `<div class="agenda-day empty"></div>`;
+
+    for (let day = 1; day <= daysInMonth; day++){
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const dayEntries = entries.filter(e => e.date === dateStr);
+      const isToday = dateStr === todayStr;
+      const concertEntry = dayEntries.find(e => ROADMAP_TYPES.includes(e.type) && e.source_actu_id);
+      const clickAttr = concertEntry ? ` onclick="previewRoadmap(${concertEntry.source_actu_id})"` : '';
+      html += `<div class="agenda-day${isToday ? ' today' : ''}${concertEntry ? ' gv-clickable' : ''}"${clickAttr}>
+        <div class="agenda-daynum">${day}</div>
+        ${dayEntries.map(e => `<div class="gv-item${e.type === 'indisponible' ? ' indisponible' : ''}${e.status === 'option' ? ' option' : ''}" title="${escapeAttr(e.label || '')}${entryVenue(e) ? ' — ' + escapeAttr(entryVenue(e)) : ''}">${TYPE_ICONS[e.type] || '🎤'}${e.status === 'option' ? '?' : ''}${e.venue_city ? ' ' + escapeAttr(e.venue_city) : ''}</div>`).join('')}
+      </div>`;
+    }
+    grid.innerHTML = html;
+
+    // --- tableau ---
+    const tbody = document.querySelector('#gvTable tbody');
+    if (!entries.length){ document.getElementById('gvEmpty').style.display = 'block'; tbody.innerHTML = ''; return; }
+    document.getElementById('gvEmpty').style.display = 'none';
+    const sorted = [...entries].sort((a,b) => a.date.localeCompare(b.date));
+    tbody.innerHTML = sorted.map(e => `
+      <tr>
+        <td>${e.date}</td>
+        <td>${DISPO_TYPE_LABELS[e.type] || e.type}</td>
+        <td>${e.status === 'option' ? '🟡 Option' : '🟢 Validée'}</td>
+        <td style="color:var(--muted); font-size:0.85rem;">${e.label || '—'}${entryVenue(e) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(e)}</span>` : ''}</td>
+        <td>${ROADMAP_TYPES.includes(e.type) && e.source_actu_id ? `<button class="btn-info" onclick="previewRoadmap(${e.source_actu_id})">Feuille de route</button>` : ''}</td>
+      </tr>
+    `).join('');
+  }
+
+  function renderHistory(){
+    const todayStr = new Date().toISOString().slice(0,10);
+    const past = (window.dispoData || []).filter(d => d.date < todayStr);
+    const container = document.getElementById('historyContainer');
+    document.getElementById('historyEmpty').style.display = past.length ? 'none' : 'block';
+    if (!past.length){ container.innerHTML = ''; return; }
+
+    const groups = {};
+    past.forEach(d => {
+      const monthKey = d.date.slice(0,7);
+      (groups[monthKey] = groups[monthKey] || []).push(d);
+    });
+
+    const monthKeys = Object.keys(groups).sort().reverse();
+    container.innerHTML = monthKeys.map(monthKey => {
+      const entries = groups[monthKey].sort((a, b) => b.date.localeCompare(a.date));
+      const monthLabel = new Date(monthKey + '-01T00:00:00').toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+      return `
+        <h3 style="text-transform:capitalize;">${monthLabel}</h3>
+        <table>
+          <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Statut</th><th>Détail</th></tr></thead>
+          <tbody>
+            ${entries.map(d => `
+              <tr>
+                <td>${d.date}</td>
+                <td>${entryLabel(d)}</td>
+                <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
+                <td>${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</td>
+                <td style="max-width:260px; color:var(--muted); font-size:0.85rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }).join('');
+  }
+
+  async function toggleDispoStatus(id, newStatus){
+    await fetch(`${API_BASE}/api/admin/agenda/${id}/status`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ status: newStatus })
+    });
+    loadDispos();
+    showToast(newStatus === 'validee' ? 'Date validée' : 'Date repassée en option');
+  }
+
+  async function deleteDispo(id){
+    await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    loadDispos();
+    showToast('Date supprimée');
+  }
+
+  const SITE_BASE = "https://soundlightprod.fr";
+
+  async function loadTokens(){
+    const res = await fetch(`${API_BASE}/api/admin/artist-tokens`, { headers:{ Authorization:`Bearer ${token}` } });
+    window.tokensData = await res.json();
+    renderTokens();
+  }
+
+  function renderTokens(){
+    const tbody = document.querySelector('#tokenTable tbody');
+    tbody.innerHTML = (window.tokensData || []).map(t => {
+      const link = `${SITE_BASE}/mon-agenda.html?artist=${t.artist_slug}`;
+      return `
+        <tr>
+          <td>${ARTIST_LABELS[t.artist_slug] || t.artist_slug}</td>
+          <td><input type="text" readonly value="${link}" onclick="this.select()" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); font-size:0.78rem;"></td>
+          <td style="font-family:'JetBrains Mono',monospace; font-weight:700;">${t.password || '—'}</td>
+          <td class="row-actions">
+            <button class="btn-yes" onclick="copyTokenLink('${link}')">Copier le lien</button>
+            <button class="btn-no" onclick="regenerateToken('${t.artist_slug}')">Régénérer le mot de passe</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function copyTokenLink(link){
+    navigator.clipboard.writeText(link).then(() => alert('Lien copié !')).catch(() => prompt('Copie manuelle :', link));
+  }
+
+  function copyIcsFeedUrl(){
+    const link = document.getElementById('icsFeedUrl').value;
+    navigator.clipboard.writeText(link).then(() => showToast('Lien du flux copié')).catch(() => prompt('Copie manuelle :', link));
+  }
+
+  async function regenerateToken(slug){
+    if (!confirm("Régénérer le mot de passe de ce groupe ? L'ancien cessera de fonctionner immédiatement.")) return;
+    const res = await fetch(`${API_BASE}/api/admin/artist-tokens/${slug}/regenerate`, { method:'POST', headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    loadTokens();
+    if (data.password) alert(`Nouveau mot de passe pour ${ARTIST_LABELS[slug] || slug} : ${data.password}`);
+  }
+
+  if (token) showApp();
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('admin-sw.js').catch(() => {});
+  }
+</script>
+
+</body>
+</html>

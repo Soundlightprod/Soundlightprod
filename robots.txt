@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /mon-agenda.html
+
+Sitemap: https://soundlightprod.fr/sitemap.xml

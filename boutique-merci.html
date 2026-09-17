@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merci pour votre commande — SLP</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0c0b10; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; }
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px;}
+  h1{font-family:'Space Grotesk',sans-serif; font-size:2.2rem; margin-bottom:14px;}
+  p{color:var(--muted); margin-bottom:24px;}
+  a{color:var(--amber); text-decoration:none; font-weight:600;}
+</style>
+</head>
+<body>
+  <div>
+    <h1>Merci pour votre commande !</h1>
+    <p>Votre paiement a bien été enregistré. Un email de confirmation vous sera envoyé sous peu.</p>
+    <a href="index.html">← Retour à l'accueil</a>
+  </div>
+</body>
+<script>
+(function(){
+  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
+  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
+  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
+  if (localStorage.getItem('slp_admin_token')) return;
+  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  fetch("https://slp-api.raspy-silence-d4c7.workers.dev/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_slug: "boutique-merci", session_id: sid })
+  }).catch(function(){});
+})();
+</script>
+</html>
