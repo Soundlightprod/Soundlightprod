@@ -42,6 +42,8 @@
   .status.confirmed{background:rgba(110,231,160,0.15); color:#6ee7a0;}
   .status.refused, .status.cancelled{background:rgba(255,77,125,0.15); color:var(--pink);}
   .status.paid{background:rgba(110,231,160,0.15); color:#6ee7a0;}
+  .clickable-row{cursor:pointer; transition:background 0.15s ease;}
+  .clickable-row:hover{background:rgba(255,178,56,0.08);}
   .row-actions button{margin-right:6px; font-size:0.78rem; padding:6px 14px; border-radius:100px; border:none; cursor:pointer;}
   .btn-yes{background:#6ee7a0; color:var(--ink);}
   .btn-no{background:var(--pink); color:#fff;}
@@ -640,6 +642,16 @@
         <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Par ville</div>
         <table id="breakdownCityTable"><tbody></tbody></table>
       </div>
+    </div>
+
+    <div id="geoDetailBox" style="display:none; margin-bottom:30px; padding-top:20px; border-top:1px solid var(--line);">
+      <h3 id="geoDetailTitle">Détail</h3>
+      <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Clique sur "Voir le parcours" pour retrouver toutes les pages vues par ce même visiteur.</p>
+      <table id="geoDetailTable">
+        <thead><tr><th>Date</th><th>Heure</th><th>Page</th><th>Localisation</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty" id="geoDetailEmpty" style="display:none;">Aucun détail disponible pour cette période (essaie "Tout").</p>
     </div>
 
     <h3>Par page</h3>
@@ -1676,6 +1688,7 @@
     try {
       const res = await fetch(`${API_BASE}/api/admin/visits-map?period=${currentVisitsPeriod}`, { headers:{ Authorization:`Bearer ${token}` } });
       const points = await res.json();
+      window.visitsMapData = points || [];
       if (!visitsMapInstance){
         visitsMapInstance = L.map('visitsMap').setView([46.6, 2.5], 5);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -1702,15 +1715,42 @@
       const res = await fetch(`${API_BASE}/api/admin/visits-breakdown?period=${currentVisitsPeriod}`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
       document.getElementById('periodTotalLabel').textContent = `— ${data.total || 0} visite(s) sur la période`;
-      const renderList = (sel, list) => {
+      const renderList = (sel, list, dim) => {
         document.querySelector(sel + ' tbody').innerHTML = (list || []).map(row => `
-          <tr><td>${row.label}</td><td style="text-align:right; color:var(--muted);">${row.total}</td></tr>
+          <tr class="clickable-row" onclick="showGeoDetail('${dim}', '${escapeAttr(row.label)}')"><td>${row.label}</td><td style="text-align:right; color:var(--muted);">${row.total}</td></tr>
         `).join('');
       };
-      renderList('#breakdownCountryTable', data.by_country);
-      renderList('#breakdownRegionTable', data.by_region);
-      renderList('#breakdownCityTable', data.by_city);
+      renderList('#breakdownCountryTable', data.by_country, 'country');
+      renderList('#breakdownRegionTable', data.by_region, 'region');
+      renderList('#breakdownCityTable', data.by_city, 'city');
     } catch(e){ /* silencieux */ }
+  }
+
+  function showGeoDetail(dimension, label){
+    const isUnknown = label === 'Inconnu';
+    const rows = (window.visitsMapData || []).filter(p => {
+      const val = dimension === 'country' ? p.country : dimension === 'region' ? p.region : p.city;
+      return isUnknown ? !val : val === label;
+    }).sort((a, b) => (b.visited_at || '').localeCompare(a.visited_at || ''));
+
+    const dimLabel = dimension === 'country' ? 'Pays' : dimension === 'region' ? 'Région' : 'Ville';
+    document.getElementById('geoDetailTitle').textContent = `${dimLabel} — ${label}`;
+    const tbody = document.querySelector('#geoDetailTable tbody');
+    tbody.innerHTML = rows.map(r => {
+      const [datePart, timePart] = (r.visited_at || '').split(' ');
+      return `
+        <tr>
+          <td>${datePart || '—'}</td>
+          <td>${(timePart || '').slice(0,5) || '—'}</td>
+          <td>${pageLabel(r.page)}</td>
+          <td>${[r.city, r.region, r.country].filter(Boolean).join(', ') || '—'}</td>
+          <td>${r.session_id ? `<button class="btn-yes" onclick="showJourney('${r.session_id}')">Voir le parcours</button>` : ''}</td>
+        </tr>
+      `;
+    }).join('');
+    document.getElementById('geoDetailEmpty').style.display = rows.length ? 'none' : 'block';
+    document.getElementById('geoDetailBox').style.display = 'block';
+    document.getElementById('geoDetailBox').scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
   let visitsChartInstance = null;
