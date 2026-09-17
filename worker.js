@@ -241,9 +241,8 @@ export default {
           const p = dbProducts.find((d) => d.id === cartItem.product_id);
           if (!p) continue;
           const qty = Math.max(1, parseInt(cartItem.qty) || 1);
-          if (p.stock_qty < qty) {
-            return json({ error: `Stock insuffisant pour ${p.name}` }, 409, origin);
-          }
+          // Le stock n'empêche jamais la commande : certains articles (jets de scène, consommables)
+          // restent commandables même à 0 en stock, en réappro rapide.
           line_items.push({
             price_data: {
               currency: "eur",

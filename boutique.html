@@ -292,12 +292,10 @@
         <span class="cat">${{ son:'Son', lumiere:'Lumière', consommables:'Consommables' }[p.category] || p.category}</span>
         <h3>${p.name}</h3>
         <p class="desc">${p.description || ''}</p>
-        ${p.stock_qty <= 3 ? `<span class="stock-low">Plus que ${p.stock_qty} en stock</span>` : ''}
+        ${p.stock_qty === 0 ? `<span class="stock-low">Sur commande — réappro en cours</span>` : (p.stock_qty <= 3 ? `<span class="stock-low">Plus que ${p.stock_qty} en stock</span>` : '')}
         <div class="price-row">
           <span class="price">${money(p.price_cents)}</span>
-          <button class="btn btn-primary" ${p.stock_qty < 1 ? 'disabled' : ''} onclick="addToCart(${p.id})">
-            ${p.stock_qty < 1 ? 'Épuisé' : 'Ajouter'}
-          </button>
+          <button class="btn btn-primary" onclick="addToCart(${p.id})">Ajouter</button>
         </div>
       </div>
     `).join('');
