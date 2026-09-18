@@ -223,6 +223,36 @@ export default {
         return json(results, 200, origin);
       }
 
+      // POST /api/admin/send-roadmap-email — { to, subject, pdf_base64, filename } : envoie la
+      // feuille de route en pièce jointe PDF via Resend.
+      if (url.pathname === "/api/admin/send-roadmap-email" && request.method === "POST") {
+        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        const { to, subject, pdf_base64, filename } = await request.json();
+        if (!to || !pdf_base64) return json({ error: "Destinataire et PDF requis" }, 400, origin);
+
+        const resendKey = await env.RESEND_API_KEY.get();
+        const resendRes = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${resendKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "SLP Sound Light Prod <contact@soundlightprod.fr>",
+            to: [to],
+            subject: subject || "Feuille de route",
+            html: "<p>Bonjour,</p><p>Veuillez trouver ci-joint la feuille de route.</p><p>Cordialement,<br>SLP — Sound Light Prod</p>",
+            attachments: [{ filename: filename || "feuille-de-route.pdf", content: pdf_base64 }],
+          }),
+        });
+
+        if (!resendRes.ok) {
+          const errText = await resendRes.text();
+          return json({ error: `Échec de l'envoi (${resendRes.status}) : ${errText}` }, 502, origin);
+        }
+        return json({ ok: true }, 200, origin);
+      }
+
       // GET /api/admin/products — tous les produits (actifs ou non) avec stock, pour le récap admin
       if (url.pathname === "/api/admin/products" && request.method === "GET") {
         if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);

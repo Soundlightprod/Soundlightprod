@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --line:rgba(255,255,255,0.1); }
   *{box-sizing:border-box;}
@@ -679,6 +680,7 @@
     <div class="modal-toolbar">
       <strong style="color:var(--paper); font-family:'Space Grotesk',sans-serif;">Aperçu feuille de route</strong>
       <div>
+        <button class="btn-outline" onclick="emailRoadmap()">✉️ Envoyer par email</button>
         <button class="btn" onclick="window.print()">🖨 Imprimer / Télécharger en PDF</button>
         <button class="btn-outline" onclick="closeRoadmapPreview()">Fermer</button>
       </div>
@@ -1211,12 +1213,59 @@
   function previewRoadmap(id){
     const a = (window.actusData || []).find(x => x.id === id);
     if (!a) return;
+    window.currentRoadmapActu = a;
     document.getElementById('rmDoc').innerHTML = buildRoadmapDoc(a);
     document.getElementById('rmOverlay').classList.add('open');
   }
 
   function closeRoadmapPreview(){
     document.getElementById('rmOverlay').classList.remove('open');
+  }
+
+  async function emailRoadmap(){
+    const a = window.currentRoadmapActu;
+    if (!a) return;
+    const to = prompt("Envoyer la feuille de route à quelle adresse email ?");
+    if (!to) return;
+    const btn = document.querySelector('.modal-toolbar button[onclick="emailRoadmap()"]');
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ Génération du PDF...';
+    btn.disabled = true;
+    try {
+      const worker = html2pdf().set({
+        margin: 0,
+        filename: 'feuille-de-route.pdf',
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' },
+      }).from(document.getElementById('rmDoc'));
+      const pdfBlob = await worker.outputPdf('blob');
+      const pdfBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(pdfBlob);
+      });
+
+      btn.textContent = '📤 Envoi en cours...';
+      const label = a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug;
+      const res = await fetch(`${API_BASE}/api/admin/send-roadmap-email`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          to,
+          subject: `Feuille de route — ${label}${a.event_date ? ' (' + a.event_date + ')' : ''}`,
+          pdf_base64: pdfBase64,
+          filename: `feuille-de-route-${(a.artist_slug || 'slp')}-${a.event_date || ''}.pdf`,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erreur inconnue');
+      showToast(`Feuille de route envoyée à ${to}`);
+    } catch (e) {
+      alert("Erreur lors de l'envoi : " + e.message);
+    } finally {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
   }
 
   function onArtistChange(){
