@@ -786,27 +786,32 @@
     renderAgendaLegend();
     renderDispoLegend();
     onEventTypeChange();
-    await loadOrders();
-    await loadStock();
     await loadActus();
     await loadDispos();
     await loadTokens();
+    await loadOrders();
+    await loadStock();
   }
 
   async function loadStock(){
-    const res = await fetch(`${API_BASE}/api/admin/products`, { headers:{ Authorization:`Bearer ${token}` } });
-    const data = await res.json();
-    const catLabel = { son:'Son', lumiere:'Lumière', consommables:'Consommables' };
-    document.querySelector('#stockTable tbody').innerHTML = data.map(p => `
-      <tr>
-        <td>${p.name}</td>
-        <td>${catLabel[p.category] || p.category}</td>
-        <td>${(p.price_cents/100).toFixed(2)} €</td>
-        <td><input type="number" min="0" value="${p.stock_qty}" id="stockInput-${p.id}" style="width:70px; padding:6px 8px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);"></td>
-        <td><input type="checkbox" id="activeInput-${p.id}" ${p.active ? 'checked' : ''} style="width:auto;"></td>
-        <td><button class="btn-yes" onclick="saveStock(${p.id})">Enregistrer</button></td>
-      </tr>
-    `).join('');
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/products`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error(data.error || 'Réponse inattendue');
+      const catLabel = { son:'Son', lumiere:'Lumière', consommables:'Consommables' };
+      document.querySelector('#stockTable tbody').innerHTML = data.map(p => `
+        <tr>
+          <td>${p.name}</td>
+          <td>${catLabel[p.category] || p.category}</td>
+          <td>${(p.price_cents/100).toFixed(2)} €</td>
+          <td><input type="number" min="0" value="${p.stock_qty}" id="stockInput-${p.id}" style="width:70px; padding:6px 8px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);"></td>
+          <td><input type="checkbox" id="activeInput-${p.id}" ${p.active ? 'checked' : ''} style="width:auto;"></td>
+          <td><button class="btn-yes" onclick="saveStock(${p.id})">Enregistrer</button></td>
+        </tr>
+      `).join('');
+    } catch(e){
+      console.error('loadStock a échoué :', e);
+    }
   }
 
   async function saveStock(id){
@@ -820,25 +825,30 @@
   }
 
   async function loadOrders(){
-    const res = await fetch(`${API_BASE}/api/admin/orders`, { headers:{ Authorization:`Bearer ${token}` } });
-    const data = await res.json();
-    const tbody = document.querySelector('#orderTable tbody');
-    if (!data.length){ document.getElementById('orderEmpty').style.display='block'; tbody.innerHTML=''; return; }
-    document.getElementById('orderEmpty').style.display='none';
-    tbody.innerHTML = data.map(o => {
-      const items = JSON.parse(o.items_json);
-      return `
-        <tr>
-          <td><span class="status ${o.status}">${statusLabel(o.status)}</span></td>
-          <td>${o.customer_name}<br><span style="color:var(--muted); font-size:0.78rem;">${o.customer_email} ${o.customer_phone || ''}</span></td>
-          <td style="font-size:0.82rem;">${o.shipping_address || '<span style="color:var(--muted);">—</span>'}</td>
-          <td>${items.map(i => `${i.qty}× ${i.name}`).join(', ')}</td>
-          <td>${money(o.total_cents)}</td>
-          <td>${o.created_at}</td>
-          <td class="row-actions"><button class="btn-no" onclick="deleteOrder(${o.id})">Supprimer</button></td>
-        </tr>
-      `;
-    }).join('');
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/orders`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error(data.error || 'Réponse inattendue');
+      const tbody = document.querySelector('#orderTable tbody');
+      if (!data.length){ document.getElementById('orderEmpty').style.display='block'; tbody.innerHTML=''; return; }
+      document.getElementById('orderEmpty').style.display='none';
+      tbody.innerHTML = data.map(o => {
+        const items = JSON.parse(o.items_json);
+        return `
+          <tr>
+            <td><span class="status ${o.status}">${statusLabel(o.status)}</span></td>
+            <td>${o.customer_name}<br><span style="color:var(--muted); font-size:0.78rem;">${o.customer_email} ${o.customer_phone || ''}</span></td>
+            <td style="font-size:0.82rem;">${o.shipping_address || '<span style="color:var(--muted);">—</span>'}</td>
+            <td>${items.map(i => `${i.qty}× ${i.name}`).join(', ')}</td>
+            <td>${money(o.total_cents)}</td>
+            <td>${o.created_at}</td>
+            <td class="row-actions"><button class="btn-no" onclick="deleteOrder(${o.id})">Supprimer</button></td>
+          </tr>
+        `;
+      }).join('');
+    } catch(e){
+      console.error('loadOrders a échoué :', e);
+    }
   }
 
   async function deleteOrder(id){
@@ -933,36 +943,41 @@
   }
 
   async function loadActus(){
-    const res = await fetch(`${API_BASE}/api/admin/actualites`, { headers:{ Authorization:`Bearer ${token}` } });
-    const data = await res.json();
-    window.actusData = data;
-    const tbody = document.querySelector('#actuTable tbody');
-    if (!data.length){ document.getElementById('actuEmpty').style.display='block'; tbody.innerHTML=''; renderAgenda(); renderPublicUpcoming(); return; }
-    document.getElementById('actuEmpty').style.display='none';
-    const today = new Date().toISOString().slice(0,10);
-    tbody.innerHTML = data.map(a => {
-      const expired = a.expires_at && a.expires_at < today;
-      const scheduled = a.publish_at && a.publish_at > today;
-      return `
-      <tr style="${expired ? 'opacity:0.5;' : ''}">
-        <td>${TYPE_ICONS[a.type] || '📣'}</td>
-        <td>${a.photo_url ? `<img src="${a.photo_url}" style="width:44px; height:44px; object-fit:cover; border-radius:6px;">` : '—'}</td>
-        <td>${a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
-        <td style="max-width:260px;">${a.text}</td>
-        <td>${a.publish_at || '—'} ${scheduled ? '<span class="status pending">Programmée</span>' : ''}</td>
-        <td>${a.event_date || '—'}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + a.event_end_date : ''}</td>
-        <td>${a.expires_at || '—'} ${expired ? '<span class="status refused">Expirée</span>' : ''}</td>
-        <td><button class="btn-no" style="background:${a.is_public ? '#6ee7a0' : 'var(--muted)'}; color:var(--ink);" onclick="toggleActuPublic(${a.id}, ${a.is_public ? 0 : 1})">${a.is_public ? 'Public' : 'Masqué'}</button></td>
-        <td class="row-actions">
-          ${ROADMAP_TYPES.includes(a.type) ? `<button class="btn-info" onclick="previewRoadmap(${a.id})">Feuille de route</button>` : ''}
-          <button class="btn-yes" onclick="editActu(${a.id})">Modifier</button>
-          <button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button>
-        </td>
-      </tr>
-    `;
-    }).join('');
-    renderAgenda();
-    renderPublicUpcoming();
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/actualites`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error(data.error || 'Réponse inattendue');
+      window.actusData = data;
+      const tbody = document.querySelector('#actuTable tbody');
+      if (!data.length){ document.getElementById('actuEmpty').style.display='block'; tbody.innerHTML=''; renderAgenda(); renderPublicUpcoming(); return; }
+      document.getElementById('actuEmpty').style.display='none';
+      const today = new Date().toISOString().slice(0,10);
+      tbody.innerHTML = data.map(a => {
+        const expired = a.expires_at && a.expires_at < today;
+        const scheduled = a.publish_at && a.publish_at > today;
+        return `
+        <tr style="${expired ? 'opacity:0.5;' : ''}">
+          <td>${TYPE_ICONS[a.type] || '📣'}</td>
+          <td>${a.photo_url ? `<img src="${a.photo_url}" style="width:44px; height:44px; object-fit:cover; border-radius:6px;">` : '—'}</td>
+          <td>${a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
+          <td style="max-width:260px;">${a.text}</td>
+          <td>${a.publish_at || '—'} ${scheduled ? '<span class="status pending">Programmée</span>' : ''}</td>
+          <td>${a.event_date || '—'}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + a.event_end_date : ''}</td>
+          <td>${a.expires_at || '—'} ${expired ? '<span class="status refused">Expirée</span>' : ''}</td>
+          <td><button class="btn-no" style="background:${a.is_public ? '#6ee7a0' : 'var(--muted)'}; color:var(--ink);" onclick="toggleActuPublic(${a.id}, ${a.is_public ? 0 : 1})">${a.is_public ? 'Public' : 'Masqué'}</button></td>
+          <td class="row-actions">
+            ${ROADMAP_TYPES.includes(a.type) ? `<button class="btn-info" onclick="previewRoadmap(${a.id})">Feuille de route</button>` : ''}
+            <button class="btn-yes" onclick="editActu(${a.id})">Modifier</button>
+            <button class="btn-no" onclick="deleteActu(${a.id})">Supprimer</button>
+          </td>
+        </tr>
+      `;
+      }).join('');
+      renderAgenda();
+      renderPublicUpcoming();
+    } catch(e){
+      console.error('loadActus a échoué :', e);
+    }
   }
 
   // ---------- Feuille de route : lignes de timing dynamiques ----------
@@ -1661,44 +1676,53 @@
       `;
     };
 
-    let html = Object.keys(ARTIST_LABELS).map(slug => cardFor(slug, ARTIST_LABELS[slug], ARTIST_COLORS[slug])).join('');
+    try {
+      let html = Object.keys(ARTIST_LABELS).map(slug => cardFor(slug, ARTIST_LABELS[slug], ARTIST_COLORS[slug])).join('');
 
-    // Une carte par invité distinct (artiste sans fiche sur le site) ayant au moins une date à venir
-    const guestSlugs = new Map();
-    data.forEach(d => {
-      if (!ARTIST_LABELS[d.artist_slug] && d.date >= todayStr){
-        if (!guestSlugs.has(d.artist_slug)) guestSlugs.set(d.artist_slug, d.guest_name || d.artist_slug);
-      }
-    });
-    html += [...guestSlugs.entries()].map(([slug, name]) => cardFor(slug, '👤 ' + name, '#9a93a6')).join('');
+      // Une carte par invité distinct (artiste sans fiche sur le site) ayant au moins une date à venir
+      const guestSlugs = new Map();
+      data.forEach(d => {
+        if (!ARTIST_LABELS[d.artist_slug] && d.date >= todayStr){
+          if (!guestSlugs.has(d.artist_slug)) guestSlugs.set(d.artist_slug, d.guest_name || d.artist_slug);
+        }
+      });
+      html += [...guestSlugs.entries()].map(([slug, name]) => cardFor(slug, '👤 ' + name, '#9a93a6')).join('');
 
-    container.innerHTML = html;
+      container.innerHTML = html;
+    } catch(e){
+      console.error('renderDispoSummary a échoué :', e);
+    }
   }
 
   async function loadDispos(){
-    const res = await fetch(`${API_BASE}/api/admin/agenda`, { headers:{ Authorization:`Bearer ${token}` } });
-    const data = await res.json();
-    window.dispoData = data;
-    const tbody = document.querySelector('#dispoTable tbody');
-    if (!data.length){ document.getElementById('dispoEmpty').style.display='block'; tbody.innerHTML=''; renderDispoCalendar(); renderDispoSummary(); renderAgenda(); renderPublicUpcoming(); renderHistory(); return; }
-    document.getElementById('dispoEmpty').style.display='none';
-    tbody.innerHTML = data.map(d => `
-      <tr>
-        <td>${d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug}</td>
-        <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
-        <td><button class="btn-no" style="background:${d.status === 'validee' ? '#6ee7a0' : 'var(--amber)'}; color:var(--ink);" onclick="toggleDispoStatus(${d.id}, '${d.status === 'validee' ? 'option' : 'validee'}')">${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</button></td>
-        <td>${d.date}</td>
-        <td>${d.publish_at || '—'}</td>
-        <td>${d.expires_at || '—'}</td>
-        <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
-        <td class="row-actions"><button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>${d.type === 'indisponible' ? `<button class="btn-info" onclick="requalifyToConcert(${d.id})">🔁 Requalifier en concert</button>` : ''}<button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button></td>
-      </tr>
-    `).join('');
-    renderDispoCalendar();
-    renderDispoSummary();
-    renderAgenda();
-    renderPublicUpcoming();
-    renderHistory();
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/agenda`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error(data.error || 'Réponse inattendue');
+      window.dispoData = data;
+      const tbody = document.querySelector('#dispoTable tbody');
+      if (!data.length){ document.getElementById('dispoEmpty').style.display='block'; tbody.innerHTML=''; renderDispoCalendar(); renderDispoSummary(); renderAgenda(); renderPublicUpcoming(); renderHistory(); return; }
+      document.getElementById('dispoEmpty').style.display='none';
+      tbody.innerHTML = data.map(d => `
+        <tr>
+          <td>${d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug}</td>
+          <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
+          <td><button class="btn-no" style="background:${d.status === 'validee' ? '#6ee7a0' : 'var(--amber)'}; color:var(--ink);" onclick="toggleDispoStatus(${d.id}, '${d.status === 'validee' ? 'option' : 'validee'}')">${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</button></td>
+          <td>${d.date}</td>
+          <td>${d.publish_at || '—'}</td>
+          <td>${d.expires_at || '—'}</td>
+          <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
+          <td class="row-actions"><button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>${d.type === 'indisponible' ? `<button class="btn-info" onclick="requalifyToConcert(${d.id})">🔁 Requalifier en concert</button>` : ''}<button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button></td>
+        </tr>
+      `).join('');
+      renderDispoCalendar();
+      renderDispoSummary();
+      renderAgenda();
+      renderPublicUpcoming();
+      renderHistory();
+    } catch(e){
+      console.error('loadDispos a échoué :', e);
+    }
   }
 
   function entryLabel(d){
@@ -2084,9 +2108,13 @@
   const SITE_BASE = "https://soundlightprod.fr";
 
   async function loadTokens(){
-    const res = await fetch(`${API_BASE}/api/admin/artist-tokens`, { headers:{ Authorization:`Bearer ${token}` } });
-    window.tokensData = await res.json();
-    renderTokens();
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/artist-tokens`, { headers:{ Authorization:`Bearer ${token}` } });
+      window.tokensData = await res.json();
+      renderTokens();
+    } catch(e){
+      console.error('loadTokens a échoué :', e);
+    }
   }
 
   function renderTokens(){
