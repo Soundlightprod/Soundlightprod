@@ -588,19 +588,21 @@
   <!-- ============ ONGLET 7 : SUIVI DES COMMANDES ============ -->
   <div class="tab-content" id="tab-orders">
 
-    <h2>Demandes de location</h2>
-    <table id="resTable">
-      <thead><tr><th>Statut</th><th>Article</th><th>Client</th><th>Dates</th><th>Qté</th><th>Notes</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <p class="empty" id="resEmpty" style="display:none;">Aucune demande pour le moment.</p>
-
     <h2>Commandes boutique</h2>
     <table id="orderTable">
       <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead>
       <tbody></tbody>
     </table>
     <p class="empty" id="orderEmpty" style="display:none;">Aucune commande pour le moment.</p>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+      <h2 style="margin-top:0;">Récap des stocks</h2>
+      <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Le stock n'est jamais affiché aux clients — c'est ici la seule vue de tes quantités réelles.</p>
+      <table id="stockTable">
+        <thead><tr><th>Référence</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Public</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- ============ ONGLET 8 : VISITES DU SITE ============ -->
@@ -782,44 +784,37 @@
     renderAgendaLegend();
     renderDispoLegend();
     onEventTypeChange();
-    await loadReservations();
     await loadOrders();
+    await loadStock();
     await loadActus();
     await loadDispos();
     await loadTokens();
   }
 
-  async function loadReservations(){
-    const res = await fetch(`${API_BASE}/api/admin/reservations`, { headers:{ Authorization:`Bearer ${token}` } });
+  async function loadStock(){
+    const res = await fetch(`${API_BASE}/api/admin/products`, { headers:{ Authorization:`Bearer ${token}` } });
     const data = await res.json();
-    const tbody = document.querySelector('#resTable tbody');
-    if (!data.length){ document.getElementById('resEmpty').style.display='block'; tbody.innerHTML=''; return; }
-    document.getElementById('resEmpty').style.display='none';
-    tbody.innerHTML = data.map(r => `
+    const catLabel = { son:'Son', lumiere:'Lumière', consommables:'Consommables' };
+    document.querySelector('#stockTable tbody').innerHTML = data.map(p => `
       <tr>
-        <td><span class="status ${r.status}">${statusLabel(r.status)}</span></td>
-        <td>${r.item_name}</td>
-        <td>${r.customer_name}<br><span style="color:var(--muted); font-size:0.78rem;">${r.customer_email} ${r.customer_phone || ''}</span></td>
-        <td>${r.start_date} → ${r.end_date}</td>
-        <td>${r.qty}</td>
-        <td style="max-width:200px; color:var(--muted); font-size:0.8rem;">${r.notes || ''}</td>
-        <td class="row-actions">
-          ${r.status === 'pending' ? `
-            <button class="btn-yes" onclick="decide(${r.id}, 'confirmed')">Valider</button>
-            <button class="btn-no" onclick="decide(${r.id}, 'refused')">Refuser</button>
-          ` : ''}
-        </td>
+        <td>${p.name}</td>
+        <td>${catLabel[p.category] || p.category}</td>
+        <td>${(p.price_cents/100).toFixed(2)} €</td>
+        <td><input type="number" min="0" value="${p.stock_qty}" id="stockInput-${p.id}" style="width:70px; padding:6px 8px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);"></td>
+        <td><input type="checkbox" id="activeInput-${p.id}" ${p.active ? 'checked' : ''} style="width:auto;"></td>
+        <td><button class="btn-yes" onclick="saveStock(${p.id})">Enregistrer</button></td>
       </tr>
     `).join('');
   }
 
-  async function decide(id, decision){
-    await fetch(`${API_BASE}/api/admin/reservations/${id}/decide`, {
+  async function saveStock(id){
+    const stock_qty = document.getElementById(`stockInput-${id}`).value;
+    const active = document.getElementById(`activeInput-${id}`).checked;
+    await fetch(`${API_BASE}/api/admin/products/${id}/stock`, {
       method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-      body: JSON.stringify({ decision })
+      body: JSON.stringify({ stock_qty, active })
     });
-    loadReservations();
-    showToast(decision === 'confirmed' ? 'Réservation validée' : 'Réservation refusée');
+    showToast('Stock mis à jour');
   }
 
   async function loadOrders(){

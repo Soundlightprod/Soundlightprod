@@ -223,6 +223,25 @@ export default {
         return json(results, 200, origin);
       }
 
+      // GET /api/admin/products — tous les produits (actifs ou non) avec stock, pour le récap admin
+      if (url.pathname === "/api/admin/products" && request.method === "GET") {
+        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        const { results } = await env.DB.prepare(
+          "SELECT id, slug, name, category, price_cents, stock_qty, active FROM products ORDER BY category, name"
+        ).all();
+        return json(results, 200, origin);
+      }
+
+      // POST /api/admin/products/:id/stock — { stock_qty, active } : mise à jour rapide depuis le récap
+      const productStockMatch = url.pathname.match(/^\/api\/admin\/products\/(\d+)\/stock$/);
+      if (productStockMatch && request.method === "POST") {
+        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        const { stock_qty, active } = await request.json();
+        await env.DB.prepare("UPDATE products SET stock_qty = ?, active = ? WHERE id = ?")
+          .bind(Math.max(0, parseInt(stock_qty) || 0), active ? 1 : 0, productStockMatch[1]).run();
+        return json({ ok: true }, 200, origin);
+      }
+
       // POST /api/checkout — crée une session Stripe Checkout pour le panier
       if (url.pathname === "/api/checkout" && request.method === "POST") {
         const { items, customer_email, customer_name, customer_phone } = await request.json();
