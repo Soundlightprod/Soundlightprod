@@ -1591,14 +1591,15 @@
     const container = document.getElementById('dispoSummaryGrid');
     const data = window.dispoData || [];
     const todayStr = new Date().toISOString().slice(0,10);
-    container.innerHTML = Object.keys(ARTIST_LABELS).map(slug => {
+
+    const cardFor = (slug, label, color) => {
       const entries = data
         .filter(d => d.artist_slug === slug && d.date >= todayStr)
         .sort((a, b) => a.date.localeCompare(b.date));
       const ranges = mergeDispoRanges(entries);
       return `
         <div class="dispo-summary-card">
-          <h3><span class="dispo-summary-dot" style="background:${ARTIST_COLORS[slug]};"></span>${ARTIST_LABELS[slug]}</h3>
+          <h3><span class="dispo-summary-dot" style="background:${color};"></span>${label}</h3>
           <div class="dispo-summary-list">
             ${ranges.length ? ranges.map(r => `
               <div class="dispo-summary-row">
@@ -1609,7 +1610,20 @@
           </div>
         </div>
       `;
-    }).join('');
+    };
+
+    let html = Object.keys(ARTIST_LABELS).map(slug => cardFor(slug, ARTIST_LABELS[slug], ARTIST_COLORS[slug])).join('');
+
+    // Une carte par invité distinct (artiste sans fiche sur le site) ayant au moins une date à venir
+    const guestSlugs = new Map();
+    data.forEach(d => {
+      if (!ARTIST_LABELS[d.artist_slug] && d.date >= todayStr){
+        if (!guestSlugs.has(d.artist_slug)) guestSlugs.set(d.artist_slug, d.guest_name || d.artist_slug);
+      }
+    });
+    html += [...guestSlugs.entries()].map(([slug, name]) => cardFor(slug, '👤 ' + name, '#9a93a6')).join('');
+
+    container.innerHTML = html;
   }
 
   async function loadDispos(){
