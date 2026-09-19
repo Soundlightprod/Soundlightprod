@@ -230,7 +230,11 @@ export default {
         const { to, subject, pdf_base64, filename } = await request.json();
         if (!to || !pdf_base64) return json({ error: "Destinataire et PDF requis" }, 400, origin);
 
-        const resendKey = await env.RESEND_API_KEY.get();
+        // Compatible avec les deux façons de configurer ce secret : "Secrets Store" (objet avec
+        // une méthode .get()) ou un secret classique "wrangler secret put" (chaîne directe).
+        const resendKey = typeof env.RESEND_API_KEY?.get === "function"
+          ? await env.RESEND_API_KEY.get()
+          : env.RESEND_API_KEY;
         const resendRes = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
