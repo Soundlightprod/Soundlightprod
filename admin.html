@@ -152,12 +152,17 @@
   .rm-footer{display:flex; justify-content:space-between; border-top:1px solid #ccc; margin-top:24px; padding-top:10px; font-size:0.68rem; color:#666;}
 
   @media print{
+    @page{ size: A4; margin: 10mm; }
     body *{visibility:hidden;}
     #rmDoc, #rmDoc *{visibility:visible;}
     #rmDoc{position:absolute; inset:0;}
     .modal-overlay{position:static; background:none; padding:0;}
     .modal-shell{max-width:none;}
     .modal-toolbar{display:none !important;}
+    .rm-doc{padding:0; font-size:0.82em;}
+    .rm-section-title{margin:12px 0 6px;}
+    .rm-box, .rm-cell, .rm-table, .rm-header, .rm-checks{break-inside:avoid; page-break-inside:avoid;}
+    .rm-row2, .rm-row3{break-inside:avoid; page-break-inside:avoid;}
   }
 
   /* ---------- Optimisation tactile / petits écrans ---------- */
@@ -1264,7 +1269,7 @@
       // Capture à haute résolution puis mise en page PDF sur mesure : une seule page dont la
       // hauteur correspond exactement au contenu, pour éviter la coupure sur 2 pages et les
       // pages blanches que produit la pagination automatique d'html2pdf sur du contenu variable.
-      const canvas = await html2canvas(rmDoc, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+      const canvas = await html2canvas(rmDoc, { scale: 2, backgroundColor: '#ffffff' });
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
       const pageWidthMm = 210;
       const pageHeightMm = (canvas.height * pageWidthMm) / canvas.width;
