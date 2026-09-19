@@ -1712,7 +1712,10 @@
           <td>${d.publish_at || '—'}</td>
           <td>${d.expires_at || '—'}</td>
           <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
-          <td class="row-actions"><button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>${d.type === 'indisponible' ? `<button class="btn-info" onclick="requalifyToConcert(${d.id})">🔁 Requalifier en concert</button>` : ''}<button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button></td>
+          <td class="row-actions">
+            ${ROADMAP_TYPES.includes(d.type) && d.source_actu_id ? `<button class="btn-info" onclick="previewRoadmap(${d.source_actu_id})">Feuille de route</button>` : ''}
+            <button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>${d.type === 'indisponible' ? `<button class="btn-info" onclick="requalifyToConcert(${d.id})">🔁 Requalifier en concert</button>` : ''}<button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button>
+          </td>
         </tr>
       `).join('');
       renderDispoCalendar();
