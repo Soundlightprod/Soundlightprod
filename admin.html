@@ -214,18 +214,33 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" id="tabBtn-events" onclick="switchTab('events')">1. 🗓 Événements à remplir</button>
-    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">2. 📅 Agenda Diffusé en ligne</button>
-    <button class="tab-btn" id="tabBtn-overview" onclick="switchTab('overview')">3. 🔭 Planning SLP</button>
-    <button class="tab-btn" id="tabBtn-groupview" onclick="switchTab('groupview')">4. 👀 Vue groupe</button>
-    <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">5. 🕰 Historique</button>
-    <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">6. 🔑 Accès groupes</button>
-    <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">7. 📦 Suivi des commandes</button>
-    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">8. 📊 Visites du site</button>
+    <button class="tab-btn active" id="tabBtn-planning" onclick="switchTab('planning')">1. 📅 Planning SLP</button>
+    <button class="tab-btn" id="tabBtn-events" onclick="switchTab('events')">2. 🗓 Événements à remplir</button>
+    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">3. 📅 Agenda Diffusé en ligne</button>
+    <button class="tab-btn" id="tabBtn-overview" onclick="switchTab('overview')">4. 🔭 Résumé par artiste</button>
+    <button class="tab-btn" id="tabBtn-groupview" onclick="switchTab('groupview')">5. 👀 Vue groupe</button>
+    <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">6. 🕰 Historique</button>
+    <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">7. 🔑 Accès groupes</button>
+    <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">8. 📦 Suivi des commandes</button>
+    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 📊 Visites du site</button>
   </div>
 
-  <!-- ============ ONGLET 1 : ÉVÉNEMENTS À REMPLIR ============ -->
-  <div class="tab-content active" id="tab-events">
+  <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
+  <div class="tab-content active" id="tab-planning">
+    <h2>Planning SLP</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Absolument tout ce qui occupe chaque groupe — concerts publics, soirées privées, prestations techniques ou DJ, options comme validées — que ce soit affiché sur le site ou pas. Clique sur une date pour ajouter un nouvel événement à ce jour-là.</p>
+
+    <div class="agenda-legend" id="dispoLegend"></div>
+    <div class="agenda-nav">
+      <button onclick="shiftDispoMonth(-1)">← Mois préc.</button>
+      <span class="agenda-month" id="dispoMonthLabel"></span>
+      <button onclick="shiftDispoMonth(1)">Mois suiv. →</button>
+    </div>
+    <div class="agenda-grid" id="dispoGrid"></div>
+  </div>
+
+  <!-- ============ ONGLET 2 : ÉVÉNEMENTS À REMPLIR ============ -->
+  <div class="tab-content" id="tab-events">
 
   <div id="eventFormSlotEvents"><div id="eventFormContainer">
     <h2 id="evtFormTitle">Ajouter un événement</h2>
@@ -498,23 +513,14 @@
     </div>
   </div>
 
-  <!-- ============ ONGLET 3 : VISION GLOBALE AGENDA ============ -->
+  <!-- ============ ONGLET 4 : VISION GLOBALE AGENDA ============ -->
   <div class="tab-content" id="tab-overview">
-    <h2>Planning SLP</h2>
-    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Absolument tout ce qui occupe chaque groupe — concerts publics, soirées privées, prestations techniques ou DJ, options comme validées — que ce soit affiché sur le site ou pas. C'est ta vue de planning complète.</p>
+    <h2>Résumé par artiste</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Prochaines dates par artiste et historique complet de toutes les dates bloquées ou publiées, avec accès à leur modification.</p>
 
     <div id="eventFormSlotOverview"></div>
 
     <div class="dispo-summary-grid" id="dispoSummaryGrid"></div>
-
-    <h2>Calendrier disponibilités</h2>
-    <div class="agenda-legend" id="dispoLegend"></div>
-    <div class="agenda-nav">
-      <button onclick="shiftDispoMonth(-1)">← Mois préc.</button>
-      <span class="agenda-month" id="dispoMonthLabel"></span>
-      <button onclick="shiftDispoMonth(1)">Mois suiv. →</button>
-    </div>
-    <div class="agenda-grid" id="dispoGrid"></div>
 
     <table id="dispoTable">
       <thead><tr><th>Artiste</th><th>Type</th><th>Statut</th><th>Événement</th><th>Publication</th><th>Suppression</th><th>Libellé</th><th>Actions</th></tr></thead>
@@ -694,6 +700,19 @@
       </div>
     </div>
     <div id="rmDoc"></div>
+  </div>
+</div>
+
+<!-- ============ MODAL : AJOUTER UN ÉVÉNEMENT DEPUIS LE PLANNING ============ -->
+<div class="modal-overlay" id="addEventModal">
+  <div class="modal-shell" style="max-width:860px;">
+    <div class="modal-toolbar">
+      <strong style="color:var(--paper); font-family:'Space Grotesk',sans-serif;">Ajouter un événement</strong>
+      <div>
+        <button class="btn-outline" onclick="closeAddEventModal()">Fermer</button>
+      </div>
+    </div>
+    <div id="eventFormSlotModal" style="padding:20px 24px; max-height:80vh; overflow-y:auto;"></div>
   </div>
 </div>
 
@@ -1610,6 +1629,13 @@
     if (wasEditing) cancelEdit();
     else resetEventForm();
 
+    const formEl = document.getElementById('eventFormContainer');
+    if (formEl && formEl.parentElement && formEl.parentElement.id === 'eventFormSlotModal'){
+      document.getElementById('addEventModal').classList.remove('open');
+      const homeSlot = document.getElementById('eventFormSlotEvents');
+      if (homeSlot) homeSlot.appendChild(formEl);
+    }
+
     loadActus();
     loadDispos();
 
@@ -1651,6 +1677,23 @@
     renderDispoCalendar();
   }
 
+  function openAddEventModal(dateStr){
+    cancelEdit();
+    const slot = document.getElementById('eventFormSlotModal');
+    const form = document.getElementById('eventFormContainer');
+    if (slot && form) slot.appendChild(form);
+    document.getElementById('evtStart').value = dateStr;
+    document.getElementById('addEventModal').classList.add('open');
+  }
+
+  function closeAddEventModal(){
+    document.getElementById('addEventModal').classList.remove('open');
+    cancelEdit();
+    const slot = document.getElementById('eventFormSlotEvents');
+    const form = document.getElementById('eventFormContainer');
+    if (slot && form) slot.appendChild(form);
+  }
+
   function renderDispoCalendar(){
     const grid = document.getElementById('dispoGrid');
     const label = document.getElementById('dispoMonthLabel');
@@ -1675,7 +1718,7 @@
       const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
       const dayEntries = data.filter(d => d.date === dateStr);
       const isToday = dateStr === todayStr;
-      html += `<div class="agenda-day${isToday ? ' today' : ''}">
+      html += `<div class="agenda-day${isToday ? ' today' : ''} gv-clickable" onclick="openAddEventModal('${dateStr}')">
         <div class="agenda-daynum">${day}</div>
         ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}">${TYPE_ICONS[d.type] || '🎤'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</div>`).join('')}
       </div>`;
