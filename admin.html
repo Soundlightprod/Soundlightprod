@@ -228,6 +228,7 @@
     <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">7. 🔑 Accès groupes</button>
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">8. 📦 Suivi des commandes</button>
     <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 📊 Visites du site</button>
+    <button class="tab-btn" id="tabBtn-compta" onclick="switchTab('compta')">10. 💰 Compta</button>
   </div>
 
   <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
@@ -477,6 +478,25 @@
       </div>
     </details>
 
+    <!-- ============ COMPTA (concert/cabaret/dj uniquement) ============ -->
+    <details id="comptaSection" style="display:none; margin-top:20px; padding-top:20px; border-top:1px solid var(--line);">
+      <summary style="cursor:pointer; font-weight:700; font-family:'Space Grotesk',sans-serif; font-size:1rem; margin-bottom:6px; list-style:none;">▸ Compta (optionnel) — cliquer pour déplier</summary>
+      <p style="color:var(--muted); font-size:0.82rem; margin:10px 0 16px;">Visible uniquement ici, dans l'onglet Compta et sur l'API admin protégée par mot de passe — jamais sur le site public ni sur l'agenda des groupes.</p>
+      <div class="form-row">
+        <div class="field-group">
+          <label>Montant de la prestation (€)</label>
+          <input type="number" min="0" step="0.01" id="cptMontant" placeholder="ex: 850">
+        </div>
+      </div>
+      <div class="form-row" style="flex-wrap:wrap; gap:16px;">
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.86rem;"><input type="checkbox" id="cptDevis" style="width:auto;"> Devis envoyé</label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.86rem;"><input type="checkbox" id="cptContrat" style="width:auto;"> Contrat envoyé</label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.86rem;"><input type="checkbox" id="cptFactureEditee" style="width:auto;"> Facture éditée</label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.86rem;"><input type="checkbox" id="cptFactureEnvoyee" style="width:auto;"> Facture envoyée</label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.86rem;"><input type="checkbox" id="cptFactureReglee" style="width:auto;"> Facture réglée</label>
+      </div>
+    </details>
+
     <div class="form-row" style="margin-top:20px;">
       <button class="btn" onclick="submitEvent()" id="evtSubmitBtn">Enregistrer</button>
       <button onclick="cancelEdit()" id="evtCancelBtn" class="btn-outline" style="display:none;">Annuler la modification</button>
@@ -619,7 +639,7 @@
       <h2 style="margin-top:0;">Récap des stocks</h2>
       <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Le stock n'est jamais affiché aux clients — c'est ici la seule vue de tes quantités réelles.</p>
       <table id="stockTable">
-        <thead><tr><th>Référence</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Public</th><th></th></tr></thead>
+        <thead><tr><th>Référence</th><th>Catégorie</th><th>Prix de vente</th><th>Prix d'achat</th><th>Marge</th><th>Stock</th><th>Public</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -690,6 +710,40 @@
         <tbody></tbody>
       </table>
     </div>
+  </div>
+
+  <!-- ============ ONGLET 10 : COMPTA ============ -->
+  <div class="tab-content" id="tab-compta">
+    <h2>Compta</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Données visibles uniquement ici, derrière ton mot de passe admin — jamais sur le site public ni sur l'agenda des groupes. Le montant et le suivi devis/contrat/facture se renseignent depuis la fiche de chaque concert/cabaret/dj (dans l'onglet "Événements à remplir").</p>
+
+    <div class="form-row" style="margin-bottom:20px;">
+      <div class="field-group" style="max-width:160px;">
+        <label>Année</label>
+        <select id="comptaYearSelect" onchange="loadCompta()"></select>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:16px; margin-bottom:28px;">
+      <div style="background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:18px 22px; min-width:180px;">
+        <div style="color:var(--muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">CA total</div>
+        <div id="comptaCaTotal" style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.6rem;">—</div>
+      </div>
+      <div style="background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:18px 22px; min-width:180px;">
+        <div style="color:var(--muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">Réglé</div>
+        <div id="comptaCaRegle" style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.6rem; color:var(--gold);">—</div>
+      </div>
+      <div style="background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:18px 22px; min-width:180px;">
+        <div style="color:var(--muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">En attente</div>
+        <div id="comptaCaAttente" style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.6rem;">—</div>
+      </div>
+    </div>
+
+    <table id="comptaTable">
+      <thead><tr><th>Date</th><th>Artiste</th><th>Événement</th><th>Montant</th><th>Devis</th><th>Contrat</th><th>Facture éditée</th><th>Facture envoyée</th><th>Réglée</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="empty" id="comptaEmpty" style="display:none;">Aucun événement facturé pour le moment. Renseigne un montant sur une fiche concert/cabaret/dj pour qu'il apparaisse ici.</p>
   </div>
 </div>
 
@@ -764,6 +818,7 @@
     }
     if (name === 'groupview') renderGroupView();
     if (name === 'visits') loadVisitsSummary();
+    if (name === 'compta') loadCompta();
     if (name === 'access'){
       document.getElementById('icsFeedUrl').value = `${API_BASE}/api/agenda.ics?key=${encodeURIComponent(token)}`;
     }
@@ -825,6 +880,69 @@
     await loadStock();
   }
 
+  let comptaData = [];
+
+  function ensureComptaYearOptions(){
+    const sel = document.getElementById('comptaYearSelect');
+    if (sel.dataset.filled) return;
+    const thisYear = new Date().getFullYear();
+    const years = [thisYear + 1, thisYear, thisYear - 1, thisYear - 2];
+    sel.innerHTML = `<option value="">Toutes années</option>` + years.map(y => `<option value="${y}">${y}</option>`).join('');
+    sel.value = String(thisYear);
+    sel.dataset.filled = '1';
+  }
+
+  async function loadCompta(){
+    ensureComptaYearOptions();
+    const year = document.getElementById('comptaYearSelect').value;
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/compta-summary${year ? '?year=' + year : ''}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      if (!data.events) throw new Error(data.error || 'Réponse inattendue');
+      comptaData = data.events;
+      document.getElementById('comptaCaTotal').textContent = money(data.totals.ca_total_cents);
+      document.getElementById('comptaCaRegle').textContent = money(data.totals.ca_regle_cents);
+      document.getElementById('comptaCaAttente').textContent = money(data.totals.ca_en_attente_cents);
+      const typeLabel = { concert:'Concert', cabaret:'Cabaret', dj:'DJ set' };
+      const rows = comptaData;
+      document.querySelector('#comptaTable tbody').innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.event_date ? new Date(r.event_date + 'T00:00:00').toLocaleDateString('fr-FR') : '—'}</td>
+          <td>${escapeHtml(r.guest_name || ARTIST_LABELS[r.artist_slug] || r.artist_slug)}</td>
+          <td>${typeLabel[r.type] || r.type} — ${escapeHtml(r.text || '')}</td>
+          <td>${r.montant_cents != null ? money(r.montant_cents) : '—'}</td>
+          <td><input type="checkbox" style="width:auto;" ${r.devis_envoye ? 'checked' : ''} onchange="toggleCompta(${r.id}, 'devis_envoye', this.checked)"></td>
+          <td><input type="checkbox" style="width:auto;" ${r.contrat_envoye ? 'checked' : ''} onchange="toggleCompta(${r.id}, 'contrat_envoye', this.checked)"></td>
+          <td><input type="checkbox" style="width:auto;" ${r.facture_editee ? 'checked' : ''} onchange="toggleCompta(${r.id}, 'facture_editee', this.checked)"></td>
+          <td><input type="checkbox" style="width:auto;" ${r.facture_envoyee ? 'checked' : ''} onchange="toggleCompta(${r.id}, 'facture_envoyee', this.checked)"></td>
+          <td><input type="checkbox" style="width:auto;" ${r.facture_reglee ? 'checked' : ''} onchange="toggleCompta(${r.id}, 'facture_reglee', this.checked)"></td>
+        </tr>
+      `).join('');
+      document.getElementById('comptaEmpty').style.display = rows.length ? 'none' : 'block';
+    } catch(e){
+      console.error('loadCompta a échoué :', e);
+    }
+  }
+
+  async function toggleCompta(id, field, checked){
+    const row = comptaData.find(r => r.id === id);
+    if (!row) return;
+    row[field] = checked ? 1 : 0;
+    await fetch(`${API_BASE}/api/admin/actualites/${id}/compta`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({
+        montant_cents: row.montant_cents,
+        devis_envoye: row.devis_envoye,
+        contrat_envoye: row.contrat_envoye,
+        facture_editee: row.facture_editee,
+        facture_envoyee: row.facture_envoyee,
+        facture_reglee: row.facture_reglee,
+      })
+    });
+    showToast('Mis à jour');
+    if (field === 'facture_reglee') loadCompta();
+  }
+
   async function loadStock(){
     try {
       const res = await fetch(`${API_BASE}/api/admin/products`, { headers:{ Authorization:`Bearer ${token}` } });
@@ -835,25 +953,48 @@
         <tr>
           <td>${p.name}</td>
           <td>${catLabel[p.category] || p.category}</td>
-          <td>${(p.price_cents/100).toFixed(2)} €</td>
+          <td><input type="number" min="0" step="0.01" value="${(p.price_cents/100).toFixed(2)}" id="priceInput-${p.id}" oninput="updateMargeDisplay(${p.id})" style="width:80px; padding:6px 8px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);"> €</td>
+          <td><input type="number" min="0" step="0.01" value="${p.purchase_price_cents != null ? (p.purchase_price_cents/100).toFixed(2) : ''}" placeholder="—" id="purchaseInput-${p.id}" oninput="updateMargeDisplay(${p.id})" style="width:80px; padding:6px 8px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);"> €</td>
+          <td id="margeDisplay-${p.id}" style="color:var(--muted); font-size:0.85rem;"></td>
           <td><input type="number" min="0" value="${p.stock_qty}" id="stockInput-${p.id}" style="width:70px; padding:6px 8px; border-radius:8px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper);"></td>
           <td><input type="checkbox" id="activeInput-${p.id}" ${p.active ? 'checked' : ''} style="width:auto;"></td>
           <td><button class="btn-yes" onclick="saveStock(${p.id})">Enregistrer</button></td>
         </tr>
       `).join('');
+      data.forEach(p => updateMargeDisplay(p.id));
     } catch(e){
       console.error('loadStock a échoué :', e);
     }
   }
 
+  function updateMargeDisplay(id){
+    const priceEl = document.getElementById(`priceInput-${id}`);
+    const purchaseEl = document.getElementById(`purchaseInput-${id}`);
+    const out = document.getElementById(`margeDisplay-${id}`);
+    if (!priceEl || !purchaseEl || !out) return;
+    const price = parseFloat(priceEl.value);
+    const purchase = parseFloat(purchaseEl.value);
+    if (isNaN(price) || isNaN(purchase)){ out.textContent = '—'; return; }
+    const marge = price - purchase;
+    const pct = price > 0 ? Math.round((marge / price) * 100) : 0;
+    out.textContent = `${marge.toFixed(2)} € (${pct}%)`;
+  }
+
   async function saveStock(id){
     const stock_qty = document.getElementById(`stockInput-${id}`).value;
     const active = document.getElementById(`activeInput-${id}`).checked;
+    const price_cents = Math.round(parseFloat(document.getElementById(`priceInput-${id}`).value) * 100);
+    const purchaseRaw = document.getElementById(`purchaseInput-${id}`).value;
+    const purchase_price_cents = purchaseRaw === '' ? null : Math.round(parseFloat(purchaseRaw) * 100);
     await fetch(`${API_BASE}/api/admin/products/${id}/stock`, {
       method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
       body: JSON.stringify({ stock_qty, active })
     });
-    showToast('Stock mis à jour');
+    await fetch(`${API_BASE}/api/admin/products/${id}/pricing`, {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ price_cents, purchase_price_cents })
+    });
+    showToast('Produit mis à jour');
   }
 
   async function loadOrders(){
@@ -1080,6 +1221,36 @@
   function onShowTypeChange(){
     const isOther = document.getElementById('rmShowType').value === 'autre';
     document.getElementById('rmShowTypeOtherGroup').style.display = isOther ? 'flex' : 'none';
+  }
+
+  function getComptaFields(){
+    const montantVal = document.getElementById('cptMontant').value;
+    return {
+      montant_cents: montantVal === '' ? null : Math.round(parseFloat(montantVal) * 100),
+      devis_envoye: document.getElementById('cptDevis').checked,
+      contrat_envoye: document.getElementById('cptContrat').checked,
+      facture_editee: document.getElementById('cptFactureEditee').checked,
+      facture_envoyee: document.getElementById('cptFactureEnvoyee').checked,
+      facture_reglee: document.getElementById('cptFactureReglee').checked,
+    };
+  }
+
+  function resetComptaFields(){
+    document.getElementById('cptMontant').value = '';
+    document.getElementById('cptDevis').checked = false;
+    document.getElementById('cptContrat').checked = false;
+    document.getElementById('cptFactureEditee').checked = false;
+    document.getElementById('cptFactureEnvoyee').checked = false;
+    document.getElementById('cptFactureReglee').checked = false;
+  }
+
+  function populateComptaFields(a){
+    document.getElementById('cptMontant').value = a.montant_cents != null ? (a.montant_cents/100).toFixed(2) : '';
+    document.getElementById('cptDevis').checked = !!a.devis_envoye;
+    document.getElementById('cptContrat').checked = !!a.contrat_envoye;
+    document.getElementById('cptFactureEditee').checked = !!a.facture_editee;
+    document.getElementById('cptFactureEnvoyee').checked = !!a.facture_envoyee;
+    document.getElementById('cptFactureReglee').checked = !!a.facture_reglee;
   }
 
   function getRoadmapFields(){
@@ -1398,6 +1569,7 @@
     document.getElementById('evtExpiresGroup').style.display = 'flex';
     document.getElementById('evtEndGroup').style.display = 'flex';
     document.getElementById('roadmapSection').style.display = isConcertLike ? 'block' : 'none';
+    document.getElementById('comptaSection').style.display = isConcertLike ? 'block' : 'none';
     if (isConcertLike && !document.querySelector('#timingRows .timing-row')) setTimingSteps(null);
   }
 
@@ -1453,6 +1625,7 @@
     const linkedDispo = (window.dispoData || []).find(x => x.source_actu_id === a.id);
     document.getElementById('evtStatus').value = linkedDispo ? linkedDispo.status : 'validee';
     setRoadmapFields(a);
+    populateComptaFields(a);
     evtPhotoBase64 = a.photo_url || null;
     const preview = document.getElementById('evtPhotoPreview');
     if (a.photo_url){ preview.src = a.photo_url; preview.style.display = 'inline-block'; }
@@ -1539,6 +1712,8 @@
     document.getElementById('evtPublic').checked = true;
     resetRoadmapFields();
     document.getElementById('roadmapSection').open = false;
+    resetComptaFields();
+    document.getElementById('comptaSection').open = false;
     evtPhotoBase64 = null;
   }
 
@@ -1588,6 +1763,7 @@
     }
 
     const roadmap = ROADMAP_TYPES.includes(type) ? getRoadmapFields() : {};
+    const compta = ROADMAP_TYPES.includes(type) ? getComptaFields() : {};
 
     let res, data;
     if (editingDispoId){
@@ -1604,7 +1780,7 @@
           artist_slug, guest_name, type, text, is_public,
           photo_url: evtPhotoBase64,
           start_date, end_date, publish_at, expires_at, status,
-          ...roadmap
+          ...roadmap, ...compta
         })
       });
       data = await res.json();
@@ -1620,7 +1796,7 @@
           requalified: pendingRequalify,
           photo_url: evtPhotoBase64,
           start_date, end_date, publish_at, expires_at, status,
-          ...roadmap
+          ...roadmap, ...compta
         })
       });
       data = await res.json();
