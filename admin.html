@@ -187,7 +187,6 @@
     .agenda-grid{gap:2px;}
     .agenda-day{min-height:48px; padding:3px;}
     .agenda-daynum{font-size:0.6rem;}
-    #visitsMap{height:280px;}
   }
 </style>
 </head>
@@ -631,13 +630,16 @@
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie), toutes pages confondues.</p>
     <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; margin-bottom:14px;"><span id="siteVisitTotal">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;">visite(s) au total, toutes pages</span></p>
 
-    <h3>Évolution des visites</h3>
-    <div class="form-row" style="margin-bottom:16px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <h3 style="margin:0;">Évolution des visites</h3>
+      <button class="btn-outline" onclick="toggleResizable('visitsChartWrap')" id="visitsChartWrapToggle" style="padding:6px 14px; font-size:0.78rem;">⤢ Agrandir</button>
+    </div>
+    <div class="form-row" style="margin:12px 0 16px;">
       <button class="period-btn active" id="tsBtn-day" onclick="setTimeseriesGranularity('day')">Par jour</button>
       <button class="period-btn" id="tsBtn-month" onclick="setTimeseriesGranularity('month')">Par mois</button>
     </div>
-    <div style="background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:30px;">
-      <canvas id="visitsChart" height="90"></canvas>
+    <div id="visitsChartWrap" class="resizable-box" style="background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:30px; height:200px; overflow:hidden; transition:height 0.25s ease;">
+      <canvas id="visitsChart"></canvas>
     </div>
 
     <div class="form-row" style="margin-bottom:20px;">
@@ -647,8 +649,11 @@
       <button class="period-btn" id="periodBtn-all" onclick="setVisitsPeriod('all')">Tout</button>
     </div>
 
-    <h3>Carte des visites</h3>
-    <div id="visitsMap" style="height:380px; border-radius:14px; overflow:hidden; margin-bottom:30px; border:1px solid var(--line);"></div>
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <h3 style="margin:0;">Carte des visites</h3>
+      <button class="btn-outline" onclick="toggleResizable('visitsMap')" id="visitsMapToggle" style="padding:6px 14px; font-size:0.78rem;">⤢ Agrandir</button>
+    </div>
+    <div id="visitsMap" class="resizable-box" style="height:200px; border-radius:14px; overflow:hidden; margin:12px 0 30px; border:1px solid var(--line); transition:height 0.25s ease;"></div>
 
     <h3>Répartition <span id="periodTotalLabel" style="color:var(--muted); font-size:0.8rem; font-weight:400;"></span></h3>
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; margin-bottom:30px;">
@@ -1864,6 +1869,22 @@
     return PAGE_LABELS[slug] || ARTIST_LABELS[slug] || slug;
   }
 
+  // Onglet Visites : la carte et le graphique démarrent en taille réduite pour ne pas
+  // prendre toute la page — un bouton permet de les agrandir au besoin, sans obligation.
+  const RESIZABLE_HEIGHTS = { compact: 200, expanded: 520 };
+  function toggleResizable(id){
+    const el = document.getElementById(id);
+    const btn = document.getElementById(id + 'Toggle');
+    const expanded = el.dataset.expanded === '1';
+    el.style.height = (expanded ? RESIZABLE_HEIGHTS.compact : RESIZABLE_HEIGHTS.expanded) + 'px';
+    el.dataset.expanded = expanded ? '0' : '1';
+    if (btn) btn.textContent = expanded ? '⤢ Agrandir' : '⤡ Réduire';
+    setTimeout(() => {
+      if (id === 'visitsMap' && visitsMapInstance) visitsMapInstance.invalidateSize();
+      if (id === 'visitsChartWrap' && visitsChartInstance) visitsChartInstance.resize();
+    }, 260);
+  }
+
   let visitsMapInstance = null;
 
   let currentVisitsPeriod = 'today';
@@ -1989,6 +2010,7 @@
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
             x: { ticks: { color: '#9a93a6' }, grid: { color: 'rgba(255,255,255,0.06)' } },
