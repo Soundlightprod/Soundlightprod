@@ -221,7 +221,7 @@
           </div>
         </a>
         <a class="artist-card" href="cache-candy.html" style="--tag-color:#ffb238;">
-          <img src="cache-candy-live-1.jpg" alt="Cache Candy" loading="lazy">
+          <img src="cache-candy-happy-end.jpg" alt="Cache Candy" loading="lazy">
           <div class="shade"></div>
           <div class="artist-card-info">
             <span class="artist-tag">Duo Pop-Rock Électro</span>
@@ -274,19 +274,18 @@
 (function(){
   var track = document.getElementById('artistCarousel');
   if (!track) return;
+  var cards = Array.prototype.slice.call(track.querySelectorAll('.artist-card'));
+  if (!cards.length) return;
+  var idx = 0;
   var timer;
-  window.artistCarouselScroll = function(dir){
-    var card = track.querySelector('.artist-card');
-    if (!card) return;
-    var gap = 20;
-    track.scrollBy({ left: (card.offsetWidth + gap) * 2 * dir, behavior: 'smooth' });
-  };
+  function goTo(i){
+    idx = (i + cards.length) % cards.length;
+    cards[idx].scrollIntoView({ behavior:'smooth', inline:'start', block:'nearest' });
+  }
+  window.artistCarouselScroll = function(dir){ stop(); goTo(idx + dir); start(); };
   function start(){
-    timer = setInterval(function(){
-      var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
-      if (atEnd) track.scrollTo({ left: 0, behavior: 'smooth' });
-      else artistCarouselScroll(1);
-    }, 4200);
+    stop();
+    timer = setInterval(function(){ goTo(idx + 1); }, 4200);
   }
   function stop(){ clearInterval(timer); }
   track.addEventListener('mouseenter', stop);
