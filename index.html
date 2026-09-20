@@ -104,6 +104,33 @@
 
   .single-photo{width:100%; max-width:50%; margin:0 auto; aspect-ratio:21/9; object-fit:cover; display:block; border-radius:16px;}
 
+  /* ARTISTS CAROUSEL */
+  .artists-showcase{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--ink-2);}
+  .artists-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px; margin-bottom:40px;}
+  .artists-head .btn-ghost{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.2); padding:13px 24px; font-size:0.86rem;}
+  .artist-carousel-wrap{position:relative;}
+  .artist-carousel{display:flex; gap:20px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:4px 4px 10px; -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none;}
+  .artist-carousel::-webkit-scrollbar{display:none;}
+  .artist-card{
+    flex:0 0 auto; width:250px; aspect-ratio:4/5; position:relative; border-radius:18px; overflow:hidden;
+    scroll-snap-align:start; text-decoration:none; display:block; border:1px solid var(--line);
+    transition:transform 0.3s ease, border-color 0.3s ease; background:var(--ink);
+  }
+  .artist-card:hover{transform:translateY(-6px); border-color:rgba(255,255,255,0.3);}
+  .artist-card img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; display:block;}
+  .artist-card:hover img{transform:scale(1.07);}
+  .artist-card .shade{position:absolute; inset:0; background:linear-gradient(180deg, transparent 38%, rgba(12,11,16,0.96) 100%);}
+  .artist-card-info{position:absolute; left:0; right:0; bottom:0; padding:20px 18px; z-index:2;}
+  .artist-tag{display:inline-block; font-family:'JetBrains Mono', monospace; font-size:0.64rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:700; color:var(--ink); background:var(--tag-color, var(--amber)); padding:4px 10px; border-radius:100px; margin-bottom:10px;}
+  .artist-card-info h3{font-size:1.2rem; margin-bottom:6px; color:var(--paper);}
+  .artist-card-info p{color:var(--muted); font-size:0.8rem; line-height:1.4; margin:0;}
+  .ac-arrow{position:absolute; top:calc(50% - 20px); transform:translateY(-50%); z-index:3; width:44px; height:44px; border-radius:50%; background:var(--ink); border:1px solid var(--line); color:var(--paper); font-size:1.3rem; cursor:pointer; align-items:center; justify-content:center; transition:background 0.2s ease, color 0.2s ease; display:flex;}
+  .ac-arrow:hover{background:var(--paper); color:var(--ink);}
+  .ac-prev{left:-14px;}
+  .ac-next{right:-14px;}
+  @media (max-width:900px){ .ac-arrow{display:none;} }
+  @media (max-width:600px){ .artist-card{width:198px;} }
+
   /* CTA */
   .cta-band{text-align:center; background:linear-gradient(135deg, var(--ink-2) 0%, var(--ink) 100%); border-top:1px solid var(--line);}
   .cta-band h2{font-size:clamp(2.2rem, 5.5vw, 3.6rem); margin-bottom:20px;}
@@ -172,12 +199,110 @@
   </div>
 </section>
 
+<section class="artists-showcase">
+  <div class="wrap tight">
+    <div class="artists-head">
+      <div>
+        <span class="label">Notre roster</span>
+        <h2>Des artistes prêts<br>à enflammer votre scène</h2>
+      </div>
+      <a href="artistes.html" class="btn btn-ghost">Voir tous les artistes →</a>
+    </div>
+    <div class="artist-carousel-wrap">
+      <button class="ac-arrow ac-prev" onclick="artistCarouselScroll(-1)" aria-label="Artiste précédent">‹</button>
+      <div class="artist-carousel" id="artistCarousel">
+        <a class="artist-card" href="alchimie.html" style="--tag-color:#8b5cf6;">
+          <img src="alchimie-photo-1.jpg" alt="Alchimie" loading="lazy">
+          <div class="shade"></div>
+          <div class="artist-card-info">
+            <span class="artist-tag">Pop / Rock</span>
+            <h3>Alchimie</h3>
+            <p>Reprises pop/rock pleines d'énergie et de complicité scénique.</p>
+          </div>
+        </a>
+        <a class="artist-card" href="cache-candy.html" style="--tag-color:#ffb238;">
+          <img src="cache-candy-live-1.jpg" alt="Cache Candy" loading="lazy">
+          <div class="shade"></div>
+          <div class="artist-card-info">
+            <span class="artist-tag">Duo Pop-Rock Électro</span>
+            <h3>Cache Candy</h3>
+            <p>Duo survitaminé, reprises pop-rock revisitées en mode électro.</p>
+          </div>
+        </a>
+        <a class="artist-card" href="the-fine-allies.html" style="--tag-color:#2f9bff;">
+          <img src="fine-allies-photo-1.jpg" alt="The Fine Allies" loading="lazy">
+          <div class="shade"></div>
+          <div class="artist-card-info">
+            <span class="artist-tag">Funk / Soul</span>
+            <h3>The Fine Allies</h3>
+            <p>Cuivres, groove et rhythm'n'blues pour un dancefloor non-stop.</p>
+          </div>
+        </a>
+        <a class="artist-card" href="noon-coverband.html" style="--tag-color:#ff4d7d;">
+          <img src="noon-coverband-photo-1.jpg" alt="NooN Coverband" loading="lazy">
+          <div class="shade"></div>
+          <div class="artist-card-info">
+            <span class="artist-tag">Pop / Rock / Funk</span>
+            <h3>NooN Coverband</h3>
+            <p>Duo polyvalent, du répertoire pop au funk le plus dansant.</p>
+          </div>
+        </a>
+        <a class="artist-card" href="panache.html" style="--tag-color:#6ee7a0;">
+          <img src="panache-video-photo.png" alt="Panache" loading="lazy">
+          <div class="shade"></div>
+          <div class="artist-card-info">
+            <span class="artist-tag">Cabaret</span>
+            <h3>Panache</h3>
+            <p>Revue de cabaret itinérante : plumes, strass et french cancan.</p>
+          </div>
+        </a>
+        <a class="artist-card" href="voice-of-freedom.html" style="--tag-color:#cda754;">
+          <img src="voice-of-freedom-photo.png" alt="Voice of Freedom" loading="lazy">
+          <div class="shade"></div>
+          <div class="artist-card-info">
+            <span class="artist-tag">Tribute Soul</span>
+            <h3>Voice of Freedom</h3>
+            <p>Hommage vibrant à la soul et au blues d'Etta James et Nina Simone.</p>
+          </div>
+        </a>
+      </div>
+      <button class="ac-arrow ac-next" onclick="artistCarouselScroll(1)" aria-label="Artiste suivant">›</button>
+    </div>
+  </div>
+</section>
+
 <section class="stats">
   <div class="stats-grid">
     <div class="stat"><div class="num v">10+</div><p>années d'expérience terrain</p></div>
     <div class="stat"><div class="num p">1</div><p>interlocuteur, du devis à la scène</p></div>
   </div>
 </section>
+
+<script>
+(function(){
+  var track = document.getElementById('artistCarousel');
+  if (!track) return;
+  var timer;
+  window.artistCarouselScroll = function(dir){
+    var card = track.querySelector('.artist-card');
+    if (!card) return;
+    var gap = 20;
+    track.scrollBy({ left: (card.offsetWidth + gap) * 2 * dir, behavior: 'smooth' });
+  };
+  function start(){
+    timer = setInterval(function(){
+      var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
+      if (atEnd) track.scrollTo({ left: 0, behavior: 'smooth' });
+      else artistCarouselScroll(1);
+    }, 4200);
+  }
+  function stop(){ clearInterval(timer); }
+  track.addEventListener('mouseenter', stop);
+  track.addEventListener('mouseleave', start);
+  track.addEventListener('touchstart', stop, { passive:true });
+  start();
+})();
+</script>
 
 <section>
   <div class="wrap">
