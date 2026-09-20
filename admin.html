@@ -124,6 +124,11 @@
   .modal-shell{background:#fff; border-radius:10px; max-width:760px; width:100%; overflow:hidden;}
   .modal-toolbar{display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background:var(--ink-2);}
   .modal-toolbar button{font-size:0.85rem;}
+  /* La feuille de route (.rm-doc) est volontairement claire/imprimable, mais le formulaire
+     d'ajout d'événement réutilise .modal-shell dans son thème sombre habituel, sinon le texte
+     gris de l'admin devient illisible sur fond blanc. */
+  #addEventModal .modal-shell{background:var(--ink);}
+  #addEventModal h2{margin-top:0;}
   .rm-doc{background:#fff; color:#111; font-family:'Manrope',Arial,sans-serif; padding:30px 34px;}
   .rm-header{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; gap:16px;}
   .rm-brand-name{font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.5rem; color:#111;}
