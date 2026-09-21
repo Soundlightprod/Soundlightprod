@@ -113,7 +113,7 @@
   .artist-carousel-wrap::before{left:0; background:linear-gradient(90deg, var(--ink-2) 0%, rgba(23,21,30,0) 100%);}
   .artist-carousel-wrap::after{right:0; background:linear-gradient(270deg, var(--ink-2) 0%, rgba(23,21,30,0) 100%);}
   @media (max-width:900px){ .artist-carousel-wrap::before, .artist-carousel-wrap::after{width:28px;} }
-  .artist-carousel{display:flex; gap:20px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:4px 4px 10px; -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none;}
+  .artist-carousel{display:flex; gap:20px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:4px 24px 10px; scroll-padding-left:24px; -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none;}
   .artist-carousel::-webkit-scrollbar{display:none;}
   .artist-card{
     flex:0 0 auto; width:250px; aspect-ratio:4/5; position:relative; border-radius:18px; overflow:hidden;
@@ -212,7 +212,8 @@
       </div>
       <a href="artistes.html" class="btn btn-ghost">Voir tous les artistes →</a>
     </div>
-    <div class="artist-carousel-wrap">
+  </div>
+  <div class="artist-carousel-wrap">
       <button class="ac-arrow ac-prev" onclick="artistCarouselScroll(-1)" aria-label="Artiste précédent">‹</button>
       <div class="artist-carousel" id="artistCarousel">
         <a class="artist-card" href="alchimie.html" style="--tag-color:#8b5cf6;">
@@ -273,7 +274,6 @@
       </div>
       <button class="ac-arrow ac-next" onclick="artistCarouselScroll(1)" aria-label="Artiste suivant">›</button>
     </div>
-  </div>
 </section>
 
 <section class="stats">
