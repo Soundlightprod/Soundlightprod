@@ -445,7 +445,7 @@ export default {
            AND (publish_at IS NULL OR publish_at = '' OR publish_at <= ?)
            AND expires_at >= ?
            AND id NOT IN (SELECT DISTINCT source_actu_id FROM artist_agenda WHERE source_actu_id IS NOT NULL AND status = 'option')
-           ORDER BY COALESCE(event_date, created_at) DESC
+           ORDER BY COALESCE(event_date, created_at) ASC
            LIMIT 5`
         ).bind(artist, today, today).all();
         return json(results, 200, origin);
