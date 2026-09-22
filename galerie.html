@@ -59,6 +59,15 @@
   @media (max-width:760px){ .gallery{grid-template-columns:repeat(2, 1fr); grid-auto-rows:180px;} }
   @media (max-width:480px){ .gallery{grid-template-columns:1fr; grid-auto-rows:230px;} .gallery .slot.tall{grid-row:span 1;} }
 
+  .section-head{margin-bottom:26px;}
+  .section-head .label{display:block; margin-bottom:8px;}
+  .section-head h2{font-size:clamp(1.8rem, 4vw, 2.6rem);}
+  .video-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:22px;}
+  .video-card{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; overflow:hidden;}
+  .video-card .embed{position:relative; width:100%; aspect-ratio:16/9;}
+  .video-card .embed iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+  .video-card .caption{padding:14px 18px; font-size:0.88rem; font-weight:600; color:var(--paper);}
+
   .cta-band{text-align:center; background:linear-gradient(135deg, var(--ink-2) 0%, var(--ink) 100%); border-top:1px solid var(--line);}
   .cta-band .wrap{padding:80px 24px;}
   .cta-band h2{font-size:clamp(2.2rem, 5.5vw, 3.4rem); margin-bottom:20px;}
