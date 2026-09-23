@@ -222,6 +222,11 @@ function routeDomain(request, url) {
     return redirect(`${FR_SITE}/boutique.html`);
   }
 
+  // Ancienne fiche DJ provisoire remplacée par la fiche DJ Animation
+  if (path.endsWith("/dj-provisoire.html") || path.endsWith("/dj-provisoire")) {
+    return redirect(`${url.origin}${path.replace(/dj-provisoire(\.html)?$/, "dj-animation.html")}`);
+  }
+
   const isCom = host.endsWith("soundlightprod.com");
   const langPrefix = INTL_LANGS.find((l) => path === `/${l}` || path.startsWith(`/${l}/`));
 
