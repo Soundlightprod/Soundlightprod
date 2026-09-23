@@ -316,7 +316,9 @@
   var timer;
   function goTo(i){
     idx = (i + cards.length) % cards.length;
-    cards[idx].scrollIntoView({ behavior:'smooth', inline:'start', block:'nearest' });
+    // Défilement horizontal du carrousel uniquement : scrollIntoView faisait aussi
+    // défiler la page verticalement sur mobile (remontée de la page).
+    track.scrollTo({ left: cards[idx].offsetLeft - cards[0].offsetLeft, behavior:'smooth' });
   }
   window.artistCarouselScroll = function(dir){ stop(); goTo(idx + dir); start(); };
   function start(){
@@ -327,6 +329,17 @@
   track.addEventListener('mouseenter', stop);
   track.addEventListener('mouseleave', start);
   track.addEventListener('touchstart', stop, { passive:true });
+  track.addEventListener('touchend', function(){ setTimeout(start, 6000); }, { passive:true });
+  // Recale l'index sur la carte visible après un swipe manuel
+  track.addEventListener('scroll', function(){
+    var best = 0, d = Infinity;
+    cards.forEach(function(c, i){ var dd = Math.abs(c.offsetLeft - cards[0].offsetLeft - track.scrollLeft); if (dd < d){ d = dd; best = i; } });
+    idx = best;
+  }, { passive:true });
+  // Pause quand le carrousel n'est pas à l'écran
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(function(e){ e[0].isIntersecting ? start() : stop(); }).observe(track);
+  }
   start();
 })();
 </script>

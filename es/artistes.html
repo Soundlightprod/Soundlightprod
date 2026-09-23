@@ -39,6 +39,10 @@
   .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--pink), transparent 70%); top:-25vw; left:-10vw;}
   .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-10vw; right:-10vw;}
   .page-hero-inner{position:relative; z-index:2; max-width:1000px;}
+  /* Frise néon des silhouettes de tous les artistes */
+  .hero-frieze{position:relative; z-index:2; max-width:1220px; margin:26px auto 0; height:clamp(80px,12vw,150px); overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%); mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);}
+  .hero-frieze img{height:100%; width:auto; display:block; margin:0 auto; filter:drop-shadow(0 0 8px rgba(205,167,84,.35));}
+  @media (max-width:760px){ .hero-frieze{height:auto;} .hero-frieze img{width:100%; height:auto;} }
   .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
   .breadcrumb a{color:var(--muted); text-decoration:none;}
   .breadcrumb a:hover{color:var(--paper);}
@@ -202,6 +206,7 @@
     <h1>Nuestros artistas</h1>
     <p>SLP selecciona y distribuye artistas por tipo de espectáculo. Elija una categoría para descubrir el artista correspondiente.</p>
   </div>
+  <div class="hero-frieze" aria-hidden="true"><img src="/artistes-silhouettes.png" alt=""></div>
 </section>
 
 <section>
