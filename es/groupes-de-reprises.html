@@ -39,6 +39,14 @@
   .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--blue), transparent 70%); top:-25vw; left:-10vw;}
   .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-10vw; right:-10vw;}
   .page-hero-inner{position:relative; z-index:2; max-width:800px;}
+  /* Silhouette néon de l'artiste (tirée de sa photo) */
+  .hero-art{position:absolute; right:clamp(8px,5vw,90px); bottom:0; height:min(92%,500px); width:min(48vw,620px); z-index:1; pointer-events:none;}
+  .hero-art img{position:absolute; right:0; bottom:0; max-height:100%; max-width:100%; filter:drop-shadow(0 0 12px var(--glow)); animation:artSway 6s ease-in-out infinite; transform-origin:bottom center;}
+  .hero-art .spark{position:absolute; color:#fff; font-size:16px; line-height:1; text-shadow:0 0 10px #fff, 0 0 20px var(--glow); animation:twinkle 2.4s ease-in-out infinite;}
+  .hero-art .s1{right:8%; top:4%;} .hero-art .s2{right:62%; top:18%; font-size:11px; animation-delay:-.8s;} .hero-art .s3{right:-2%; top:38%; font-size:13px; animation-delay:-1.6s;}
+  @keyframes artSway{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-.8deg)}}
+  @keyframes twinkle{0%,100%{opacity:.15; transform:scale(.6)}50%{opacity:1; transform:scale(1.15)}}
+  @media (max-width:900px){ .hero-art{opacity:.28; width:70vw; right:-30px;} }
   .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
   .breadcrumb a{color:var(--muted); text-decoration:none;}
   .breadcrumb a:hover{color:var(--paper);}
@@ -196,6 +204,10 @@
 
 <section class="page-hero">
   <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
+  <div class="hero-art" aria-hidden="true" style="--glow:rgba(255,77,125,.5); width:min(40vw,540px)">
+    <img src="/reprises-silhouettes.png" alt="">
+    <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span>
+  </div>
   <div class="page-hero-inner">
     <span class="breadcrumb"><a href="artistes.html">← Nuestros artistas</a></span>
     <span class="label">Tipo de espectáculo</span>
