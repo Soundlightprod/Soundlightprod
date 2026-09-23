@@ -84,10 +84,11 @@
   .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
   .banner-photo .txt{font-size:0.82rem; font-weight:500;}
 
-  .photo-grid{display:grid; grid-template-columns:1fr 1.4fr; grid-template-rows:1fr 1fr; gap:14px; height:520px;}
+  .photo-grid{display:grid; grid-template-columns:1fr 1.4fr 0.9fr; grid-template-rows:1fr 1fr; gap:14px; height:520px;}
+  .photo-grid .ph-poster{grid-column:3; grid-row:1 / span 2; object-fit:contain; background:#0a0a0c; cursor:zoom-in;}
   .photo-grid .ph1{grid-row:span 2; min-height:0;}
   .photo-grid img{width:100%; height:100%; min-height:0; min-width:0; object-fit:cover; border-radius:16px; display:block;}
-  @media (max-width:700px){ .photo-grid{grid-template-columns:1fr; grid-template-rows:none; height:auto;} .photo-grid .ph1{grid-row:auto;} .photo-grid img{aspect-ratio:4/3; height:auto;} }
+  @media (max-width:700px){ .photo-grid{grid-template-columns:1fr; grid-template-rows:none; height:auto;} .photo-grid .ph1, .photo-grid .ph-poster{grid-row:auto; grid-column:auto;} .photo-grid img{aspect-ratio:4/3; height:auto;} .photo-grid .ph-poster{aspect-ratio:1170/1607;} }
 
   .venues-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;}
   .venue-card{background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:16px 20px; font-size:0.92rem; color:var(--paper);}
@@ -253,6 +254,7 @@
       <img class="ph1" src="/alchimie-photo-1.jpg" alt="Alchimie en concierto, actuación acústica">
       <img src="/alchimie-photo-3.jpg" alt="Alchimie en concierto, grupo completo en el escenario">
       <img src="/alchimie-photo-2.jpg" alt="Alchimie en concierto al aire libre">
+      <img class="ph-poster" src="/alchimie-affiche.jpg" alt="Cartel de Alchimie — espectáculo pop-rock" onclick="openLightbox(this.src)">
     </div>
   </div>
 </section>
