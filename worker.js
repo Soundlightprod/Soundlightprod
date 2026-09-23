@@ -203,9 +203,68 @@ function periodCutoff(period) {
   return null;
 }
 
+const FR_SITE = "https://soundlightprod.fr";
+const INTL_SITE = "https://soundlightprod.com";
+const INTL_LANGS = ["en", "es"];
+
+function redirect(to, status = 301) {
+  return new Response(null, { status, headers: { Location: to, "Cache-Control": status === 302 ? "no-store" : "public, max-age=3600" } });
+}
+
+// Renvoie une redirection si la requête n'est pas sur le bon domaine pour sa langue, sinon null.
+function routeDomain(request, url) {
+  const host = url.hostname.toLowerCase();
+  const path = url.pathname;
+  const isApi = path.startsWith("/api/");
+
+  // .store (et www.) → boutique sur le .fr
+  if (host.endsWith("soundlightprod.store")) {
+    return redirect(`${FR_SITE}/boutique.html`);
+  }
+
+  const isCom = host.endsWith("soundlightprod.com");
+  const langPrefix = INTL_LANGS.find((l) => path === `/${l}` || path.startsWith(`/${l}/`));
+
+  if (isCom) {
+    if (host.startsWith("www.")) return redirect(`${INTL_SITE}${path}${url.search}`);
+    if (isApi) return null;
+    if (path === "/robots.txt") {
+      return new Response(`User-agent: *\nAllow: /\n\nSitemap: ${INTL_SITE}/sitemap-intl.xml\n`, {
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      });
+    }
+    if (path === "/sitemap.xml") return redirect(`${INTL_SITE}/sitemap-intl.xml`);
+    // Racine : choix de la langue selon le navigateur (FR → .fr, ES → /es/, sinon /en/)
+    if (path === "/" || path === "") {
+      const al = (request.headers.get("Accept-Language") || "").toLowerCase();
+      const first = al.split(",")[0].trim().slice(0, 2);
+      if (first === "fr") return redirect(`${FR_SITE}/`, 302);
+      return redirect(`${INTL_SITE}/${first === "es" ? "es" : "en"}/`, 302);
+    }
+    if (langPrefix) return null;
+    // Pages françaises (et pages non traduites : boutique, admin…) → .fr
+    if (path.endsWith(".html")) return redirect(`${FR_SITE}${path}${url.search}`);
+    return null; // images, PDF, etc. servis tels quels
+  }
+
+  // Sur le .fr : les pages traduites vivent sur le .com
+  if (langPrefix && host.endsWith("soundlightprod.fr")) {
+    return redirect(`${INTL_SITE}${path}${url.search}`);
+  }
+  return null;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // ============ DOMAINES & LANGUES ============
+    // soundlightprod.fr    : site français (racine)
+    // soundlightprod.com   : versions anglaise (/en/) et espagnole (/es/) uniquement
+    // soundlightprod.store : redirige vers la boutique du .fr
+    const domainRedirect = routeDomain(request, url);
+    if (domainRedirect) return domainRedirect;
+
     const origin = resolveOrigin(request, env);
 
     if (request.method === "OPTIONS") {
