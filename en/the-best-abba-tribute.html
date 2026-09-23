@@ -38,6 +38,17 @@
   .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--blue), transparent 70%); top:-25vw; left:-10vw;}
   .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--amber), transparent 70%); top:-10vw; right:-10vw;}
   .page-hero-inner{position:relative; z-index:2; max-width:800px;}
+
+  /* Silhouettes néon des chanteuses (tirées de la photo du groupe) */
+  .hero-divas{position:absolute; right:clamp(8px,5vw,90px); bottom:0; height:min(96%,520px); aspect-ratio:320/298; z-index:1; pointer-events:none;}
+  .hero-divas img{position:absolute; display:block;}
+  .hero-divas .d1{left:0; top:31.2%; width:54.1%; z-index:2; filter:drop-shadow(0 0 2px #0c0b10) drop-shadow(0 0 12px rgba(255,79,216,.7)); animation:divaSway 5s ease-in-out infinite;}
+  .hero-divas .d2{left:40.9%; top:0; width:59.1%; filter:drop-shadow(0 0 12px rgba(255,210,79,.65)); animation:divaSway 5s ease-in-out -2.5s infinite;}
+  .hero-divas .spark{position:absolute; color:#fff; font-size:18px; line-height:1; text-shadow:0 0 10px #fff, 0 0 20px #ff4fd8; animation:twinkle 2.4s ease-in-out infinite;}
+  .hero-divas .s1{left:88%; top:2%;} .hero-divas .s2{left:30%; top:12%; font-size:12px; animation-delay:-.8s;} .hero-divas .s3{left:100%; top:30%; font-size:14px; animation-delay:-1.6s;} .hero-divas .s4{left:6%; top:24%; font-size:10px; animation-delay:-1.2s;}
+  @keyframes divaSway{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-1deg)}}
+  @keyframes twinkle{0%,100%{opacity:.15; transform:scale(.6)}50%{opacity:1; transform:scale(1.15)}}
+  @media (max-width:900px){ .hero-divas{opacity:.28; height:88%; right:-40px;} }
   .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
   .breadcrumb a{color:var(--muted); text-decoration:none;}
   .breadcrumb a:hover{color:var(--paper);}
@@ -127,6 +138,7 @@
 
 
 
+
 <!-- i18n:start -->
 <link rel="alternate" hreflang="fr" href="https://soundlightprod.fr/the-best-abba-tribute.html">
 <link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/the-best-abba-tribute.html">
@@ -160,6 +172,11 @@
 
 <section class="page-hero">
   <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
+  <div class="hero-divas" aria-hidden="true">
+    <img class="d1" src="/abba-silhouette-1.png" alt="">
+    <img class="d2" src="/abba-silhouette-2.png" alt="">
+    <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span><span class="spark s4">✦</span>
+  </div>
   <div class="page-hero-inner">
     <span class="breadcrumb"><a href="tributes.html">← Tributes</a></span>
     <span class="label">ABBA Tribute</span>
