@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal notice — SLP Sound Light Prod</title>
+<meta name="robots" content="noindex, follow">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --line:rgba(255,255,255,0.1); }
+  *{box-sizing:border-box;}
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; line-height:1.7; margin:0;}
+  .wrap{max-width:760px; margin:0 auto; padding:80px 24px 100px;}
+  h1{font-family:'Space Grotesk',sans-serif; font-size:2rem; margin-bottom:8px;}
+  .back{color:var(--amber); text-decoration:none; font-size:0.85rem; font-family:'JetBrains Mono',monospace;}
+  h2{font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin:36px 0 12px; color:var(--amber);}
+  p, li{color:var(--muted); font-size:0.94rem;}
+  a{color:var(--paper);}
+  section{border-top:1px solid var(--line); padding-top:10px;}
+</style>
+
+
+
+
+
+<!-- i18n:start -->
+<link rel="alternate" hreflang="fr" href="https://soundlightprod.fr/mentions-legales.html">
+<link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/mentions-legales.html">
+<link rel="alternate" hreflang="es" href="https://soundlightprod.com/es/mentions-legales.html">
+<link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/mentions-legales.html">
+<style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
+<!-- i18n:end -->
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" class="back">← Back to the site</a>
+  <h1>Legal notice</h1>
+
+  <section>
+    <h2>Site publisher</h2>
+    <p>
+      SLP — Sound Light Prod<br>
+      SARL (limited company) with share capital of €2,500<br>
+      RCS Paris 130 415 045<br>
+      SIRET: 130 415 045 00017<br>
+      APE code: 9001Z<br>
+      Registered office: 173 rue de Courcelles, 75017 Paris, France<br>
+      Email: <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a><br>
+      Phone: +33 6 31 94 96 53
+    </p>
+  </section>
+
+  <section>
+    <h2>Hosting</h2>
+    <p>
+      Site hosted by Cloudflare, Inc.<br>
+      101 Townsend Street, San Francisco, CA 94107, United States
+    </p>
+  </section>
+
+  <section>
+    <h2>Intellectual property</h2>
+    <p>All content on this site (text, images, logos, graphics) is the property of SLP or its partners, unless otherwise stated, and may not be reproduced without prior permission.</p>
+  </section>
+
+  <section>
+    <h2>Personal data</h2>
+    <p>Information collected through the forms on this site (contact, order, booking) is used solely to process your request and is never passed on to third parties for commercial purposes. Under the GDPR, you have the right to access, rectify and delete your data, which you can exercise by emailing <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>.</p>
+  </section>
+
+  <section>
+    <h2>Cookies</h2>
+    <p>This site does not use advertising tracking cookies. Technical cookies may be used to ensure the shopping cart works properly.</p>
+  </section>
+</div>
+</body>
+<script>
+(function(){
+  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
+  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
+  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
+  if (localStorage.getItem('slp_admin_token')) return;
+  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  fetch("https://slp-api.raspy-silence-d4c7.workers.dev/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_slug: "mentions-legales", session_id: sid })
+  }).catch(function(){});
+})();
+</script>
+</html>
