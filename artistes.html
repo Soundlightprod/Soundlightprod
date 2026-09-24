@@ -162,6 +162,22 @@
   .social-icon svg{width:18px; height:18px;}
   .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
   .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center; letter-spacing:0.02em;}
+
+  /* Menu mobile (burger) */
+  .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
+  .burger span{display:block; width:20px; height:2px; background:var(--paper); border-radius:2px; transition:transform .25s ease, opacity .25s ease;}
+  header.menu-open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  header.menu-open .burger span:nth-child(2){opacity:0;}
+  header.menu-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  @media (max-width:960px){
+    .burger{display:flex;}
+    .nav-wrap{position:relative; flex-wrap:nowrap;}
+    .nav-wrap .lang-switch{margin-left:auto;}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0b10 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav li{border-bottom:1px solid var(--line);}
+    header.menu-open nav li:last-child{border-bottom:0;}
+    header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
+  }
 </style>
 
 
@@ -196,6 +212,7 @@
       </ul>
     </nav>
     <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/artistes.html" hreflang="fr" lang="fr" class="on" aria-current="true">FR</a><a href="https://soundlightprod.com/en/artistes.html" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/artistes.html" hreflang="es" lang="es">ES</a></div>
+    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -318,10 +335,14 @@
     </div>
     <div class="footer-col">
       <h4>Navigation</h4>
+      <a href="index.html">Accueil</a>
       <a href="artistes.html">Nos Artistes</a>
-      <a href="agenda.html">Agenda</a>
       <a href="son-lumiere.html">Prestation technique</a>
       <a href="diffusion.html">Notre philosophie de travail</a>
+      <a href="agenda.html">Agenda</a>
+      <a href="galerie.html">Galerie</a>
+      <a href="contact.html">Contact</a>
+      <a href="boutique.html">Vente de matériel</a>
     </div>
     <div class="footer-col">
       <h4>Contact</h4>

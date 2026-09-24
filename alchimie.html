@@ -84,11 +84,12 @@
   .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
   .banner-photo .txt{font-size:0.82rem; font-weight:500;}
 
+  .band-banner{width:100%; height:auto; display:block; border-radius:16px; margin-bottom:14px;}
   .photo-grid{display:grid; grid-template-columns:1fr 1.4fr 0.9fr; grid-template-rows:1fr 1fr; gap:14px; height:520px;}
   .photo-grid .ph-poster{grid-column:3; grid-row:1 / span 2; object-fit:contain; background:#0a0a0c; cursor:zoom-in;}
   .photo-grid .ph1{grid-row:span 2; min-height:0;}
   .photo-grid img{width:100%; height:100%; min-height:0; min-width:0; object-fit:cover; border-radius:16px; display:block;}
-  @media (max-width:700px){ .photo-grid{grid-template-columns:1fr; grid-template-rows:none; height:auto;} .photo-grid .ph1, .photo-grid .ph-poster{grid-row:auto; grid-column:auto;} .photo-grid img{aspect-ratio:4/3; height:auto;} .photo-grid .ph-poster{aspect-ratio:1170/1607;} }
+  @media (max-width:700px){ .photo-grid{grid-template-columns:1fr; grid-template-rows:none; height:auto;} .photo-grid .ph1, .photo-grid .ph-poster{grid-row:auto; grid-column:auto;} .photo-grid img{aspect-ratio:4/3; height:auto;} .photo-grid .ph-poster{aspect-ratio:1365/2048;} }
 
   .venues-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;}
   .venue-card{background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:16px 20px; font-size:0.92rem; color:var(--paper);}
@@ -147,6 +148,22 @@
   .lightbox-overlay.open{display:flex;}
   .lightbox-overlay img{max-width:100%; max-height:100%; border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,0.6);}
   .event-card img, .actu-item img{cursor:zoom-in;}
+
+  /* Menu mobile (burger) */
+  .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
+  .burger span{display:block; width:20px; height:2px; background:var(--paper); border-radius:2px; transition:transform .25s ease, opacity .25s ease;}
+  header.menu-open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  header.menu-open .burger span:nth-child(2){opacity:0;}
+  header.menu-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  @media (max-width:960px){
+    .burger{display:flex;}
+    .nav-wrap{position:relative; flex-wrap:nowrap;}
+    .nav-wrap .lang-switch{margin-left:auto;}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0b10 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav li{border-bottom:1px solid var(--line);}
+    header.menu-open nav li:last-child{border-bottom:0;}
+    header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
+  }
 </style>
 
 
@@ -181,6 +198,7 @@
       </ul>
     </nav>
     <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/alchimie.html" hreflang="fr" lang="fr" class="on" aria-current="true">FR</a><a href="https://soundlightprod.com/en/alchimie.html" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/alchimie.html" hreflang="es" lang="es">ES</a></div>
+    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -250,6 +268,7 @@
 
 <section>
   <div class="wrap tight">
+    <img class="band-banner" src="alchimie-banniere.jpg" alt="Alchimie — show pop-rock énergique et authentique">
     <div class="photo-grid">
       <img class="ph1" src="alchimie-photo-1.jpg" alt="Alchimie en concert, prestation acoustique">
       <img src="alchimie-photo-3.jpg" alt="Alchimie en concert, groupe complet sur scène">
@@ -318,9 +337,14 @@
     </div>
     <div class="footer-col">
       <h4>Navigation</h4>
+      <a href="index.html">Accueil</a>
       <a href="artistes.html">Nos Artistes</a>
-      <a href="agenda.html">Agenda</a>
+      <a href="son-lumiere.html">Prestation technique</a>
       <a href="diffusion.html">Notre philosophie de travail</a>
+      <a href="agenda.html">Agenda</a>
+      <a href="galerie.html">Galerie</a>
+      <a href="contact.html">Contact</a>
+      <a href="boutique.html">Vente de matériel</a>
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
