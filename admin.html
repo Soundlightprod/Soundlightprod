@@ -116,6 +116,13 @@
   .dispo-summary-empty{color:var(--muted); font-size:0.8rem;}
 
   .period-btn{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:8px 18px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.86rem; transition:background 0.15s ease, color 0.15s ease;}
+  .range-pick{display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; margin-left:6px; color:var(--muted); font-size:0.86rem;}
+  .range-pick input{background:var(--ink-2); border:1px solid var(--line); color:var(--paper,#f5f2ec); border-radius:10px; padding:7px 10px; font-family:'Manrope',sans-serif; color-scheme:dark;}
+  .site-btn{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:8px 16px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.86rem; display:inline-flex; align-items:center; gap:7px;}
+  .site-btn i{width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .site-btn .n{font-family:'JetBrains Mono',monospace; font-size:0.72rem; opacity:.75;}
+  .site-btn.active{background:var(--paper,#f5f2ec); color:var(--ink); border-color:transparent; font-weight:700;}
+  .site-tag{display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; white-space:nowrap;} .site-tag i{width:8px; height:8px; border-radius:50%; display:inline-block;}
   .period-btn.active{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
 
   /* ---- Feuille de route : gabarit clair fidèle au modèle Word ---- */
@@ -226,7 +233,7 @@
     <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">6. 🕰 Historique</button>
     <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">7. 🔑 Accès groupes</button>
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">8. 📦 Suivi des commandes</button>
-    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 📊 Visites du site</button>
+    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 📊 Visites des sites</button>
   </div>
 
   <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
@@ -628,9 +635,15 @@
 
   <!-- ============ ONGLET 8 : VISITES DU SITE ============ -->
   <div class="tab-content" id="tab-visits">
-    <h2>Visites du site</h2>
-    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie), toutes pages confondues.</p>
-    <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; margin-bottom:14px;"><span id="siteVisitTotal">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;">visite(s) au total, toutes pages</span></p>
+    <h2>Visites des sites</h2>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:14px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie). Choisis le site à analyser :</p>
+    <div class="form-row" id="siteSwitch" style="margin:0 0 20px; gap:8px; flex-wrap:wrap;">
+      <button class="site-btn active" data-site="" onclick="setVisitsSite('')">Tous les sites <span class="n"></span></button>
+      <button class="site-btn" data-site="slp" onclick="setVisitsSite('slp')"><i style="background:#ffb238"></i>SLP <span class="n"></span></button>
+      <button class="site-btn" data-site="bmb" onclick="setVisitsSite('bmb')"><i style="background:#ff2d6f"></i>Book My Band <span class="n"></span></button>
+      <button class="site-btn" data-site="csa" onclick="setVisitsSite('csa')"><i style="background:#38bdf8"></i>CS Animations <span class="n"></span></button>
+    </div>
+    <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; margin-bottom:14px;"><span id="siteVisitTotal">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;" id="siteVisitTotalLabel">visite(s) au total, tous sites</span></p>
 
     <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
       <h3 style="margin:0;">Évolution des visites</h3>
@@ -649,6 +662,8 @@
       <button class="period-btn" id="periodBtn-week" onclick="setVisitsPeriod('week')">7 derniers jours</button>
       <button class="period-btn" id="periodBtn-month" onclick="setVisitsPeriod('month')">30 derniers jours</button>
       <button class="period-btn" id="periodBtn-all" onclick="setVisitsPeriod('all')">Tout</button>
+      <span class="range-pick">Du <input type="date" id="rangeFrom"> au <input type="date" id="rangeTo">
+        <button class="period-btn" id="periodBtn-custom" onclick="applyCustomRange()">Afficher</button></span>
     </div>
 
     <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
@@ -685,7 +700,7 @@
 
     <h3>Par page</h3>
     <table id="visitsSummaryTable">
-      <thead><tr><th>Page</th><th>Visites</th><th>Dernière visite</th><th></th></tr></thead>
+      <thead><tr><th>Site</th><th>Page</th><th>Visites</th><th>Dernière visite</th><th></th></tr></thead>
       <tbody></tbody>
     </table>
     <p class="empty" id="visitsSummaryEmpty" style="display:none;">Aucune visite enregistrée pour le moment.</p>
@@ -1889,10 +1904,53 @@
 
   let visitsMapInstance = null;
 
+  // Multi-sites : SLP, Book My Band, CS Animations (colonne "site" de page_visits)
+  const SITE_LABELS = { slp:'SLP', bmb:'Book My Band', csa:'CS Animations' };
+  const SITE_COLORS = { slp:'#ffb238', bmb:'#ff2d6f', csa:'#38bdf8' };
+  let currentVisitsSite = '';
+  let customRange = null; // { from:'YYYY-MM-DD', to:'YYYY-MM-DD' } quand une plage de dates est choisie
+  function siteQ(){
+    let q = currentVisitsSite ? `&site=${currentVisitsSite}` : '';
+    if (customRange){ if (customRange.from) q += `&from=${customRange.from}`; if (customRange.to) q += `&to=${customRange.to}`; }
+    return q;
+  }
+  function rangeText(){
+    if (!customRange) return '';
+    const f = d => d ? d.split('-').reverse().join('/') : '…';
+    return ` du ${f(customRange.from)} au ${f(customRange.to)}`;
+  }
+  function refreshTotalLabel(){
+    document.getElementById('siteVisitTotalLabel').textContent = (currentVisitsSite ? `visite(s) sur ${SITE_LABELS[currentVisitsSite]}` : 'visite(s), tous sites') + (rangeText() || ' au total');
+  }
+  function applyCustomRange(){
+    const from = document.getElementById('rangeFrom').value, to = document.getElementById('rangeTo').value;
+    if (!from && !to){ showToast('Choisis au moins une date'); return; }
+    if (from && to && from > to){ showToast('La date de début est après la date de fin'); return; }
+    customRange = { from, to };
+    currentVisitsPeriod = 'all';
+    document.querySelectorAll('[id^="periodBtn-"]').forEach(b => b.classList.remove('active'));
+    document.getElementById('periodBtn-custom').classList.add('active');
+    refreshTotalLabel();
+    loadVisitsSummary();
+  }
+  function siteTag(site){ const k = site || 'slp'; return `<span class="site-tag"><i style="background:${SITE_COLORS[k]||'#999'}"></i>${SITE_LABELS[k]||k}</span>`; }
+  function setVisitsSite(site){
+    currentVisitsSite = site;
+    document.querySelectorAll('.site-btn').forEach(b => b.classList.toggle('active', b.dataset.site === site));
+    refreshTotalLabel();
+    loadVisitsSummary();
+  }
+
   let currentVisitsPeriod = 'today';
 
   function setVisitsPeriod(period){
     currentVisitsPeriod = period;
+    if (customRange){
+      customRange = null;
+      document.getElementById('rangeFrom').value = ''; document.getElementById('rangeTo').value = '';
+      refreshTotalLabel();
+      setTimeout(loadVisitsSummary, 0);
+    }
     document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('periodBtn-' + period).classList.add('active');
     loadVisitsMap();
@@ -1901,7 +1959,7 @@
 
   async function loadVisitsMap(){
     try {
-      const res = await fetch(`${API_BASE}/api/admin/visits-map?period=${currentVisitsPeriod}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/api/admin/visits-map?period=${currentVisitsPeriod}${siteQ()}`, { headers:{ Authorization:`Bearer ${token}` } });
       const points = await res.json();
       window.visitsMapData = points || [];
       if (!visitsMapInstance){
@@ -1916,9 +1974,9 @@
       (points || []).forEach(p => {
         if (p.latitude == null || p.longitude == null) return;
         const marker = L.circleMarker([p.latitude, p.longitude], {
-          radius: 6, color: '#ffb238', fillColor: '#ffb238', fillOpacity: 0.7, weight: 1,
+          radius: 6, color: SITE_COLORS[p.site||'slp'], fillColor: SITE_COLORS[p.site||'slp'], fillOpacity: 0.7, weight: 1,
         });
-        marker.bindPopup(`<strong>${pageLabel(p.page)}</strong><br>${[p.city, p.region, p.country].filter(Boolean).join(', ')}<br>${p.visited_at}`);
+        marker.bindPopup(`<strong>${pageLabel(p.page)}</strong> · ${SITE_LABELS[p.site||'slp']}<br>${[p.city, p.region, p.country].filter(Boolean).join(', ')}<br>${p.visited_at}`);
         marker.addTo(visitsMapInstance.markerLayer);
       });
       setTimeout(() => visitsMapInstance.invalidateSize(), 50);
@@ -1927,7 +1985,7 @@
 
   async function loadVisitsBreakdown(){
     try {
-      const res = await fetch(`${API_BASE}/api/admin/visits-breakdown?period=${currentVisitsPeriod}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/api/admin/visits-breakdown?period=${currentVisitsPeriod}${siteQ()}`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
       document.getElementById('periodTotalLabel').textContent = `— ${data.total || 0} visite(s) sur la période`;
       const renderList = (sel, list, dim) => {
@@ -1957,7 +2015,7 @@
         <tr>
           <td>${datePart || '—'}</td>
           <td>${(timePart || '').slice(0,5) || '—'}</td>
-          <td>${pageLabel(r.page)}</td>
+          <td>${pageLabel(r.page)} ${siteTag(r.site)}</td>
           <td>${[r.city, r.region, r.country].filter(Boolean).join(', ') || '—'}</td>
           <td>${r.session_id ? `<button class="btn-yes" onclick="showJourney('${r.session_id}')">Voir le parcours</button>` : ''}</td>
         </tr>
@@ -1980,7 +2038,7 @@
 
   async function loadVisitsTimeseries(){
     try {
-      const res = await fetch(`${API_BASE}/api/admin/visits-timeseries?granularity=${currentTimeseriesGranularity}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/api/admin/visits-timeseries?granularity=${currentTimeseriesGranularity}${siteQ()}`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
       const points = data.points || [];
       // Sur "par jour", on garde les 30 dernières entrées pour rester lisible
@@ -2031,18 +2089,21 @@
     loadVisitsBreakdown();
     loadVisitsTimeseries();
     try {
-      const res = await fetch(`${API_BASE}/api/admin/visits-summary`, { headers:{ Authorization:`Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/api/admin/visits-summary?x=1${siteQ()}`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
       document.getElementById('siteVisitTotal').textContent = data.grand_total || 0;
+      const bySite = {}; let all = 0; (data.by_site || []).forEach(r => { bySite[r.site] = r.n; all += r.n; });
+      document.querySelectorAll('.site-btn').forEach(b => { b.querySelector('.n').textContent = '(' + (b.dataset.site ? (bySite[b.dataset.site] || 0) : all) + ')'; });
       const pages = data.pages || [];
       const tbody = document.querySelector('#visitsSummaryTable tbody');
       document.getElementById('visitsSummaryEmpty').style.display = pages.length ? 'none' : 'block';
       tbody.innerHTML = pages.map(p => `
         <tr>
+          <td>${siteTag(p.site)}</td>
           <td>${pageLabel(p.page)}</td>
           <td>${p.total}</td>
           <td>${p.last_visit || '—'}</td>
-          <td><button class="btn-info" onclick="showVisitDetail('${p.page}')">Détails</button></td>
+          <td><button class="btn-info" onclick="showVisitDetail('${p.page}','${p.site||''}')">Détails</button></td>
         </tr>
       `).join('');
     } catch(e){
@@ -2050,13 +2111,14 @@
     }
   }
 
-  async function showVisitDetail(page){
+  async function showVisitDetail(page, site){
     window.currentVisitDetailPage = page;
+    window.currentVisitDetailSite = site || '';
     try {
-      const res = await fetch(`${API_BASE}/api/admin/visits?artist=${encodeURIComponent(page)}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/api/admin/visits?artist=${encodeURIComponent(page)}${site ? '&site='+site : ''}`, { headers:{ Authorization:`Bearer ${token}` } });
       if (!res.ok){ showToast(`Erreur (${res.status}) lors du chargement du détail`); return; }
       const data = await res.json();
-      document.getElementById('visitsDetailTitle').textContent = 'Détails — ' + pageLabel(page);
+      document.getElementById('visitsDetailTitle').textContent = 'Détails — ' + pageLabel(page) + (site ? ' · ' + SITE_LABELS[site] : '');
       const tbody = document.querySelector('#visitsDetailTable tbody');
       tbody.innerHTML = (data.visits || []).map(v => {
         const [datePart, timePart] = (v.visited_at || '').split(' ');
@@ -2089,7 +2151,7 @@
       if (!visits.length){ alert('Aucun autre passage retrouvé pour cette session.'); return; }
       const lines = visits.map(v => {
         const timePart = (v.visited_at || '').split(' ')[1] || '';
-        return `${timePart.slice(0,5)} — ${pageLabel(v.page)}`;
+        return `${timePart.slice(0,5)} — ${pageLabel(v.page)}${v.site && v.site !== 'slp' ? ' (' + SITE_LABELS[v.site] + ')' : ''}`;
       });
       alert('Parcours sur le site :\n\n' + lines.join('\n'));
     } catch(e){
@@ -2131,7 +2193,7 @@
     await fetch(`${API_BASE}/api/admin/visits/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
     showToast('Visite supprimée');
     if (context === 'detail' && window.currentVisitDetailPage){
-      showVisitDetail(window.currentVisitDetailPage);
+      showVisitDetail(window.currentVisitDetailPage, window.currentVisitDetailSite);
       loadVisitsSummary();
     } else if (context === 'group'){
       loadGroupVisits(document.getElementById('gvArtist').value);
