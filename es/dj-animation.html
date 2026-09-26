@@ -304,5 +304,21 @@
   <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Aviso legal</a> · <a href="https://soundlightprod.fr/cgv-boutique.html" style="color:inherit;">Condiciones de venta (FR)</a></p>
 </footer>
 
+<script>
+(function(){
+  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
+  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
+  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
+  if (localStorage.getItem('slp_admin_token')) return;
+  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  fetch("https://slp-api.raspy-silence-d4c7.workers.dev/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_slug: "dj-animation", session_id: sid, ref: document.referrer })
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>
