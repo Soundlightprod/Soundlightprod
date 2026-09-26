@@ -637,6 +637,7 @@
   <div class="tab-content" id="tab-visits">
     <h2>Visites des sites</h2>
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:14px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie). Choisis le site à analyser :</p>
+    <label style="display:inline-flex; align-items:center; gap:8px; font-size:0.86rem; color:var(--muted); margin:0 0 12px; cursor:pointer;"><input type="checkbox" id="hideBots" checked onchange="loadVisitsSummary()"> Masquer les robots (moteurs de recherche, centres de données, outils automatiques)</label>
     <div class="form-row" id="siteSwitch" style="margin:0 0 20px; gap:8px; flex-wrap:wrap;">
       <button class="site-btn active" data-site="" onclick="setVisitsSite('')">Tous les sites <span class="n"></span></button>
       <button class="site-btn" data-site="slp" onclick="setVisitsSite('slp')"><i style="background:#ffb238"></i>SLP <span class="n"></span></button>
@@ -686,7 +687,27 @@
         <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Par ville</div>
         <table id="breakdownCityTable"><tbody></tbody></table>
       </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Par code postal + ville</div>
+        <table id="breakdownPostalTable"><tbody></tbody></table>
+      </div>
     </div>
+    <h3>Qui sont les visiteurs ? <span style="color:var(--muted); font-size:0.8rem; font-weight:400;">réseau utilisé, appareil, d'où ils arrivent</span></h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; margin-bottom:30px;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Réseau / organisation</div>
+        <table id="breakdownNetworkTable"><tbody></tbody></table>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Appareil</div>
+        <table id="breakdownDeviceTable"><tbody></tbody></table>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Provenance</div>
+        <table id="breakdownReferrerTable"><tbody></tbody></table>
+      </div>
+    </div>
+    <p style="color:var(--muted); font-size:0.78rem; margin:-18px 0 30px;">« Réseau » = le fournisseur d'accès (Orange, Free, SFR…) ou, si la personne est au bureau, le réseau de son organisation (mairie, entreprise, collectivité). Données disponibles pour les visites à partir du 26/09/2026.</p>
 
     <div id="geoDetailBox" style="display:none; margin-bottom:30px; padding-top:20px; border-top:1px solid var(--line);">
       <h3 id="geoDetailTitle">Détail</h3>
@@ -1911,6 +1932,7 @@
   let customRange = null; // { from:'YYYY-MM-DD', to:'YYYY-MM-DD' } quand une plage de dates est choisie
   function siteQ(){
     let q = currentVisitsSite ? `&site=${currentVisitsSite}` : '';
+    const hb = document.getElementById('hideBots'); if (!hb || hb.checked) q += '&bots=0';
     if (customRange){ if (customRange.from) q += `&from=${customRange.from}`; if (customRange.to) q += `&to=${customRange.to}`; }
     return q;
   }
@@ -1932,6 +1954,10 @@
     document.getElementById('periodBtn-custom').classList.add('active');
     refreshTotalLabel();
     loadVisitsSummary();
+  }
+  function visitorInfo(v){
+    const bits = [v.network, v.device, v.referrer ? 'via ' + v.referrer : ''].filter(Boolean);
+    return bits.length ? `<div style="color:var(--muted); font-size:0.76rem; margin-top:2px;">${bits.join(' · ')}${v.is_bot ? ' · 🤖 robot' : ''}</div>` : '';
   }
   function siteTag(site){ const k = site || 'slp'; return `<span class="site-tag"><i style="background:${SITE_COLORS[k]||'#999'}"></i>${SITE_LABELS[k]||k}</span>`; }
   function setVisitsSite(site){
@@ -1976,7 +2002,7 @@
         const marker = L.circleMarker([p.latitude, p.longitude], {
           radius: 6, color: SITE_COLORS[p.site||'slp'], fillColor: SITE_COLORS[p.site||'slp'], fillOpacity: 0.7, weight: 1,
         });
-        marker.bindPopup(`<strong>${pageLabel(p.page)}</strong> · ${SITE_LABELS[p.site||'slp']}<br>${[p.city, p.region, p.country].filter(Boolean).join(', ')}<br>${p.visited_at}`);
+        marker.bindPopup(`<strong>${pageLabel(p.page)}</strong> · ${SITE_LABELS[p.site||'slp']}${p.postal_code ? '<br>' + p.postal_code + ' ' + (p.city||'') : ''}${p.network ? '<br>' + p.network : ''}${p.device ? ' · ' + p.device : ''}${p.referrer ? '<br>via ' + p.referrer : ''}<br>${[p.city, p.region, p.country].filter(Boolean).join(', ')}<br>${p.visited_at}`);
         marker.addTo(visitsMapInstance.markerLayer);
       });
       setTimeout(() => visitsMapInstance.invalidateSize(), 50);
@@ -1996,17 +2022,21 @@
       renderList('#breakdownCountryTable', data.by_country, 'country');
       renderList('#breakdownRegionTable', data.by_region, 'region');
       renderList('#breakdownCityTable', data.by_city, 'city');
+      renderList('#breakdownPostalTable', data.by_postal, 'postal_label');
+      renderList('#breakdownNetworkTable', data.by_network, 'network');
+      renderList('#breakdownDeviceTable', data.by_device, 'device');
+      renderList('#breakdownReferrerTable', data.by_referrer, 'referrer');
     } catch(e){ /* silencieux */ }
   }
 
   function showGeoDetail(dimension, label){
-    const isUnknown = label === 'Inconnu';
+    const isUnknown = label === 'Inconnu' || label === 'Accès direct / inconnu';
     const rows = (window.visitsMapData || []).filter(p => {
-      const val = dimension === 'country' ? p.country : dimension === 'region' ? p.region : p.city;
+      const val = dimension === 'postal_label' ? (p.postal_code ? (p.postal_code + ' ' + (p.city || '')) : '') : p[dimension];
       return isUnknown ? !val : val === label;
     }).sort((a, b) => (b.visited_at || '').localeCompare(a.visited_at || ''));
 
-    const dimLabel = dimension === 'country' ? 'Pays' : dimension === 'region' ? 'Région' : 'Ville';
+    const dimLabel = ({postal_label:'Code postal', country:'Pays', region:'Région', city:'Ville', network:'Réseau', device:'Appareil', referrer:'Provenance'})[dimension] || dimension;
     document.getElementById('geoDetailTitle').textContent = `${dimLabel} — ${label}`;
     const tbody = document.querySelector('#geoDetailTable tbody');
     tbody.innerHTML = rows.map(r => {
@@ -2016,7 +2046,7 @@
           <td>${datePart || '—'}</td>
           <td>${(timePart || '').slice(0,5) || '—'}</td>
           <td>${pageLabel(r.page)} ${siteTag(r.site)}</td>
-          <td>${[r.city, r.region, r.country].filter(Boolean).join(', ') || '—'}</td>
+          <td>${[(r.postal_code ? r.postal_code + ' ' : '') + (r.city || ''), r.region, r.country].filter(Boolean).join(', ') || '—'}${visitorInfo(r)}</td>
           <td>${r.session_id ? `<button class="btn-yes" onclick="showJourney('${r.session_id}')">Voir le parcours</button>` : ''}</td>
         </tr>
       `;
@@ -2126,9 +2156,9 @@
           <tr>
             <td>${datePart || '—'}</td>
             <td>${(timePart || '').slice(0,5) || '—'}</td>
-            <td>${v.city || '—'}</td>
+            <td>${v.postal_code ? v.postal_code + ' ' : ''}${v.city || '—'}</td>
             <td>${v.region || '—'}</td>
-            <td>${v.country || '—'}</td>
+            <td>${v.country || '—'}${visitorInfo(v)}</td>
             <td class="row-actions">
               ${v.session_id ? `<button class="btn-yes" onclick="showJourney('${v.session_id}')">Voir le parcours</button>` : ''}
               <button class="btn-no" onclick="deleteVisit(${v.id}, 'detail')">Supprimer</button>

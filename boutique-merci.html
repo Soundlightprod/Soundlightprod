@@ -32,7 +32,7 @@
   fetch("https://slp-api.raspy-silence-d4c7.workers.dev/api/track-visit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ artist_slug: "boutique-merci", session_id: sid })
+    body: JSON.stringify({ artist_slug: "boutique-merci", session_id: sid, ref: document.referrer })
   }).catch(function(){});
 })();
 </script>
