@@ -178,6 +178,17 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+
+  .spot{position:relative;}
+  .spot-track{display:grid;}
+  .spot-slide{grid-area:1/1; opacity:0; visibility:hidden; transform:translateY(8px); transition:opacity .7s ease, transform .7s ease, visibility 0s linear .7s;}
+  .spot-slide.on{opacity:1; visibility:visible; transform:none; transition:opacity .7s ease, transform .7s ease, visibility 0s;}
+  .spot-slide .artist{height:100%; margin:0; border-color:var(--gold) !important; box-shadow:0 0 0 1px var(--gold) !important;}
+  .spot-nav{display:flex; justify-content:center; align-items:center; gap:10px; margin-top:18px;}
+  .spot-dot{width:9px; height:9px; border-radius:50%; border:0; padding:0; background:rgba(255,255,255,.22); cursor:pointer; transition:background .3s, transform .3s;}
+  .spot-dot.on{background:var(--gold); transform:scale(1.25);}
+  .spot-arrow{background:none; border:1px solid var(--line); color:var(--paper); width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:14px; line-height:1;}
+  .spot-arrow:hover{border-color:var(--gold); color:var(--gold);}
 </style>
 
 
@@ -228,7 +239,10 @@
 
 <section>
   <div class="wrap" style="padding-bottom:10px;">
-    <div class="artist" style="border-color:var(--gold); box-shadow:0 0 0 1px var(--gold);">
+    <div class="spot" id="spotlight" role="region" aria-roledescription="carousel" aria-label="Featured artists">
+      <div class="spot-track">
+      <div class="spot-slide">
+<div class="artist" style="border-color:var(--gold); box-shadow:0 0 0 1px var(--gold);">
       <div class="glow" style="background:var(--gold);"></div>
       <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
         <img src="/cache-candy-photo-cropped.jpg" alt="Cache Candy" style="width:100%; height:100%; object-fit:cover; border-radius:14px;">
@@ -244,6 +258,175 @@
           <span class="tag">Public events</span>
         </div>
         <div class="discover-row"><a href="cache-candy.html" class="discover-btn" aria-label="Discover Cache Candy"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+      </div>
+    </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo round">
+          <img src="/alchimie-logo.png" alt="Alchimie">
+        </div>
+        <div class="artist-body">
+          <span class="label">Pop / Rock</span>
+          <h3>Alchimie</h3>
+          <p>A pop/rock band formed in 2018. Covers of the great standards, driven by on-stage chemistry and the joy of sharing music.</p>
+          <div class="tags">
+            <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="/logo.png" alt="" style="width:15px; height:15px; border-radius:50%; display:block;">SLP exclusive</span>
+            <span class="tag">Private parties</span>
+            <span class="tag">Concerts</span>
+            <span class="tag">Corporate events</span>
+            <span class="tag">Private events</span>
+            <span class="tag">Festivals</span>
+            <span class="tag">Food markets</span>
+          </div>
+          <div class="discover-row"><a href="alchimie.html" class="discover-btn" aria-label="Discover Alchimie"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo round" style="overflow:hidden; width:188px; height:163px; border-radius:50%;">
+          <img src="/noon-coverband-new-logo.png" alt="NooNCoverBand" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="artist-body">
+          <span class="label">Pop / Rock / Funk</span>
+          <h3>NooNCoverBand</h3>
+          <p>A vocals/bass duo spanning international hits, French chanson and disco/funk classics. Nearly 120 concerts at campsites, bars, country markets and private parties.</p>
+          <div class="tags">
+            <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="/logo.png" alt="" style="width:15px; height:15px; border-radius:50%; display:block;">SLP exclusive</span>
+            <span class="tag">Private parties</span>
+            <span class="tag">Weddings</span>
+            <span class="tag">Campsites</span>
+            <span class="tag">Food markets</span>
+          </div>
+          <div class="discover-row"><a href="noon-coverband.html" class="discover-btn" aria-label="Discover NooNCoverBand"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo round">
+          <img src="/fine-allies-logo.png" alt="The Fine Allies">
+        </div>
+        <div class="artist-body">
+          <span class="label">Funk · Soul · Rhythm'n Blues</span>
+          <h3>The Fine Allies</h3>
+          <p>Seven musicians and a singer joining forces for a lively, warm show full of groove — from James Brown to Jamiroquai.</p>
+          <div class="tags">
+            <span class="tag">Festivals</span>
+            <span class="tag">Corporate evenings</span>
+            <span class="tag">Concerts</span>
+          </div>
+          <div class="discover-row"><a href="the-fine-allies.html" class="discover-btn" aria-label="Discover The Fine Allies"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo round">
+          <img src="/panache-logo.png" alt="Panache">
+        </div>
+        <div class="artist-body">
+          <span class="label">Cabaret Revue</span>
+          <h3>Panache</h3>
+          <p>A touring cabaret revue combining dynamic tableaux, live singing, feathers and rhinestones — to light up your galas, corporate evenings and private events.</p>
+          <div class="tags">
+            <span class="tag">Galas & prestige evenings</span>
+            <span class="tag">Works councils</span>
+            <span class="tag">Private events</span>
+          </div>
+          <div class="discover-row"><a href="panache.html" class="discover-btn" aria-label="Discover Panache"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/best-abba-tribute-photo-1.jpg" alt="The Best ABBA Tribute" style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:14px; background:#2a2634;">
+          <img src="/best-abba-tribute-logo.png" alt="The Best ABBA Tribute logo" style="position:absolute; bottom:-10px; right:-10px; height:44px; width:auto; max-width:none; max-height:none; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,0.5);">
+        </div>
+        <div class="artist-body">
+          <span class="label">ABBA Tribute</span>
+          <h3>The Best ABBA Tribute</h3>
+          <p>A full live band, acclaimed by the Dutch and international press, bringing ABBA's greatest hits back to life with two outstanding singers and seasoned musicians.</p>
+          <div class="tags">
+            <span class="tag">Live band</span>
+            <span class="tag">Festivals</span>
+            <span class="tag">Corporate parties</span>
+            <span class="tag">Concerts</span>
+          </div>
+          <div class="discover-row"><a href="the-best-abba-tribute.html" class="discover-btn" aria-label="Discover The Best ABBA Tribute"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/calo2-0-affiche.jpg" alt="Tribute Calogero" style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:14px; background:#2a2634;">
+        </div>
+        <div class="artist-body">
+          <span class="label">Tribute Calogero</span>
+          <h3>Tribute Calogero</h3>
+          <p>A live four-piece tribute to Calogero, to relive "En apesanteur", "Voler de nuit" or "Yalla" in a 2-hour concert format.</p>
+          <div class="tags">
+            <span class="tag">Live band</span>
+            <span class="tag">Four-piece</span>
+            <span class="tag">Concerts</span>
+          </div>
+          <div class="discover-row"><a href="calo-2-0.html" class="discover-btn" aria-label="Discover Tribute Calogero"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/matmatah-photo-4.jpg" alt="Tribute Matmatah" style="width:100%; height:100%; object-fit:cover; object-position:center; border-radius:14px; background:#2a2634;">
+        </div>
+        <div class="artist-body">
+          <span class="label">Tribute Matmatah</span>
+          <h3>Tribute Matmatah</h3>
+          <p>A live rock four-piece honouring Matmatah, getting the crowd singing and dancing to "Lambé An Dro", "Emma" or "L'apologie".</p>
+          <div class="tags">
+            <span class="tag">Live band</span>
+            <span class="tag">Four-piece</span>
+            <span class="tag">Breton rock</span>
+            <span class="tag">Concerts</span>
+          </div>
+          <div class="discover-row"><a href="tribute-matmatah.html" class="discover-btn" aria-label="Discover Tribute Matmatah"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/dj-photo.jpg" alt="DJ Animation" style="width:100%; height:100%; object-fit:cover; border-radius:14px; background:#2a2634;">
+        </div>
+        <div class="artist-body">
+          <span class="label">Entertainer DJ</span>
+          <h3>DJ Animation</h3>
+          <p>An all-round DJ who gets every generation dancing: hits from every era, a playlist prepared with you, a microphone for announcements, sound and lighting included.</p>
+          <div class="tags">
+            <span class="tag">Dance parties</span>
+            <span class="tag">Weddings</span>
+            <span class="tag">Birthdays</span>
+          </div>
+          <div class="discover-row"><a href="dj-animation.html" class="discover-btn" aria-label="Discover DJ Animation"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      </div>
+      <div class="spot-nav">
+        <button class="spot-arrow spot-prev" type="button" aria-label="Previous">‹</button>
+        <div class="spot-dots" style="display:flex; gap:10px;"></div>
+        <button class="spot-arrow spot-next" type="button" aria-label="Next">›</button>
       </div>
     </div>
   </div>
@@ -361,6 +544,34 @@
   <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Legal notice</a> · <a href="https://soundlightprod.fr/cgv-boutique.html" style="color:inherit;">Shop T&Cs (FR)</a></p>
 </footer>
 
+<script>
+(function(){
+  var root=document.getElementById('spotlight'); if(!root) return;
+  var slides=[].slice.call(root.querySelectorAll('.spot-slide')), dotsWrap=root.querySelector('.spot-dots');
+  var i=0, timer=null, DELAY=6000;
+  slides.forEach(function(s,k){
+    var b=document.createElement('button'); b.className='spot-dot'; b.type='button';
+    b.setAttribute('aria-label', (s.querySelector('h3')||{}).textContent||('#'+(k+1)));
+    b.onclick=function(){ go(k); restart(); }; dotsWrap.appendChild(b);
+  });
+  var dots=[].slice.call(dotsWrap.children);
+  function go(k){
+    i=(k+slides.length)%slides.length;
+    slides.forEach(function(s,n){ var on=n===i; s.classList.toggle('on',on); s.setAttribute('aria-hidden',!on); s.querySelectorAll('a').forEach(function(a){ a.tabIndex=on?0:-1; }); });
+    dots.forEach(function(d,n){ d.classList.toggle('on',n===i); });
+  }
+  function restart(){ clearInterval(timer); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) timer=setInterval(function(){ go(i+1); }, DELAY); }
+  root.querySelector('.spot-prev').onclick=function(){ go(i-1); restart(); };
+  root.querySelector('.spot-next').onclick=function(){ go(i+1); restart(); };
+  root.addEventListener('mouseenter',function(){ clearInterval(timer); });
+  root.addEventListener('mouseleave',restart);
+  root.addEventListener('focusin',function(){ clearInterval(timer); });
+  var x0=null;
+  root.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
+  root.addEventListener('touchend',function(e){ if(x0===null) return; var dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>40){ go(i+(dx<0?1:-1)); restart(); } x0=null; });
+  go(0); restart();
+})();
+</script>
 </body>
 <script>
 (function(){
