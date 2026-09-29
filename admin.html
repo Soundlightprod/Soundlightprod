@@ -649,12 +649,12 @@
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:14px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie). Choisis le site à analyser :</p>
     <label style="display:inline-flex; align-items:center; gap:8px; font-size:0.86rem; color:var(--muted); margin:0 0 12px; cursor:pointer;"><input type="checkbox" id="hideBots" checked onchange="loadVisitsSummary()"> Masquer les robots (moteurs de recherche, centres de données, outils automatiques)</label>
     <div class="form-row" id="siteSwitch" style="margin:0 0 20px; gap:8px; flex-wrap:wrap;">
-      <button class="site-btn active" data-site="" onclick="setVisitsSite('')">Tous les sites <span class="n"></span></button>
-      <button class="site-btn" data-site="slp" onclick="setVisitsSite('slp')"><i style="background:#ffb238"></i>SLP <span class="n"></span></button>
+      <button class="site-btn" data-site="" onclick="setVisitsSite('')">Tous les sites <span class="n"></span></button>
+      <button class="site-btn active" data-site="slp" onclick="setVisitsSite('slp')"><i style="background:#ffb238"></i>SLP <span class="n"></span></button>
       <button class="site-btn" data-site="bmb" onclick="setVisitsSite('bmb')"><i style="background:#ff2d6f"></i>Book My Band <span class="n"></span></button>
       <button class="site-btn" data-site="csa" onclick="setVisitsSite('csa')"><i style="background:#38bdf8"></i>CS Animations <span class="n"></span></button>
     </div>
-    <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; margin-bottom:14px;"><span id="siteVisitTotal">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;" id="siteVisitTotalLabel">visite(s) au total, tous sites</span></p>
+    <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.8rem; margin-bottom:14px;"><span id="siteVisitTotal">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;" id="siteVisitTotalLabel">visite(s) sur SLP au total</span></p>
 
     <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
       <h3 style="margin:0;">Évolution des visites</h3>
@@ -1939,7 +1939,7 @@
   // Multi-sites : SLP, Book My Band, CS Animations (colonne "site" de page_visits)
   const SITE_LABELS = { slp:'SLP', bmb:'Book My Band', csa:'CS Animations' };
   const SITE_COLORS = { slp:'#ffb238', bmb:'#ff2d6f', csa:'#38bdf8' };
-  let currentVisitsSite = '';
+  let currentVisitsSite = 'slp'; // SLP affiché par défaut
   let customRange = null; // { from:'YYYY-MM-DD', to:'YYYY-MM-DD' } quand une plage de dates est choisie
   function siteQ(){
     let q = currentVisitsSite ? `&site=${currentVisitsSite}` : '';
