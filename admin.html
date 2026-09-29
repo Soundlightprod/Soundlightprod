@@ -19,7 +19,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --line:rgba(255,255,255,0.1); }
+  :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --violet:#8b5cf6; --blue:#2f9bff; --line:rgba(255,255,255,0.1); }
   *{box-sizing:border-box;}
   body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; margin:0; padding:24px 16px;}
   h1{
@@ -195,6 +195,14 @@
     .agenda-day{min-height:48px; padding:3px;}
     .agenda-daynum{font-size:0.6rem;}
   }
+
+  /* Onglets de l'admin : pastilles colorées */
+  .tabs{gap:10px; border-bottom:none; padding:4px 0 6px; margin-bottom:30px;}
+  .tab-btn{--c:var(--amber); display:inline-flex; align-items:center; gap:6px; background:var(--ink-2); border:1px solid var(--line); border-radius:100px; color:var(--paper); padding:10px 18px; margin:0; font-size:0.92rem; box-shadow:inset 3px 0 0 var(--c); transition:transform .15s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;}
+  .tab-btn:nth-child(4n+1){--c:var(--violet);} .tab-btn:nth-child(4n+2){--c:var(--blue);} .tab-btn:nth-child(4n+3){--c:var(--amber);} .tab-btn:nth-child(4n+4){--c:var(--pink);}
+  .tab-btn:hover{color:var(--paper); border-color:var(--c); transform:translateY(-2px); box-shadow:inset 3px 0 0 var(--c), 0 8px 22px -10px var(--c);}
+  .tab-btn.active{background:var(--c); border-color:var(--c); color:var(--ink); box-shadow:0 8px 26px -8px var(--c);}
+  @media (max-width:700px){ .tab-btn{padding:9px 14px; font-size:0.84rem;} }
 </style>
 </head>
 <body>
@@ -662,6 +670,7 @@
 
     <div class="form-row" style="margin-bottom:20px;">
       <button class="period-btn active" id="periodBtn-today" onclick="setVisitsPeriod('today')">Aujourd'hui</button>
+      <button class="period-btn" id="periodBtn-yesterday" onclick="setYesterday()">Hier</button>
       <button class="period-btn" id="periodBtn-week" onclick="setVisitsPeriod('week')">7 derniers jours</button>
       <button class="period-btn" id="periodBtn-month" onclick="setVisitsPeriod('month')">30 derniers jours</button>
       <button class="period-btn" id="periodBtn-all" onclick="setVisitsPeriod('all')">Tout</button>
@@ -1957,6 +1966,14 @@
     refreshTotalLabel();
     loadVisitsSummary();
   }
+  function setYesterday(){
+    const d = new Date(); d.setDate(d.getDate() - 1);
+    const y = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    document.getElementById('rangeFrom').value = y; document.getElementById('rangeTo').value = y;
+    applyCustomRange();
+    document.getElementById('periodBtn-custom').classList.remove('active');
+    document.getElementById('periodBtn-yesterday').classList.add('active');
+  }
   function visitorInfo(v){
     const bits = [v.network, v.device, v.referrer ? 'via ' + v.referrer : ''].filter(Boolean);
     return bits.length ? `<div style="color:var(--muted); font-size:0.76rem; margin-top:2px;">${bits.join(' · ')}${v.is_bot ? ' · 🤖 robot' : ''}</div>` : '';
@@ -1979,7 +1996,7 @@
       refreshTotalLabel();
       setTimeout(loadVisitsSummary, 0);
     }
-    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('[id^="periodBtn-"]').forEach(b => b.classList.remove('active'));
     document.getElementById('periodBtn-' + period).classList.add('active');
     loadVisitsMap();
     loadVisitsBreakdown();
