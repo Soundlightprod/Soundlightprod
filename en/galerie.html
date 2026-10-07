@@ -114,6 +114,16 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+  .yt-lite{position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; cursor:pointer; background:#000;}
+  .yt-lite img{width:100%; height:100%; object-fit:cover; display:block; opacity:.85; transition:opacity .25s, transform .4s;}
+  .yt-lite:hover img{opacity:1; transform:scale(1.03);}
+  .yt-play{position:absolute; left:50%; top:50%; width:68px; height:48px; margin:-24px 0 0 -34px; border-radius:14px; background:linear-gradient(90deg,#FF0953,#FC8024); box-shadow:0 8px 24px rgba(0,0,0,.45);}
+  .yt-play::after{content:''; position:absolute; left:28px; top:15px; border-style:solid; border-width:9px 0 9px 15px; border-color:transparent transparent transparent #fff;}
+  .video-grid.all{grid-template-columns:repeat(3,1fr);}
+  @media (max-width:960px){ .video-grid.all{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:600px){ .video-grid.all{grid-template-columns:1fr;} }
+  .video-card .caption b{display:block; font-family:'League Spartan',sans-serif; font-weight:800; font-size:1rem;}
+  .video-card .caption span{color:var(--muted); font-weight:500; font-size:.84rem;}
 </style>
 
 
@@ -174,67 +184,59 @@
       <h2>Our artists on video</h2>
     </div>
 
-    <div class="video-group">
-      <h3>Tribute Calogero</h3>
-      <div class="video-grid">
+    <div class="video-grid all">
         <div class="video-card">
-          <div class="embed"><iframe src="https://www.youtube.com/embed/zY5Zkr5o0Ek" title="Tribute Calogero — Prendre Racine" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-          <div class="caption">Prendre Racine</div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="odv7OehzC1A" data-title="The Best ABBA Tribute — Teaser" aria-label="Play video : The Best ABBA Tribute — Teaser"><img src="https://i.ytimg.com/vi/odv7OehzC1A/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>The Best ABBA Tribute</b><span>Teaser</span></div>
         </div>
         <div class="video-card">
-          <div class="embed"><iframe src="https://www.youtube.com/embed/oxmoT3FtSfs" title="Tribute Calogero — Yalla" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-          <div class="caption">Yalla</div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="zY5Zkr5o0Ek" data-title="Tribute Calogero — Prendre Racine" aria-label="Play video : Tribute Calogero — Prendre Racine"><img src="https://i.ytimg.com/vi/zY5Zkr5o0Ek/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>Tribute Calogero</b><span>Prendre Racine</span></div>
         </div>
-      </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="oxmoT3FtSfs" data-title="Tribute Calogero — Yalla" aria-label="Play video : Tribute Calogero — Yalla"><img src="https://i.ytimg.com/vi/oxmoT3FtSfs/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>Tribute Calogero</b><span>Yalla</span></div>
+        </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="H4eHomgH61s" data-title="Tribute Matmatah — Live" aria-label="Play video : Tribute Matmatah — Live"><img src="https://i.ytimg.com/vi/H4eHomgH61s/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>Tribute Matmatah</b><span>Live</span></div>
+        </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="kggHqV1v5wo" data-title="Tribute Kool &amp; the Gang — Live" aria-label="Play video : Tribute Kool &amp; the Gang — Live"><img src="https://i.ytimg.com/vi/kggHqV1v5wo/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>Tribute Kool &amp; the Gang</b><span>Live</span></div>
+        </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="p_2l2p1K6k4" data-title="Panache — Touring cabaret" aria-label="Play video : Panache — Touring cabaret"><img src="https://i.ytimg.com/vi/p_2l2p1K6k4/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>Panache</b><span>Touring cabaret</span></div>
+        </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="vfyqjnU4XhU" data-title="Bim Bam Boom — 2027 revue" aria-label="Play video : Bim Bam Boom — 2027 revue"><img src="https://i.ytimg.com/vi/vfyqjnU4XhU/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>Bim Bam Boom</b><span>2027 revue</span></div>
+        </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="QyU9YqfbgFM" data-title="Alchimie — Pop rock covers teaser" aria-label="Play video : Alchimie — Pop rock covers teaser"><img src="https://i.ytimg.com/vi/QyU9YqfbgFM/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>Alchimie</b><span>Pop rock covers teaser</span></div>
+        </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="AxXP9Pd6tFs" data-title="NooN Coverband — Performance excerpt 1" aria-label="Play video : NooN Coverband — Performance excerpt 1"><img src="https://i.ytimg.com/vi/AxXP9Pd6tFs/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>NooN Coverband</b><span>Performance excerpt 1</span></div>
+        </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="lz2G_UvzbSM" data-title="NooN Coverband — Performance excerpt 2" aria-label="Play video : NooN Coverband — Performance excerpt 2"><img src="https://i.ytimg.com/vi/lz2G_UvzbSM/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>NooN Coverband</b><span>Performance excerpt 2</span></div>
+        </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="h1sqE5CJxX4" data-title="NooN Coverband — Performance excerpt 3" aria-label="Play video : NooN Coverband — Performance excerpt 3"><img src="https://i.ytimg.com/vi/h1sqE5CJxX4/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>NooN Coverband</b><span>Performance excerpt 3</span></div>
+        </div>
+        <div class="video-card">
+          <div class="embed"><button type="button" class="yt-lite" data-id="pCBTgx0PCPQ" data-title="The Fine Allies — Concert excerpt" aria-label="Play video : The Fine Allies — Concert excerpt"><img src="https://i.ytimg.com/vi/pCBTgx0PCPQ/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="caption"><b>The Fine Allies</b><span>Concert excerpt</span></div>
+        </div>
     </div>
 
-    <div class="video-group">
-      <h3>The Best ABBA Tribute</h3>
-      <div class="video-grid">
-        <div class="video-card">
-          <div class="embed"><iframe src="https://www.youtube.com/embed/odv7OehzC1A" title="The Best ABBA Tribute — Teaser" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-          <div class="caption">Teaser</div>
-        </div>
-      </div>
-    </div>
+    <div style="margin-top:36px;"><a class="btn btn-ghost" href="https://www.youtube.com/@SOUNDLIGHTPROD" target="_blank" rel="noopener">All our videos on YouTube ↗</a></div>
 
-    <div class="video-group">
-      <h3>The Fine Allies</h3>
-      <div class="video-grid">
-        <div class="video-card">
-          <div class="embed"><iframe src="https://www.youtube.com/embed/pCBTgx0PCPQ" title="The Fine Allies — Live excerpt" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-          <div class="caption">Live excerpt</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="video-group">
-      <h3>NooN Coverband</h3>
-      <div class="video-grid">
-        <div class="video-card">
-          <div class="embed"><iframe src="https://www.youtube.com/embed/AxXP9Pd6tFs" title="NooN Coverband — Performance excerpt" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-          <div class="caption">Performance excerpt</div>
-        </div>
-        <div class="video-card">
-          <div class="embed"><iframe src="https://www.youtube.com/embed/lz2G_UvzbSM" title="NooN Coverband — Performance excerpt" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-          <div class="caption">Performance excerpt</div>
-        </div>
-        <div class="video-card">
-          <div class="embed"><iframe src="https://www.youtube.com/embed/h1sqE5CJxX4" title="NooN Coverband — Performance excerpt" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-          <div class="caption">Performance excerpt</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="video-group">
-      <h3>Alchimie</h3>
-      <div class="video-grid">
-        <div class="video-card">
-          <div class="embed"><iframe src="https://www.youtube.com/embed/QyU9YqfbgFM" title="Alchimie — Pop Rock covers teaser" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-          <div class="caption">Pop Rock covers teaser</div>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -309,6 +311,12 @@
   <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Legal notice</a> · <a href="https://soundlightprod.fr/cgv-boutique.html" style="color:inherit;">Shop T&Cs (FR)</a></p>
 </footer>
 
+<script>
+document.addEventListener('click',function(e){var b=e.target.closest('.yt-lite'); if(!b) return;
+  var f=document.createElement('iframe'); f.src='https://www.youtube-nocookie.com/embed/'+b.dataset.id+'?autoplay=1&rel=0';
+  f.title=b.dataset.title; f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'; f.allowFullscreen=true;
+  b.replaceWith(f);});
+</script>
 </body>
 <script>
 (function(){
