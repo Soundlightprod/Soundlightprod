@@ -6,24 +6,21 @@
 <title>Boutique Matériel Son & Lumière — Livraison France | SLP Sound Light Prod</title>
 <meta name="description" content="Achetez du matériel son et lumière neuf ou reconditionné en ligne, livré partout en France, avec SLP.">
 <meta name="robots" content="index, follow">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink: #0c0b10; --ink-2: #17151e;
-    --paper: #f5f2ec; --muted: #9a93a6;
-    --gold: #cda754;
-    --violet: #8b5cf6; --blue: #2f9bff; --amber: #ffb238; --pink: #ff4d7d;
+    --ink: #0c0a14; --ink-2: #17142a;
+    --paper: #f7f5f0; --muted: #a9a4bc;
+    --gold: #fbc608;
+    --violet: #8c3290; --blue: #3259be; --amber: #fc8024; --pink: #ff0953;
     --line: rgba(255,255,255,0.1);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
-  body{background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; line-height:1.6; overflow-x:hidden;}
-  .label{font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
-  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; line-height:1.6; overflow-x:hidden;}
+  .label{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
 
-  header{position:sticky; top:0; z-index:50; background:rgba(12,11,16,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
   .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
   .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
   .brand img{height:58px; width:58px; display:block; border-radius:50%;}
@@ -45,7 +42,7 @@
   .wrap{max-width:1220px; margin:0 auto; padding:20px 24px 90px;}
 
   .filters{display:flex; gap:10px; margin-bottom:32px; flex-wrap:wrap;}
-  .filter-btn{font-family:'JetBrains Mono', monospace; font-size:0.78rem; padding:9px 18px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s ease;}
+  .filter-btn{font-family:'DM Mono', monospace; font-size:0.78rem; padding:9px 18px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s ease;}
   .filter-btn.active, .filter-btn:hover{color:var(--paper); box-shadow:inset 0 0 0 1.5px var(--paper);}
 
   .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:26px;}
@@ -53,23 +50,23 @@
   .card-img{aspect-ratio:1/1; background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.8rem; overflow:hidden; position:relative;}
   .card-img img{width:100%; height:100%; object-fit:contain;}
   .card-img.has-photo{background:#fff; cursor:pointer;}
-  .card-img.has-photo::after{content:'🔍 Voir les caractéristiques'; position:absolute; inset:auto 0 0 0; padding:8px 10px; background:rgba(12,11,16,0.82); color:var(--paper); font-size:0.68rem; text-align:center; font-family:'JetBrains Mono',monospace; letter-spacing:0.03em; opacity:0; transition:opacity 0.2s ease;}
+  .card-img.has-photo::after{content:'🔍 Voir les caractéristiques'; position:absolute; inset:auto 0 0 0; padding:8px 10px; background:rgba(12,10,20,0.82); color:var(--paper); font-size:0.68rem; text-align:center; font-family:'DM Mono',monospace; letter-spacing:0.03em; opacity:0; transition:opacity 0.2s ease;}
   .card-img.has-photo:hover::after{opacity:1;}
   .card h3{font-size:1.05rem;}
-  .card .cat{color:var(--amber); font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase;}
+  .card .cat{color:var(--amber); font-family:'DM Mono', monospace; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase;}
   .card p.desc{color:var(--muted); font-size:0.82rem; flex-grow:1; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis; line-height:1.45;}
   .card .price-row{display:flex; align-items:center; justify-content:space-between;}
-  .price{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.2rem;}
-  .stock-low{color:var(--pink); font-size:0.75rem; font-family:'JetBrains Mono', monospace;}
-  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 20px; font-family:'Manrope', sans-serif; font-weight:700; font-size:0.9rem; text-decoration:none; border-radius:100px; border:none; cursor:pointer; transition:all 0.25s ease;}
+  .price{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.2rem;}
+  .stock-low{color:var(--pink); font-size:0.75rem; font-family:'DM Mono', monospace;}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 20px; font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.9rem; text-decoration:none; border-radius:100px; border:none; cursor:pointer; transition:all 0.25s ease;}
   .btn-primary{background:var(--paper); color:var(--ink);}
-  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(245,242,236,0.15);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(247,245,240,0.15);}
   .btn-primary:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
   .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25); background:transparent;}
   .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
 
   /* Panier flottant */
-  .cart-fab{position:fixed; bottom:24px; right:24px; z-index:60; background:var(--amber); color:var(--ink); width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:800; cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,0.4); border:none;}
+  .cart-fab{position:fixed; bottom:24px; right:24px; z-index:60; background:var(--amber); color:var(--ink); width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'League Spartan',sans-serif; font-weight:800; cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,0.4); border:none;}
   .cart-fab .count{position:absolute; top:-4px; right:-4px; background:var(--pink); color:#fff; width:22px; height:22px; border-radius:50%; font-size:0.72rem; display:flex; align-items:center; justify-content:center;}
 
   .cart-panel{position:fixed; top:0; right:0; height:100%; width:min(420px, 100%); background:var(--ink-2); border-left:1px solid var(--line); z-index:70; transform:translateX(100%); transition:transform 0.3s ease; display:flex; flex-direction:column;}
@@ -83,18 +80,18 @@
   .cart-item .qty-ctrl button{width:24px; height:24px; border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--paper); cursor:pointer;}
   .cart-empty{color:var(--muted); text-align:center; padding:40px 0; font-size:0.9rem;}
   .cart-foot{padding:20px 24px; border-top:1px solid var(--line);}
-  .cart-total{display:flex; justify-content:space-between; margin-bottom:16px; font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.1rem;}
-  .cart-form input, .cart-form textarea{width:100%; margin-bottom:10px; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; font-size:0.88rem;}
+  .cart-total{display:flex; justify-content:space-between; margin-bottom:16px; font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.1rem;}
+  .cart-form input, .cart-form textarea{width:100%; margin-bottom:10px; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; font-size:0.88rem;}
   .cart-msg{font-size:0.82rem; margin-top:10px;}
   .cart-msg.error{color:var(--pink);}
-  .cart-msg.ok{color:#6ee7a0;}
+  .cart-msg.ok{color:#fbc608;}
   .overlay{position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:65; opacity:0; pointer-events:none; transition:opacity 0.3s ease;}
   .overlay.open{opacity:1; pointer-events:auto;}
 
   /* FICHE PRODUIT (modale caractéristiques techniques) */
   .product-modal{position:fixed; top:50%; left:50%; transform:translate(-50%, -50%) scale(0.96); width:min(880px, 92vw); max-height:88vh; overflow-y:auto; background:var(--ink-2); border:1px solid var(--line); border-radius:18px; z-index:80; opacity:0; pointer-events:none; transition:opacity 0.25s ease, transform 0.25s ease; box-shadow:0 30px 80px rgba(0,0,0,0.5);}
   .product-modal.open{opacity:1; pointer-events:auto; transform:translate(-50%, -50%) scale(1);}
-  .pd-close{position:absolute; top:14px; right:14px; z-index:2; width:36px; height:36px; border-radius:50%; border:none; background:rgba(12,11,16,0.7); color:var(--paper); font-size:1.3rem; cursor:pointer; line-height:1;}
+  .pd-close{position:absolute; top:14px; right:14px; z-index:2; width:36px; height:36px; border-radius:50%; border:none; background:rgba(12,10,20,0.7); color:var(--paper); font-size:1.3rem; cursor:pointer; line-height:1;}
   .pd-inner{display:grid; grid-template-columns:1fr 1fr; gap:0;}
   @media (max-width:700px){ .pd-inner{grid-template-columns:1fr;} }
   .pd-img{background:#fff; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; border-radius:18px 0 0 18px; overflow:hidden;}
@@ -110,12 +107,12 @@
   .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
   .footer-brand{max-width:320px; display:flex; gap:12px;}
   .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
-  .footer-brand h3{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
   .footer-brand p{color:var(--muted); font-size:0.85rem;}
-  .footer-col h4{font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col h4{font-family:'DM Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
   .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px;}
   .footer-col a:hover{color:var(--paper);}
-  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center;}
+  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center;}
 
   /* Menu mobile (burger) */
   .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
@@ -127,18 +124,24 @@
     .burger{display:flex;}
     .nav-wrap{position:relative; flex-wrap:nowrap;}
     .nav-wrap .lang-switch{margin-left:auto;}
-    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0b10 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0a14 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
     header.menu-open nav li{border-bottom:1px solid var(--line);}
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
 </style>
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0A14">
 </head>
 <body>
 
 <header>
   <div class="nav-wrap">
-    <a href="index.html" class="brand"><img src="logo.png" alt="SLP - Sound Light Prod"></a>
+    <a href="index.html" class="brand"><img src="slp-sigle.png" alt="SLP - Sound Light Prod"></a>
     <nav>
       <ul>
         <li><a href="index.html">Accueil</a></li>
@@ -234,7 +237,7 @@
         <div class="price-row"><span style="background:#ff9900; color:#111; font-weight:700; padding:8px 16px; border-radius:100px; font-size:0.82rem;">Voir sur Amazon ↗</span></div>
       </a>
     </div>
-    <p style="color:var(--muted); font-size:0.65rem; text-align:right; margin-top:14px; opacity:0.6; font-family:'JetBrains Mono',monospace; letter-spacing:0.05em; text-transform:uppercase;">Publicité · liens affiliés Amazon</p>
+    <p style="color:var(--muted); font-size:0.65rem; text-align:right; margin-top:14px; opacity:0.6; font-family:'DM Mono',monospace; letter-spacing:0.05em; text-transform:uppercase;">Publicité · liens affiliés Amazon</p>
   </div>
 </section>
 
@@ -288,7 +291,7 @@
 <footer>
   <div class="footer-wrap">
     <div class="footer-brand">
-      <img src="logo.png" alt="SLP - Sound Light Prod">
+      <img src="slp-logo-dark.png" alt="SLP - Sound Light Prod">
       <div>
         <h3>Sound Light Prod</h3>
         <p>Son, lumière, booking et production d'événements en France et en Europe.</p>

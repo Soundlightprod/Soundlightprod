@@ -5,29 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Galerie — SLP Sound Light Prod</title>
 <meta name="description" content="Photos de nos réalisations : événements sonorisés, éclairés et organisés par SLP.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink: #0c0b10; --ink-2: #17151e;
-    --paper: #f5f2ec; --muted: #9a93a6;
-    --gold: #cda754;
-    --violet: #8b5cf6; --blue: #2f9bff; --amber: #ffb238; --pink: #ff4d7d;
+    --ink: #0c0a14; --ink-2: #17142a;
+    --paper: #f7f5f0; --muted: #a9a4bc;
+    --gold: #fbc608;
+    --violet: #8c3290; --blue: #3259be; --amber: #fc8024; --pink: #ff0953;
     --line: rgba(255,255,255,0.1);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
-  body{background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; line-height:1.6; overflow-x:hidden;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; line-height:1.6; overflow-x:hidden;}
   @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;} }
-  .label{font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
-  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+  .label{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
 
-  header{position:sticky; top:0; z-index:50; background:rgba(12,11,16,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
   .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
   .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
   .brand img{height:58px; width:58px; display:block; border-radius:50%;}
-  .brand-text{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; color:var(--paper);}
+  .brand-text{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; color:var(--paper);}
   nav ul{list-style:none; display:flex; gap:26px; flex-wrap:wrap;}
   nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; letter-spacing:0.01em; transition:color 0.2s ease;}
   nav a:hover, nav a.current{color:var(--paper);}
@@ -76,9 +73,9 @@
   .cta-band h2{font-size:clamp(2.2rem, 5.5vw, 3.4rem); margin-bottom:20px;}
   .cta-band p{color:var(--muted); font-size:1.05rem; margin-bottom:36px;}
   .cta-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
-  .btn{display:inline-flex; align-items:center; gap:8px; padding:16px 30px; font-family:'Manrope', sans-serif; font-weight:700; font-size:0.95rem; text-decoration:none; border-radius:100px; transition:all 0.25s ease;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:16px 30px; font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.95rem; text-decoration:none; border-radius:100px; transition:all 0.25s ease;}
   .btn-primary{background:var(--paper); color:var(--ink);}
-  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(245,242,236,0.15);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(247,245,240,0.15);}
   .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25);}
   .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
 
@@ -86,9 +83,9 @@
   .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
   .footer-brand{max-width:320px; display:flex; gap:12px;}
   .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
-  .footer-brand h3{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
   .footer-brand p{color:var(--muted); font-size:0.85rem;}
-  .footer-col h4{font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col h4{font-family:'DM Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
   .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px; transition:color 0.2s ease;}
   .footer-col a:hover{color:var(--paper);}
   .social-row{display:flex; gap:10px;}
@@ -100,7 +97,7 @@
   }
   .social-icon svg{width:18px; height:18px;}
   .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
-  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center; letter-spacing:0.02em;}
+  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
 
   /* Menu mobile (burger) */
   .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
@@ -112,7 +109,7 @@
     .burger{display:flex;}
     .nav-wrap{position:relative; flex-wrap:nowrap;}
     .nav-wrap .lang-switch{margin-left:auto;}
-    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0b10 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0a14 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
     header.menu-open nav li{border-bottom:1px solid var(--line);}
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
@@ -128,15 +125,21 @@
 <link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/galerie.html">
 <link rel="alternate" hreflang="es" href="https://soundlightprod.com/es/galerie.html">
 <link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/galerie.html">
-<style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
+<style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
 <!-- i18n:end -->
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0A14">
 </head>
 <body>
 
 <header>
   <div class="nav-wrap">
     <a href="index.html" class="brand">
-      <img src="logo.png" alt="SLP - Sound Light Prod">
+      <img src="slp-sigle.png" alt="SLP - Sound Light Prod">
     </a>
     <nav>
       <ul>
@@ -272,7 +275,7 @@
 <footer>
   <div class="footer-wrap">
     <div class="footer-brand">
-      <img src="logo.png" alt="SLP - Sound Light Prod">
+      <img src="slp-logo-dark.png" alt="SLP - Sound Light Prod">
       <div>
         <h3>Sound Light Prod</h3>
         <p>Son, lumière, booking et production d'événements en France et en Europe.</p>
