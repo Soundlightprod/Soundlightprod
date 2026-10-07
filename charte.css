@@ -145,3 +145,9 @@ footer::before{content:''; position:absolute; left:0; right:0; top:0; height:4px
 .feux h1.rot .ph{grid-area:1/1; opacity:0; transform:translateY(.14em); transition:opacity .6s ease, transform .6s ease;}
 .feux h1.rot .ph.on{opacity:1; transform:none;}
 .feux h1.rot .ph.out{opacity:0; transform:translateY(-.14em);}
+/* Copie éclairée du titre : la photo est appliquée phrase par phrase, pour n'afficher que la phrase visible */
+.feux h1.rot .beamtxt{background:none;}
+.feux h1.rot .beamtxt .ph{color:transparent; -webkit-text-fill-color:transparent;
+  background:linear-gradient(rgba(255,240,205,.07),rgba(255,240,205,.07)),url(/slp-event-photo.jpg) center 55%/cover;
+  -webkit-background-clip:text; background-clip:text;}
+.feux h1.rot .beamtxt .ph:not(.on):not(.out){visibility:hidden;}
