@@ -42,4 +42,18 @@
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+
+  // Phrases du titre qui s'enchaînent (titre + copie éclairée en même temps)
+  if (h1.classList.contains('rot') && !reduce) {
+    var n = h1.querySelectorAll(':scope > .ph').length, i = 0;
+    setInterval(function () {
+      var prev = i; i = (i + 1) % n;
+      [h1, bt].forEach(function (root) {
+        var ph = root.querySelectorAll(':scope > .ph');
+        ph[prev].classList.remove('on'); ph[prev].classList.add('out');
+        ph[i].classList.remove('out'); ph[i].classList.add('on');
+        setTimeout(function () { ph[prev].classList.remove('out'); }, 650);
+      });
+    }, 5000);
+  }
 })();
