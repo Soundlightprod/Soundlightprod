@@ -5,29 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nos Artistes & Groupes de Concert — Alchimie, Cache Candy, The Fine Allies... | SLP</title>
 <meta name="description" content="Découvrez nos groupes de concert diffusés dans toute la France et en Europe : tributes ABBA, Calogero, Matmatah et Kool &amp; the Gang, revues Panache et Bim Bam Boom, Cache Candy, Alchimie, NooN Coverband, The Fine Allies et DJ animation.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink: #0c0b10; --ink-2: #17151e;
-    --paper: #f5f2ec; --muted: #9a93a6;
-    --gold: #cda754;
-    --violet: #8b5cf6; --blue: #2f9bff; --amber: #ffb238; --pink: #ff4d7d;
+    --ink: #0c0a14; --ink-2: #17142a;
+    --paper: #f7f5f0; --muted: #a9a4bc;
+    --gold: #fbc608;
+    --violet: #8c3290; --blue: #3259be; --amber: #fc8024; --pink: #ff0953;
     --line: rgba(255,255,255,0.1);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
-  body{background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif; line-height:1.6; overflow-x:hidden;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; line-height:1.6; overflow-x:hidden;}
   @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;} }
-  .label{font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
-  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+  .label{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
 
-  header{position:sticky; top:0; z-index:50; background:rgba(12,11,16,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
   .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
   .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
   .brand img{height:58px; width:58px; display:block; border-radius:50%;}
-  .brand-text{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; color:var(--paper);}
+  .brand-text{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; color:var(--paper);}
   nav ul{list-style:none; display:flex; gap:26px; flex-wrap:wrap;}
   nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; letter-spacing:0.01em; transition:color 0.2s ease;}
   nav a:hover, nav a.current{color:var(--paper);}
@@ -41,7 +38,7 @@
   .page-hero-inner{position:relative; z-index:2; max-width:1000px;}
   /* Frise néon des silhouettes de tous les artistes */
   .hero-frieze{position:relative; z-index:2; max-width:1220px; margin:26px auto 0; height:clamp(80px,12vw,150px); overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%); mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);}
-  .hero-frieze img{height:100%; width:auto; display:block; margin:0 auto; filter:drop-shadow(0 0 8px rgba(205,167,84,.35));}
+  .hero-frieze img{height:100%; width:auto; display:block; margin:0 auto; filter:drop-shadow(0 0 8px rgba(251,198,8,.35));}
   @media (max-width:760px){ .hero-frieze{height:auto;} .hero-frieze img{width:100%; height:auto;} }
   .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
   .breadcrumb a{color:var(--muted); text-decoration:none;}
@@ -102,7 +99,7 @@
   .discover-btn:hover .discover-icon{transform:rotate(45deg);}
   .tags{display:flex; flex-wrap:wrap; gap:8px;}
   @media (max-width:700px){ .tags{justify-content:center;} }
-  .tag{font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--paper); box-shadow:inset 0 0 0 1px var(--line); padding:7px 14px; border-radius:20px;}
+  .tag{font-family:'DM Mono', monospace; font-size:0.72rem; color:var(--paper); box-shadow:inset 0 0 0 1px var(--line); padding:7px 14px; border-radius:20px;}
 
   .cat-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:28px;}
   @media (max-width:960px){ .cat-grid{grid-template-columns:1fr 1fr; gap:22px;} }
@@ -121,13 +118,13 @@
   .cat-photo{position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:var(--ink);}
   .cat-photo img{width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;}
   .cat-card:hover .cat-photo img{transform:scale(1.05);}
-  .cat-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(0deg, rgba(12,11,16,0.85) 0%, rgba(12,11,16,0) 45%);}
+  .cat-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(0deg, rgba(12,10,20,0.85) 0%, rgba(12,10,20,0) 45%);}
   .cat-photo img.cat-photo-logo{position:absolute; bottom:16px; right:16px; z-index:3; width:auto !important; height:40px !important; max-width:none; max-height:none; border-radius:4px; opacity:0.95; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5)); transform:none;}
   .cat-card:hover .cat-photo img.cat-photo-logo{transform:none;}
   .cat-name-wrap{position:relative; z-index:2; padding:16px 18px 20px;}
   .cat-name-wrap .glow{position:absolute; width:200px; height:200px; border-radius:50%; filter:blur(60px); opacity:0.35; top:-120px; left:-40px; pointer-events:none; z-index:-1;}
-  .cat-label{font-family:'JetBrains Mono', monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:3px;}
-  .cat-name{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; color:var(--paper); letter-spacing:-0.01em;}
+  .cat-label{font-family:'DM Mono', monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:3px;}
+  .cat-name{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; color:var(--paper); letter-spacing:-0.01em;}
   .cat-card .discover-row{position:relative; z-index:2; margin-top:0;}
 
   .placeholder-logo{width:100%; aspect-ratio:4/3; background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px); border:2px dashed rgba(255,255,255,0.15); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.8rem; text-align:center; padding:14px;}
@@ -137,9 +134,9 @@
   .cta-band h2{font-size:clamp(2.2rem, 5.5vw, 3.4rem); margin-bottom:20px;}
   .cta-band p{color:var(--muted); font-size:1.05rem; margin-bottom:36px;}
   .cta-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
-  .btn{display:inline-flex; align-items:center; gap:8px; padding:16px 30px; font-family:'Manrope', sans-serif; font-weight:700; font-size:0.95rem; text-decoration:none; border-radius:100px; transition:all 0.25s ease;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:16px 30px; font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.95rem; text-decoration:none; border-radius:100px; transition:all 0.25s ease;}
   .btn-primary{background:var(--paper); color:var(--ink);}
-  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(245,242,236,0.15);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(247,245,240,0.15);}
   .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25);}
   .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
 
@@ -147,9 +144,9 @@
   .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
   .footer-brand{max-width:320px; display:flex; gap:12px;}
   .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
-  .footer-brand h3{font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
   .footer-brand p{color:var(--muted); font-size:0.85rem;}
-  .footer-col h4{font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col h4{font-family:'DM Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
   .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px; transition:color 0.2s ease;}
   .footer-col a:hover{color:var(--paper);}
   .social-row{display:flex; gap:10px;}
@@ -161,7 +158,7 @@
   }
   .social-icon svg{width:18px; height:18px;}
   .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
-  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'JetBrains Mono', monospace; text-align:center; letter-spacing:0.02em;}
+  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
 
   /* Menu mobile (burger) */
   .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
@@ -173,7 +170,7 @@
     .burger{display:flex;}
     .nav-wrap{position:relative; flex-wrap:nowrap;}
     .nav-wrap .lang-switch{margin-left:auto;}
-    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0b10 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0a14 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
     header.menu-open nav li{border-bottom:1px solid var(--line);}
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
@@ -200,15 +197,21 @@
 <link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/artistes.html">
 <link rel="alternate" hreflang="es" href="https://soundlightprod.com/es/artistes.html">
 <link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/artistes.html">
-<style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
+<style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
 <!-- i18n:end -->
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0A14">
 </head>
 <body>
 
 <header>
   <div class="nav-wrap">
     <a href="index.html" class="brand">
-      <img src="logo.png" alt="SLP - Sound Light Prod">
+      <img src="slp-sigle.png" alt="SLP - Sound Light Prod">
     </a>
     <nav>
       <ul>
@@ -345,7 +348,7 @@
         <div class="glow"></div>
         <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
           <img src="bim-bam-boom-photo.jpg" alt="Bim Bam Boom" style="width:100%; height:100%; object-fit:cover; object-position:center 20%; border-radius:14px; background:#2a2634;">
-          <img src="bim-bam-boom-logo.png" alt="Logo Bim Bam Boom" style="position:absolute; bottom:-12px; right:-14px; height:52px; width:auto; max-width:none; max-height:none; background:rgba(12,11,16,.85); padding:5px 8px; border-radius:6px;">
+          <img src="bim-bam-boom-logo.png" alt="Logo Bim Bam Boom" style="position:absolute; bottom:-12px; right:-14px; height:52px; width:auto; max-width:none; max-height:none; background:rgba(12,10,20,.85); padding:5px 8px; border-radius:6px;">
         </div>
         <div class="artist-body">
           <span class="label">Revue de Cabaret</span>
@@ -371,7 +374,7 @@
         <h3>Cache Candy</h3>
         <p>Duo pop-rock électro né en 2008, entre ballades nostalgiques et titres énergiques et fédérateurs. Plus de 300 concerts à travers la France, du Printemps de Bourges à Garorock — notre plus grosse production actuellement.</p>
         <div class="tags">
-          <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="logo.png" alt="" style="width:15px; height:15px; border-radius:50%; display:block;">Exclusivité SLP</span>
+          <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="slp-sigle.png" alt="" style="height:11px; width:auto; display:block;">Exclusivité SLP</span>
           <span class="tag">Festivals</span>
           <span class="tag">Concerts</span>
           <span class="tag">Événements publics</span>
@@ -391,7 +394,7 @@
           <h3>Alchimie</h3>
           <p>Groupe pop/rock formé en 2018. Reprises des grands standards, portées par la complicité scénique et la joie de partager la musique.</p>
           <div class="tags">
-            <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="logo.png" alt="" style="width:15px; height:15px; border-radius:50%; display:block;">Exclusivité SLP</span>
+            <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="slp-sigle.png" alt="" style="height:11px; width:auto; display:block;">Exclusivité SLP</span>
             <span class="tag">Soirées privées</span>
             <span class="tag">Concerts</span>
             <span class="tag">Événements d'entreprise</span>
@@ -414,7 +417,7 @@
           <h3>NooN Coverband</h3>
           <p>Duo chant/basse, entre variété internationale, chanson française et classiques disco/funk. Près de 120 concerts en campings, bars, marchés de pays et soirées privées.</p>
           <div class="tags">
-            <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="logo.png" alt="" style="width:15px; height:15px; border-radius:50%; display:block;">Exclusivité SLP</span>
+            <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="slp-sigle.png" alt="" style="height:11px; width:auto; display:block;">Exclusivité SLP</span>
             <span class="tag">Soirées privées</span>
             <span class="tag">Mariages</span>
             <span class="tag">Campings</span>
@@ -469,6 +472,25 @@
         <button class="spot-arrow spot-next" type="button" aria-label="Suivant">›</button>
       </div>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap tight">
+    <div class="section-head"><span class="label">L'affiche</span><h2>Toute la programmation</h2></div>
+    <nav class="affiche" aria-label="L'affiche">
+      <a href="the-best-abba-tribute.html"><span class="n">01</span><span class="nom">The Best ABBA Tribute</span><span class="genre">Tribute</span></a>
+      <a href="calo-2-0.html"><span class="n">02</span><span class="nom">Tribute Calogero</span><span class="genre">Tribute</span></a>
+      <a href="tribute-matmatah.html"><span class="n">03</span><span class="nom">Tribute Matmatah</span><span class="genre">Tribute</span></a>
+      <a href="tribute-kool-and-the-gang.html"><span class="n">04</span><span class="nom">Tribute Kool &amp; the Gang</span><span class="genre">Tribute</span></a>
+      <a href="panache.html"><span class="n">05</span><span class="nom">Panache</span><span class="genre">Revue de Cabaret</span></a>
+      <a href="bim-bam-boom.html"><span class="n">06</span><span class="nom">Bim Bam Boom</span><span class="genre">Revue de Cabaret</span></a>
+      <a href="cache-candy.html" class="exclu"><span class="n">07</span><span class="nom">Cache Candy</span><span class="genre">Pop-rock électro</span></a>
+      <a href="alchimie.html"><span class="n">08</span><span class="nom">Alchimie</span><span class="genre">Pop / Rock</span></a>
+      <a href="noon-coverband.html"><span class="n">09</span><span class="nom">NooN Coverband</span><span class="genre">Pop / Rock / Funk</span></a>
+      <a href="the-fine-allies.html"><span class="n">10</span><span class="nom">The Fine Allies</span><span class="genre">Funk · Soul · Rhythm'n'Blues</span></a>
+      <a href="dj-animation.html"><span class="n">11</span><span class="nom">DJ Animation</span><span class="genre">DJ animateur</span></a>
+    </nav>
   </div>
 </section>
 
@@ -541,7 +563,7 @@
 <footer>
   <div class="footer-wrap">
     <div class="footer-brand">
-      <img src="logo.png" alt="SLP - Sound Light Prod">
+      <img src="slp-logo-dark.png" alt="SLP - Sound Light Prod">
       <div>
         <h3>Sound Light Prod</h3>
         <p>Son, lumière, booking et production d'événements en France et en Europe.</p>

@@ -1,0 +1,119 @@
+/* SLP — Charte graphique V1 « Plein feux » (octobre 2026)
+   Chargée après les styles de chaque page : elle ne redéfinit que ce qui change.
+   Polices auto-hébergées (pas d'appel à Google Fonts).  */
+@font-face{font-family:'League Spartan';font-style:normal;font-weight:800;font-display:swap;src:url(/fonts/league-spartan-latin-800-normal.woff2) format('woff2');}
+@font-face{font-family:'League Spartan';font-style:normal;font-weight:900;font-display:swap;src:url(/fonts/league-spartan-latin-900-normal.woff2) format('woff2');}
+@font-face{font-family:'Instrument Sans';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/instrument-sans-latin-400-normal.woff2) format('woff2');}
+@font-face{font-family:'Instrument Sans';font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/instrument-sans-latin-500-normal.woff2) format('woff2');}
+@font-face{font-family:'Instrument Sans';font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/instrument-sans-latin-600-normal.woff2) format('woff2');}
+@font-face{font-family:'Instrument Sans';font-style:normal;font-weight:700;font-display:swap;src:url(/fonts/instrument-sans-latin-700-normal.woff2) format('woff2');}
+@font-face{font-family:'DM Mono';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/dm-mono-latin-400-normal.woff2) format('woff2');}
+@font-face{font-family:'DM Mono';font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/dm-mono-latin-500-normal.woff2) format('woff2');}
+:root{
+  --noir:#0C0A14; --coulisse:#17142A; --encre:#343C4F; --blanc:#F7F5F0;
+  --bleu:#3259BE; --violet-c:#8C3290; --rouge:#FF0953; --orange:#FC8024; --jaune:#FBC608;
+  --spectre:linear-gradient(90deg,#3259BE 0%,#8C3290 25%,#FF0953 50%,#FC8024 75%,#FBC608 100%);
+  --froid:linear-gradient(90deg,#3259BE,#8C3290);
+  --chaud:linear-gradient(90deg,#FF0953,#FC8024 55%,#FBC608);
+  --or:linear-gradient(90deg,#FBB908,#C89C66);
+  --ink:var(--noir); --ink-2:var(--coulisse); --paper:var(--blanc); --muted:#A9A4BC;
+  --gold:var(--jaune); --violet:var(--violet-c); --blue:var(--bleu); --amber:var(--orange); --pink:var(--rouge);
+  --line:rgba(247,245,240,0.10);
+}
+
+/* ---------- Typographie ---------- */
+body{font-family:'Instrument Sans',system-ui,sans-serif; background:var(--noir); color:var(--blanc);}
+h1,h2,h3,h4{font-family:'League Spartan',sans-serif;}
+h1,h2{text-transform:uppercase; letter-spacing:-0.02em;}
+h1{font-weight:900; line-height:0.92;}
+h2{font-weight:800; line-height:0.95;}
+h3{font-weight:800; letter-spacing:-0.01em; line-height:1.1;}
+.label,.cat-label,.footer-col h4,.legal,.lang-switch,.pillar .tag,.artist-tag,.tag,.breadcrumb{font-family:'DM Mono',ui-monospace,monospace;}
+.label{font-size:0.8rem; letter-spacing:0.14em; font-weight:500; color:rgba(247,245,240,0.72);}
+.label::before{content:''; display:inline-block; width:7px; height:7px; border-radius:50%; background:#fff; box-shadow:0 0 10px rgba(255,255,255,.8); margin-right:10px; vertical-align:2px;}
+.accent,.hero h1 .accent{padding:.14em 0 .04em; -webkit-box-decoration-break:clone; box-decoration-break:clone; background:var(--spectre) !important; -webkit-background-clip:text !important; background-clip:text !important; color:transparent !important;}
+::selection{background:var(--rouge); color:#fff;}
+
+/* ---------- En-tête & logo ---------- */
+header{background:rgba(12,10,20,0.88) !important; border-bottom:0 !important;}
+header::after{content:''; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--spectre); opacity:.9;}
+.brand img,header .brand img{height:38px !important; width:auto !important; border-radius:0 !important;}
+nav a{font-family:'Instrument Sans',sans-serif; font-weight:600;}
+nav a.current{color:#fff; position:relative;}
+nav a.current::after{content:''; position:absolute; left:50%; bottom:-9px; width:6px; height:6px; margin-left:-3px; border-radius:50%; background:#fff; box-shadow:0 0 8px #fff;}
+
+/* ---------- Boutons : pilule 50 px ---------- */
+.btn,.discover-btn{font-family:'Instrument Sans',sans-serif !important; font-weight:600 !important; border-radius:100px !important;}
+.btn{min-height:50px; padding:0 28px !important; align-items:center;}
+.btn-primary{background:var(--blanc) !important; color:var(--noir) !important;}
+.btn-primary::before{content:''; width:9px; height:9px; border-radius:50%; background:var(--chaud); flex-shrink:0;}
+.btn-ghost{background:transparent !important; color:var(--blanc) !important; box-shadow:inset 0 0 0 1.5px rgba(247,245,240,.55) !important;}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--blanc) !important;}
+.btn-hot,.cta-band .btn-primary{background:var(--chaud) !important; color:var(--noir) !important;}
+.cta-band .btn-primary::before{background:#fff;}
+.btn-hot:hover,.cta-band .btn-primary:hover{box-shadow:0 10px 34px rgba(255,9,83,.35) !important;}
+
+/* ---------- Surfaces ---------- */
+.stats,.artists-showcase{background:var(--coulisse) !important;}
+.stat .num{font-family:'League Spartan',sans-serif; font-weight:900;}
+.stat .num.v,.stat .num.b,.stat .num.p,.stat .num.a{background:var(--spectre); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.tag{border-radius:100px;}
+.social-icon:hover{background:var(--chaud) !important; color:var(--noir) !important;}
+.footer-col h4{color:rgba(247,245,240,.6) !important; letter-spacing:.14em;}
+footer{position:relative; border-top:0 !important;}
+footer::before{content:''; position:absolute; left:0; right:0; top:0; height:4px; background:var(--spectre);}
+.footer-brand img{height:64px !important; width:auto !important; border-radius:0 !important;}
+.footer-brand h3{display:none;}
+.cta-band{background:radial-gradient(ellipse at 85% 0%,rgba(252,128,36,.18),transparent 55%),radial-gradient(ellipse at 10% 100%,rgba(50,89,190,.2),transparent 55%),var(--noir) !important;}
+
+/* ---------- Geste 1 : le point ---------- */
+.point{display:inline-block; width:.22em; height:.22em; border-radius:50%; background:#fff; box-shadow:0 0 .35em rgba(255,255,255,.9),0 0 1.2em rgba(251,198,8,.55); vertical-align:baseline; margin-left:.04em;}
+
+/* ---------- Geste 2 : le faisceau (hero) ---------- */
+.feux{position:relative; overflow:hidden; background:var(--noir);}
+.feux .source{position:absolute; width:70px; height:70px; border-radius:50%; background:#fff; right:12%; top:16%; box-shadow:0 0 30px 8px rgba(255,236,170,.75),0 0 120px 40px rgba(251,185,8,.28),0 0 300px 120px rgba(255,9,83,.12); z-index:1;}
+.feux .faisceau{position:absolute; inset:0; z-index:1; pointer-events:none; background:linear-gradient(200deg,rgba(255,255,255,.13),rgba(255,255,255,.05) 60%,rgba(255,255,255,0)); clip-path:polygon(calc(88% - 10px) 16%, calc(88% + 30px) calc(16% + 50px), 48% 100%, 0 100%, 0 62%);}
+@media (max-width:760px){ .feux .source{width:34px; height:34px; right:7%; top:3%;} }
+
+/* ---------- Geste 3 : le bandeau ---------- */
+.bandeaux{position:relative; height:150px; overflow:hidden; background:var(--noir);}
+.bandeau{position:absolute; left:-5%; width:110%; white-space:nowrap; overflow:hidden; padding:13px 0; font-family:'League Spartan',sans-serif; font-weight:900; text-transform:uppercase; font-size:1.25rem; letter-spacing:.02em;}
+.bandeau.froid{top:28px; background:var(--froid); color:#fff; transform:rotate(2deg);}
+.bandeau.chaud{top:78px; background:var(--chaud); color:var(--noir); transform:rotate(-2deg);}
+.bandeau .defile{display:inline-flex; gap:34px; animation:defile 32s linear infinite; padding-left:34px;}
+.bandeau.chaud .defile{animation-direction:reverse; animation-duration:38s;}
+.bandeau .defile span::after{content:'•'; margin-left:34px; opacity:.8;}
+@keyframes defile{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+@media (max-width:600px){ .bandeaux{height:120px;} .bandeau{font-size:1rem; padding:10px 0;} .bandeau.chaud{top:66px;} .bandeau.froid{top:22px;} }
+
+/* ---------- Composant 2 : étiquettes métier ---------- */
+.metiers{display:flex; flex-wrap:wrap; gap:10px;}
+.metier{display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px 0 8px; border-radius:100px; font-family:'Instrument Sans',sans-serif; font-weight:600; font-size:.92rem; text-decoration:none;}
+.metier img{width:26px; height:26px;}
+.metier.son{background:linear-gradient(90deg,#3259BE,#5a46a8); color:#fff;}
+.metier.lumiere{background:linear-gradient(90deg,#8C3290,#c41f6f); color:#fff;}
+.metier.booking{background:linear-gradient(90deg,#FF0953,#FC5038); color:var(--noir);}
+.metier.diffusion{background:linear-gradient(90deg,#FC8024,#FBC608); color:var(--noir);}
+
+/* ---------- Composant 3 : la ligne d'affiche ---------- */
+.affiche{border-top:3px solid var(--blanc); border-bottom:3px solid var(--blanc);}
+.affiche a{display:grid; grid-template-columns:56px 1fr auto; align-items:center; gap:18px; padding:16px 22px; text-decoration:none; color:var(--blanc); border-bottom:1px solid var(--line); position:relative; transition:background .35s ease,color .35s ease;}
+.affiche a:last-child{border-bottom:0;}
+.affiche .n{font-family:'DM Mono',monospace; font-size:.85rem; opacity:.6;}
+.affiche .nom{font-family:'League Spartan',sans-serif; font-weight:900; text-transform:uppercase; font-size:clamp(1.6rem,4.2vw,3rem); line-height:.95; letter-spacing:-.02em;}
+.affiche .genre{font-family:'DM Mono',monospace; font-size:.74rem; letter-spacing:.14em; text-transform:uppercase; text-align:right; opacity:.75;}
+.affiche .genre::after{content:' →'; opacity:0; transition:opacity .3s;}
+.affiche a:hover,.affiche a:focus-visible{background:var(--chaud); color:var(--noir);}
+.affiche a:hover .genre::after,.affiche a:focus-visible .genre::after{opacity:1;}
+.affiche a:nth-child(4n+1):hover{background:linear-gradient(90deg,#3259BE,#8C3290); color:#fff;}
+.affiche a:nth-child(4n+2):hover{background:linear-gradient(90deg,#8C3290,#FF0953); color:#fff;}
+.affiche a.exclu{background:var(--blanc); color:var(--noir);}
+@media (max-width:600px){ .affiche a{grid-template-columns:34px 1fr; padding:14px 12px;} .affiche .genre{grid-column:2; text-align:left;} }
+
+/* ---------- Divers ---------- */
+.spectre-line{height:4px; background:var(--spectre); border-radius:2px; width:64px; margin:18px 0;}
+.discover-btn{background:var(--blanc) !important; color:var(--noir) !important;}
+.discover-icon{background:var(--chaud) !important; color:var(--noir) !important;}
+@media (prefers-reduced-motion:reduce){ .bandeau .defile{animation:none;} }
+.section-head h2{font-size:clamp(2rem,4.5vw,3.2rem);}
+.section-head .label{display:block; margin-bottom:14px;}
