@@ -120,7 +120,7 @@ PAGE_CSS = """<style>
 
 def jsonld(p):
     offer = {
-        '@type': 'Offer', 'url': f"{SITE}/produits/{p['slug']}.html", 'priceCurrency': 'EUR', 'price': price(p),
+        '@type': 'Offer', 'url': f"{SITE}/produits/{p['slug']}", 'priceCurrency': 'EUR', 'price': price(p),
         'availability': 'https://schema.org/InStock' if in_stock(p) else 'https://schema.org/OutOfStock',
         'itemCondition': 'https://schema.org/NewCondition',
         'seller': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': SITE + '/'},
@@ -139,14 +139,14 @@ def jsonld(p):
     crumbs = {'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [
         {'@type': 'ListItem', 'position': 1, 'name': 'Accueil', 'item': SITE + '/'},
         {'@type': 'ListItem', 'position': 2, 'name': 'Boutique', 'item': SITE + '/boutique.html'},
-        {'@type': 'ListItem', 'position': 3, 'name': p['name'], 'item': f"{SITE}/produits/{p['slug']}.html"}]}
+        {'@type': 'ListItem', 'position': 3, 'name': p['name'], 'item': f"{SITE}/produits/{p['slug']}"}]}
     return ('<script type="application/ld+json">' + json.dumps(prod, ensure_ascii=False) + '</script>\n'
             '<script type="application/ld+json">' + json.dumps(crumbs, ensure_ascii=False) + '</script>')
 
 
 def page(p, products, tpl):
     style, links, header, footer = tpl
-    url = f"{SITE}/produits/{p['slug']}.html"
+    url = f"{SITE}/produits/{p['slug']}"
     cat = CATS.get(p['category'], p['category'])
     title = f"{p['name']} — {CAT_FULL.get(p['category'], 'Matériel')} | Boutique SLP"
     desc = summary(p)[:300]
@@ -160,7 +160,7 @@ def page(p, products, tpl):
     same = [q for q in products if q['category'] == p['category'] and q['slug'] != p['slug']]
     others = (same + [q for q in products if q['category'] != p['category']])[:4]
     more = ''.join(
-        f'<a href="/produits/{esc(q["slug"])}.html"><div class="im"><img src="{esc(q.get("image") or "")}" alt="{esc(q["name"])}" loading="lazy"></div>'
+        f'<a href="/produits/{esc(q["slug"])}"><div class="im"><img src="{esc(q.get("image") or "")}" alt="{esc(q["name"])}" loading="lazy"></div>'
         f'<div class="tx"><b>{esc(q["name"])}</b><span>{fr_price(q)}</span></div></a>' for q in others)
     img = f'<img src="{esc(p["image"])}" alt="{esc(p["name"])}">' if p.get('image') else ''
     return f"""<!DOCTYPE html>
@@ -220,7 +220,7 @@ def page(p, products, tpl):
 def feed(products):
     items = []
     for p in products:
-        u = f"{SITE}/produits/{p['slug']}.html"
+        u = f"{SITE}/produits/{p['slug']}"
         items.append(f"""  <item>
     <g:id>SLP-{p['id']}</g:id>
     <g:title>{esc(p['name'])}</g:title>
@@ -248,14 +248,14 @@ def update_boutique(products):
         ps = [p for p in products if p['category'] == c]
         if ps:
             groups.append(f'<div class="refs-col"><h3>{CAT_FULL[c]}</h3><ul>' + ''.join(
-                f'<li><a href="/produits/{esc(p["slug"])}.html">{esc(p["name"])}</a> <span>{fr_price(p)}</span></li>' for p in ps) + '</ul></div>')
+                f'<li><a href="/produits/{esc(p["slug"])}">{esc(p["name"])}</a> <span>{fr_price(p)}</span></li>' for p in ps) + '</ul></div>')
     store = {'@context': 'https://schema.org', '@type': 'OnlineStore', 'name': 'Boutique SLP Sound Light Prod',
              'url': SITE + '/boutique.html', 'description': 'Matériel son et lumière professionnel garanti 2 ans, livré partout en France.',
              'parentOrganization': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': SITE + '/'},
              'hasMerchantReturnPolicy': {'@type': 'MerchantReturnPolicy', 'applicableCountry': 'FR',
                                          'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow', 'merchantReturnDays': 14}}
     itemlist = {'@context': 'https://schema.org', '@type': 'ItemList', 'name': 'Catalogue de la boutique SLP',
-                'itemListElement': [{'@type': 'ListItem', 'position': i, 'url': f"{SITE}/produits/{p['slug']}.html", 'name': p['name']}
+                'itemListElement': [{'@type': 'ListItem', 'position': i, 'url': f"{SITE}/produits/{p['slug']}", 'name': p['name']}
                                     for i, p in enumerate(products, 1)]}
     block = ('<!-- refs:start (généré par _boutique/build.py) -->\n<section class="refs">\n  <div class="wrap">\n'
              '    <span class="label">Catalogue</span>\n    <h2>Toutes nos références</h2>\n    <div class="refs-grid">'
@@ -277,7 +277,7 @@ def update_sitemap(products):
         s = s.replace('<urlset ', '<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" ', 1)
     today = datetime.date.today().isoformat()
     urls = ''.join(
-        f"\n  <url><loc>{SITE}/produits/{p['slug']}.html</loc><changefreq>weekly</changefreq><priority>0.6</priority>"
+        f"\n  <url><loc>{SITE}/produits/{p['slug']}</loc><changefreq>weekly</changefreq><priority>0.6</priority>"
         + (f"<image:image><image:loc>{SITE}{esc(p['image'])}</image:loc></image:image>" if p.get('image') else '') + '</url>'
         for p in products)
     s = s.replace('</urlset>', '  <!-- produits:start -->' + urls + '\n  <!-- produits:end -->\n</urlset>', 1)
