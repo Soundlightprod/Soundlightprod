@@ -267,6 +267,11 @@ export default {
     // soundlightprod.fr    : site français (racine)
     // soundlightprod.com   : versions anglaise (/en/), espagnole (/es/) et italienne (/it/) uniquement
     // soundlightprod.store : redirige vers la boutique du .fr
+    // Validation Google Search Console (fichiers de vérification, servis tels quels sur .fr et .com)
+    if (/^\/google[0-9a-f]{16}\.html$/.test(url.pathname)) {
+      return new Response(`google-site-verification: ${url.pathname.slice(1)}`, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+    }
+
     const domainRedirect = routeDomain(request, url);
     if (domainRedirect) return domainRedirect;
 
