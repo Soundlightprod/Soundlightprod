@@ -117,3 +117,5 @@ footer::before{content:''; position:absolute; left:0; right:0; top:0; height:4px
 @media (prefers-reduced-motion:reduce){ .bandeau .defile{animation:none;} }
 .section-head h2{font-size:clamp(2rem,4.5vw,3.2rem);}
 .section-head .label{display:block; margin-bottom:14px;}
+.hero p.welcome{color:var(--blanc); font-size:1.3rem; font-weight:600; margin-bottom:14px; max-width:600px;}
+.hero p.welcome + p{margin-top:0;}
