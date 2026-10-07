@@ -155,6 +155,9 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+  .bbb-duo{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .bbb-duo img{width:100%; aspect-ratio:3/4; object-fit:cover; object-position:center 20%; border-radius:16px; border:1px solid var(--line); display:block;}
+  @media (max-width:640px){ .bbb-duo{grid-template-columns:1fr;} }
 </style>
 
 
@@ -257,8 +260,9 @@
 
 <section>
   <div class="wrap tight">
-    <div class="banner-photo has-image">
-      <img src="bim-bam-boom-photo.jpg" alt="Bim Bam Boom — artiste en costume de scène" loading="lazy">
+    <div class="bbb-duo">
+      <img src="bim-bam-boom-affiche.jpg" alt="Affiche de la revue Bim Bam Boom" loading="lazy">
+      <img src="bim-bam-boom-photo.jpg" alt="La troupe de Bim Bam Boom sur scène" loading="lazy">
     </div>
   </div>
 </section>
