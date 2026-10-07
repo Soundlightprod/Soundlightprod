@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Note legali — SLP Sound Light Prod</title>
+<meta name="robots" content="noindex, follow">
+<style>
+  :root{ --ink:#0c0a14; --ink-2:#17142a; --paper:#f7f5f0; --muted:#a9a4bc; --amber:#fc8024; --line:rgba(255,255,255,0.1); }
+  *{box-sizing:border-box;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans',sans-serif; line-height:1.7; margin:0;}
+  .wrap{max-width:760px; margin:0 auto; padding:80px 24px 100px;}
+  h1{font-family:'League Spartan',sans-serif; font-size:2rem; margin-bottom:8px;}
+  .back{color:var(--amber); text-decoration:none; font-size:0.85rem; font-family:'DM Mono',monospace;}
+  h2{font-family:'League Spartan',sans-serif; font-size:1.15rem; margin:36px 0 12px; color:var(--amber);}
+  p, li{color:var(--muted); font-size:0.94rem;}
+  a{color:var(--paper);}
+  section{border-top:1px solid var(--line); padding-top:10px;}
+</style>
+
+
+
+
+
+<!-- i18n:start -->
+<link rel="alternate" hreflang="fr" href="https://soundlightprod.fr/mentions-legales.html">
+<link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/mentions-legales.html">
+<link rel="alternate" hreflang="es" href="https://soundlightprod.com/es/mentions-legales.html">
+<link rel="alternate" hreflang="it" href="https://soundlightprod.com/it/mentions-legales.html">
+<link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/mentions-legales.html">
+<style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
+<!-- i18n:end -->
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0A14">
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" class="back">← Torna al sito</a>
+  <h1>Note legali</h1>
+
+  <section>
+    <h2>Editore del sito</h2>
+    <p>
+      SLP — Sound Light Prod<br>
+      SARL (società a responsabilità limitata di diritto francese) con capitale sociale di 2 500 €<br>
+      RCS Paris 130 415 045<br>
+      SIRET: 130 415 045 00017<br>
+      Codice APE: 9001Z<br>
+      Sede legale: 173 rue de Courcelles, 75017 Parigi, Francia<br>
+      E-mail: <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a><br>
+      Telefono: +33 6 31 94 96 53
+    </p>
+  </section>
+
+  <section>
+    <h2>Hosting</h2>
+    <p>
+      Sito ospitato da Cloudflare, Inc.<br>
+      101 Townsend Street, San Francisco, CA 94107, Stati Uniti
+    </p>
+  </section>
+
+  <section>
+    <h2>Proprietà intellettuale</h2>
+    <p>Tutti i contenuti di questo sito (testi, immagini, loghi, grafiche) sono di proprietà di SLP o dei suoi partner, salvo diversa indicazione, e non possono essere riprodotti senza previa autorizzazione.</p>
+  </section>
+
+  <section>
+    <h2>Dati personali</h2>
+    <p>Le informazioni raccolte tramite i moduli di questo sito (contatto, ordine, prenotazione) sono utilizzate esclusivamente per gestire la vostra richiesta e non vengono mai cedute a terzi per finalità commerciali. Ai sensi del GDPR (RGPD), avete diritto di accesso, rettifica e cancellazione dei vostri dati, che potete esercitare scrivendo via e-mail a <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>.</p>
+  </section>
+
+  <section>
+    <h2>Cookies</h2>
+    <p>Questo sito non utilizza cookie di tracciamento pubblicitario. Possono essere utilizzati cookie tecnici per il corretto funzionamento del carrello.</p>
+  </section>
+</div>
+</body>
+<script>
+(function(){
+  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
+  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
+  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
+  if (localStorage.getItem('slp_admin_token')) return;
+  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  fetch("https://slp-api.raspy-silence-d4c7.workers.dev/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_slug: "mentions-legales", session_id: sid, ref: document.referrer })
+  }).catch(function(){});
+})();
+</script>
+</html>

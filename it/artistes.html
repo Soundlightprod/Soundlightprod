@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I nostri artisti e band dal vivo — Alchimie, Cache Candy, The Fine Allies... | SLP</title>
+<meta name="description" content="Scoprite le nostre band dal vivo, che si esibiscono in tutta la Francia e in Europa: tributi agli ABBA, a Calogero, ai Matmatah e ai Kool &amp; the Gang, le riviste di cabaret Panache e Bim Bam Boom, Cache Candy, Alchimie, NooN Coverband, The Fine Allies e DJ.">
+<style>
+  :root{
+    --ink: #0c0a14; --ink-2: #17142a;
+    --paper: #f7f5f0; --muted: #a9a4bc;
+    --gold: #fbc608;
+    --violet: #8c3290; --blue: #3259be; --amber: #fc8024; --pink: #ff0953;
+    --line: rgba(255,255,255,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; line-height:1.6; overflow-x:hidden;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;} }
+  .label{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+
+  header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{height:58px; width:58px; display:block; border-radius:50%;}
+  .brand-text{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; color:var(--paper);}
+  nav ul{list-style:none; display:flex; gap:26px; flex-wrap:wrap;}
+  nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; letter-spacing:0.01em; transition:color 0.2s ease;}
+  nav a:hover, nav a.current{color:var(--paper);}
+  @media (max-width:960px){ nav ul{display:none;} }
+
+  .page-hero{position:relative; padding:56px 24px 40px; overflow:hidden;}
+  .hero-blocks{position:absolute; inset:0; z-index:0;}
+  .hb{position:absolute; opacity:0.4; filter:blur(2px);}
+  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--pink), transparent 70%); top:-25vw; left:-10vw;}
+  .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-10vw; right:-10vw;}
+  .page-hero-inner{position:relative; z-index:2; max-width:1000px;}
+  /* Frise néon des silhouettes de tous les artistes */
+  .hero-frieze{position:relative; z-index:2; max-width:1220px; margin:26px auto 0; height:clamp(80px,12vw,150px); overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%); mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);}
+  .hero-frieze img{height:100%; width:auto; display:block; margin:0 auto; filter:drop-shadow(0 0 8px rgba(251,198,8,.35));}
+  @media (max-width:760px){ .hero-frieze{height:auto;} .hero-frieze img{width:100%; height:auto;} }
+  .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
+  .breadcrumb a{color:var(--muted); text-decoration:none;}
+  .breadcrumb a:hover{color:var(--paper);}
+  .page-hero .label{display:block; margin-bottom:10px;}
+  .page-hero h1{font-size:clamp(1.8rem, 4vw, 2.6rem); margin-bottom:8px;}
+  .page-hero p{color:var(--muted); font-size:0.95rem; max-width:none;}
+
+  section{position:relative; z-index:2;}
+  .wrap{max-width:1220px; margin:0 auto; padding:10px 24px 60px;}
+
+  .artists{display:flex; flex-direction:column; gap:20px;}
+  .category-label{display:flex; align-items:center; gap:18px; margin:32px 0 2px;}
+  .category-label:first-child{margin-top:0;}
+  .category-label .label{margin:0; white-space:nowrap;}
+  .category-label::after{content:''; flex:1; height:1px; background:var(--line);}
+  .artist{
+    position:relative; border-radius:20px; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);
+    display:grid; grid-template-columns:240px 1fr; gap:36px; align-items:center; padding:40px;
+    transition:border-color 0.3s ease;
+  }
+  .artist:hover{border-color:rgba(255,255,255,0.25);}
+  .artist .glow, .cat-card .glow{position:absolute; width:300px; height:300px; border-radius:50%; filter:blur(70px); opacity:0.25; top:-100px; left:-60px; pointer-events:none;}
+  .artist:nth-child(4n+1) .glow{background:var(--violet);}
+  .artist:nth-child(4n+2) .glow{background:var(--blue);}
+  .artist:nth-child(4n+3) .glow{background:var(--amber);}
+  .artist:nth-child(4n+4) .glow{background:var(--pink);}
+  .artist.reverse{grid-template-columns:1fr 240px;}
+  .artist.reverse .artist-logo{order:2;}
+  .artist.reverse .artist-body{order:1;}
+  @media (max-width:700px){
+    .artist, .artist.reverse{grid-template-columns:1fr; text-align:center; padding:32px 26px;}
+    .artist.reverse .artist-logo, .artist.reverse .artist-body{order:0;}
+  }
+  .artist-logo{position:relative; z-index:2; display:flex; align-items:center; justify-content:center;}
+  .artist-logo img{max-width:180px; max-height:130px; width:auto; height:auto; object-fit:contain;}
+  .artist-logo.round img{border-radius:50%; max-width:188px; max-height:163px;}
+  .artist-body{position:relative; z-index:2;}
+  .artist-body .label{margin-bottom:12px; display:block;}
+  .artist-body h3{font-size:1.6rem; margin-bottom:14px;}
+  .artist-body p{color:var(--muted); font-size:0.96rem; margin-bottom:20px;}
+  .discover-row{display:flex; justify-content:flex-end; margin-top:22px;}
+  @media (max-width:700px){ .discover-row{justify-content:center;} }
+  .discover-btn{
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--paper); color:var(--ink); text-decoration:none;
+    font-weight:700; font-size:0.86rem; padding:8px 8px 8px 20px;
+    border-radius:999px; box-shadow:0 6px 20px rgba(0,0,0,0.25);
+    transition:gap 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .discover-btn:hover{gap:14px; transform:translateY(-2px); box-shadow:0 10px 26px rgba(0,0,0,0.32);}
+  .discover-icon{
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    width:32px; height:32px; border-radius:50%; background:var(--gold); color:var(--ink);
+    transition:transform 0.25s ease;
+  }
+  .discover-icon svg{width:15px; height:15px;}
+  .discover-btn:hover .discover-icon{transform:rotate(45deg);}
+  .tags{display:flex; flex-wrap:wrap; gap:8px;}
+  @media (max-width:700px){ .tags{justify-content:center;} }
+  .tag{font-family:'DM Mono', monospace; font-size:0.72rem; color:var(--paper); box-shadow:inset 0 0 0 1px var(--line); padding:7px 14px; border-radius:20px;}
+
+  .cat-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:28px;}
+  @media (max-width:960px){ .cat-grid{grid-template-columns:1fr 1fr; gap:22px;} }
+  @media (max-width:600px){ .cat-grid{grid-template-columns:1fr;} }
+  .cat-card{
+    position:relative; display:block; border-radius:18px; overflow:hidden;
+    background:var(--ink-2); border:1px solid var(--line);
+    transition:transform 0.25s ease, border-color 0.3s ease;
+  }
+  .cat-card:hover{transform:translateY(-4px); border-color:rgba(255,255,255,0.3);}
+  .cat-card:nth-child(5n+1) .glow{background:var(--violet);}
+  .cat-card:nth-child(5n+2) .glow{background:var(--blue);}
+  .cat-card:nth-child(5n+3) .glow{background:var(--amber);}
+  .cat-card:nth-child(5n+4) .glow{background:var(--pink);}
+  .cat-card:nth-child(5n+5) .glow{background:var(--violet);}
+  .cat-photo{position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:var(--ink);}
+  .cat-photo img{width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;}
+  .cat-card:hover .cat-photo img{transform:scale(1.05);}
+  .cat-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(0deg, rgba(12,10,20,0.85) 0%, rgba(12,10,20,0) 45%);}
+  .cat-photo img.cat-photo-logo{position:absolute; bottom:16px; right:16px; z-index:3; width:auto !important; height:40px !important; max-width:none; max-height:none; border-radius:4px; opacity:0.95; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5)); transform:none;}
+  .cat-card:hover .cat-photo img.cat-photo-logo{transform:none;}
+  .cat-name-wrap{position:relative; z-index:2; padding:16px 18px 20px;}
+  .cat-name-wrap .glow{position:absolute; width:200px; height:200px; border-radius:50%; filter:blur(60px); opacity:0.35; top:-120px; left:-40px; pointer-events:none; z-index:-1;}
+  .cat-label{font-family:'DM Mono', monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:3px;}
+  .cat-name{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; color:var(--paper); letter-spacing:-0.01em;}
+  .cat-card .discover-row{position:relative; z-index:2; margin-top:0;}
+
+  .placeholder-logo{width:100%; aspect-ratio:4/3; background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px); border:2px dashed rgba(255,255,255,0.15); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.8rem; text-align:center; padding:14px;}
+
+  .cta-band{text-align:center; background:linear-gradient(135deg, var(--ink-2) 0%, var(--ink) 100%); border-top:1px solid var(--line);}
+  .cta-band .wrap{padding:80px 24px;}
+  .cta-band h2{font-size:clamp(2.2rem, 5.5vw, 3.4rem); margin-bottom:20px;}
+  .cta-band p{color:var(--muted); font-size:1.05rem; margin-bottom:36px;}
+  .cta-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:16px 30px; font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.95rem; text-decoration:none; border-radius:100px; transition:all 0.25s ease;}
+  .btn-primary{background:var(--paper); color:var(--ink);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(247,245,240,0.15);}
+  .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25);}
+  .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
+  .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-brand{max-width:320px; display:flex; gap:12px;}
+  .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
+  .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand p{color:var(--muted); font-size:0.85rem;}
+  .footer-col h4{font-family:'DM Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px; transition:color 0.2s ease;}
+  .footer-col a:hover{color:var(--paper);}
+  .social-row{display:flex; gap:10px;}
+  .social-icon{
+    display:flex; align-items:center; justify-content:center;
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    background:rgba(255,255,255,0.06); color:var(--muted);
+    transition:background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .social-icon svg{width:18px; height:18px;}
+  .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
+  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
+
+  /* Menu mobile (burger) */
+  .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
+  .burger span{display:block; width:20px; height:2px; background:var(--paper); border-radius:2px; transition:transform .25s ease, opacity .25s ease;}
+  header.menu-open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  header.menu-open .burger span:nth-child(2){opacity:0;}
+  header.menu-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  @media (max-width:960px){
+    .burger{display:flex;}
+    .nav-wrap{position:relative; flex-wrap:nowrap;}
+    .nav-wrap .lang-switch{margin-left:auto;}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0a14 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav li{border-bottom:1px solid var(--line);}
+    header.menu-open nav li:last-child{border-bottom:0;}
+    header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
+  }
+
+  .spot{position:relative;}
+  .spot-track{display:grid;}
+  .spot-slide{grid-area:1/1; opacity:0; visibility:hidden; transform:translateY(8px); transition:opacity .7s ease, transform .7s ease, visibility 0s linear .7s;}
+  .spot-slide.on{opacity:1; visibility:visible; transform:none; transition:opacity .7s ease, transform .7s ease, visibility 0s;}
+  .spot-slide .artist{height:100%; margin:0; border-color:var(--gold) !important; box-shadow:0 0 0 1px var(--gold) !important;}
+  .spot-nav{display:flex; justify-content:center; align-items:center; gap:10px; margin-top:18px;}
+  .spot-dot{width:9px; height:9px; border-radius:50%; border:0; padding:0; background:rgba(255,255,255,.22); cursor:pointer; transition:background .3s, transform .3s;}
+  .spot-dot.on{background:var(--gold); transform:scale(1.25);}
+  .spot-arrow{background:none; border:1px solid var(--line); color:var(--paper); width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:14px; line-height:1;}
+  .spot-arrow:hover{border-color:var(--gold); color:var(--gold);}
+</style>
+
+
+
+
+
+<!-- i18n:start -->
+<link rel="alternate" hreflang="fr" href="https://soundlightprod.fr/artistes.html">
+<link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/artistes.html">
+<link rel="alternate" hreflang="es" href="https://soundlightprod.com/es/artistes.html">
+<link rel="alternate" hreflang="it" href="https://soundlightprod.com/it/artistes.html">
+<link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/artistes.html">
+<style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
+<!-- i18n:end -->
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0A14">
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">
+      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artistes.html" class="current">Artisti e spettacoli</a></li>
+        <li><a href="son-lumiere.html">Servizi tecnici</a></li>
+        <li><a href="diffusion.html">Il nostro metodo</a></li>
+        <li><a href="agenda.html">Agenda</a></li>
+        <li><a href="galerie.html">Galleria</a></li>
+        <li><a href="contact.html">Contatti</a></li>
+        <li><a href="https://soundlightprod.fr/boutique.html">Vendita di attrezzatura (FR)</a></li>
+      </ul>
+    </nav>
+    <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/artistes.html" hreflang="fr" lang="fr">FR</a><a href="https://soundlightprod.com/en/artistes.html" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/artistes.html" hreflang="es" lang="es">ES</a><a href="https://soundlightprod.com/it/artistes.html" hreflang="it" lang="it" class="on" aria-current="true">IT</a></div>
+    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
+  <div class="page-hero-inner">
+    <span class="label">Il nostro catalogo</span>
+    <h1>I nostri artisti</h1>
+    <p>SLP seleziona e distribuisce artisti per tipo di spettacolo. Scegliete una categoria per scoprire l’artista che fa per voi.</p>
+  </div>
+  <div class="hero-frieze" aria-hidden="true"><img src="/artistes-silhouettes.png" alt=""></div>
+</section>
+
+<section>
+  <div class="wrap" style="padding-bottom:10px;">
+    <div class="spot" id="spotlight" role="region" aria-roledescription="carousel" aria-label="Artisti in primo piano">
+      <div class="spot-track">
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/best-abba-tribute-photo-1.jpg" alt="The Best ABBA Tribute" style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:14px; background:#2a2634;">
+          <img src="/best-abba-tribute-logo.png" alt="Logo di The Best ABBA Tribute" style="position:absolute; bottom:-10px; right:-10px; height:44px; width:auto; max-width:none; max-height:none; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,0.5);">
+        </div>
+        <div class="artist-body">
+          <span class="label">Tributo agli ABBA</span>
+          <h3>The Best ABBA Tribute</h3>
+          <p>Band al completo dal vivo, acclamata dalla stampa olandese e internazionale, per rivivere i grandi successi degli ABBA con due cantanti eccezionali e musicisti esperti.</p>
+          <div class="tags">
+            <span class="tag">Band dal vivo</span>
+            <span class="tag">Festival</span>
+            <span class="tag">Feste aziendali</span>
+            <span class="tag">Concerti</span>
+          </div>
+          <div class="discover-row"><a href="the-best-abba-tribute.html" class="discover-btn" aria-label="Scoprite The Best ABBA Tribute"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/calo2-0-affiche.jpg" alt="Tribute Calogero" style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:14px; background:#2a2634;">
+        </div>
+        <div class="artist-body">
+          <span class="label">Tribute Calogero</span>
+          <h3>Tribute Calogero</h3>
+          <p>Omaggio dal vivo a Calogero, per rivivere "En apesanteur", "Voler de nuit" o "Yalla" in un concerto di 2 ore.</p>
+          <div class="tags">
+            <span class="tag">Band dal vivo</span>
+            <span class="tag">Quartetto</span>
+            <span class="tag">Concerti</span>
+          </div>
+          <div class="discover-row"><a href="calo-2-0.html" class="discover-btn" aria-label="Scoprite Tribute Calogero"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/matmatah-photo-4.jpg" alt="Tribute Matmatah" style="width:100%; height:100%; object-fit:cover; object-position:center; border-radius:14px; background:#2a2634;">
+        </div>
+        <div class="artist-body">
+          <span class="label">Tribute Matmatah</span>
+          <h3>Tribute Matmatah</h3>
+          <p>Rock dal vivo in omaggio ai Matmatah, per cantare e ballare con «Lambé An Dro», «Emma» o «L'apologie».</p>
+          <div class="tags">
+            <span class="tag">Band dal vivo</span>
+            <span class="tag">Quartetto</span>
+            <span class="tag">Rock bretone</span>
+            <span class="tag">Concerti</span>
+          </div>
+          <div class="discover-row"><a href="tribute-matmatah.html" class="discover-btn" aria-label="Scoprite Tribute Matmatah"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/kool-photo-1.jpg" alt="Tribute Kool &amp; the Gang" style="width:100%; height:100%; object-fit:cover; object-position:center; border-radius:14px; background:#2a2634;">
+        </div>
+        <div class="artist-body">
+          <span class="label">Tribute Kool &amp; the Gang</span>
+          <h3>Tribute Kool &amp; the Gang</h3>
+          <p>9 musicisti 100% dal vivo per 1 ora e 45 di funk: «Celebration», «Get Down on It», «Cherish»…</p>
+          <div class="tags">
+            <span class="tag">Band dal vivo</span>
+            <span class="tag">9 musicisti</span>
+            <span class="tag">Funk</span>
+            <span class="tag">Concerti</span>
+          </div>
+          <div class="discover-row"><a href="tribute-kool-and-the-gang.html" class="discover-btn" aria-label="Scoprite Tribute Kool &amp; the Gang"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo round">
+          <img src="/panache-logo.png" alt="Panache">
+        </div>
+        <div class="artist-body">
+          <span class="label">Rivista di cabaret</span>
+          <h3>Panache</h3>
+          <p>Una rivista di cabaret itinerante che unisce quadri dinamici, canto dal vivo, piume e strass, per illuminare i vostri gala, le serate aziendali e gli eventi privati.</p>
+          <div class="tags">
+            <span class="tag">Gala e serate di prestigio</span>
+            <span class="tag">Comitati aziendali</span>
+            <span class="tag">Eventi privati</span>
+          </div>
+          <div class="discover-row"><a href="panache.html" class="discover-btn" aria-label="Scoprite Panache"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/bim-bam-boom-photo.jpg" alt="Bim Bam Boom" style="width:100%; height:100%; object-fit:cover; object-position:center 20%; border-radius:14px; background:#2a2634;">
+          <img src="/bim-bam-boom-logo.png" alt="Logo di Bim Bam Boom" style="position:absolute; bottom:-12px; right:-14px; height:52px; width:auto; max-width:none; max-height:none; background:rgba(12,10,20,.85); padding:5px 8px; border-radius:6px;">
+        </div>
+        <div class="artist-body">
+          <span class="label">Rivista di cabaret</span>
+          <h3>Bim Bam Boom</h3>
+          <p>Una rivista di cabaret itinerante che unisce quadri dinamici, canto dal vivo, piume e strass, per illuminare i vostri gala, le serate aziendali e gli eventi privati.</p>
+          <div class="tags">
+            <span class="tag">Gala e serate di prestigio</span>
+            <span class="tag">Comitati aziendali</span>
+            <span class="tag">Eventi privati</span>
+          </div>
+          <div class="discover-row"><a href="bim-bam-boom.html" class="discover-btn" aria-label="Scoprite Bim Bam Boom"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist" style="border-color:var(--gold); box-shadow:0 0 0 1px var(--gold);">
+      <div class="glow" style="background:var(--gold);"></div>
+      <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+        <img src="/cache-candy-photo-cropped.jpg" alt="Cache Candy" style="width:100%; height:100%; object-fit:cover; border-radius:14px;">
+        <img src="/cache-candy-official-logo.png" alt="Logo di Cache Candy" style="position:absolute; bottom:-10px; right:-10px; height:44px; width:auto; max-width:none; max-height:none; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,0.5);">
+      </div>
+      <div class="artist-body">
+        <h3>Cache Candy</h3>
+        <p>Duo pop-rock elettronico nato nel 2008, tra ballate nostalgiche e brani energici che uniscono il pubblico. Oltre 300 concerti in tutta la Francia, dal Printemps de Bourges al Garorock: attualmente la nostra produzione principale.</p>
+        <div class="tags">
+          <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="/slp-sigle.png" alt="" style="height:11px; width:auto; display:block;">Esclusiva SLP</span>
+          <span class="tag">Festival</span>
+          <span class="tag">Concerti</span>
+          <span class="tag">Eventi pubblici</span>
+        </div>
+        <div class="discover-row"><a href="cache-candy.html" class="discover-btn" aria-label="Scoprite Cache Candy"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+      </div>
+    </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo round">
+          <img src="/alchimie-logo.png" alt="Alchimie">
+        </div>
+        <div class="artist-body">
+          <span class="label">Pop / Rock</span>
+          <h3>Alchimie</h3>
+          <p>Band pop/rock nata nel 2018. Cover dei grandi classici, trascinate dalla complicità sul palco e dalla gioia di condividere la musica.</p>
+          <div class="tags">
+            <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="/slp-sigle.png" alt="" style="height:11px; width:auto; display:block;">Esclusiva SLP</span>
+            <span class="tag">Feste private</span>
+            <span class="tag">Concerti</span>
+            <span class="tag">Eventi aziendali</span>
+            <span class="tag">Eventi privati</span>
+            <span class="tag">Festival</span>
+            <span class="tag">Mercatini gastronomici</span>
+          </div>
+          <div class="discover-row"><a href="alchimie.html" class="discover-btn" aria-label="Scoprite Alchimie"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo round" style="overflow:hidden; width:188px; height:163px; border-radius:50%;">
+          <img src="/noon-coverband-new-logo.png" alt="NooN Coverband" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="artist-body">
+          <span class="label">Pop / Rock / Funk</span>
+          <h3>NooN Coverband</h3>
+          <p>Duo voce e basso, tra successi internazionali, canzone francese e classici disco/funk. Quasi 120 concerti in campeggi, bar, mercatini locali e feste private.</p>
+          <div class="tags">
+            <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="/slp-sigle.png" alt="" style="height:11px; width:auto; display:block;">Esclusiva SLP</span>
+            <span class="tag">Feste private</span>
+            <span class="tag">Matrimoni</span>
+            <span class="tag">Campeggi</span>
+            <span class="tag">Mercatini gastronomici</span>
+          </div>
+          <div class="discover-row"><a href="noon-coverband.html" class="discover-btn" aria-label="Scoprite NooN Coverband"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo round">
+          <img src="/fine-allies-logo.png" alt="The Fine Allies">
+        </div>
+        <div class="artist-body">
+          <span class="label">Funk · Soul · Rhythm'n'Blues</span>
+          <h3>The Fine Allies</h3>
+          <p>L’alleanza di sette musicisti e una cantante per uno spettacolo ritmato e caloroso, pieno di groove: da James Brown ai Jamiroquai.</p>
+          <div class="tags">
+            <span class="tag">Festival</span>
+            <span class="tag">Serate aziendali</span>
+            <span class="tag">Concerti</span>
+          </div>
+          <div class="discover-row"><a href="the-fine-allies.html" class="discover-btn" aria-label="Scoprite The Fine Allies"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      <div class="spot-slide">
+<div class="artist">
+        <div class="glow"></div>
+        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
+          <img src="/dj-photo.jpg" alt="DJ Animazione" style="width:100%; height:100%; object-fit:cover; border-radius:14px; background:#2a2634;">
+        </div>
+        <div class="artist-body">
+          <span class="label">DJ animatore</span>
+          <h3>DJ Animazione</h3>
+          <p>Un DJ generalista che fa ballare tutte le generazioni: successi di ogni epoca, playlist preparata insieme a voi, microfono per gli annunci, audio e luci inclusi.</p>
+          <div class="tags">
+            <span class="tag">Feste</span>
+            <span class="tag">Matrimoni</span>
+            <span class="tag">Compleanni</span>
+          </div>
+          <div class="discover-row"><a href="dj-animation.html" class="discover-btn" aria-label="Scoprite DJ Animazione"><span>Scoprite</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
+        </div>
+      </div>
+      </div>
+      </div>
+      <div class="spot-nav">
+        <button class="spot-arrow spot-prev" type="button" aria-label="Precedente">‹</button>
+        <div class="spot-dots" style="display:flex; gap:10px;"></div>
+        <button class="spot-arrow spot-next" type="button" aria-label="Successivo">›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div style="margin-bottom:24px;"><span class="label">Esplorate per tipo di spettacolo</span></div>
+    <div class="cat-grid">
+      <a href="tributes.html" class="cat-card" style="text-decoration:none;">
+        <div class="cat-photo"><img src="https://images.unsplash.com/photo-1548497557-5c4e6cb1cafd?w=800&amp;h=1000&amp;fit=crop&amp;auto=format&amp;q=80" alt="Tributi"></div>
+        <div class="cat-name-wrap">
+          <div class="glow"></div>
+          <span class="cat-label">Tipo di spettacolo</span>
+          <div class="cat-name">Tributi</div>
+        </div>
+      </a>
+
+      <a href="cabaret.html" class="cat-card" style="text-decoration:none;">
+        <div class="cat-photo"><img src="/cabaret-photo-cropped.jpg" alt="Spettacoli di cabaret"></div>
+        <div class="cat-name-wrap">
+          <div class="glow"></div>
+          <span class="cat-label">Tipo di spettacolo</span>
+          <div class="cat-name">Spettacoli di cabaret</div>
+        </div>
+      </a>
+
+      <a href="cache-candy.html" class="cat-card" style="text-decoration:none;">
+        <div class="cat-photo">
+          <img src="/cache-candy-photo-cropped.jpg" alt="Cache Candy" style="object-fit:contain; background:var(--ink);">
+        </div>
+        <div class="cat-name-wrap">
+          <div class="glow"></div>
+          <span class="cat-label">Pop francese</span>
+          <div class="cat-name">Cache Candy</div>
+        </div>
+      </a>
+
+      <a href="groupes-de-reprises.html" class="cat-card" style="text-decoration:none;">
+        <div class="cat-photo"><img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=800&amp;h=1000&amp;fit=crop&amp;auto=format&amp;q=80" alt="Cover band"></div>
+        <div class="cat-name-wrap">
+          <div class="glow"></div>
+          <span class="cat-label">Tipo di spettacolo</span>
+          <div class="cat-name">Cover band</div>
+        </div>
+      </a>
+
+      <a href="dj.html" class="cat-card" style="text-decoration:none;">
+        <div class="cat-photo"><img src="/dj-photo.jpg" alt="DJ" style="object-position:center 65%;"></div>
+        <div class="cat-name-wrap">
+          <div class="glow"></div>
+          <span class="cat-label">Tipo di spettacolo</span>
+          <div class="cat-name">DJ</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <span class="label">Volete ingaggiare un artista?</span>
+    <h2>Parliamo del vostro<br>prossimo evento</h2>
+    <p>Vi proponiamo la formula più adatta al vostro budget e all’atmosfera che cercate.</p>
+    <div class="cta-row">
+      <a href="mailto:contact@soundlightprod.fr" class="btn btn-primary">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653" class="btn btn-ghost">+33 6 31 94 96 53</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
+      <div>
+        <h3>Sound Light Prod</h3>
+        <p>Audio, luci, produzione di eventi e distribuzione di artisti in Francia e in Europa.</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigazione</h4>
+      <a href="index.html">Home</a>
+      <a href="artistes.html">Artisti e spettacoli</a>
+      <a href="son-lumiere.html">Servizi tecnici</a>
+      <a href="diffusion.html">Il nostro metodo</a>
+      <a href="agenda.html">Agenda</a>
+      <a href="galerie.html">Galleria</a>
+      <a href="contact.html">Contatti</a>
+      <a href="https://soundlightprod.fr/boutique.html">Vendita di attrezzatura (FR)</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contatti</h4>
+      <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653">+33 6 31 94 96 53</a>
+    </div>
+    <div class="footer-col">
+      <h4>Seguiteci</h4>
+      <div class="social-row">
+        <a href="https://www.facebook.com/SoundlightP" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.8 8.6h1.9V5.9h-2.2c-2.3 0-3.7 1.5-3.7 3.8v1.6H7.6v2.8h2.2V21h3v-6.9h2.4l.4-2.8h-2.8V9.9c0-.8.3-1.3 1-1.3z"/></svg></a>
+        <a href="https://www.instagram.com/slp_france/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://www.youtube.com/channel/UC6dZffs_G3DbbZPNEhjisLg" target="_blank" rel="noopener" class="social-icon" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><polygon points="10 9.2 15.8 12 10 14.8" fill="currentColor" stroke="none"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Note legali</a> · <a href="https://soundlightprod.fr/cgv-boutique.html" style="color:inherit;">Condizioni di vendita (FR)</a></p>
+</footer>
+
+<script>
+(function(){
+  var root=document.getElementById('spotlight'); if(!root) return;
+  var slides=[].slice.call(root.querySelectorAll('.spot-slide')), dotsWrap=root.querySelector('.spot-dots');
+  var i=0, timer=null, DELAY=6000;
+  slides.forEach(function(s,k){
+    var b=document.createElement('button'); b.className='spot-dot'; b.type='button';
+    b.setAttribute('aria-label', (s.querySelector('h3')||{}).textContent||('#'+(k+1)));
+    b.onclick=function(){ go(k); restart(); }; dotsWrap.appendChild(b);
+  });
+  var dots=[].slice.call(dotsWrap.children);
+  function go(k){
+    i=(k+slides.length)%slides.length;
+    slides.forEach(function(s,n){ var on=n===i; s.classList.toggle('on',on); s.setAttribute('aria-hidden',!on); s.querySelectorAll('a').forEach(function(a){ a.tabIndex=on?0:-1; }); });
+    dots.forEach(function(d,n){ d.classList.toggle('on',n===i); });
+  }
+  function restart(){ clearInterval(timer); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) timer=setInterval(function(){ go(i+1); }, DELAY); }
+  root.querySelector('.spot-prev').onclick=function(){ go(i-1); restart(); };
+  root.querySelector('.spot-next').onclick=function(){ go(i+1); restart(); };
+  root.addEventListener('mouseenter',function(){ clearInterval(timer); });
+  root.addEventListener('mouseleave',restart);
+  root.addEventListener('focusin',function(){ clearInterval(timer); });
+  var x0=null;
+  root.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
+  root.addEventListener('touchend',function(e){ if(x0===null) return; var dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>40){ go(i+(dx<0?1:-1)); restart(); } x0=null; });
+  go(0); restart();
+})();
+</script>
+</body>
+<script>
+(function(){
+  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
+  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
+  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
+  if (localStorage.getItem('slp_admin_token')) return;
+  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  fetch("https://slp-api.raspy-silence-d4c7.workers.dev/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_slug: "artistes", session_id: sid, ref: document.referrer })
+  }).catch(function(){});
+})();
+</script>
+</html>
