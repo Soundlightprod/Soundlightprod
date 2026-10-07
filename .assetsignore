@@ -2,3 +2,5 @@ wrangler.jsonc
 worker.js
 .assetsignore
 .git
+_boutique
+.github
