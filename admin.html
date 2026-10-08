@@ -254,6 +254,11 @@
   .vz-step{display:flex; gap:12px; padding:8px 0; border-top:1px solid var(--line); font-size:.9rem;} .vz-step:first-child{border-top:0;} .vz-step .t{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:.8rem; width:48px;}
   @media (max-width:980px){ .vz-kpis{grid-template-columns:1fr 1fr;} .vz-grid2,.vz-grid3{grid-template-columns:1fr;} .vz-grid4{grid-template-columns:1fr 1fr;} }
   @media (max-width:560px){ .vz-grid4{grid-template-columns:1fr;} .vz-feed .it{grid-template-columns:60px 1fr; } .vz-feed .it > :nth-child(3), .vz-feed .it > :nth-child(4){grid-column:2;} .vz-kpi b{font-size:1.6rem;} }
+  .dispo-item{display:flex; align-items:center; gap:4px;} .dispo-item .di-txt{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .di-del{flex-shrink:0; border:0; background:rgba(0,0,0,.35); color:#fff; width:18px; height:18px; border-radius:50%; font-size:10px; line-height:18px; padding:0; cursor:pointer; opacity:.55; transition:opacity .15s, background .15s;}
+  .dispo-item:hover .di-del{opacity:1;} .di-del:hover{background:#e11d48; opacity:1;}
+  .di-opt{font-size:.62rem; letter-spacing:.04em; background:rgba(0,0,0,.35); padding:1px 4px; border-radius:4px;}
+  @media (hover:none){ .di-del{opacity:.9;} }
 </style>
 </head>
 <body>
@@ -329,6 +334,10 @@
         <option value="calo2-0">Tribute Calogero</option>
         <option value="tribute-matmatah">Tribute Matmatah</option>
         <option value="tribute-kool-and-the-gang">Tribute Kool &amp; the Gang</option>
+        <option value="tribute-bee-gees">Tribute Bee Gees</option>
+        <option value="tribute-phil-collins">Tribute Phil Collins</option>
+        <option value="tribute-balavoine">Tribute Balavoine</option>
+        <option value="bim-bam-boom">Bim Bam Boom</option>
         <option value="presta-technique">🔧 Prestation technique</option>
         <option value="_guest">👤 Invité (pas de fiche sur le site)</option>
       </select>
@@ -1009,8 +1018,8 @@
     showToast('Commande supprimée');
   }
 
-  const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'voice-of-freedom':'Voice of Freedom', 'the-best-abba-tribute':'Tribute ABBA', 'calo2-0':'Tribute Calogero', 'tribute-matmatah':'Tribute Matmatah', 'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'presta-technique':'Prestation technique' };
-  const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'voice-of-freedom':'#cda754', 'the-best-abba-tribute':'#14b8a6', 'calo2-0':'#e2352c', 'tribute-matmatah':'#4fb8ff', 'tribute-kool-and-the-gang':'#ffb238', 'presta-technique':'#9a93a6' };
+  const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'voice-of-freedom':'Voice of Freedom', 'the-best-abba-tribute':'Tribute ABBA', 'calo2-0':'Tribute Calogero', 'tribute-matmatah':'Tribute Matmatah', 'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'tribute-bee-gees':'Tribute Bee Gees', 'tribute-phil-collins':'Tribute Phil Collins', 'tribute-balavoine':'Tribute Balavoine', 'bim-bam-boom':'Bim Bam Boom', 'presta-technique':'Prestation technique' };
+  const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'voice-of-freedom':'#cda754', 'the-best-abba-tribute':'#14b8a6', 'calo2-0':'#e2352c', 'tribute-matmatah':'#4fb8ff', 'tribute-kool-and-the-gang':'#ffb238', 'tribute-bee-gees':'#22c55e', 'tribute-phil-collins':'#a855f7', 'tribute-balavoine':'#94a3b8', 'bim-bam-boom':'#f472b6', 'presta-technique':'#9a93a6' };
   const TYPE_ICONS = { concert:'🎤', cabaret:'🎭', dj:'🎧', indisponible:'🚫', actu:'📣' };
   const ROADMAP_TYPES = ['concert', 'cabaret', 'dj'];
   let agendaDate = new Date();
@@ -1844,7 +1853,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''} gv-clickable" onclick="openAddEventModal('${dateStr}')">
         <div class="agenda-daynum">${day}</div>
-        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}">${TYPE_ICONS[d.type] || '🎤'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</div>`).join('')}
+        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || '🎤'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span><button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
       </div>`;
     }
 
@@ -2469,6 +2478,30 @@
     });
     loadDispos();
     showToast(newStatus === 'validee' ? 'Date validée' : 'Date repassée en option');
+  }
+
+
+  // Suppression directe depuis le calendrier du planning (date ou option)
+  async function quickDeleteDispo(id){
+    const d = (window.dispoData || []).find(x => x.id === id); if (!d) return;
+    const who = d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug;
+    const when = d.date.split('-').reverse().join('/');
+    const kind = d.status === 'option' ? 'l\'option' : 'la date';
+    if (d.source_actu_id){
+      const n = (window.dispoData || []).filter(x => x.source_actu_id === d.source_actu_id).length;
+      const msg = n > 1
+        ? `${who} — ${when}\n\nCette date fait partie d'un événement sur ${n} jours.\n\nOK = supprimer tout l'événement (toutes ses dates)\nAnnuler = ne rien supprimer`
+        : `Supprimer ${kind} « ${who} » du ${when} ?\n(l'événement associé sera aussi supprimé)`;
+      if (!confirm(msg)) return;
+      await fetch(`${API_BASE}/api/admin/actualites/${d.source_actu_id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+      await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } }).catch(()=>{});
+      if (typeof loadActus === 'function') loadActus();
+    } else {
+      if (!confirm(`Supprimer ${kind} « ${who} » du ${when} ?`)) return;
+      await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    }
+    await loadDispos();
+    showToast(d.status === 'option' ? 'Option supprimée' : 'Date supprimée');
   }
 
   async function deleteDispo(id){
