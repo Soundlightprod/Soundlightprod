@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SLP — Sound Light Prod | Producteur de Spectacles, Concerts, Son & Lumière en France & Europe</title>
-<meta name="description" content="SLP - Sound Light Prod : producteur et organisateur de spectacles, concerts, prestations son et lumière, booking et diffusion d'artistes dans toute la France et en Europe.">
+<meta name="description" content="SLP - Sound Light Prod : producteur et organisateur de spectacles, concerts, prestations son et lumière, booking et diffusion d'artistes : tribute ABBA, tribute Calogero, tribute Bee Gees, tribute Phil Collins, revues cabaret, groupes de reprises et DJ, dans toute la France et en Europe.">
+<meta name="keywords" content="tribute ABBA, tribute Calogero, tribute Bee Gees, tribute Phil Collins, tribute Kool and the Gang, tribute Matmatah, spectacle tribute, groupe tribute, revue cabaret, spectacle cabaret, groupe de reprises, DJ animation, groupe de musique live, concert, festival, festivités, marché gourmand, saison culturelle, soirée privée, mariage, gala, sonorisation, éclairage scénique, son et lumière, producteur de spectacles">
 <style>
   :root{
     --ink: #0c0a14; --ink-2: #17142a;
@@ -172,6 +173,56 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+
+  /* ===== Accueil v2 : engagements, métiers, publics, méthode ===== */
+  .eng{padding:70px 0 40px;}
+  .eng-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .eng-card{position:relative; border-radius:20px; padding:30px 26px 28px; background:var(--ink-2); border:1px solid var(--line); overflow:hidden;}
+  .eng-card::before{content:''; position:absolute; left:0; top:0; right:0; height:3px; background:var(--spectre);}
+  .eng-card .big{font-family:'League Spartan',sans-serif; font-weight:900; font-size:clamp(2.3rem,4vw,3.2rem); line-height:1; background:var(--chaud); -webkit-background-clip:text; background-clip:text; color:transparent; display:inline-block; margin-bottom:12px;}
+  .eng-card h3{font-size:1.05rem; margin:0 0 8px; text-transform:uppercase; letter-spacing:.02em;}
+  .eng-card p{color:var(--muted); font-size:.92rem; line-height:1.55; margin:0;}
+  @media (max-width:980px){ .eng-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .eng-grid{grid-template-columns:1fr;} }
+
+  .metiers2{display:flex; flex-direction:column; gap:28px;}
+  .met{display:grid; grid-template-columns:1.05fr 1fr; gap:0; border-radius:24px; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);}
+  .met.rev .met-pic{order:2;}
+  .met-pic{position:relative; min-height:420px;}
+  .met-pic img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .met-pic::after{content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(23,20,42,0) 60%, rgba(23,20,42,.95) 100%);}
+  .met.rev .met-pic::after{background:linear-gradient(270deg, rgba(23,20,42,0) 60%, rgba(23,20,42,.95) 100%);}
+  .met-pic .num{position:absolute; left:24px; bottom:18px; z-index:2; font-family:'League Spartan',sans-serif; font-weight:900; font-size:5rem; line-height:1; color:rgba(247,245,240,.92); text-shadow:0 6px 30px rgba(0,0,0,.5);}
+  .met-body{padding:44px 46px; display:flex; flex-direction:column; justify-content:center;}
+  .met-body .kicker{font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--orange); margin-bottom:12px;}
+  .met-body h3{font-size:clamp(1.7rem,2.8vw,2.3rem); margin:0 0 16px; line-height:1;}
+  .met-body p{color:rgba(247,245,240,.8); font-size:1rem; line-height:1.65; margin:0 0 18px;}
+  .met-body ul{list-style:none; padding:0; margin:0 0 26px; display:grid; gap:10px;}
+  .met-body li{position:relative; padding-left:28px; color:var(--paper); font-size:.95rem; line-height:1.45;}
+  .met-body li::before{content:''; position:absolute; left:0; top:.45em; width:14px; height:3px; border-radius:2px; background:var(--chaud);}
+  .met-body .btns{display:flex; flex-wrap:wrap; gap:12px;}
+  @media (max-width:900px){ .met, .met.rev{grid-template-columns:1fr;} .met.rev .met-pic{order:0;} .met-pic{min-height:260px;} .met-pic::after, .met.rev .met-pic::after{background:linear-gradient(180deg, rgba(23,20,42,0) 55%, rgba(23,20,42,.95) 100%);} .met-body{padding:28px 24px 32px;} }
+
+  .publics{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .pub{position:relative; border-radius:20px; padding:32px 28px; background:linear-gradient(160deg, rgba(255,255,255,.04), rgba(255,255,255,0)); border:1px solid var(--line); overflow:hidden;}
+  .pub .glow{position:absolute; width:240px; height:240px; border-radius:50%; filter:blur(70px); opacity:.28; top:-90px; right:-90px; pointer-events:none;}
+  .pub:nth-child(1) .glow{background:var(--bleu);} .pub:nth-child(2) .glow{background:var(--rouge);} .pub:nth-child(3) .glow{background:var(--jaune);}
+  .pub h3{font-size:1.35rem; margin:0 0 12px; position:relative;}
+  .pub p{color:rgba(247,245,240,.78); font-size:.95rem; line-height:1.6; margin:0 0 16px; position:relative;}
+  .pub .chips{display:flex; flex-wrap:wrap; gap:8px; position:relative;}
+  .pub .chips span{font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.04em; text-transform:uppercase; padding:6px 11px; border-radius:100px; background:rgba(247,245,240,.07); color:var(--paper);}
+  @media (max-width:900px){ .publics{grid-template-columns:1fr;} }
+
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; counter-reset:st;}
+  .step{position:relative; padding:28px 24px; border-radius:18px; background:var(--ink-2); border:1px solid var(--line);}
+  .step::before{counter-increment:st; content:'0' counter(st); font-family:'League Spartan',sans-serif; font-weight:900; font-size:2.4rem; line-height:1; background:var(--froid); -webkit-background-clip:text; background-clip:text; color:transparent; display:block; margin-bottom:14px;}
+  .step h3{font-size:1.1rem; margin:0 0 8px;}
+  .step p{color:var(--muted); font-size:.92rem; line-height:1.55; margin:0;}
+  @media (max-width:980px){ .steps{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .steps{grid-template-columns:1fr;} }
+  .met-body .tlinks{font-size:.9rem; line-height:1.7; color:var(--muted); margin:-6px 0 24px;}
+  .met-body .tlinks a{color:var(--paper); text-decoration:none; border-bottom:1px solid rgba(251,198,8,.5);}
+  .met-body .tlinks a:hover{color:var(--jaune);}
 </style>
 
 
@@ -235,7 +286,7 @@
 </section>
 <div class="bandeaux" aria-hidden="true">
   <div class="bandeau froid"><div class="defile"><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span></div></div>
-  <div class="bandeau chaud"><div class="defile"><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span></div></div>
+  <div class="bandeau chaud"><div class="defile"><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Mariages</span><span>Soirées privées</span><span>Festivals</span><span>Galas</span><span>Événements ponctuels</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Mariages</span><span>Soirées privées</span><span>Festivals</span><span>Galas</span><span>Événements ponctuels</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Mariages</span><span>Soirées privées</span><span>Festivals</span><span>Galas</span><span>Événements ponctuels</span></div></div>
 </div>
 
 <section class="artists-showcase">
@@ -365,12 +416,7 @@
     </div>
 </section>
 
-<section class="stats">
-  <div class="stats-grid">
-    <div class="stat"><div class="num v">10+</div><p>années d'expérience terrain</p></div>
-    <div class="stat"><div class="num p">1</div><p>interlocuteur, du devis à la scène</p></div>
-  </div>
-</section>
+<section class="eng"><div class="wrap tight"><div class="eng-grid"><div class="eng-card"><span class="big">10+</span><h3>Ans de terrain</h3><p>Des centaines de scènes montées, des places de village aux salles de spectacle.</p></div><div class="eng-card"><span class="big">1</span><h3>Seul interlocuteur</h3><p>Du premier appel au démontage : une seule personne suit votre dossier.</p></div><div class="eng-card"><span class="big">100 %</span><h3>Live</h3><p>Des artistes professionnels qui jouent vraiment, sans playback.</p></div><div class="eng-card"><span class="big">A→Z</span><h3>Clé en main</h3><p>Artistes, son, lumière, logistique : vous n'avez rien à gérer.</p></div></div></div></section>
 
 <script>
 (function(){
@@ -416,42 +462,39 @@
 
 <section>
   <div class="wrap">
-    <div class="section-head">
-      <span class="label">Nos univers</span>
-      <h2>Deux métiers,<br>une même exigence</h2>
-    </div>
-    <div class="pillars">
-      <div class="pillar p1">
-        <div class="glow"></div>
-        <div class="pillar-inner">
-          <span class="tag">Production &amp; artistes</span>
-          <h3>Production &amp; artistes</h3>
-          <p>Concerts, tributes, revues cabaret, DJ : nous sélectionnons les artistes, produisons le spectacle et coordonnons tout jusqu'à la scène.</p>
-          <a href="diffusion.html">Découvrir →</a>
-        </div>
-      </div>
-      <div class="pillar p2">
-        <div class="glow"></div>
-        <div class="pillar-inner">
-          <span class="tag">Prestations techniques</span>
-          <h3>Prestation technique</h3>
-          <p>Sonorisation, éclairage scénique et régie technique adaptés à votre salle, votre public et votre budget.</p>
-          <a href="son-lumiere.html">Découvrir →</a>
-        </div>
-      </div>
+    <div class="section-head"><span class="label">Ce que nous faisons</span><h2>Un spectacle complet,<br>une seule équipe</h2></div>
+    <div class="metiers2">
+      <article class="met">
+        <div class="met-pic"><img src="abba-photo-2.jpg" alt="" loading="lazy"><span class="num">01</span></div>
+        <div class="met-body"><span class="kicker">Production &amp; artistes</span><h3>Le bon spectacle pour votre public</h3><p>Tributes, revues cabaret, groupes de reprises, DJ : nous vous proposons les artistes qui correspondent à votre événement, à votre public et à votre budget. Nous produisons le spectacle et gérons tout ce qui l'entoure, pour que vous n'ayez qu'à profiter.</p><ul><li>Conseil artistique et sélection du spectacle adapté</li><li>Contrats, déclarations et rémunération des artistes</li><li>Planning, accueil, loges et logistique le jour J</li><li>Un spectacle 100 % live, avec des musiciens professionnels</li></ul><p class="tlinks"><strong>Nos tributes :</strong> <a href="tribute-abba.html">Tribute ABBA</a> · <a href="tribute-calogero.html">Tribute Calogero</a> · <a href="tribute-bee-gees.html">Tribute Bee Gees</a> · <a href="tribute-phil-collins.html">Tribute Phil Collins</a> · <a href="tribute-kool-and-the-gang.html">Tribute Kool &amp; the Gang</a> · <a href="tribute-matmatah.html">Tribute Matmatah</a></p>
+          <div class="btns"><a href="artistes.html" class="btn btn-primary">Voir nos artistes →</a><a href="diffusion.html" class="btn btn-ghost">La production →</a></div></div>
+      </article>
+      <article class="met rev">
+        <div class="met-pic"><img src="homepage-crowd-lights.png" alt="" loading="lazy"><span class="num">02</span></div>
+        <div class="met-body"><span class="kicker">Prestation technique</span><h3>Un son et une lumière à la hauteur</h3><p>Sonorisation, éclairage scénique, régie : nous installons et pilotons tout le matériel nécessaire, dimensionné pour votre lieu, en salle comme en plein air. Nos techniciens restent présents du montage au démontage.</p><ul><li>Étude du lieu et dimensionnement du matériel</li><li>Sonorisation façade et retours, éclairage scénique</li><li>Technicien son et lumière pendant tout l'événement</li><li>Matériel professionnel entretenu et garanti</li></ul>
+          <div class="btns"><a href="son-lumiere.html" class="btn btn-primary">La prestation technique →</a><a href="contact.html" class="btn btn-ghost">Demander un devis →</a></div></div>
+      </article>
     </div>
   </div>
 </section>
 
 <section>
-  <div class="wrap tight">
-    <img class="single-photo" src="homepage-crowd-lights.png" alt="Événement SLP — public et jeux de lumière en concert">
+  <div class="wrap">
+    <div class="section-head"><span class="label">Pour qui ?</span><h2>Nous travaillons<br>pour vous</h2></div>
+    <div class="publics"><div class="pub"><div class="glow"></div><h3>Mairies &amp; comités des fêtes</h3><p>Vous organisez les festivités de votre commune ? Nous vous proposons des spectacles qui rassemblent toutes les générations, avec la technique incluse et toutes les démarches gérées.</p><div class="chips"><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Fête de la musique</span></div></div><div class="pub"><div class="glow"></div><h3>Entreprises &amp; CSE</h3><p>Gala, soirée annuelle, séminaire ou inauguration : un spectacle sur mesure pour marquer vos invités et valoriser votre événement.</p><div class="chips"><span>Galas</span><span>Soirées d'entreprise</span><span>Séminaires</span><span>Inaugurations</span></div></div><div class="pub"><div class="glow"></div><h3>Particuliers &amp; associations</h3><p>Mariage, anniversaire, soirée privée ou événement ponctuel : nous adaptons la formule à votre lieu, à vos invités et à votre budget.</p><div class="chips"><span>Mariages</span><span>Soirées privées</span><span>Anniversaires</span><span>Événements ponctuels</span></div></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head"><span class="label">Comment ça se passe</span><h2>Simple, du premier appel<br>au rappel final</h2></div>
+    <div class="steps"><div class="step"><h3>Vous nous parlez de votre projet</h3><p>Date, lieu, public, ambiance souhaitée : un échange rapide suffit pour cerner votre besoin.</p></div><div class="step"><h3>Nous vous faisons une proposition</h3><p>Une sélection de spectacles et un devis clair, sans engagement, sous quelques jours.</p></div><div class="step"><h3>Nous organisons tout</h3><p>Contrats, planning, technique, accueil des artistes : nous coordonnons chaque détail.</p></div><div class="step"><h3>Le jour J, on est là</h3><p>Montage, balances, spectacle, démontage : vous profitez, nous gérons.</p></div></div>
   </div>
 </section>
 
 <div class="bandeaux" aria-hidden="true">
   <div class="bandeau froid"><div class="defile"><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span></div></div>
-  <div class="bandeau chaud"><div class="defile"><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Mariages</span><span>Festivals</span><span>Galas</span></div></div>
+  <div class="bandeau chaud"><div class="defile"><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Mariages</span><span>Soirées privées</span><span>Festivals</span><span>Galas</span><span>Événements ponctuels</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Mariages</span><span>Soirées privées</span><span>Festivals</span><span>Galas</span><span>Événements ponctuels</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Mariages</span><span>Soirées privées</span><span>Festivals</span><span>Galas</span><span>Événements ponctuels</span></div></div>
 </div>
 <section class="cta-band">
   <div class="wrap tight">
