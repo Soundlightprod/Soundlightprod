@@ -132,6 +132,59 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+
+  /* ===== Philosophie v2 : engagements, métiers, publics, méthode ===== */
+  .eng{padding:70px 0 40px;}
+  .eng-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .eng-card{position:relative; border-radius:20px; padding:30px 26px 28px; background:var(--ink-2); border:1px solid var(--line); overflow:hidden;}
+  .eng-card::before{content:''; position:absolute; left:0; top:0; right:0; height:3px; background:var(--spectre);}
+  .eng-card .big{font-family:'League Spartan',sans-serif; font-weight:900; font-size:clamp(2.3rem,4vw,3.2rem); line-height:1; background:var(--chaud); -webkit-background-clip:text; background-clip:text; color:transparent; display:inline-block; margin-bottom:12px;}
+  .eng-card h3{font-size:1.05rem; margin:0 0 8px; text-transform:uppercase; letter-spacing:.02em;}
+  .eng-card p{color:var(--muted); font-size:.92rem; line-height:1.55; margin:0;}
+  @media (max-width:980px){ .eng-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .eng-grid{grid-template-columns:1fr;} }
+
+  .metiers2{display:flex; flex-direction:column; gap:28px;}
+  .met{display:grid; grid-template-columns:1.05fr 1fr; gap:0; border-radius:24px; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);}
+  .met.rev .met-pic{order:2;}
+  .met-pic{position:relative; min-height:420px;}
+  .met-pic img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .met-pic::after{content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(23,20,42,0) 60%, rgba(23,20,42,.95) 100%);}
+  .met.rev .met-pic::after{background:linear-gradient(270deg, rgba(23,20,42,0) 60%, rgba(23,20,42,.95) 100%);}
+  .met-pic .num{position:absolute; left:24px; bottom:18px; z-index:2; font-family:'League Spartan',sans-serif; font-weight:900; font-size:5rem; line-height:1; color:rgba(247,245,240,.92); text-shadow:0 6px 30px rgba(0,0,0,.5);}
+  .met-body{padding:44px 46px; display:flex; flex-direction:column; justify-content:center;}
+  .met-body .kicker{font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--orange); margin-bottom:12px;}
+  .met-body h3{font-size:clamp(1.7rem,2.8vw,2.3rem); margin:0 0 16px; line-height:1;}
+  .met-body p{color:rgba(247,245,240,.8); font-size:1rem; line-height:1.65; margin:0 0 18px;}
+  .met-body ul{list-style:none; padding:0; margin:0 0 26px; display:grid; gap:10px;}
+  .met-body li{position:relative; padding-left:28px; color:var(--paper); font-size:.95rem; line-height:1.45;}
+  .met-body li::before{content:''; position:absolute; left:0; top:.45em; width:14px; height:3px; border-radius:2px; background:var(--chaud);}
+  .met-body .btns{display:flex; flex-wrap:wrap; gap:12px;}
+  @media (max-width:900px){ .met, .met.rev{grid-template-columns:1fr;} .met.rev .met-pic{order:0;} .met-pic{min-height:260px;} .met-pic::after, .met.rev .met-pic::after{background:linear-gradient(180deg, rgba(23,20,42,0) 55%, rgba(23,20,42,.95) 100%);} .met-body{padding:28px 24px 32px;} }
+
+  .publics{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .pub{position:relative; border-radius:20px; padding:32px 28px; background:linear-gradient(160deg, rgba(255,255,255,.04), rgba(255,255,255,0)); border:1px solid var(--line); overflow:hidden;}
+  .pub .glow{position:absolute; width:240px; height:240px; border-radius:50%; filter:blur(70px); opacity:.28; top:-90px; right:-90px; pointer-events:none;}
+  .pub:nth-child(1) .glow{background:var(--bleu);} .pub:nth-child(2) .glow{background:var(--rouge);} .pub:nth-child(3) .glow{background:var(--jaune);}
+  .pub h3{font-size:1.35rem; margin:0 0 12px; position:relative;}
+  .pub p{color:rgba(247,245,240,.78); font-size:.95rem; line-height:1.6; margin:0 0 16px; position:relative;}
+  .pub .chips{display:flex; flex-wrap:wrap; gap:8px; position:relative;}
+  .pub .chips span{font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.04em; text-transform:uppercase; padding:6px 11px; border-radius:100px; background:rgba(247,245,240,.07); color:var(--paper);}
+  @media (max-width:900px){ .publics{grid-template-columns:1fr;} }
+
+  .steps2{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; counter-reset:st2;}
+  .step2{position:relative; padding:28px 24px; border-radius:18px; background:var(--ink-2); border:1px solid var(--line);}
+  .step2::before{counter-increment:st2; content:'0' counter(st2); font-family:'League Spartan',sans-serif; font-weight:900; font-size:2.4rem; line-height:1; background:var(--froid); -webkit-background-clip:text; background-clip:text; color:transparent; display:block; margin-bottom:14px;}
+  .step2 h3{font-size:1.1rem; margin:0 0 8px;}
+  .step2 p{color:var(--muted); font-size:.92rem; line-height:1.55; margin:0;}
+  @media (max-width:980px){ .steps2{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .steps2{grid-template-columns:1fr;} }
+  .philo-intro{max-width:780px; margin:0 auto; text-align:center;}
+  .philo-intro p{font-size:1.12rem; line-height:1.75; color:rgba(247,245,240,.82); margin:0 0 14px;}
+  .philo-intro strong{color:var(--paper);}
+  .pub .more{position:relative; display:inline-block; margin-top:18px; color:var(--paper); font-weight:700; text-decoration:none; font-size:.92rem;}
+  .pub .more:hover{color:var(--jaune);}
+  .publics.two{grid-template-columns:repeat(2,1fr);} @media (max-width:900px){ .publics.two{grid-template-columns:1fr;} }
 </style>
 
 
@@ -180,108 +233,45 @@
 <section class="page-hero">
   <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
   <div class="page-hero-inner">
-    <span class="label">Programmation & diffusion</span>
+    <span class="label">Notre philosophie</span>
     <h1>Notre philosophie de travail</h1>
-    <p>SLP sélectionne et diffuse les artistes de son réseau pour vos événements. Un interlocuteur unique, du contrat à la scène — nous coordonnons la venue de l'artiste de bout en bout.</p>
+    <p>Chez SLP, nous coordonnons votre spectacle de A à Z : le choix des artistes, l'organisation, le son et la lumière. Un seul interlocuteur, du premier appel au dernier rappel.</p>
   </div>
 </section>
 
 <section>
-  <div class="wrap tight">
-    <div class="section-head">
-      <span class="label">La marche à suivre</span>
-      <h2>De l'idée à la scène</h2>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <span class="num">01</span>
-        <h3>Vous nous contactez</h3>
-        <p>Décrivez votre événement, votre ambiance recherchée et votre budget.</p>
-      </div>
-      <div class="step">
-        <span class="num">02</span>
-        <h3>Sélection & devis</h3>
-        <p>Nous vous proposons un ou plusieurs artistes adaptés, avec un devis clair et sans surprise.</p>
-      </div>
-      <div class="step">
-        <span class="num">03</span>
-        <h3>Contractualisation</h3>
-        <p>SLP contractualise la prestation avec l'artiste et gère toute la partie administrative.</p>
-      </div>
-      <div class="step">
-        <span class="num">04</span>
-        <h3>Coordination le jour J</h3>
-        <p>Coordination logistique, technique et artistique pour un événement sans accroc.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap tight narrow">
-    <div class="section-head">
-      <span class="label">Ce qui nous guide</span>
-      <h2>La satisfaction, avant tout</h2>
-    </div>
-    <div class="prose">
-      <p>Notre objectif est simple : la satisfaction de nos clients et celle du public. C'est ce qui guide chacun de nos choix, de la sélection des artistes jusqu'à la coordination technique le jour J.</p>
-      <p>Nous accompagnons les artistes à chaque étape afin qu'ils n'aient qu'une seule chose à penser : la musique.</p>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap tight narrow">
-    <div class="section-head">
-      <span class="label">Notre positionnement</span>
-      <h2>Diffuseur de spectacles, pas simple intermédiaire</h2>
-    </div>
-    <div class="prose">
-      <p>En tant que diffuseur, SLP ne se contente pas de vous transmettre un contact : nous sélectionnons l'artiste le plus adapté dans notre réseau, gérons la contractualisation et coordonnons toute la logistique, jusqu'à la réalisation technique sur scène.</p>
-      <p>Vous n'avez qu'un seul interlocuteur, de la sélection de l'artiste jusqu'à la dernière note sur scène.</p>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap tight">
-    <div class="section-head">
-      <span class="label">Ce que nous diffusons</span>
-      <h2>Deux façons de travailler avec nous</h2>
-    </div>
-    <div class="two-cards">
-      <div class="bigcard c1">
-        <div class="glow"></div>
-        <div class="bigcard-inner">
-          <h3>Programmation d'artistes</h3>
-          <p>Vous cherchez un groupe ou un DJ pour votre événement ? Nous vous proposons une sélection d'artistes de notre réseau, adaptée à votre ambiance et votre budget, avec toute la logistique prise en charge.</p>
-        </div>
-      </div>
-      <div class="bigcard c2">
-        <div class="glow"></div>
-        <div class="bigcard-inner">
-          <h3>Événements sur mesure</h3>
-          <p>Concert, soirée à thème, spectacle sur mesure : nous concevons l'événement de A à Z, de la sélection artistique à la réalisation technique sur scène.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap tight">
-    <img class="single-photo" src="spectacle-cabaret-diffusion.jpg" alt="Spectacle cabaret diffusé par SLP — artistes et danseuses en costumes de plumes sur scène">
-  </div>
-</section>
-
-<section class="info-strip">
   <div class="wrap">
-    <div class="info-grid">
-      <div class="info-item"><span class="mark">→</span><p>Un contrat, une facture, un seul interlocuteur</p></div>
-      <div class="info-item"><span class="mark">→</span><p>Réseau d'artistes locaux et régionaux</p></div>
-      <div class="info-item"><span class="mark">→</span><p>Peut se coupler à nos prestations son/lumière</p></div>
-      <div class="info-item"><span class="mark">→</span><p>Événements publics et privés, toutes jauges</p></div>
+    <div class="section-head" style="text-align:center"><span class="label">Ce qui nous guide</span><h2>Votre événement réussi,<br>votre public conquis</h2></div>
+    <div class="philo-intro"><p>Notre objectif est simple : <strong>la satisfaction de nos clients et celle du public</strong>. C'est ce qui guide chacun de nos choix, de la sélection des artistes jusqu'au dernier réglage technique le jour J.</p><p>Nous accompagnons aussi les artistes à chaque étape, pour qu'ils n'aient qu'une seule chose en tête : <strong>donner le meilleur sur scène</strong>.</p></div>
+  </div>
+</section>
+
+<section class="eng"><div class="wrap tight"><div class="eng-grid"><div class="eng-card"><span class="big">1</span><h3>Seul interlocuteur</h3><p>Un contrat, une facture, une personne qui suit votre dossier du début à la fin.</p></div><div class="eng-card"><span class="big">100 %</span><h3>Live</h3><p>Des artistes professionnels qui jouent vraiment, sans playback.</p></div><div class="eng-card"><span class="big">0</span><h3>Mauvaise surprise</h3><p>Un devis clair et détaillé, sans frais cachés.</p></div><div class="eng-card"><span class="big">A→Z</span><h3>Clé en main</h3><p>Artistes, son, lumière, logistique : vous n'avez rien à gérer.</p></div></div></div></section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head"><span class="label">Notre positionnement</span><h2>Bien plus<br>qu'un intermédiaire</h2></div>
+    <div class="metiers2">
+      <article class="met">
+        <div class="met-pic"><img src="spectacle-cabaret-diffusion.jpg" alt="" loading="lazy"></div>
+        <div class="met-body"><span class="kicker">Diffuseur de spectacles</span><h3>Nous ne transmettons pas un contact</h3><p>SLP ne se contente pas de vous donner un numéro de téléphone. Nous choisissons avec vous l'artiste le plus adapté, nous gérons les contrats et nous coordonnons toute la logistique, jusqu'à la réalisation technique sur scène.</p><ul><li>Sélection de l'artiste adapté à votre public et à votre budget</li><li>Contrats, déclarations et administratif pris en charge</li><li>Son, lumière et régie couplés au spectacle si besoin</li><li>Événements publics et privés, toutes jauges</li></ul>
+          <div class="btns"><a href="artistes.html" class="btn btn-primary">Voir nos artistes →</a><a href="contact.html" class="btn btn-ghost">Demander un devis →</a></div></div>
+      </article>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head"><span class="label">Deux façons de travailler avec nous</span><h2>Choisissez<br>votre formule</h2></div>
+    <div class="publics two"><div class="pub"><div class="glow"></div><h3>Programmation d'artistes</h3><p>Vous cherchez un tribute, une revue cabaret, un groupe de reprises ou un DJ ? Nous vous proposons une sélection de spectacles adaptés à votre événement, avec toute la logistique prise en charge.</p><div class="chips"><span>Tributes</span><span>Cabaret</span><span>Groupes de reprises</span><span>DJ</span></div><a class="more" href="artistes.html">Nos artistes et spectacles →</a></div><div class="pub"><div class="glow"></div><h3>Événement sur mesure</h3><p>Festivités, saison culturelle, gala ou soirée privée : nous construisons l'événement complet avec vous, du choix artistique jusqu'à la technique sur scène.</p><div class="chips"><span>Festivités</span><span>Saison culturelle</span><span>Galas</span><span>Soirées privées</span></div><a class="more" href="contact.html">Parlons de votre projet →</a></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head"><span class="label">La marche à suivre</span><h2>De l'idée<br>à la scène</h2></div>
+    <div class="steps2"><div class="step2"><h3>Vous nous contactez</h3><p>Date, lieu, public, ambiance souhaitée et budget : un échange rapide suffit pour cerner votre besoin.</p></div><div class="step2"><h3>Sélection &amp; devis</h3><p>Nous vous proposons un ou plusieurs spectacles adaptés, avec un devis clair et sans surprise.</p></div><div class="step2"><h3>Nous organisons tout</h3><p>Contrats, planning, technique, accueil des artistes : nous coordonnons chaque détail.</p></div><div class="step2"><h3>Le jour J, on est là</h3><p>Montage, balances, spectacle, démontage : vous profitez, nous gérons.</p></div></div>
   </div>
 </section>
 
