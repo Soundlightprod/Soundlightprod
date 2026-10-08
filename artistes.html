@@ -188,24 +188,24 @@
   .spot-arrow:hover{border-color:var(--gold); color:var(--gold);}
 
   /* Catégories — mosaïque photo */
-  .cats2{margin-top:34px; display:grid; grid-template-columns:repeat(6,1fr); gap:20px;}
-  .cat2{position:relative; display:block; overflow:hidden; border-radius:20px; text-decoration:none; color:var(--paper); background:var(--ink-2); border:1px solid var(--line); isolation:isolate;}
-  .cat2.big{grid-column:span 3; height:440px;}
-  .cat2.small{grid-column:span 2; height:380px;}
-  .cat2 img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; transition:transform .6s ease;}
-  .cat2::before{content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(12,10,20,.05) 25%, rgba(12,10,20,.55) 55%, rgba(12,10,20,.96) 100%);}
+  .cats2{margin-top:34px; display:grid; grid-template-columns:repeat(6,1fr); gap:22px;}
+  .cat2{position:relative; display:flex; flex-direction:column; overflow:hidden; border-radius:20px; text-decoration:none; color:var(--paper); background:var(--ink-2); border:1px solid var(--line); transition:border-color .3s, transform .3s;}
+  .cat2.big{grid-column:span 3;} .cat2.small{grid-column:span 2;}
+  .cat2 .pic{position:relative; aspect-ratio:16/9; overflow:hidden; background:#0c0a14;}
+  .cat2 .pic img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease;}
   .cat2::after{content:''; position:absolute; left:0; right:0; bottom:0; height:4px; background:var(--spectre); transform:scaleX(0); transform-origin:left; transition:transform .45s ease;}
-  .cat2:hover img{transform:scale(1.06);} .cat2:hover::after{transform:scaleX(1);} .cat2:hover{border-color:rgba(255,255,255,.28);}
-  .cat2 .count{position:absolute; top:18px; left:18px; font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; background:rgba(12,10,20,.72); backdrop-filter:blur(6px); border:1px solid var(--line); padding:6px 12px; border-radius:100px;}
-  .cat2 .body{position:absolute; left:0; right:0; bottom:0; padding:26px 28px 28px; display:flex; align-items:flex-end; justify-content:space-between; gap:18px;}
-  .cat2 h3{font-family:'League Spartan',sans-serif; font-weight:900; text-transform:uppercase; font-size:clamp(1.6rem,2.6vw,2.4rem); line-height:.95; margin:0 0 10px; letter-spacing:-.01em;}
-  .cat2.small h3{font-size:clamp(1.4rem,2vw,1.8rem);}
-  .cat2 p{margin:0 0 10px; color:rgba(247,245,240,.82); font-size:.95rem; line-height:1.45; max-width:44ch;}
-  .cat2 .names{font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.04em; color:rgba(247,245,240,.62); line-height:1.6;}
-  .cat2 .go{flex-shrink:0; width:48px; height:48px; border-radius:50%; background:var(--blanc); color:var(--noir); display:flex; align-items:center; justify-content:center; font-size:1.2rem; transition:background .3s, transform .3s;}
+  .cat2:hover .pic img{transform:scale(1.04);} .cat2:hover::after{transform:scaleX(1);} .cat2:hover{border-color:rgba(255,255,255,.28); transform:translateY(-3px);}
+  .cat2 .count{display:inline-block; font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--jaune); margin-bottom:8px;}
+  .cat2 .body{flex:1; padding:22px 24px 26px; display:flex; align-items:flex-end; justify-content:space-between; gap:18px;}
+  .cat2 h3{font-family:'League Spartan',sans-serif; font-weight:900; text-transform:uppercase; font-size:clamp(1.4rem,2.2vw,1.9rem); line-height:.95; margin:0 0 8px; letter-spacing:-.01em;}
+  .cat2.small h3{font-size:clamp(1.2rem,1.7vw,1.5rem);}
+  .cat2 p{margin:0 0 10px; color:rgba(247,245,240,.82); font-size:.93rem; line-height:1.45; max-width:44ch;}
+  .cat2 .names{font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.04em; color:rgba(247,245,240,.62); line-height:1.6;}
+  .cat2 .body>div{align-self:flex-start;}
+  .cat2 .go{flex-shrink:0; width:44px; height:44px; border-radius:50%; background:var(--blanc); color:var(--noir); display:flex; align-items:center; justify-content:center; font-size:1.1rem; transition:background .3s, transform .3s;}
   .cat2:hover .go{background:var(--chaud); transform:rotate(-45deg);}
-  @media (max-width:960px){ .cat2.big,.cat2.small{grid-column:span 3; height:360px;} .cat2.small:last-child{grid-column:span 6;} }
-  @media (max-width:600px){ .cats2{grid-template-columns:1fr; gap:14px;} .cat2.big,.cat2.small,.cat2.small:last-child{grid-column:auto; height:320px;} .cat2 .body{padding:20px;} }
+  @media (max-width:960px){ .cat2.big,.cat2.small{grid-column:span 3;} .cat2.small:last-child{grid-column:span 6;} .cat2.small:last-child .pic{aspect-ratio:21/9;} }
+  @media (max-width:600px){ .cats2{grid-template-columns:1fr; gap:16px;} .cat2.big,.cat2.small,.cat2.small:last-child{grid-column:auto;} .cat2.small:last-child .pic{aspect-ratio:16/9;} .cat2 .body{padding:18px 20px 22px;} }
 </style>
 
 
@@ -266,29 +266,24 @@
     <div class="section-head"><span class="label">Choisissez votre spectacle</span><h2>5 univers pour sublimer votre événement</h2></div>
     <div class="cats2">
       <a href="tributes.html" class="cat2 big">
-        <img src="kool-photo-1.jpg" alt="" loading="lazy" style="object-position:center 35%;">
-        <span class="count">6 tributes</span>
-        <div class="body"><div><h3>Tributes</h3><p>Les plus grands artistes revivent sur scène, 100 % live.</p><div class="names">ABBA · Calogero · Matmatah · Kool &amp; the Gang · Bee Gees · Phil Collins</div></div><span class="go" aria-hidden="true">→</span></div>
+        <div class="pic"><img src="banniere-tributes.jpg" alt="Découvrez nos tributes, 100 % live" loading="lazy" width="1280" height="720"></div>
+        <div class="body"><div><span class="count">6 tributes</span><h3>Tributes</h3><p>Les plus grands artistes revivent sur scène, 100 % live.</p><div class="names">ABBA · Calogero · Matmatah · Kool &amp; the Gang · Bee Gees · Phil Collins</div></div><span class="go" aria-hidden="true">→</span></div>
       </a>
       <a href="cabaret.html" class="cat2 big">
-        <img src="cabaret-photo-cropped.jpg" alt="" loading="lazy" style="object-position:center 30%;">
-        <span class="count">2 revues</span>
-        <div class="body"><div><h3>Spectacles Cabaret</h3><p>Plumes, strass et tableaux chantés en live pour vos galas.</p><div class="names">Panache · Bim Bam Boom</div></div><span class="go" aria-hidden="true">→</span></div>
+        <div class="pic"><img src="banniere-cabaret.jpg" alt="Découvrez nos revues cabaret" loading="lazy" width="1280" height="720"></div>
+        <div class="body"><div><span class="count">2 revues</span><h3>Spectacles Cabaret</h3><p>Plumes, strass et tableaux chantés en live pour vos galas.</p><div class="names">Panache · Bim Bam Boom</div></div><span class="go" aria-hidden="true">→</span></div>
       </a>
       <a href="cache-candy.html" class="cat2 small">
-        <img src="cache-candy-live-1.jpg" alt="" loading="lazy" style="object-position:center 30%;">
-        <span class="count">Exclusivité SLP</span>
-        <div class="body"><div><h3>Cache Candy</h3><p>Duo pop-rock électro, compositions originales.</p><div class="names">Nouvel album « Happy End »</div></div><span class="go" aria-hidden="true">→</span></div>
+        <div class="pic"><img src="cache-candy-live-1.jpg" alt="Cache Candy en concert" loading="lazy" style="object-position:center 30%;"></div>
+        <div class="body"><div><span class="count">Exclusivité SLP</span><h3>Cache Candy</h3><p>Duo pop-rock électro, compositions originales.</p><div class="names">Nouvel album « Happy End »</div></div><span class="go" aria-hidden="true">→</span></div>
       </a>
       <a href="groupes-de-reprises.html" class="cat2 small">
-        <img src="fine-allies-photo-1.jpg" alt="" loading="lazy" style="object-position:center 40%;">
-        <span class="count">3 groupes</span>
-        <div class="body"><div><h3>Groupes de reprises</h3><p>Pop, rock, funk et soul pour faire danser la salle.</p><div class="names">Alchimie · NooN Coverband · The Fine Allies</div></div><span class="go" aria-hidden="true">→</span></div>
+        <div class="pic"><img src="banniere-reprises.jpg" alt="Découvrez nos groupes de reprises multi-artistes" loading="lazy" width="1280" height="720"></div>
+        <div class="body"><div><span class="count">3 groupes</span><h3>Groupes de reprises</h3><p>Pop, rock, funk et soul pour faire danser la salle.</p><div class="names">Alchimie · NooN Coverband · The Fine Allies</div></div><span class="go" aria-hidden="true">→</span></div>
       </a>
       <a href="dj.html" class="cat2 small">
-        <img src="dj-photo.jpg" alt="" loading="lazy" style="object-position:center 65%;">
-        <span class="count">DJ</span>
-        <div class="body"><div><h3>DJ</h3><p>Un DJ animateur pour toutes les générations.</p><div class="names">Mariages · Soirées · Anniversaires</div></div><span class="go" aria-hidden="true">→</span></div>
+        <div class="pic"><img src="banniere-dj.jpg" alt="Découvrez nos DJ pour enflammer votre piste de danse" loading="lazy" width="1280" height="720"></div>
+        <div class="body"><div><span class="count">DJ</span><h3>DJ</h3><p>Un DJ animateur pour toutes les générations.</p><div class="names">Mariages · Soirées · Anniversaires</div></div><span class="go" aria-hidden="true">→</span></div>
       </a>
     </div>
   </div>
