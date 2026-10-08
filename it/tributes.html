@@ -178,6 +178,33 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+
+  /* cartes artistes v2 : grandes photos */
+  .artists{display:grid !important; grid-template-columns:1fr 1fr; gap:24px;}
+  .artists>.artist:only-child, .artists>.artist:last-child:nth-child(odd){grid-column:1/-1;}
+  @media (min-width:821px){ .artists>.artist:only-child, .artists>.artist:last-child:nth-child(odd){flex-direction:row !important; align-items:stretch;}
+    .artists>.artist:only-child .artist-media, .artists>.artist:last-child:nth-child(odd) .artist-media{flex:0 0 58%; aspect-ratio:auto; min-height:400px;}
+    .artists>.artist:only-child .artist-media::after, .artists>.artist:last-child:nth-child(odd) .artist-media::after{background:linear-gradient(90deg, rgba(12,10,20,0) 55%, rgba(23,20,42,.9) 100%);}
+    .artists>.artist:only-child .artist-body, .artists>.artist:last-child:nth-child(odd) .artist-body{justify-content:center; padding:40px 44px;}
+    .artists>.artist:only-child .discover-row, .artists>.artist:last-child:nth-child(odd) .discover-row{margin-top:0;} }
+  .artist, .artist.reverse{display:flex !important; flex-direction:column; align-items:stretch !important; padding:0 !important; gap:0 !important; text-align:left !important; transition:border-color .3s, transform .3s, box-shadow .3s;}
+  .artist:hover{transform:translateY(-4px); box-shadow:0 20px 50px rgba(0,0,0,.45);}
+  .artist::after{content:''; position:absolute; left:0; right:0; bottom:0; height:4px; background:var(--spectre); transform:scaleX(0); transform-origin:left; transition:transform .45s ease; z-index:3;}
+  .artist:hover::after{transform:scaleX(1);}
+  .artist .glow{top:auto; bottom:-140px; left:auto; right:-80px; opacity:.35; z-index:1;}
+  .artist-media{position:relative; display:block; aspect-ratio:16/10; overflow:hidden; background:#0c0a14; z-index:2;}
+  .artist-media>img.ph{width:100%; height:100%; object-fit:cover; display:block; transition:transform .7s ease;}
+  .artist:hover .artist-media>img.ph{transform:scale(1.06);}
+  .artist-media::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(12,10,20,0) 45%, rgba(12,10,20,.75) 85%, rgba(23,20,42,1) 100%); pointer-events:none;}
+  .artist-media .lg{position:absolute; left:24px; bottom:18px; z-index:2; max-height:74px; max-width:46%; width:auto; height:auto; object-fit:contain; filter:drop-shadow(0 4px 14px rgba(0,0,0,.6));}
+  .artist-media .pill{position:absolute; top:18px; left:18px; z-index:2; font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--noir); background:var(--chaud); padding:7px 14px; border-radius:100px; font-weight:500;}
+  .artist-body{padding:22px 28px 28px; display:flex; flex-direction:column; flex:1;}
+  .artist-body h3{font-size:clamp(1.5rem,2.4vw,2rem) !important; margin-bottom:10px !important;}
+  .artist-body p{margin-bottom:0 !important; color:rgba(247,245,240,.78) !important;}
+  .artist-body .discover-row{margin-top:auto; padding-top:22px; justify-content:flex-start !important;}
+  .artist-body .discover-btn{background:var(--chaud); color:var(--noir);}
+  .artist-body .discover-icon{background:var(--noir); color:var(--blanc);}
+  @media (max-width:820px){ .artists{grid-template-columns:1fr;} .artist-body{padding:20px 22px 24px;} .artist-media .lg{max-height:58px;} }
 </style>
 
 
@@ -242,111 +269,55 @@
     <div class="artists">
       <div class="artist">
         <div class="glow"></div>
-        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
-          <img src="/best-abba-tribute-photo-1.jpg" alt="The Best ABBA Tribute" style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:14px; background:#2a2634;">
-          <img src="/best-abba-tribute-logo.png" alt="Logo di The Best ABBA Tribute" style="position:absolute; bottom:-10px; right:-10px; height:44px; width:auto; max-width:none; max-height:none; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,0.5);">
-        </div>
+        <a class="artist-media" href="the-best-abba-tribute.html" tabindex="-1" aria-hidden="true"><img class="ph" src="/best-abba-tribute-photo-1.jpg" alt="The Best ABBA Tribute" loading="lazy" style="object-position:center 20%;"><span class="pill">Tributo agli ABBA</span><img class="lg" src="/best-abba-tribute-logo.png" alt="" loading="lazy"></a>
         <div class="artist-body">
-          <span class="label">Tributo agli ABBA</span>
           <h3>The Best ABBA Tribute</h3>
           <p>Band completa dal vivo, acclamata dalla stampa olandese e internazionale, per rivivere i grandi successi degli ABBA con due cantanti eccezionali e musicisti esperti.</p>
-          <div class="tags">
-            <span class="tag">Band dal vivo</span>
-            <span class="tag">Festival</span>
-            <span class="tag">Feste aziendali</span>
-            <span class="tag">Concerti</span>
-          </div>
           <div class="discover-row"><a href="the-best-abba-tribute.html" class="discover-btn" aria-label="Scopri The Best ABBA Tribute"><span>Scopri</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>
       <div class="artist">
         <div class="glow"></div>
-        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
-          <img src="/calo2-0-affiche.jpg" alt="Tribute Calogero" style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:14px; background:#2a2634;">
-        </div>
+        <a class="artist-media" href="calo-2-0.html" tabindex="-1" aria-hidden="true"><img class="ph" src="/calo2-0-photo-1.png" alt="Tribute Calogero" loading="lazy" style="object-position:center 30%;"><span class="pill">Tribute Calogero</span></a>
         <div class="artist-body">
-          <span class="label">Tribute Calogero</span>
           <h3>Tribute Calogero</h3>
           <p>Omaggio dal vivo a Calogero, per rivivere "En apesanteur", "Voler de nuit" o "Yalla" in un concerto di 2 ore.</p>
-          <div class="tags">
-            <span class="tag">Band dal vivo</span>
-            <span class="tag">Quartetto</span>
-            <span class="tag">Concerti</span>
-          </div>
           <div class="discover-row"><a href="calo-2-0.html" class="discover-btn" aria-label="Scopri Tribute Calogero"><span>Scopri</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>
       <div class="artist">
         <div class="glow"></div>
-        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
-          <img src="/matmatah-photo-4.jpg" alt="Tribute Matmatah" style="width:100%; height:100%; object-fit:cover; object-position:center; border-radius:14px; background:#2a2634;">
-        </div>
+        <a class="artist-media" href="tribute-matmatah.html" tabindex="-1" aria-hidden="true"><img class="ph" src="/matmatah-photo-4.jpg" alt="Tribute Matmatah" loading="lazy" style="object-position:center 35%;"><span class="pill">Tribute Matmatah</span></a>
         <div class="artist-body">
-          <span class="label">Tribute Matmatah</span>
           <h3>Tribute Matmatah</h3>
           <p>Rock dal vivo in omaggio ai Matmatah, per cantare e ballare con «Lambé An Dro», «Emma» o «L'apologie».</p>
-          <div class="tags">
-            <span class="tag">Band dal vivo</span>
-            <span class="tag">Quartetto</span>
-            <span class="tag">Rock bretone</span>
-            <span class="tag">Concerti</span>
-          </div>
           <div class="discover-row"><a href="tribute-matmatah.html" class="discover-btn" aria-label="Scopri Tribute Matmatah"><span>Scopri</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>
       <div class="artist">
         <div class="glow"></div>
-        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
-          <img src="/kool-photo-1.jpg" alt="Tribute Kool &amp; the Gang" style="width:100%; height:100%; object-fit:cover; object-position:center; border-radius:14px; background:#2a2634;">
-        </div>
+        <a class="artist-media" href="tribute-kool-and-the-gang.html" tabindex="-1" aria-hidden="true"><img class="ph" src="/kool-photo-1.jpg" alt="Tribute Kool &amp; the Gang" loading="lazy" style="object-position:center 35%;"><span class="pill">Tribute Kool &amp; the Gang</span></a>
         <div class="artist-body">
-          <span class="label">Tribute Kool &amp; the Gang</span>
           <h3>Tribute Kool &amp; the Gang</h3>
           <p>9 musicisti 100% dal vivo per 1 h 45 di funk: «Celebration», «Get Down on It», «Cherish»…</p>
-          <div class="tags">
-            <span class="tag">Band dal vivo</span>
-            <span class="tag">9 musicisti</span>
-            <span class="tag">Funk</span>
-            <span class="tag">Concerti</span>
-          </div>
           <div class="discover-row"><a href="tribute-kool-and-the-gang.html" class="discover-btn" aria-label="Scopri Tribute Kool &amp; the Gang"><span>Scopri</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>
       <div class="artist">
         <div class="glow"></div>
-        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
-          <img src="/stayin-alive-photo-1.jpg" alt="Tribute Bee Gees" style="width:100%; height:100%; object-fit:cover; object-position:center; border-radius:14px; background:#2a2634;">
-          <img src="/tribute-bee-gees-logo.png" alt="Logo Bee Gees" style="position:absolute; bottom:-12px; right:-14px; height:40px; width:auto; max-width:none; max-height:none; background:rgba(12,10,20,.85); padding:5px 8px; border-radius:6px;">
-        </div>
+        <a class="artist-media" href="tribute-bee-gees.html" tabindex="-1" aria-hidden="true"><img class="ph" src="/stayin-alive-photo-1.jpg" alt="Tribute Bee Gees" loading="lazy" style="object-position:center 30%;"><span class="pill">Tribute ai Bee Gees</span><img class="lg" src="/tribute-bee-gees-logo.png" alt="" loading="lazy"></a>
         <div class="artist-body">
-          <span class="label">Tribute ai Bee Gees</span>
           <h3>Tribute Bee Gees</h3>
           <p>Quattro decenni di successi dei Bee Gees, 100&nbsp;% dal vivo: dal pop degli anni ’60 alla febbre disco di «Saturday Night Fever». Oltre 2.000 spettacoli dal 2004.</p>
-          <div class="tags">
-            <span class="tag">Band dal vivo</span>
-            <span class="tag">Disco</span>
-            <span class="tag">Teatri</span>
-            <span class="tag">Concerti</span>
-          </div>
           <div class="discover-row"><a href="tribute-bee-gees.html" class="discover-btn" aria-label="Scopri Tribute Bee Gees"><span>Scopri</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>
       <div class="artist">
         <div class="glow"></div>
-        <div class="artist-logo" style="position:relative; overflow:visible; width:200px; height:183px;">
-          <img src="/phil-collins-photo-17.jpg" alt="Tribute Phil Collins" style="width:100%; height:100%; object-fit:cover; object-position:center; border-radius:14px; background:#2a2634;">
-          <img src="/tribute-phil-collins-logo.png" alt="Logo Phil Collins" style="position:absolute; bottom:-12px; right:-14px; height:40px; width:auto; max-width:none; max-height:none; background:rgba(12,10,20,.85); padding:5px 8px; border-radius:6px;">
-        </div>
+        <a class="artist-media" href="tribute-phil-collins.html" tabindex="-1" aria-hidden="true"><img class="ph" src="/phil-collins-photo-17.jpg" alt="Tribute Phil Collins" loading="lazy" style="object-position:center 30%;"><span class="pill">Tribute a Phil Collins</span><img class="lg" src="/tribute-phil-collins-logo.png" alt="" loading="lazy"></a>
         <div class="artist-body">
-          <span class="label">Tribute a Phil Collins</span>
           <h3>Tribute Phil Collins</h3>
           <p>Cinque decenni di successi di Phil Collins e dei Genesis, 100&nbsp;% dal vivo: da 8 a 10 musicisti per oltre 1&nbsp;h&nbsp;30 di show.</p>
-          <div class="tags">
-            <span class="tag">Band dal vivo</span>
-            <span class="tag">Da 8 a 10 musicisti</span>
-            <span class="tag">Genesis</span>
-            <span class="tag">Concerti</span>
-          </div>
           <div class="discover-row"><a href="tribute-phil-collins.html" class="discover-btn" aria-label="Scopri Tribute Phil Collins"><span>Scopri</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>

@@ -178,6 +178,33 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+
+  /* cartes artistes v2 : grandes photos */
+  .artists{display:grid !important; grid-template-columns:1fr 1fr; gap:24px;}
+  .artists>.artist:only-child, .artists>.artist:last-child:nth-child(odd){grid-column:1/-1;}
+  @media (min-width:821px){ .artists>.artist:only-child, .artists>.artist:last-child:nth-child(odd){flex-direction:row !important; align-items:stretch;}
+    .artists>.artist:only-child .artist-media, .artists>.artist:last-child:nth-child(odd) .artist-media{flex:0 0 58%; aspect-ratio:auto; min-height:400px;}
+    .artists>.artist:only-child .artist-media::after, .artists>.artist:last-child:nth-child(odd) .artist-media::after{background:linear-gradient(90deg, rgba(12,10,20,0) 55%, rgba(23,20,42,.9) 100%);}
+    .artists>.artist:only-child .artist-body, .artists>.artist:last-child:nth-child(odd) .artist-body{justify-content:center; padding:40px 44px;}
+    .artists>.artist:only-child .discover-row, .artists>.artist:last-child:nth-child(odd) .discover-row{margin-top:0;} }
+  .artist, .artist.reverse{display:flex !important; flex-direction:column; align-items:stretch !important; padding:0 !important; gap:0 !important; text-align:left !important; transition:border-color .3s, transform .3s, box-shadow .3s;}
+  .artist:hover{transform:translateY(-4px); box-shadow:0 20px 50px rgba(0,0,0,.45);}
+  .artist::after{content:''; position:absolute; left:0; right:0; bottom:0; height:4px; background:var(--spectre); transform:scaleX(0); transform-origin:left; transition:transform .45s ease; z-index:3;}
+  .artist:hover::after{transform:scaleX(1);}
+  .artist .glow{top:auto; bottom:-140px; left:auto; right:-80px; opacity:.35; z-index:1;}
+  .artist-media{position:relative; display:block; aspect-ratio:16/10; overflow:hidden; background:#0c0a14; z-index:2;}
+  .artist-media>img.ph{width:100%; height:100%; object-fit:cover; display:block; transition:transform .7s ease;}
+  .artist:hover .artist-media>img.ph{transform:scale(1.06);}
+  .artist-media::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(12,10,20,0) 45%, rgba(12,10,20,.75) 85%, rgba(23,20,42,1) 100%); pointer-events:none;}
+  .artist-media .lg{position:absolute; left:24px; bottom:18px; z-index:2; max-height:74px; max-width:46%; width:auto; height:auto; object-fit:contain; filter:drop-shadow(0 4px 14px rgba(0,0,0,.6));}
+  .artist-media .pill{position:absolute; top:18px; left:18px; z-index:2; font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--noir); background:var(--chaud); padding:7px 14px; border-radius:100px; font-weight:500;}
+  .artist-body{padding:22px 28px 28px; display:flex; flex-direction:column; flex:1;}
+  .artist-body h3{font-size:clamp(1.5rem,2.4vw,2rem) !important; margin-bottom:10px !important;}
+  .artist-body p{margin-bottom:0 !important; color:rgba(247,245,240,.78) !important;}
+  .artist-body .discover-row{margin-top:auto; padding-top:22px; justify-content:flex-start !important;}
+  .artist-body .discover-btn{background:var(--chaud); color:var(--noir);}
+  .artist-body .discover-icon{background:var(--noir); color:var(--blanc);}
+  @media (max-width:820px){ .artists{grid-template-columns:1fr;} .artist-body{padding:20px 22px 24px;} .artist-media .lg{max-height:58px;} }
 </style>
 
 
@@ -242,35 +269,19 @@
     <div class="artists">
       <div class="artist">
         <div class="glow"></div>
-        <div class="artist-logo round">
-          <img src="/panache-logo.png" alt="Panache">
-        </div>
+        <a class="artist-media" href="panache.html" tabindex="-1" aria-hidden="true"><img class="ph" src="/panache-video-photo.png" alt="Panache" loading="lazy" style="object-position:center 30%;"><span class="pill">Cabaret Revue</span><img class="lg" src="/panache-logo.png" alt="" loading="lazy"></a>
         <div class="artist-body">
-          <span class="label">Cabaret Revue</span>
           <h3>Panache</h3>
           <p>A touring cabaret revue combining dynamic tableaux, live singing, feathers and rhinestones — to light up your galas, corporate evenings and private events.</p>
-          <div class="tags">
-            <span class="tag">Galas & prestige evenings</span>
-            <span class="tag">Works councils</span>
-            <span class="tag">Private events</span>
-          </div>
           <div class="discover-row"><a href="panache.html" class="discover-btn" aria-label="Discover Panache"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>
       <div class="artist">
         <div class="glow"></div>
-        <div class="artist-logo round">
-          <img src="/bim-bam-boom-logo.png" alt="Bim Bam Boom" style="border-radius:0">
-        </div>
+        <a class="artist-media" href="bim-bam-boom.html" tabindex="-1" aria-hidden="true"><img class="ph" src="/bim-bam-boom-photo.jpg" alt="Bim Bam Boom" loading="lazy" style="object-position:center 30%;"><span class="pill">Cabaret Revue</span><img class="lg" src="/bim-bam-boom-logo.png" alt="" loading="lazy"></a>
         <div class="artist-body">
-          <span class="label">Cabaret Revue</span>
           <h3>Bim Bam Boom</h3>
           <p>A touring cabaret revue combining dynamic tableaux, live singing, feathers and rhinestones — to light up your galas, corporate evenings and private events.</p>
-          <div class="tags">
-            <span class="tag">Galas & prestige evenings</span>
-            <span class="tag">Works councils</span>
-            <span class="tag">Private events</span>
-          </div>
           <div class="discover-row"><a href="bim-bam-boom.html" class="discover-btn" aria-label="Discover Bim Bam Boom"><span>Discover</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>
