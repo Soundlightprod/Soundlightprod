@@ -227,6 +227,13 @@ function routeDomain(request, url) {
     return redirect(`${url.origin}${path.replace(/dj-provisoire(\.html)?$/, "dj-animation.html")}`);
   }
 
+  // Anciennes adresses de fiches (nom de groupe retiré des URL)
+  const RENAMED = { "the-best-abba-tribute": "tribute-abba", "calo-2-0": "tribute-calogero" };
+  const renamedMatch = path.match(/^(.*\/)(the-best-abba-tribute|calo-2-0)(\.html)?$/);
+  if (renamedMatch) {
+    return redirect(`${url.origin}${renamedMatch[1]}${RENAMED[renamedMatch[2]]}.html${url.search}`);
+  }
+
   const isCom = host.endsWith("soundlightprod.com");
   const langPrefix = INTL_LANGS.find((l) => path === `/${l}` || path.startsWith(`/${l}/`));
 

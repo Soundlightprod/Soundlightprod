@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tribute ABBA — SLP Sound Light Prod</title>
-<meta name="description" content="Tribute ABBA, groupe live hommage à ABBA, diffusé par SLP pour vos festivals, fêtes d'entreprise et concerts.">
+<title>Tribute Calogero — SLP Sound Light Prod</title>
+<meta name="description" content="Grupo tributo en directo a Calogero, distribuido por SLP para sus festivales, fiestas de empresa y conciertos.">
 <style>
   :root{
     --ink: #0c0a14; --ink-2: #17142a;
@@ -36,16 +36,14 @@
   .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--amber), transparent 70%); top:-10vw; right:-10vw;}
   .page-hero-inner{position:relative; z-index:2; max-width:800px;}
 
-  /* Silhouettes néon des chanteuses (tirées de la photo du groupe) */
-  .hero-divas{position:absolute; right:clamp(8px,5vw,90px); bottom:0; height:min(96%,520px); aspect-ratio:320/298; z-index:1; pointer-events:none;}
-  .hero-divas img{position:absolute; display:block;}
-  .hero-divas .d1{left:0; top:31.2%; width:54.1%; z-index:2; filter:drop-shadow(0 0 2px #0c0a14) drop-shadow(0 0 12px rgba(255,79,216,.7)); animation:divaSway 5s ease-in-out infinite;}
-  .hero-divas .d2{left:40.9%; top:0; width:59.1%; filter:drop-shadow(0 0 12px rgba(255,210,79,.65)); animation:divaSway 5s ease-in-out -2.5s infinite;}
-  .hero-divas .spark{position:absolute; color:#fff; font-size:18px; line-height:1; text-shadow:0 0 10px #fff, 0 0 20px #ff4fd8; animation:twinkle 2.4s ease-in-out infinite;}
-  .hero-divas .s1{left:88%; top:2%;} .hero-divas .s2{left:30%; top:12%; font-size:12px; animation-delay:-.8s;} .hero-divas .s3{left:100%; top:30%; font-size:14px; animation-delay:-1.6s;} .hero-divas .s4{left:6%; top:24%; font-size:10px; animation-delay:-1.2s;}
-  @keyframes divaSway{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-1deg)}}
+  /* Silhouette néon de l'artiste (tirée de sa photo) */
+  .hero-art{position:absolute; right:clamp(8px,5vw,90px); bottom:0; height:min(92%,500px); width:min(48vw,620px); z-index:1; pointer-events:none;}
+  .hero-art img{position:absolute; right:0; bottom:0; max-height:100%; max-width:100%; filter:drop-shadow(0 0 12px var(--glow)); animation:artSway 6s ease-in-out infinite; transform-origin:bottom center;}
+  .hero-art .spark{position:absolute; color:#fff; font-size:16px; line-height:1; text-shadow:0 0 10px #fff, 0 0 20px var(--glow); animation:twinkle 2.4s ease-in-out infinite;}
+  .hero-art .s1{right:8%; top:4%;} .hero-art .s2{right:62%; top:18%; font-size:11px; animation-delay:-.8s;} .hero-art .s3{right:-2%; top:38%; font-size:13px; animation-delay:-1.6s;}
+  @keyframes artSway{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-.8deg)}}
   @keyframes twinkle{0%,100%{opacity:.15; transform:scale(.6)}50%{opacity:1; transform:scale(1.15)}}
-  @media (max-width:900px){ .hero-divas{opacity:.28; height:88%; right:-40px;} }
+  @media (max-width:900px){ .hero-art{opacity:.28; width:70vw; right:-30px;} }
   .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
   .breadcrumb a{color:var(--muted); text-decoration:none;}
   .breadcrumb a:hover{color:var(--paper);}
@@ -68,6 +66,12 @@
   .logo-frame img{max-width:100%; max-height:100%; object-fit:contain; border-radius:0;}
   .bio-text p{color:var(--muted); font-size:1.02rem; margin-bottom:16px;}
   .bio-text p:last-child{margin-bottom:0;}
+
+  .members-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px;}
+  .member-card{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:20px 22px;}
+  .member-card .name{font-family:'League Spartan', sans-serif; font-weight:700; color:var(--paper); font-size:1.02rem; margin-bottom:4px;}
+  .member-card .role{color:var(--amber); font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:10px; display:block;}
+  .member-card p{color:var(--muted); font-size:0.86rem; margin:0;}
 
   .banner-photo{
     background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px);
@@ -156,13 +160,12 @@
 
 
 
-
 <!-- i18n:start -->
-<link rel="alternate" hreflang="fr" href="https://soundlightprod.fr/the-best-abba-tribute.html">
-<link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/the-best-abba-tribute.html">
-<link rel="alternate" hreflang="es" href="https://soundlightprod.com/es/the-best-abba-tribute.html">
-<link rel="alternate" hreflang="it" href="https://soundlightprod.com/it/the-best-abba-tribute.html">
-<link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/the-best-abba-tribute.html">
+<link rel="alternate" hreflang="fr" href="https://soundlightprod.fr/tribute-calogero.html">
+<link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/tribute-calogero.html">
+<link rel="alternate" hreflang="es" href="https://soundlightprod.com/es/tribute-calogero.html">
+<link rel="alternate" hreflang="it" href="https://soundlightprod.com/it/tribute-calogero.html">
+<link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/tribute-calogero.html">
 <style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
 <!-- i18n:end -->
 <link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -177,45 +180,44 @@
 <header>
   <div class="nav-wrap">
     <a href="index.html" class="brand">
-      <img src="slp-sigle.png" alt="SLP - Sound Light Prod">
+      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
     </a>
     <nav>
       <ul>
-        <li><a href="index.html">Accueil</a></li>
-        <li><a href="artistes.html" class="current">Nos artistes et spectacles</a></li>
-        <li><a href="son-lumiere.html">Prestation technique</a></li>
-        <li><a href="diffusion.html">Notre philosophie de travail</a></li>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="artistes.html" class="current">Artistas y espectáculos</a></li>
+        <li><a href="son-lumiere.html">Servicios técnicos</a></li>
+        <li><a href="diffusion.html">Cómo trabajamos</a></li>
         <li><a href="agenda.html">Agenda</a></li>
-        <li><a href="galerie.html">Galerie</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="boutique.html">Vente de matériel</a></li>
+        <li><a href="galerie.html">Galería</a></li>
+        <li><a href="contact.html">Contacto</a></li>
+        <li><a href="https://soundlightprod.fr/boutique.html">Venta de material (FR)</a></li>
       </ul>
     </nav>
-    <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/the-best-abba-tribute.html" hreflang="fr" lang="fr" class="on" aria-current="true">FR</a><a href="https://soundlightprod.com/en/the-best-abba-tribute.html" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/the-best-abba-tribute.html" hreflang="es" lang="es">ES</a><a href="https://soundlightprod.com/it/the-best-abba-tribute.html" hreflang="it" lang="it">IT</a></div>
+    <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/tribute-calogero.html" hreflang="fr" lang="fr">FR</a><a href="https://soundlightprod.com/en/tribute-calogero.html" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/tribute-calogero.html" hreflang="es" lang="es" class="on" aria-current="true">ES</a><a href="https://soundlightprod.com/it/tribute-calogero.html" hreflang="it" lang="it">IT</a></div>
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <section class="page-hero">
   <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
-  <div class="hero-divas" aria-hidden="true">
-    <img class="d1" src="abba-silhouette-1.png" alt="">
-    <img class="d2" src="abba-silhouette-2.png" alt="">
-    <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span><span class="spark s4">✦</span>
+  <div class="hero-art" aria-hidden="true" style="--glow:rgba(255,74,61,.6)">
+    <img src="/calo-silhouette.png" alt="">
+    <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span>
   </div>
   <div class="page-hero-inner">
-    <span class="breadcrumb"><a href="tributes.html">← Tributes</a></span>
-    <span class="label">Tribute ABBA</span>
-    <h1>Tribute ABBA</h1>
-    <p>Un groupe live complet qui fait revivre les plus grands tubes d'ABBA — deux chanteuses d'exception et des musiciens chevronnés, pour une soirée de nostalgie et de bonne humeur.</p>
+    <span class="breadcrumb"><a href="tributes.html">← Tributos</a></span>
+    <span class="label">Tribute Calogero</span>
+    <h1>Tribute Calogero</h1>
+    <p>El tributo a Calogero: cuatro músicos en directo que revisitan los grandes temas de su repertorio, para una velada de complicidad y nostalgia.</p>
   </div>
 </section>
 
 <section id="actus-section" style="display:none;">
   <div class="wrap tight narrow">
     <div class="section-head">
-      <span class="label">Actualités</span>
-      <h2>Quoi de neuf</h2>
+      <span class="label">Noticias</span>
+      <h2>Novedades</h2>
     </div>
     <div class="actus-list" id="actus-list"></div>
   </div>
@@ -225,32 +227,36 @@
   <div class="wrap tight narrow">
     <div class="bio-wrap">
       <div class="logo-frame" style="padding:0; overflow:hidden;">
-        <img src="abba-photo-3.jpg" alt="Tribute ABBA, sur scène" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+        <img src="/calo-photo-4.jpg" alt="Tribute Calogero, sur scène" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
       </div>
       <div class="bio-text">
-        <p>Dans l'histoire de la pop, ABBA occupe une place à part. Qui ne se souvient pas des tubes intemporels « Dancing Queen », « Waterloo », « Mamma Mia », « Voulez-Vous » ou « The Winner Takes It All » ? Avec plus de 200 millions d'albums vendus (370 millions de disques au total), ABBA reste l'un des groupes les plus vendus de l'histoire de la musique.</p>
-        <p>Tribute ABBA est porté par deux chanteuses solistes au sommet de leur art et des musiciens qui jouent entièrement en live — une exigence rare dans l'univers des tributes, et l'une des clés de leur succès. Le groupe s'est produit devant plus de 15 000 spectateurs à Helmond (Kasteeltuinconcerten) et au festival TT Assen, ainsi qu'à l'étranger : Russie, Roumanie, Liechtenstein.</p><p>Salué par la presse néerlandaise et internationale comme l'un des meilleurs hommages à ABBA au monde, le groupe promet une soirée où toute la salle chante et danse sur les plus grands tubes du quatuor suédois.</p>
-        <p>Le concert dure 2 heures, entièrement en live, avec sonorisation, lumière et scénographie prises en charge par SLP selon la formule choisie. Une soirée de nostalgie et de bonne humeur, pour petits et grands !</p>
+        <p>Estrella roja, golpeador de espejo, mástil al revés… Este instrumento le suena a cualquier fan de Calogero. El fundador del grupo, uno de sus fieles admiradores, se propuso personalizarlo él mismo: en 2024 nace este tributo, fruto de un flechazo en un concierto de 2007, la noche que lo decidió a hacer de la música su profesión.</p><p>Acompañado de tres músicos con talento, el grupo revisita los grandes clásicos del repertorio de Calogero inspirándose en el formato de cuarteto de las giras "Les Feux d'Artifice Tour" (2014) y "Liberté Chérie Tour" (2018). Artista imprescindible de la canción francesa, sus temas acompañan a un público muy amplio: "Yalla", "Je joue de la musique", "En apesanteur", "Voler de nuit", "C'est dit"…</p><p>No importa de dónde venga ni su edad: súbase a bordo de 2 horas de concierto con Tribute Calogero y deje que la magia haga el resto.</p>
+        <p>El concierto dura 2 horas, íntegramente en directo, con sonido, iluminación y escenografía a cargo de SLP según la fórmula elegida. ¡Una velada de nostalgia y buen humor para pequeños y mayores!</p>
       </div>
     </div>
   </div>
 </section>
 
+
 <section>
   <div class="wrap tight narrow">
     <div class="section-head">
-      <span class="label">En images</span>
-      <h2>Le groupe</h2>
+      <span class="label">En imágenes</span>
+      <h2>El grupo</h2>
     </div>
     <div class="photo-grid">
-      <a href="abba-photo-1.jpg"><img src="abba-photo-1.jpg" alt="Tribute ABBA — photo 1" loading="lazy"></a>
-      <a href="abba-photo-2.jpg"><img src="abba-photo-2.jpg" alt="Tribute ABBA — photo 2" loading="lazy"></a>
-      <a href="abba-photo-3.jpg"><img src="abba-photo-3.jpg" alt="Tribute ABBA — photo 3" loading="lazy"></a>
-      <a href="abba-photo-4.jpg"><img src="abba-photo-4.jpg" alt="Tribute ABBA — photo 4" loading="lazy"></a>
-      <a href="abba-photo-5.jpg"><img src="abba-photo-5.jpg" alt="Tribute ABBA — photo 5" loading="lazy"></a>
-      <a href="abba-photo-6.jpg"><img src="abba-photo-6.jpg" alt="Tribute ABBA — photo 6" loading="lazy"></a>
-      <a href="abba-photo-7.jpg"><img src="abba-photo-7.jpg" alt="Tribute ABBA — photo 7" loading="lazy"></a>
-      <a href="abba-photo-8.jpg"><img src="abba-photo-8.jpg" alt="Tribute ABBA — photo 8" loading="lazy"></a>
+      <a href="/calo-photo-1.jpg"><img src="/calo-photo-1.jpg" alt="Tribute Calogero — photo 1" loading="lazy"></a>
+      <a href="/calo-photo-2.jpg"><img src="/calo-photo-2.jpg" alt="Tribute Calogero — photo 2" loading="lazy"></a>
+      <a href="/calo-photo-3.jpg"><img src="/calo-photo-3.jpg" alt="Tribute Calogero — photo 3" loading="lazy"></a>
+      <a href="/calo-photo-4.jpg"><img src="/calo-photo-4.jpg" alt="Tribute Calogero — photo 4" loading="lazy"></a>
+      <a href="/calo-photo-5.jpg"><img src="/calo-photo-5.jpg" alt="Tribute Calogero — photo 5" loading="lazy"></a>
+      <a href="/calo-photo-6.jpg"><img src="/calo-photo-6.jpg" alt="Tribute Calogero — photo 6" loading="lazy" style="object-position:center 25%;"></a>
+      <a href="/calo-photo-7.jpg"><img src="/calo-photo-7.jpg" alt="Tribute Calogero — photo 7" loading="lazy"></a>
+      <a href="/calo-photo-8.jpg"><img src="/calo-photo-8.jpg" alt="Tribute Calogero — photo 8" loading="lazy" style="object-position:center 25%;"></a>
+      <a href="/calo-photo-9.jpg"><img src="/calo-photo-9.jpg" alt="Tribute Calogero — photo 9" loading="lazy"></a>
+      <a href="/calo-photo-10.jpg"><img src="/calo-photo-10.jpg" alt="Tribute Calogero — photo 10" loading="lazy"></a>
+      <a href="/calo-photo-11.jpg"><img src="/calo-photo-11.jpg" alt="Tribute Calogero — photo 11" loading="lazy" style="object-position:center 25%;"></a>
+      <a href="/calo-photo-12.jpg"><img src="/calo-photo-12.jpg" alt="Tribute Calogero — photo 12" loading="lazy"></a>
     </div>
   </div>
 </section>
@@ -258,11 +264,16 @@
 <section>
   <div class="wrap tight narrow">
     <div class="section-head">
-      <span class="label">Voir</span>
-      <h2>Le teaser</h2>
+      <span class="label">Ver</span>
+      <h2>Los teasers</h2>
     </div>
-    <div style="position:relative; width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden;">
-      <iframe src="https://www.youtube.com/embed/odv7OehzC1A" title="Tribute ABBA — Teaser" style="position:absolute; inset:0; width:100%; height:100%; border:0;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
+      <div style="position:relative; width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden;">
+        <iframe src="https://www.youtube.com/embed/zY5Zkr5o0Ek" title="Tribute Calogero — Teaser 1" style="position:absolute; inset:0; width:100%; height:100%; border:0;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div style="position:relative; width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden;">
+        <iframe src="https://www.youtube.com/embed/oxmoT3FtSfs?start=27" title="Tribute Calogero — Teaser 2" style="position:absolute; inset:0; width:100%; height:100%; border:0;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
     </div>
   </div>
 </section>
@@ -270,22 +281,22 @@
 <section>
   <div class="wrap tight">
     <div class="info-grid">
-      <div class="info-item"><span class="mark">→</span><p>Groupe live complet — chant, musiciens, ingénieur du son</p></div>
-      <div class="info-item"><span class="mark">→</span><p>2 heures de concert live</p></div>
-      <div class="info-item"><span class="mark">→</span><p>Plus de 15 000 spectateurs à Helmond et TT Assen</p></div>
-      <div class="info-item"><span class="mark">→</span><p>Reconnu par la presse néerlandaise et internationale</p></div>
+      <div class="info-item"><span class="mark">→</span><p>4 músicos en directo — bajo, guitarra, teclados, batería</p></div>
+      <div class="info-item"><span class="mark">→</span><p>2 horas de concierto en directo</p></div>
+      <div class="info-item"><span class="mark">→</span><p>Espectáculo inspirado en las giras de Calogero (2014, 2018)</p></div>
+      <div class="info-item"><span class="mark">→</span><p>Músicos profesionales, décadas de experiencia en el escenario</p></div>
     </div>
   </div>
 </section>
 
 <section class="cta-band">
   <div class="wrap tight">
-    <span class="label">Envie de les programmer ?</span>
-    <h2>Réservez<br>Tribute ABBA</h2>
-    <p>SLP diffuse cet artiste et coordonne toute la logistique de votre événement.</p>
+    <span class="label">¿Quiere programarlos?</span>
+    <h2>Reserve<br>Tribute Calogero</h2>
+    <p>SLP distribuye a este artista y coordina toda la logística de su evento.</p>
     <div class="cta-row">
       <a href="mailto:contact@soundlightprod.fr" class="btn btn-primary">contact@soundlightprod.fr</a>
-      <a href="tel:+33631949653" class="btn btn-ghost">06 31 94 96 53</a>
+      <a href="tel:+33631949653" class="btn btn-ghost">+33 6 31 94 96 53</a>
     </div>
   </div>
 </section>
@@ -293,30 +304,30 @@
 <footer>
   <div class="footer-wrap">
     <div class="footer-brand">
-      <img src="slp-logo-dark.png" alt="SLP - Sound Light Prod">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
       <div>
         <h3>Sound Light Prod</h3>
-        <p>Son, lumière, production d'événements et diffusion d'artistes en France et en Europe.</p>
+        <p>Sonido, iluminación, producción de eventos y distribución de artistas en Francia y Europa.</p>
       </div>
     </div>
     <div class="footer-col">
-      <h4>Navigation</h4>
-      <a href="index.html">Accueil</a>
-      <a href="artistes.html">Nos artistes et spectacles</a>
-      <a href="son-lumiere.html">Prestation technique</a>
-      <a href="diffusion.html">Notre philosophie de travail</a>
+      <h4>Navegación</h4>
+      <a href="index.html">Inicio</a>
+      <a href="artistes.html">Artistas y espectáculos</a>
+      <a href="son-lumiere.html">Servicios técnicos</a>
+      <a href="diffusion.html">Cómo trabajamos</a>
       <a href="agenda.html">Agenda</a>
-      <a href="galerie.html">Galerie</a>
-      <a href="contact.html">Contact</a>
-      <a href="boutique.html">Vente de matériel</a>
+      <a href="galerie.html">Galería</a>
+      <a href="contact.html">Contacto</a>
+      <a href="https://soundlightprod.fr/boutique.html">Venta de material (FR)</a>
     </div>
     <div class="footer-col">
-      <h4>Contact</h4>
+      <h4>Contacto</h4>
       <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>
-      <a href="tel:+33631949653">06 31 94 96 53</a>
+      <a href="tel:+33631949653">+33 6 31 94 96 53</a>
     </div>
     <div class="footer-col">
-      <h4>Suivez-nous</h4>
+      <h4>Síganos</h4>
       <div class="social-row">
         <a href="https://www.facebook.com/SoundlightP" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.8 8.6h1.9V5.9h-2.2c-2.3 0-3.7 1.5-3.7 3.8v1.6H7.6v2.8h2.2V21h3v-6.9h2.4l.4-2.8h-2.8V9.9c0-.8.3-1.3 1-1.3z"/></svg></a>
         <a href="https://www.instagram.com/slp_france/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
@@ -324,18 +335,18 @@
       </div>
     </div>
   </div>
-  <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Mentions légales</a> · <a href="cgv-boutique.html" style="color:inherit;">CGV Boutique</a></p>
+  <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="mentions-legales.html" style="color:inherit;">Aviso legal</a> · <a href="https://soundlightprod.fr/cgv-boutique.html" style="color:inherit;">Condiciones de venta (FR)</a></p>
 </footer>
 
 <script>
 (function(){
   const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
-  const ARTIST_SLUG = "the-best-abba-tribute";
+  const ARTIST_SLUG = "calo2-0";
 
   function formatDate(iso){
     try {
       const d = new Date(iso.slice(0,10) + 'T00:00:00');
-      return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
+      return d.toLocaleDateString('es-ES', { day:'2-digit', month:'short' });
     } catch(e){ return ''; }
   }
   function escapeHtml(str){
@@ -406,7 +417,7 @@
   fetch("https://slp-api.raspy-silence-d4c7.workers.dev/api/track-visit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ artist_slug: "the-best-abba-tribute", session_id: sid, ref: document.referrer })
+    body: JSON.stringify({ artist_slug: "calo2-0", session_id: sid, ref: document.referrer })
   }).catch(function(){});
 })();
 </script>
