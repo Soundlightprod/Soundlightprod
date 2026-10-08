@@ -227,6 +227,10 @@ function routeDomain(request, url) {
     return redirect(`${url.origin}${path.replace(/dj-provisoire(\.html)?$/, "dj-animation.html")}`);
   }
 
+  // Ancienne page « Notre philosophie de travail » fusionnée dans l'accueil
+  const philo = path.match(/^(\/(?:en|es|it))?\/diffusion(\.html)?$/);
+  if (philo) return redirect(`${url.origin}${philo[1] || ""}/`);
+
   // Anciennes adresses de fiches (nom de groupe retiré des URL)
   const RENAMED = { "the-best-abba-tribute": "tribute-abba", "calo-2-0": "tribute-calogero" };
   const renamedMatch = path.match(/^(.*\/)(the-best-abba-tribute|calo-2-0)(\.html)?$/);
