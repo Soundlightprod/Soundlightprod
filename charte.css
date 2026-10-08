@@ -152,6 +152,6 @@ footer::before{content:''; position:absolute; left:0; right:0; top:0; height:4px
   -webkit-background-clip:text; background-clip:text;}
 .feux h1.rot .beamtxt .ph:not(.on):not(.out){visibility:hidden;}
 /* Menu : reste sur une ligne entre tablette et petit écran */
-@media (min-width:961px) and (max-width:1240px){ nav ul{gap:14px !important; flex-wrap:nowrap !important;} nav a{font-size:.8rem !important; white-space:nowrap;} .brand img{height:32px !important;} .lang-switch{margin-left:10px !important;} .nav-wrap{padding-left:16px !important; padding-right:16px !important; gap:12px;} }
+@media (min-width:961px){ nav ul{gap:14px !important; flex-wrap:nowrap !important;} nav a{font-size:.8rem !important; white-space:nowrap;} .brand img{height:32px !important;} .lang-switch{margin-left:10px !important;} .nav-wrap{padding-left:16px !important; padding-right:16px !important; gap:12px;} }
 @media (min-width:961px) and (max-width:1100px){ nav ul{gap:10px !important;} nav a{font-size:.74rem !important; letter-spacing:0 !important;} }
 @media (min-width:961px) and (max-width:1010px){ nav ul{gap:8px !important;} nav a{font-size:.7rem !important;} .lang-switch a{padding:4px 5px !important;} }
