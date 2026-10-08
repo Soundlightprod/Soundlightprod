@@ -149,6 +149,11 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+  .photo-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:14px;}
+  @media (max-width:600px){ .photo-grid{grid-template-columns:1fr;} }
+  .photo-grid a{display:block; border-radius:14px; overflow:hidden; aspect-ratio:3/2; background:var(--ink-2); cursor:zoom-in;}
+  .photo-grid img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s ease;}
+  .photo-grid a:hover img{transform:scale(1.04);}
 </style>
 
 
@@ -227,8 +232,8 @@
 <section>
   <div class="wrap tight narrow">
     <div class="bio-wrap">
-      <div class="logo-frame">
-        <img src="/calo2-0-logo.jpg" alt="Tribute Calogero">
+      <div class="logo-frame" style="padding:0; overflow:hidden;">
+        <img src="/calo-photo-4.jpg" alt="Tribute Calogero, sur scène" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
       </div>
       <div class="bio-text">
         <p>Stella rossa, battipenna a specchio, manico al contrario… Ogni fan di Calogero riconosce subito questo strumento. Il fondatore della band, suo fedele ammiratore, ha deciso di personalizzarlo con le proprie mani: nel 2024 nasce questo tributo, frutto di un colpo di fulmine durante un concerto del 2007, la sera in cui scelse di fare della musica la sua professione.</p><p>Accompagnata da tre musicisti di talento, la band reinterpreta i grandi classici del repertorio di Calogero ispirandosi al formato in quartetto dei tour "Les Feux d'Artifice Tour" (2014) e "Liberté Chérie Tour" (2018). Artista imprescindibile della canzone francese, i suoi brani accompagnano un pubblico vastissimo: "Yalla", "Je joue de la musique", "En apesanteur", "Voler de nuit", "C'est dit"…</p><p>Qualunque sia la vostra provenienza o la vostra età, salite a bordo per 2 ore di concerto con Tribute Calogero e lasciate che la magia faccia il resto.</p>
@@ -266,9 +271,24 @@
 </section>
 
 <section>
-  <div class="wrap tight">
-    <div class="banner-photo" style="padding:0; overflow:hidden; border-radius:20px; aspect-ratio:900/765; max-width:620px; margin:0 auto; background:var(--ink-2);">
-      <img src="/calo2-0-photo-1.png" alt="Tribute Calogero — sul palco" style="width:100%; height:100%; object-fit:cover; object-position:center;">
+  <div class="wrap tight narrow">
+    <div class="section-head">
+      <span class="label">In immagini</span>
+      <h2>La band</h2>
+    </div>
+    <div class="photo-grid">
+      <a href="/calo-photo-1.jpg"><img src="/calo-photo-1.jpg" alt="Tribute Calogero — photo 1" loading="lazy"></a>
+      <a href="/calo-photo-2.jpg"><img src="/calo-photo-2.jpg" alt="Tribute Calogero — photo 2" loading="lazy"></a>
+      <a href="/calo-photo-3.jpg"><img src="/calo-photo-3.jpg" alt="Tribute Calogero — photo 3" loading="lazy"></a>
+      <a href="/calo-photo-4.jpg"><img src="/calo-photo-4.jpg" alt="Tribute Calogero — photo 4" loading="lazy"></a>
+      <a href="/calo-photo-5.jpg"><img src="/calo-photo-5.jpg" alt="Tribute Calogero — photo 5" loading="lazy"></a>
+      <a href="/calo-photo-6.jpg"><img src="/calo-photo-6.jpg" alt="Tribute Calogero — photo 6" loading="lazy" style="object-position:center 25%;"></a>
+      <a href="/calo-photo-7.jpg"><img src="/calo-photo-7.jpg" alt="Tribute Calogero — photo 7" loading="lazy"></a>
+      <a href="/calo-photo-8.jpg"><img src="/calo-photo-8.jpg" alt="Tribute Calogero — photo 8" loading="lazy" style="object-position:center 25%;"></a>
+      <a href="/calo-photo-9.jpg"><img src="/calo-photo-9.jpg" alt="Tribute Calogero — photo 9" loading="lazy"></a>
+      <a href="/calo-photo-10.jpg"><img src="/calo-photo-10.jpg" alt="Tribute Calogero — photo 10" loading="lazy"></a>
+      <a href="/calo-photo-11.jpg"><img src="/calo-photo-11.jpg" alt="Tribute Calogero — photo 11" loading="lazy" style="object-position:center 25%;"></a>
+      <a href="/calo-photo-12.jpg"><img src="/calo-photo-12.jpg" alt="Tribute Calogero — photo 12" loading="lazy"></a>
     </div>
   </div>
 </section>
@@ -432,5 +452,10 @@
     body: JSON.stringify({ artist_slug: "calo2-0", session_id: sid, ref: document.referrer })
   }).catch(function(){});
 })();
+</script>
+<script>
+document.querySelectorAll('.photo-grid a').forEach(function(a){
+  a.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openLightbox(a.getAttribute('href')); });
+});
 </script>
 </html>
