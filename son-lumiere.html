@@ -136,6 +136,66 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+
+  /* ===== Son & Lumière v2 ===== */
+  .page-hero.sl-hero{padding:120px 24px 60px; min-height:520px; display:flex; align-items:center;}
+  .sl-beams{position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0;}
+  .sl-beams span{position:absolute; top:-10%; width:220px; height:130%; transform-origin:50% 0; filter:blur(18px); opacity:.55; mix-blend-mode:screen;
+    background:linear-gradient(180deg, var(--c) 0%, rgba(0,0,0,0) 85%); clip-path:polygon(46% 0, 54% 0, 100% 100%, 0 100%); animation:slsweep 7s ease-in-out infinite alternate;}
+  .sl-beams span:nth-child(1){left:8%;  --c:rgba(50,89,190,.95);  animation-duration:6s;}
+  .sl-beams span:nth-child(2){left:30%; --c:rgba(140,50,144,.95); animation-duration:8s; animation-delay:-2s;}
+  .sl-beams span:nth-child(3){left:52%; --c:rgba(255,9,83,.95);   animation-duration:7s; animation-delay:-4s;}
+  .sl-beams span:nth-child(4){left:74%; --c:rgba(251,198,8,.9);   animation-duration:9s; animation-delay:-1s;}
+  @keyframes slsweep{0%{transform:rotate(-24deg);} 100%{transform:rotate(24deg);}}
+  @media (prefers-reduced-motion: reduce){ .sl-beams span{animation:none;} }
+  .sl-hero h1{font-size:clamp(3rem,9vw,7rem) !important; line-height:.9; text-transform:uppercase; margin-bottom:24px;}
+  .sl-hero h1 .g1{background:var(--froid); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .sl-hero h1 .g2{background:var(--chaud); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .sl-hero .page-hero-inner{max-width:900px;}
+  .sl-hero .page-hero-inner p{font-size:1.12rem; max-width:680px;}
+
+  .trio{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  .tri{position:relative; border-radius:24px; overflow:hidden; min-height:420px; display:flex; flex-direction:column; justify-content:flex-end; isolation:isolate; border:1px solid var(--line); transition:transform .35s;}
+  .tri:hover{transform:translateY(-6px) rotate(-.4deg);}
+  .tri img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; transition:transform .8s;}
+  .tri:hover img{transform:scale(1.08);}
+  .tri::before{content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(12,10,20,.1) 20%, rgba(12,10,20,.92) 78%);}
+  .tri .word{font-family:'League Spartan',sans-serif; font-weight:900; font-size:clamp(2.6rem,4.6vw,3.8rem); line-height:.9; text-transform:uppercase; -webkit-background-clip:text; background-clip:text; color:transparent; margin:0 0 12px;}
+  .tri.t1 .word{background-image:var(--froid);} .tri.t2 .word{background-image:var(--chaud);} .tri.t3 .word{background-image:linear-gradient(90deg,#FBC608,#F7F5F0);}
+  .tri .in{padding:28px 26px 26px;}
+  .tri p{color:rgba(247,245,240,.85); font-size:.95rem; line-height:1.55; margin:0 0 14px;}
+  .tri ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:7px;}
+  .tri li{font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.05em; text-transform:uppercase; padding:6px 10px; border-radius:100px; background:rgba(247,245,240,.1); backdrop-filter:blur(4px);}
+  @media (max-width:900px){ .trio{grid-template-columns:1fr;} .tri{min-height:340px;} }
+
+  .sl-strip{display:flex; gap:14px; overflow:hidden; mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);}
+  .sl-strip .track{display:flex; gap:14px; animation:slscroll 40s linear infinite;}
+  .sl-strip:hover .track{animation-play-state:paused;}
+  .sl-strip img{height:260px; width:auto; border-radius:16px; display:block; flex-shrink:0;}
+  @keyframes slscroll{to{transform:translateX(-50%);}}
+  @media (prefers-reduced-motion: reduce){ .sl-strip .track{animation:none;} }
+  @media (max-width:600px){ .sl-strip img{height:180px;} }
+
+  .services{gap:16px !important; grid-template-columns:repeat(3,1fr) !important;}
+  @media (max-width:900px){ .services{grid-template-columns:1fr 1fr !important;} }
+  @media (max-width:560px){ .services{grid-template-columns:1fr !important;} }
+  .service{transition:transform .3s, border-color .3s, box-shadow .3s !important;}
+  .service:hover{transform:translateY(-5px); box-shadow:0 18px 40px rgba(0,0,0,.4);}
+  .service:nth-child(6n+1) .dot{background:var(--froid) !important;} .service:nth-child(6n+2) .dot{background:var(--chaud) !important;}
+  .service:nth-child(6n+3) .dot{background:linear-gradient(135deg,#FBC608,#FC8024) !important;} .service:nth-child(6n+4) .dot{background:linear-gradient(135deg,#FF0953,#8C3290) !important;}
+  .service:nth-child(6n+5) .dot{background:linear-gradient(135deg,#3259BE,#FF0953) !important;} .service:nth-child(6n+6) .dot{background:linear-gradient(135deg,#8C3290,#FBC608) !important;}
+  .service .dot svg{stroke:#fff !important;}
+
+  .tsteps{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; counter-reset:ts;}
+  .tstep{position:relative; padding:26px 22px; border-radius:18px; background:var(--ink-2); border:1px solid var(--line); overflow:hidden;}
+  .tstep::before{counter-increment:ts; content:'0' counter(ts); position:absolute; right:14px; top:6px; font-family:'League Spartan',sans-serif; font-weight:900; font-size:4.2rem; line-height:1; color:rgba(247,245,240,.06);}
+  .tstep h3{font-size:1.08rem; margin:0 0 8px; position:relative;}
+  .tstep p{color:var(--muted); font-size:.92rem; line-height:1.55; margin:0; position:relative;}
+  .tstep::after{content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--spectre);}
+  @media (max-width:980px){ .tsteps{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .tsteps{grid-template-columns:1fr;} }
+  .wrap{padding-top:40px; padding-bottom:40px;}
+  .section-head{margin-bottom:30px !important;}
 </style>
 
 
@@ -181,27 +241,37 @@
   </div>
 </header>
 
-<section class="page-hero">
+<section class="page-hero sl-hero">
+  <div class="sl-beams" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
   <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
   <div class="page-hero-inner">
-    <span class="label">Prestations techniques</span>
-    <h1>Prestation technique</h1>
-    <p>Une sonorisation et un éclairage pensés pour votre salle, votre public et l'ambiance que vous voulez créer — installés et gérés par nos soins, du réglage au dernier rappel. Concerts en salle ou en extérieur, spectacles, conventions, mariages, soirées associatives : nous adaptons notre régie à chaque format d'événement.</p>
+    <span class="label">Prestation technique</span>
+    <h1><span class="g1">Son</span> &amp; <span class="g2">Lumière</span></h1>
+    <p>On allume la salle, on fait trembler les murs et on règle chaque détail pour que votre public en prenne plein les yeux et les oreilles. Concerts, spectacles, mariages, fêtes de village, soirées d'entreprise : nous installons, réglons et pilotons toute la technique, du premier câble au dernier rappel.</p>
   </div>
 </section>
 
 <section>
-  <div class="wrap tight" style="padding-bottom:0;">
-    <img class="tech-photo" src="son-lumiere-salle.jpg" alt="Salle des fêtes équipée par SLP : lyres, éclairage de scène et sonorisation">
-  </div>
-</section>
-
-<section>
-  <div class="wrap tight">
-    <div class="section-head">
-      <span class="label">Tous formats d'événement</span>
-      <h2>Une régie qui s'adapte, quel que soit l'événement</h2>
+  <div class="wrap">
+    <div class="section-head"><span class="label">Ce qu'on apporte</span><h2>Trois ingrédients,<br>une scène qui claque</h2></div>
+    <div class="trio">
+      <div class="tri t1"><img src="abba-photo-2.jpg" alt="" loading="lazy"><div class="in"><h3 class="word">Son</h3><p>Une sonorisation calibrée pour votre lieu : chaque mot s'entend, chaque basse se ressent, du premier rang au fond de la salle.</p><ul><li>Façade</li><li>Retours</li><li>Micros HF</li><li>Mixage</li></ul></div></div>
+      <div class="tri t2"><img src="panache-photo-4.jpg" alt="" loading="lazy"><div class="in"><h3 class="word">Lumière</h3><p>Lyres, projecteurs, couleurs et effets : on crée l'ambiance et on met vos artistes en valeur, de la balade à l'explosion finale.</p><ul><li>Lyres</li><li>Éclairage scénique</li><li>Ambiances</li><li>Effets</li></ul></div></div>
+      <div class="tri t3"><img src="son-lumiere-salle.jpg" alt="" loading="lazy"><div class="in"><h3 class="word">Régie</h3><p>Un technicien sur place du montage au démontage : il règle, pilote et ajuste en direct. Vous, vous profitez.</p><ul><li>Installation</li><li>Balances</li><li>Pilotage live</li><li>Démontage</li></ul></div></div>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap" style="max-width:none; padding-left:0; padding-right:0;">
+    <div class="section-head" style="max-width:1220px; margin-left:auto; margin-right:auto; padding:0 24px;"><span class="label">Nos scènes</span><h2>Ça brille, ça vibre</h2></div>
+    <div class="sl-strip" aria-hidden="true"><div class="track"><img src="panache-photo-4.jpg" alt="" loading="lazy"><img src="balavoine-photo-8.jpg" alt="" loading="lazy"><img src="homepage-crowd-lights.png" alt="" loading="lazy"><img src="son-lumiere-salle.jpg" alt="" loading="lazy"><img src="abba-photo-1.jpg" alt="" loading="lazy"><img src="balavoine-photo-2.jpg" alt="" loading="lazy"><img src="matmatah-photo-7.jpg" alt="" loading="lazy"><img src="panache-photo-2.jpg" alt="" loading="lazy"><img src="panache-photo-4.jpg" alt="" loading="lazy"><img src="balavoine-photo-8.jpg" alt="" loading="lazy"><img src="homepage-crowd-lights.png" alt="" loading="lazy"><img src="son-lumiere-salle.jpg" alt="" loading="lazy"><img src="abba-photo-1.jpg" alt="" loading="lazy"><img src="balavoine-photo-2.jpg" alt="" loading="lazy"><img src="matmatah-photo-7.jpg" alt="" loading="lazy"><img src="panache-photo-2.jpg" alt="" loading="lazy"></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head"><span class="label">Tous formats d'événement</span><h2>Une régie qui s'adapte,<br>quel que soit l'événement</h2></div>
     <div class="services">
       <div class="service">
         <div class="glow"></div>
@@ -252,6 +322,13 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head"><span class="label">Comment ça marche</span><h2>Zéro prise de tête<br>côté technique</h2></div>
+    <div class="tsteps"><div class="tstep"><h3>On étudie votre lieu</h3><p>Taille de la salle, jauge, extérieur ou intérieur : visite technique possible pour les grandes jauges.</p></div><div class="tstep"><h3>On dimensionne</h3><p>Le bon matériel, ni trop ni trop peu, avec un devis clair et détaillé.</p></div><div class="tstep"><h3>On installe et on règle</h3><p>Montage, câblage, balances avec les artistes : tout est prêt avant l'ouverture des portes.</p></div><div class="tstep"><h3>On pilote, puis on range</h3><p>Un technicien aux commandes pendant tout l'événement, puis démontage rapide et propre.</p></div></div>
   </div>
 </section>
 
