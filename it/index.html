@@ -374,39 +374,43 @@
 
 <script>
 (function(){
+  // Carrousel des artistes : défilement continu en boucle, pause au survol / au toucher
   var track = document.getElementById('artistCarousel');
   if (!track) return;
   var cards = Array.prototype.slice.call(track.querySelectorAll('.artist-card'));
   if (!cards.length) return;
-  var idx = 0;
-  var timer;
-  function goTo(i){
-    idx = (i + cards.length) % cards.length;
-    // Défilement horizontal du carrousel uniquement : scrollIntoView faisait aussi
-    // défiler la page verticalement sur mobile (remontée de la page).
-    track.scrollTo({ left: cards[idx].offsetLeft - cards[0].offsetLeft, behavior:'smooth' });
+  cards.forEach(function(c){ var k = c.cloneNode(true); k.setAttribute('aria-hidden','true'); k.tabIndex = -1; track.appendChild(k); });
+  track.style.scrollSnapType = 'none';
+  track.style.scrollBehavior = 'auto';
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var speed = 0.5, paused = false, pos = 0, resumeT;
+  function half(){ return track.scrollWidth / 2; }
+  function tick(){
+    if (!paused && !reduce){
+      pos += speed;
+      if (pos >= half()) pos -= half();
+      track.scrollLeft = pos;
+    }
+    requestAnimationFrame(tick);
   }
-  window.artistCarouselScroll = function(dir){ stop(); goTo(idx + dir); start(); };
-  function start(){
-    stop();
-    timer = setInterval(function(){ goTo(idx + 1); }, 4200);
-  }
-  function stop(){ clearInterval(timer); }
-  track.addEventListener('mouseenter', stop);
-  track.addEventListener('mouseleave', start);
-  track.addEventListener('touchstart', stop, { passive:true });
-  track.addEventListener('touchend', function(){ setTimeout(start, 6000); }, { passive:true });
-  // Recale l'index sur la carte visible après un swipe manuel
-  track.addEventListener('scroll', function(){
-    var best = 0, d = Infinity;
-    cards.forEach(function(c, i){ var dd = Math.abs(c.offsetLeft - cards[0].offsetLeft - track.scrollLeft); if (dd < d){ d = dd; best = i; } });
-    idx = best;
-  }, { passive:true });
-  // Pause quand le carrousel n'est pas à l'écran
-  if ('IntersectionObserver' in window){
-    new IntersectionObserver(function(e){ e[0].isIntersecting ? start() : stop(); }).observe(track);
-  }
-  start();
+  function pause(){ paused = true; clearTimeout(resumeT); }
+  function resume(delay){ clearTimeout(resumeT); resumeT = setTimeout(function(){ pos = track.scrollLeft; paused = false; }, delay || 0); }
+  track.addEventListener('mouseenter', pause);
+  track.addEventListener('mouseleave', function(){ resume(0); });
+  track.addEventListener('focusin', pause);
+  track.addEventListener('focusout', function(){ resume(0); });
+  track.addEventListener('touchstart', pause, { passive:true });
+  track.addEventListener('touchend', function(){ resume(2500); }, { passive:true });
+  track.addEventListener('scroll', function(){ if (paused){ var h = half(); if (track.scrollLeft >= h) track.scrollLeft -= h; } }, { passive:true });
+  window.artistCarouselScroll = function(dir){
+    pause();
+    var step = cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : 270;
+    var target = track.scrollLeft + dir * step;
+    if (target < 0) { track.scrollLeft += half(); target += half(); }
+    track.scrollTo({ left: target, behavior: 'smooth' });
+    resume(1800);
+  };
+  requestAnimationFrame(tick);
 })();
 </script>
 
