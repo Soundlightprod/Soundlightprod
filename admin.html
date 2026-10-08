@@ -259,6 +259,10 @@
   .dispo-item:hover .di-del{opacity:1;} .di-del:hover{background:#e11d48; opacity:1;}
   .di-opt{font-size:.62rem; letter-spacing:.04em; background:rgba(0,0,0,.35); padding:1px 4px; border-radius:4px;}
   @media (hover:none){ .di-del{opacity:.9;} }
+  .dispo-item .di-txt{cursor:pointer;} .dispo-item .di-txt:hover{text-decoration:underline;}
+  .di-ok{flex-shrink:0; border:0; background:#16a34a; color:#fff; width:18px; height:18px; border-radius:50%; font-size:11px; line-height:18px; padding:0; cursor:pointer;}
+  .di-ok:hover{background:#15803d;}
+  .hist-nav{display:flex; gap:6px; flex-wrap:wrap; margin:0 0 18px;} .hist-nav button{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:6px 14px; cursor:pointer; font-size:.82rem; text-transform:capitalize;} .hist-nav button.active{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
 </style>
 </head>
 <body>
@@ -324,6 +328,7 @@
 
     <div class="form-row">
       <select id="evtArtist" onchange="onArtistChange()">
+        <option value="" disabled selected>— Choisir l'artiste —</option>
         <option value="alchimie">Alchimie</option>
         <option value="cache-candy">Cache Candy</option>
         <option value="the-fine-allies">The Fine Allies</option>
@@ -393,12 +398,12 @@
         <label>Date de publication</label>
         <input type="date" id="evtPublish">
       </div>
-      <div class="field-group" id="evtExpiresGroup">
+      <div class="field-group" id="evtExpiresGroup" style="display:none !important;">
         <label>Date de suppression</label>
         <input type="date" id="evtExpires">
       </div>
     </div>
-    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Une date en <strong>option</strong> bloque déjà le créneau (anti-doublon actif) mais reste à confirmer — et n'apparaît jamais publiquement (fiche artiste, agenda du site), même si "Visible au public" est coché. Bascule-la en "Validée" pour qu'elle se publie. Date de publication vide = visible tout de suite une fois validée. Pour un concert, la date de suppression contrôle jusqu'à quand l'actu reste affichée sur le site ; pour tous les types, elle détermine aussi jusqu'à quand la date apparaît dans les vues "Toutes les dates" et l'agenda du groupe.</p>
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-8px;">Une date en <strong>option</strong> bloque déjà le créneau (anti-doublon actif) mais reste à confirmer — et n'apparaît jamais publiquement (fiche artiste, agenda du site), même si "Visible au public" est coché. Bascule-la en "Validée" pour qu'elle se publie. Date de publication vide = visible tout de suite une fois validée. Une fois la date passée, l'événement part automatiquement dans l'Historique le lendemain.</p>
 
     <!-- ============ FEUILLE DE ROUTE (concert uniquement) ============ -->
     <details id="roadmapSection" style="display:none; margin-top:26px; padding-top:20px; border-top:1px solid var(--line);">
@@ -658,7 +663,7 @@
   <!-- ============ ONGLET 5 : HISTORIQUE ============ -->
   <div class="tab-content" id="tab-history">
     <h2>Historique — dates passées</h2>
-    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:24px;">Toutes les dates passées (concerts, indisponibilités, invités inclus), classées par mois — conservées ici indépendamment de leur date de suppression, pour garder une mémoire complète.</p>
+    <p style="color:var(--muted); font-size:0.86rem; margin-bottom:24px;">Toutes les dates passées (concerts, indisponibilités, invités inclus), classées par mois — un événement y arrive automatiquement le lendemain de sa date.</p>
     <div id="historyContainer"></div>
     <p class="empty" id="historyEmpty" style="display:none;">Aucune date passée pour le moment.</p>
   </div>
@@ -1108,6 +1113,7 @@
       const data = await res.json();
       if (!Array.isArray(data)) throw new Error(data.error || 'Réponse inattendue');
       window.actusData = data;
+      if (typeof renderHistory === 'function') setTimeout(renderHistory, 0);
       const tbody = document.querySelector('#actuTable tbody');
       if (!data.length){ document.getElementById('actuEmpty').style.display='block'; tbody.innerHTML=''; renderAgenda(); renderPublicUpcoming(); return; }
       document.getElementById('actuEmpty').style.display='none';
@@ -1523,7 +1529,7 @@
     document.getElementById('evtPhotoRow').style.display = isIndispo ? 'none' : 'flex';
     document.getElementById('evtStatusGroup').style.display = isActu ? 'none' : 'flex';
     document.getElementById('evtPublishGroup').style.display = 'flex';
-    document.getElementById('evtExpiresGroup').style.display = 'flex';
+    document.getElementById('evtExpiresGroup').style.display = 'none';
     document.getElementById('evtEndGroup').style.display = 'flex';
     document.getElementById('roadmapSection').style.display = isConcertLike ? 'block' : 'none';
     if (isConcertLike && !document.querySelector('#timingRows .timing-row')) setTimingSteps(null);
@@ -1656,6 +1662,7 @@
     document.getElementById('evtText').value = '';
     document.getElementById('evtLabel').value = '';
     document.getElementById('evtGuestName').value = '';
+    document.getElementById('evtArtist').value = '';
     onArtistChange();
     document.getElementById('evtStatus').value = 'option';
     document.getElementById('evtStart').value = '';
@@ -1686,6 +1693,7 @@
   async function submitEvent(){
     const wasRequalify = pendingRequalify;
     const artistSel = document.getElementById('evtArtist').value;
+    if (!artistSel){ alert("Merci de choisir l'artiste (ou « Prestation technique »)."); return; }
     const isGuest = artistSel === '_guest';
     const guest_name = isGuest ? document.getElementById('evtGuestName').value.trim() : '';
     if (isGuest && !guest_name){ alert("Merci de renseigner le nom de l'artiste invité."); return; }
@@ -1697,17 +1705,16 @@
     const start_date = document.getElementById('evtStart').value;
     const end_date = document.getElementById('evtEnd').value || start_date;
     const publish_at = document.getElementById('evtPublish').value;
-    const expires_at = document.getElementById('evtExpires').value;
+    // Plus de date de suppression à saisir : l'événement passe en archive le lendemain de sa (dernière) date
+    const _dayAfter = iso => { const d = new Date(iso + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + 1); return d.toISOString().slice(0,10); };
+    const _base = end_date || start_date;
+    const expires_at = _base ? _dayAfter(_base) : (() => { const d = new Date(); d.setDate(d.getDate() + 60); return d.toISOString().slice(0,10); })();
     const status = document.getElementById('evtStatus').value;
     const conflictBox = document.getElementById('eventConflict');
     conflictBox.innerHTML = '';
 
-    if (type !== 'indisponible' && (!text || !expires_at)){
-      alert('Merci de renseigner le texte et la date de suppression.');
-      return;
-    }
-    if (type === 'indisponible' && !expires_at){
-      alert('Merci de renseigner la date de suppression.');
+    if (type !== 'indisponible' && !text){
+      alert('Merci de renseigner le texte.');
       return;
     }
     if ((ROADMAP_TYPES.includes(type) || type === 'indisponible') && !start_date){
@@ -1853,7 +1860,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''} gv-clickable" onclick="openAddEventModal('${dateStr}')">
         <div class="agenda-daynum">${day}</div>
-        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || '🎤'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span><button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
+        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt" onclick="event.stopPropagation(); editDispo(${d.id})" title="Modifier">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || '🎤'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span>${d.status === 'option' ? `<button class="di-ok" title="Valider l'option" onclick="event.stopPropagation(); quickValidate(${d.id})">✓</button>` : ''}<button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
       </div>`;
     }
 
@@ -2434,31 +2441,45 @@
     `).join('');
   }
 
+  let historyMonth = null;
   function renderHistory(){
     const todayStr = new Date().toISOString().slice(0,10);
-    const past = (window.dispoData || []).filter(d => d.date < todayStr);
-    const container = document.getElementById('historyContainer');
-    document.getElementById('historyEmpty').style.display = past.length ? 'none' : 'block';
-    if (!past.length){ container.innerHTML = ''; return; }
-
-    const groups = {};
-    past.forEach(d => {
-      const monthKey = d.date.slice(0,7);
-      (groups[monthKey] = groups[monthKey] || []).push(d);
+    const rows = []; const seen = new Set();
+    (window.dispoData || []).filter(d => d.date < todayStr).forEach(d => {
+      rows.push(d); if (d.source_actu_id) seen.add(d.source_actu_id + '|' + d.date);
     });
-
+    // Événements passés dont la date n'est plus dans l'agenda : on les reconstitue depuis les actualités
+    (window.actusData || []).forEach(a => {
+      if (!a.event_date || a.type === 'actu') return;
+      const end = a.event_end_date || a.event_date;
+      for (let d = new Date(a.event_date + 'T00:00:00Z'); d.toISOString().slice(0,10) <= end; d.setUTCDate(d.getUTCDate() + 1)){
+        const ds = d.toISOString().slice(0,10);
+        if (ds >= todayStr || seen.has(a.id + '|' + ds)) continue;
+        seen.add(a.id + '|' + ds);
+        rows.push({ date: ds, artist_slug: a.artist_slug, guest_name: a.guest_name, type: a.type, status: 'validee', label: a.text, venue_name: a.venue_name, venue_city: a.venue_city });
+      }
+    });
+    const container = document.getElementById('historyContainer');
+    document.getElementById('historyEmpty').style.display = rows.length ? 'none' : 'block';
+    if (!rows.length){ container.innerHTML = ''; return; }
+    const groups = {};
+    rows.forEach(d => { (groups[d.date.slice(0,7)] = groups[d.date.slice(0,7)] || []).push(d); });
     const monthKeys = Object.keys(groups).sort().reverse();
-    container.innerHTML = monthKeys.map(monthKey => {
+    if (!historyMonth || !groups[historyMonth]) historyMonth = 'all';
+    const mLabel = k => new Date(k + '-01T00:00:00').toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+    const nav = `<div class="hist-nav"><button class="${historyMonth === 'all' ? 'active' : ''}" onclick="historyMonth='all'; renderHistory()">Tous les mois</button>` +
+      monthKeys.map(k => `<button class="${historyMonth === k ? 'active' : ''}" onclick="historyMonth='${k}'; renderHistory()">${mLabel(k)} (${groups[k].length})</button>`).join('') + '</div>';
+    const shown = historyMonth === 'all' ? monthKeys : [historyMonth];
+    container.innerHTML = nav + shown.map(monthKey => {
       const entries = groups[monthKey].sort((a, b) => b.date.localeCompare(a.date));
-      const monthLabel = new Date(monthKey + '-01T00:00:00').toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
       return `
-        <h3 style="text-transform:capitalize;">${monthLabel}</h3>
+        <h3 style="text-transform:capitalize;">${mLabel(monthKey)}</h3>
         <table>
           <thead><tr><th>Date</th><th>Artiste</th><th>Type</th><th>Statut</th><th>Détail</th></tr></thead>
           <tbody>
             ${entries.map(d => `
               <tr>
-                <td>${d.date}</td>
+                <td>${d.date.split('-').reverse().join('/')}</td>
                 <td>${entryLabel(d)}</td>
                 <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
                 <td>${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</td>
@@ -2480,6 +2501,17 @@
     showToast(newStatus === 'validee' ? 'Date validée' : 'Date repassée en option');
   }
 
+
+
+  async function quickValidate(id){
+    const d = (window.dispoData || []).find(x => x.id === id); if (!d) return;
+    const ids = d.source_actu_id ? (window.dispoData || []).filter(x => x.source_actu_id === d.source_actu_id && x.status === 'option').map(x => x.id) : [id];
+    for (const i of ids){
+      await fetch(`${API_BASE}/api/admin/agenda/${i}/status`, { method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`}, body: JSON.stringify({ status:'validee' }) });
+    }
+    await loadDispos();
+    showToast('Option validée');
+  }
 
   // Suppression directe depuis le calendrier du planning (date ou option)
   async function quickDeleteDispo(id){
