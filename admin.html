@@ -2046,7 +2046,7 @@
     document.getElementById('periodBtn-yesterday').classList.add('active');
   }
   function visitorInfo(v){
-    const bits = [v.network, v.device, v.referrer ? 'via ' + v.referrer : ''].filter(Boolean);
+    const bits = [v.network, v.device, v.referrer ? 'via ' + refLabel(v.referrer) : ''].filter(Boolean);
     return bits.length ? `<div style="color:var(--muted); font-size:0.76rem; margin-top:2px;">${bits.join(' · ')}${v.is_bot ? ' · 🤖 robot' : ''}</div>` : '';
   }
   function siteTag(site){ const k = site || 'slp'; return `<span class="site-tag"><i style="background:${SITE_COLORS[k]||'#999'}"></i>${SITE_LABELS[k]||k}</span>`; }
@@ -2110,7 +2110,7 @@
       const renderList = (sel, list, dim) => {
         const rows = (list || []).slice(0, 12); const max = Math.max(1, ...rows.map(r => r.total));
         document.querySelector(sel + ' tbody').innerHTML = rows.length ? rows.map(row => `
-          <tr onclick="showGeoDetail('${dim}', '${escapeAttr(row.label)}')"><td><div class="bl"><span class="f" style="width:${Math.round(row.total*100/max)}%"></span><span>${row.label}</span></div></td><td>${row.total}</td></tr>
+          <tr onclick="showGeoDetail('${dim}', '${escapeAttr(row.label)}')"><td><div class="bl"><span class="f" style="width:${Math.round(row.total*100/max)}%"></span><span>${dim==='referrer' ? refLabel(row.label) : row.label}</span></div></td><td>${row.total}</td></tr>
         `).join('') : '<tr><td class="vz-note" style="cursor:default">Aucune donnée</td><td></td></tr>';
       };
       renderList('#breakdownCountryTable', data.by_country, 'country');
@@ -2172,7 +2172,7 @@
       const [d, t] = (p.visited_at || '').split(' ');
       const when = d ? `${d.split('-').reverse().slice(0,2).join('/')} ${(t||'').slice(0,5)}` : '';
       const loc = [p.city, p.region].filter(Boolean).join(', ') || p.country || 'Lieu inconnu';
-      const meta = [p.device, p.referrer ? 'via ' + p.referrer : '', p.network].filter(Boolean).join(' · ');
+      const meta = [p.device, p.referrer ? 'via ' + refLabel(p.referrer) : '', p.network].filter(Boolean).join(' · ');
       return `<div class="it" onclick="${p.session_id ? `showJourney('${p.session_id}')` : ''}"><span class="t">${when}</span><span>${pageLabel(p.page)} ${currentVisitsSite ? '' : siteTag(p.site)}</span><span>${loc}<div class="m">${meta}</div></span><span class="m">${p.session_id ? 'Parcours →' : ''}</span></div>`;
     }).join('') || '<p class="vz-note">Aucune visite sur la période.</p>';
   }
@@ -2197,6 +2197,7 @@
 
   function updateNoTrack(){ const el=document.getElementById('vzNoTrackState'); if(!el) return; let on=false; try{ on=!!localStorage.getItem('slp_notrack'); }catch(e){} el.textContent = on ? '✅ actif sur soundlightprod.fr pour cet appareil' : ''; }
   document.addEventListener('DOMContentLoaded', updateNoTrack);
+  function refLabel(r){ if(!r) return r; const m=String(r).match(/^emailing-([^.]+)\.?(.*)$/); if(!m) return r; const src=m[1].charAt(0).toUpperCase()+m[1].slice(1); return '📧 Emailing ' + src + (m[2] ? ' · ' + m[2].replace(/-/g,' ') : ''); }
   let visitsChartInstance = null;
   let currentTimeseriesGranularity = 'day';
 
