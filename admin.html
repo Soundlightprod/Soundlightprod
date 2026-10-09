@@ -1085,7 +1085,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''}">
         <div class="agenda-daynum">${day}</div>
-        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}${entryVenue(a) ? ' — ' + escapeAttr(entryVenue(a)) : ''}">${TYPE_ICONS[a.type] || '📣'} ${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)}${a.venue_city ? ' — ' + escapeAttr(a.venue_city) : ''}</div>`).join('')}
+        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}${entryVenue(a) ? ' — ' + escapeAttr(entryVenue(a)) : ''}">${TYPE_ICONS[a.type] || '📣'} ${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)}${typeTag(a)}${a.venue_city ? ' — ' + escapeAttr(a.venue_city) : ''}</div>`).join('')}
         ${dayActus.length > 3 ? `<div class="agenda-more">+${dayActus.length - 3}</div>` : ''}
       </div>`;
     }
@@ -1867,7 +1867,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''} gv-clickable" onclick="openAddEventModal('${dateStr}')">
         <div class="agenda-daynum">${day}</div>
-        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt" onclick="event.stopPropagation(); editDispo(${d.id})" title="Modifier">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || '🎤'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span>${d.status === 'option' ? `<button class="di-ok" title="Valider l'option" onclick="event.stopPropagation(); quickValidate(${d.id})">✓</button>` : ''}<button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
+        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt" onclick="event.stopPropagation(); editDispo(${d.id})" title="Modifier">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || '🎤'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${typeTag(d)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span>${d.status === 'option' ? `<button class="di-ok" title="Valider l'option" onclick="event.stopPropagation(); quickValidate(${d.id})">✓</button>` : ''}<button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
       </div>`;
     }
 
@@ -1979,6 +1979,14 @@
 
   function entryLabel(d){
     return d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug;
+  }
+
+  // Type affiché à côté du nom sur les calendriers : toujours pour la prestation technique
+  // (karaoké, animation, DJ…), et pour tout type autre que « concert » sur les groupes.
+  function typeTag(e){
+    if (!e || e.type === 'indisponible' || e.type === 'actu') return '';
+    if (e.artist_slug === 'presta-technique' || e.type !== 'concert') return ' · ' + escapeAttr(DISPO_TYPE_PLAIN[e.type] || e.type);
+    return '';
   }
 
   function entryVenue(d){
