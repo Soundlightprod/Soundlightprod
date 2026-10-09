@@ -1578,8 +1578,11 @@
     document.getElementById('evtArtist').value = a.guest_name ? '_guest' : a.artist_slug;
     document.getElementById('evtGuestName').value = a.guest_name || '';
     onArtistChange();
+    // Le type reste modifiable (concert ↔ cabaret ↔ DJ ↔ animation ↔ karaoké…) ; seule
+    // « Indisponibilité » est exclue car ce n'est pas une actu.
+    document.getElementById('evtType').disabled = false;
+    document.querySelector('#evtType option[value="indisponible"]').disabled = true;
     document.getElementById('evtType').value = a.type;
-    document.getElementById('evtType').disabled = true;
     document.getElementById('evtText').value = a.text || '';
     document.getElementById('evtPublic').checked = !!a.is_public;
     document.getElementById('evtStart').value = a.event_date || '';
@@ -1645,6 +1648,7 @@
     editingDispoId = id;
     editingActuId = null;
     document.getElementById('evtArtist').value = d.artist_slug;
+    document.querySelector('#evtType option[value="indisponible"]').disabled = false;
     document.getElementById('evtType').value = 'indisponible';
     document.getElementById('evtType').disabled = true;
     document.getElementById('evtLabel').value = d.label || '';
@@ -1684,6 +1688,7 @@
     editingDispoId = null;
     pendingRequalify = false;
     document.getElementById('evtType').disabled = false;
+    document.querySelector('#evtType option[value="indisponible"]').disabled = false;
     document.getElementById('evtFormTitle').textContent = 'Ajouter un événement';
     document.getElementById('evtSubmitBtn').textContent = 'Enregistrer';
     document.getElementById('evtCancelBtn').style.display = 'none';
