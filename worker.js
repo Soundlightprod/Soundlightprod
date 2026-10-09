@@ -539,7 +539,7 @@ export default {
         const { results } = await env.DB.prepare(
           `SELECT id, artist_slug, guest_name, type, text, photo_url, event_date, event_end_date, event_time, venue_name, venue_city
            FROM actualites
-           WHERE type IN ('concert', 'cabaret', 'dj') AND is_public = 1
+           WHERE type IN ('concert', 'cabaret', 'dj', 'animation', 'karaoke') AND is_public = 1
            AND artist_slug != 'presta-technique'
            AND (publish_at IS NULL OR publish_at = '' OR publish_at <= ?)
            AND event_date >= ?
@@ -583,7 +583,7 @@ export default {
         const end_date = body.end_date || start_date;
         const roadmap = roadmapValuesFromBody(body);
 
-        if (!artist_slug || !["concert", "cabaret", "dj", "indisponible", "actu"].includes(type)) {
+        if (!artist_slug || !["concert", "cabaret", "dj", "animation", "karaoke", "indisponible", "actu"].includes(type)) {
           return json({ error: "Champs manquants ou invalides" }, 400, origin);
         }
 
@@ -641,7 +641,7 @@ export default {
         const is_public = body.is_public === false || body.is_public === 0 ? 0 : 1;
         const start_date = body.start_date || null;
         const end_date = body.end_date || start_date;
-        if (!artist_slug || !["concert", "cabaret", "dj", "actu"].includes(type) || !text || !expires_at) {
+        if (!artist_slug || !["concert", "cabaret", "dj", "animation", "karaoke", "actu"].includes(type) || !text || !expires_at) {
           return json({ error: "Champs manquants ou invalides" }, 400, origin);
         }
 
@@ -660,7 +660,7 @@ export default {
         // Libère les jours précédemment bloqués par cette actu, puis rebloque si concert/cabaret/dj
         await env.DB.prepare("DELETE FROM artist_agenda WHERE source_actu_id = ?").bind(id).run();
         let conflicts = [];
-        if (["concert", "cabaret", "dj"].includes(type)) {
+        if (["concert", "cabaret", "dj", "animation", "karaoke"].includes(type)) {
           if (!start_date) return json({ error: "Date de l'événement requise" }, 400, origin);
           const result = await blockAgendaDates(env, artist_slug, start_date, end_date, type, text, id, status, publish_at, expires_at);
           conflicts = result.conflicts;
@@ -796,7 +796,7 @@ export default {
         const actuId = url.searchParams.get("actu_id");
         const actu = await env.DB.prepare(
           `SELECT artist_slug, guest_name, text, event_date, event_end_date, ${ROADMAP_COLUMNS.join(", ")}
-           FROM actualites WHERE id = ? AND type IN ('concert', 'cabaret', 'dj')`
+           FROM actualites WHERE id = ? AND type IN ('concert', 'cabaret', 'dj', 'animation', 'karaoke')`
         ).bind(actuId).first();
         if (!actu || actu.artist_slug !== artist_slug) return json({ error: "Introuvable" }, 404, origin);
         return json(actu, 200, origin);
@@ -924,7 +924,7 @@ export default {
 
         for (const r of results) {
           const label = r.guest_name || ARTIST_LABELS[r.artist_slug] || r.artist_slug;
-          const icon = r.type === "indisponible" ? "🚫" : (r.type === "cabaret" ? "🎭" : (r.type === "dj" ? "🎧" : "🎤"));
+          const icon = r.type === "indisponible" ? "🚫" : (r.type === "cabaret" ? "🎭" : (r.type === "dj" ? "🎧" : (r.type === "animation" ? "🎉" : (r.type === "karaoke" ? "🎙️" : "🎤"))));
           const summary = `${icon} ${label}${r.label ? " — " + r.label : ""}`;
           const venue = [r.venue_name, r.venue_city].filter(Boolean).join(", ");
           const nextDay = new Date(r.date + "T00:00:00Z");

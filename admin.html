@@ -350,6 +350,8 @@
         <option value="concert">🎤 Concert</option>
         <option value="cabaret">🎭 Cabaret</option>
         <option value="dj">🎧 DJ</option>
+        <option value="animation">🎉 Animation</option>
+        <option value="karaoke">🎙️ Karaoké</option>
         <option value="indisponible">🚫 Indisponibilité</option>
         <option value="actu">📣 Actu libre</option>
       </select>
@@ -1025,8 +1027,8 @@
 
   const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'voice-of-freedom':'Voice of Freedom', 'the-best-abba-tribute':'Tribute ABBA', 'calo2-0':'Tribute Calogero', 'tribute-matmatah':'Tribute Matmatah', 'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'tribute-bee-gees':'Tribute Bee Gees', 'tribute-phil-collins':'Tribute Phil Collins', 'tribute-balavoine':'Tribute Balavoine', 'bim-bam-boom':'Bim Bam Boom', 'presta-technique':'Prestation technique' };
   const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'voice-of-freedom':'#cda754', 'the-best-abba-tribute':'#14b8a6', 'calo2-0':'#e2352c', 'tribute-matmatah':'#4fb8ff', 'tribute-kool-and-the-gang':'#ffb238', 'tribute-bee-gees':'#22c55e', 'tribute-phil-collins':'#a855f7', 'tribute-balavoine':'#94a3b8', 'bim-bam-boom':'#f472b6', 'presta-technique':'#9a93a6' };
-  const TYPE_ICONS = { concert:'🎤', cabaret:'🎭', dj:'🎧', indisponible:'🚫', actu:'📣' };
-  const ROADMAP_TYPES = ['concert', 'cabaret', 'dj'];
+  const TYPE_ICONS = { concert:'🎤', cabaret:'🎭', dj:'🎧', animation:'🎉', karaoke:'🎙️', indisponible:'🚫', actu:'📣' };
+  const ROADMAP_TYPES = ['concert', 'cabaret', 'dj', 'animation', 'karaoke'];
   let agendaDate = new Date();
   agendaDate.setDate(1);
 
@@ -1522,7 +1524,7 @@
   function onEventTypeChange(){
     const type = document.getElementById('evtType').value;
     const isIndispo = type === 'indisponible';
-    const isConcertLike = type === 'concert' || type === 'cabaret' || type === 'dj';
+    const isConcertLike = ROADMAP_TYPES.includes(type);
     const isActu = type === 'actu';
     document.getElementById('evtTextRow').style.display = isIndispo ? 'none' : 'flex';
     document.getElementById('evtLabelRow').style.display = isIndispo ? 'flex' : 'none';
@@ -1801,8 +1803,8 @@
     showToast('Actualité supprimée');
   }
 
-  const DISPO_TYPE_LABELS = { concert:'🎤 Concert', cabaret:'🎭 Cabaret', dj:'🎧 DJ', indisponible:'🚫 Indisponible' };
-  const DISPO_TYPE_PLAIN = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', indisponible:'Indisponible' };
+  const DISPO_TYPE_LABELS = { concert:'🎤 Concert', cabaret:'🎭 Cabaret', dj:'🎧 DJ', animation:'🎉 Animation', karaoke:'🎙️ Karaoké', indisponible:'🚫 Indisponible' };
+  const DISPO_TYPE_PLAIN = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', animation:'Animation', karaoke:'Karaoké', indisponible:'Indisponible' };
   let dispoDate = new Date();
   dispoDate.setDate(1);
 

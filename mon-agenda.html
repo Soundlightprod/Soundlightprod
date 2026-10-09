@@ -229,9 +229,9 @@
   const ARTIST_SLUG = new URLSearchParams(location.search).get('artist');
   let TOKEN = ARTIST_SLUG ? (localStorage.getItem('slp_band_token_' + ARTIST_SLUG) || sessionStorage.getItem('slp_band_token_' + ARTIST_SLUG)) : null;
   let entries = [];
-  const ROADMAP_TYPES = ['concert', 'cabaret', 'dj'];
-  const TYPE_ICONS_BAND = { concert:'🎤', cabaret:'🎭', dj:'🎧', indisponible:'🚫' };
-  const TYPE_LABELS_BAND = { concert:'🎤 Concert', cabaret:'🎭 Cabaret', dj:'🎧 DJ', indisponible:'🚫 Indisponible' };
+  const ROADMAP_TYPES = ['concert', 'cabaret', 'dj', 'animation', 'karaoke'];
+  const TYPE_ICONS_BAND = { concert:'🎤', cabaret:'🎭', dj:'🎧', animation:'🎉', karaoke:'🎙️', indisponible:'🚫' };
+  const TYPE_LABELS_BAND = { concert:'🎤 Concert', cabaret:'🎭 Cabaret', dj:'🎧 DJ', animation:'🎉 Animation', karaoke:'🎙️ Karaoké', indisponible:'🚫 Indisponible' };
   let calDate = new Date();
   calDate.setDate(1);
 
