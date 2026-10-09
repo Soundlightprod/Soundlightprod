@@ -127,15 +127,15 @@ footer::before{content:''; position:absolute; left:0; right:0; top:0; height:4px
 .feux-halo{position:absolute; z-index:0; left:calc(86% - 420px); top:-320px; width:840px; height:840px; border-radius:50%; pointer-events:none; background:radial-gradient(circle,rgba(251,198,8,.26) 0%,rgba(255,9,83,.14) 36%,rgba(50,89,190,.07) 58%,rgba(12,10,20,0) 72%);}
 .feux-light{position:absolute; inset:0; z-index:3; pointer-events:none;
   background:radial-gradient(circle at var(--fx) var(--fy),rgba(255,236,190,.40) 0%,rgba(255,255,255,.15) 28vw,rgba(255,255,255,.05) 72vw);
-  -webkit-mask-image:conic-gradient(from calc(var(--fa) - 19deg) at var(--fx) var(--fy),transparent 0deg,#000 6deg,#000 32deg,transparent 38deg,transparent 360deg),linear-gradient(180deg,#000 62%,transparent 100%);
-  -webkit-mask-composite:source-in;
-  mask-image:conic-gradient(from calc(var(--fa) - 19deg) at var(--fx) var(--fy),transparent 0deg,#000 6deg,#000 32deg,transparent 38deg,transparent 360deg),linear-gradient(180deg,#000 62%,transparent 100%);
-  mask-composite:intersect;}
+  -webkit-mask-image:conic-gradient(from calc(var(--fa) - 19deg) at var(--ax,var(--fx)) var(--ay,var(--fy)),transparent 0deg,#000 6deg,#000 32deg,transparent 38deg,transparent 360deg),radial-gradient(circle at var(--ax,var(--fx)) var(--ay,var(--fy)),transparent calc(var(--fd,0px) - 4px),#000 calc(var(--fd,0px) + 10px)),linear-gradient(180deg,#000 62%,transparent 100%);
+  -webkit-mask-composite:source-in, source-in;
+  mask-image:conic-gradient(from calc(var(--fa) - 19deg) at var(--ax,var(--fx)) var(--ay,var(--fy)),transparent 0deg,#000 6deg,#000 32deg,transparent 38deg,transparent 360deg),radial-gradient(circle at var(--ax,var(--fx)) var(--ay,var(--fy)),transparent calc(var(--fd,0px) - 4px),#000 calc(var(--fd,0px) + 10px)),linear-gradient(180deg,#000 62%,transparent 100%);
+  mask-composite:intersect, intersect;}
 .feux h1 .beamtxt{position:absolute; inset:0; pointer-events:none; color:transparent; -webkit-text-fill-color:transparent;
   background:linear-gradient(rgba(255,240,205,.07),rgba(255,240,205,.07)),url(/slp-event-photo.jpg) center 55%/cover;
   -webkit-background-clip:text; background-clip:text; filter:brightness(1.15) contrast(1.05) saturate(1.1);
-  -webkit-mask-image:conic-gradient(from calc(var(--fa) - 19deg) at var(--fx) var(--fy),transparent 0deg,#000 6deg,#000 32deg,transparent 38deg,transparent 360deg);
-  mask-image:conic-gradient(from calc(var(--fa) - 19deg) at var(--fx) var(--fy),transparent 0deg,#000 6deg,#000 32deg,transparent 38deg,transparent 360deg);}
+  -webkit-mask-image:conic-gradient(from calc(var(--fa) - 19deg) at var(--ax,var(--fx)) var(--ay,var(--fy)),transparent 0deg,#000 6deg,#000 32deg,transparent 38deg,transparent 360deg),radial-gradient(circle at var(--ax,var(--fx)) var(--ay,var(--fy)),transparent calc(var(--fd,0px) - 4px),#000 calc(var(--fd,0px) + 10px)); -webkit-mask-composite:source-in;
+  mask-image:conic-gradient(from calc(var(--fa) - 19deg) at var(--ax,var(--fx)) var(--ay,var(--fy)),transparent 0deg,#000 6deg,#000 32deg,transparent 38deg,transparent 360deg),radial-gradient(circle at var(--ax,var(--fx)) var(--ay,var(--fy)),transparent calc(var(--fd,0px) - 4px),#000 calc(var(--fd,0px) + 10px)); mask-composite:intersect;}
 .feux h1 .beamtxt .accent{background:none !important; -webkit-text-fill-color:transparent !important; color:transparent !important; padding:0;}
 @media (max-width:760px){ .feux-dot{transform:scale(.5); top:40px;} .feux{padding-top:110px;} }
 @media (prefers-reduced-motion:reduce){ .feux-dot{animation:none;} }
