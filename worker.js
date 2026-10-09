@@ -583,8 +583,12 @@ export default {
         const end_date = body.end_date || start_date;
         const roadmap = roadmapValuesFromBody(body);
 
-        if (!artist_slug || !["concert", "cabaret", "dj", "animation", "karaoke", "indisponible", "actu"].includes(type)) {
-          return json({ error: "Champs manquants ou invalides" }, 400, origin);
+        {
+          const problems = [];
+          if (!artist_slug) problems.push("l'artiste n'est pas choisi");
+          if (!type) problems.push("le type d'événement n'est pas choisi");
+          else if (!["concert", "cabaret", "dj", "animation", "karaoke", "indisponible", "actu"].includes(type)) problems.push(`le type « ${type} » n'est pas reconnu`);
+          if (problems.length) return json({ error: "Enregistrement impossible : " + problems.join(" ; ") + "." }, 400, origin);
         }
 
         // --- Cas "indisponible" : blocage pur, pas d'actu ---
@@ -641,8 +645,14 @@ export default {
         const is_public = body.is_public === false || body.is_public === 0 ? 0 : 1;
         const start_date = body.start_date || null;
         const end_date = body.end_date || start_date;
-        if (!artist_slug || !["concert", "cabaret", "dj", "animation", "karaoke", "actu"].includes(type) || !text || !expires_at) {
-          return json({ error: "Champs manquants ou invalides" }, 400, origin);
+        {
+          const problems = [];
+          if (!artist_slug) problems.push("l'artiste n'est pas choisi");
+          if (!type) problems.push("le type d'événement n'est pas choisi");
+          else if (!["concert", "cabaret", "dj", "animation", "karaoke", "actu"].includes(type)) problems.push(`le type « ${type} » ne peut pas être appliqué à une modification (une indisponibilité ne se modifie pas ici)`);
+          if (!text) problems.push("le texte est vide");
+          if (!expires_at) problems.push("la date de suppression est vide");
+          if (problems.length) return json({ error: "Modification impossible : " + problems.join(" ; ") + "." }, 400, origin);
         }
 
         await env.DB.prepare(
