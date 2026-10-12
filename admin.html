@@ -252,6 +252,41 @@
   .vz-modal{position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:400; padding:20px;} .vz-modal.open{display:flex;}
   .vz-modal-box{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:18px 20px; width:min(520px,100%); max-height:80vh; overflow:auto;}
   .vz-step{display:flex; gap:12px; padding:8px 0; border-top:1px solid var(--line); font-size:.9rem;} .vz-step:first-child{border-top:0;} .vz-step .t{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:.8rem; width:48px;}
+
+  /* ===== Onglet Météo du jour ===== */
+  .mt-head{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
+  .mt-head h2{margin:0;}
+  .mt-notes{list-style:none; margin:10px 0 0; padding:0; display:grid; gap:8px;}
+  .mt-notes li{display:flex; gap:10px; line-height:1.5; font-size:.95rem;}
+  .mt-notes li::before{content:""; flex:none; width:.55rem; height:.55rem; border-radius:50%; background:var(--amber); margin-top:.5rem;}
+  .mt-notes li:nth-child(2)::before{background:var(--blue);} .mt-notes li:nth-child(3)::before{background:var(--violet);}
+  .mt-sky{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:14px 0;}
+  .mt-site{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:16px 18px; display:grid; grid-template-columns:1fr auto; gap:6px 12px;}
+  .mt-site h3{margin:0;} .mt-site .sky{color:var(--muted); font-size:.8rem;}
+  .mt-site svg{width:58px; height:58px; grid-row:span 2;}
+  .mt-figs{grid-column:1/-1; display:flex; gap:22px; flex-wrap:wrap; margin-top:4px;}
+  .mt-fig b{display:block; font-family:'Space Grotesk',sans-serif; font-size:1.6rem; font-variant-numeric:tabular-nums;}
+  .mt-fig span{color:var(--muted); font-size:.75rem;}
+  .mt-up{color:#6ee7a0;} .mt-down{color:var(--pink);} .mt-flat{color:var(--muted);}
+  .mt-delta{font-size:.75rem; display:block;}
+  .mt-g{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
+  .mt-bar{display:flex; height:10px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,.08); margin:10px 0 6px;}
+  .mt-bar span{display:block; height:100%;}
+  .mt-legend{display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:.78rem;}
+  .mt-legend i{display:inline-block; width:.6rem; height:.6rem; border-radius:2px; margin-right:5px;}
+  .mt-step{display:grid; grid-template-columns:9rem 1fr 3.2rem; gap:10px; align-items:center; font-size:.84rem; margin:5px 0;}
+  .mt-step .t{height:14px; border-radius:6px; background:rgba(255,255,255,.08); overflow:hidden;} .mt-step .f{height:100%; border-radius:6px;}
+  .mt-step .v{text-align:right; font-variant-numeric:tabular-nums; font-weight:700;}
+  .mt-pills{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .mt-pill{font-size:.75rem; padding:3px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted);}
+  .mt-pill.bad{color:var(--pink); border-color:var(--pink);} .mt-pill.ok{color:#6ee7a0; border-color:#6ee7a0;}
+  .mt-todo{list-style:none; margin:0; padding:0; display:grid; gap:8px; counter-reset:todo;}
+  .mt-todo li{display:grid; grid-template-columns:2rem 1fr; gap:8px; background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:12px 14px; counter-increment:todo; line-height:1.45;}
+  .mt-todo li::before{content:counter(todo); font-family:'Space Grotesk',sans-serif; font-size:1.3rem; color:var(--amber); line-height:1;}
+  .mt-star{color:var(--amber);}
+  .mt-imp{display:inline-block; height:7px; border-radius:99px; background:var(--blue); margin-right:6px; vertical-align:middle;}
+  @media (prefers-reduced-motion: no-preference){ .mt-rays{transform-origin:32px 32px; animation:mtSpin 24s linear infinite;} @keyframes mtSpin{to{transform:rotate(360deg);}} }
+  @media (max-width:980px){ .mt-sky{grid-template-columns:1fr;} .mt-g{grid-template-columns:1fr 1fr;} }
   @media (max-width:980px){ .vz-kpis{grid-template-columns:1fr 1fr;} .vz-grid2,.vz-grid3{grid-template-columns:1fr;} .vz-grid4{grid-template-columns:1fr 1fr;} }
   @media (max-width:560px){ .vz-grid4{grid-template-columns:1fr;} .vz-feed .it{grid-template-columns:60px 1fr; } .vz-feed .it > :nth-child(3), .vz-feed .it > :nth-child(4){grid-column:2;} .vz-kpi b{font-size:1.6rem;} }
   .dispo-item{display:flex; align-items:center; gap:4px;} .dispo-item .di-txt{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -302,6 +337,7 @@
     <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">7. 🔑 Accès groupes</button>
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">8. 📦 Suivi des commandes</button>
     <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 📊 Visites des sites</button>
+    <button class="tab-btn" id="tabBtn-meteo" onclick="switchTab('meteo')">10. 🌤 Météo du jour</button>
   </div>
 
   <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
@@ -713,6 +749,37 @@
   </div>
 
   <!-- ============ ONGLET 8 : VISITES DU SITE ============ -->
+
+  <div class="tab-content" id="tab-meteo">
+    <div class="mt-head">
+      <div>
+        <h2 id="mtTitre">Météo du jour</h2>
+        <p class="vz-sub" id="mtSousTitre">Visites, Google et mails Brevo en un coup d'œil. Rapport mis à jour vers 7h50 et 19h50.</p>
+      </div>
+      <button class="btn-outline" onclick="loadMeteo()">↻ Actualiser</button>
+    </div>
+    <div class="vz-card"><ul class="mt-notes" id="mtResume"><li>Chargement…</li></ul></div>
+    <div class="mt-sky" id="mtSky"></div>
+
+    <h2>Google</h2>
+    <p class="vz-sub" id="mtGoogleReleve"></p>
+    <div class="mt-g" id="mtGoogleSites" style="margin-top:12px;"></div>
+    <div class="vz-card" style="margin-top:14px;">
+      <div class="vz-card-h"><h3>Impressions Google jour par jour</h3><span class="vz-note">30 derniers jours · Google a 2 à 3 jours de retard</span></div>
+      <div style="height:220px;"><canvas id="mtGoogleChart"></canvas></div>
+    </div>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Recherches qui font apparaître les sites</h3><span class="vz-note">★ = suivie en priorité · 28 derniers jours</span></div>
+      <div style="overflow-x:auto;"><table><thead><tr><th>Site</th><th>Recherche</th><th style="text-align:right">Impressions</th><th style="text-align:right">Clics</th><th style="text-align:right">Position</th></tr></thead><tbody id="mtRequetes"></tbody></table></div>
+    </div>
+
+    <h2>Mails Brevo</h2>
+    <p class="vz-sub">Ouvertures automatiques Apple et clics des robots antispam retirés. Chiffres relevés à chaque rapport.</p>
+    <div class="vz-grid2" id="mtBrevo" style="margin-top:12px;"></div>
+
+    <h2>À faire</h2>
+    <ol class="mt-todo" id="mtTodo"></ol>
+  </div>
   <div class="tab-content" id="tab-visits">
     <div class="vz-head">
       <div>
@@ -888,6 +955,158 @@
     toast._hideTimer = setTimeout(() => { toast.style.opacity = '0'; }, 2600);
   }
 
+
+  // ===== Onglet Météo du jour =====
+  const MT_SITES = { slp:{nom:'SLP Sound Light Prod', c:'#ffb238'}, bmb:{nom:'Book My Band', c:'#ff2d6f'}, csa:{nom:'CS Animations', c:'#38bdf8'} };
+  const MT_SUIVIES = ['dj animation','animateur de soirée','dj animateur de soirée','dj animation anniversaire','sonorisation spectacle','sonorisation éclairage','tribute abba','tribute calogero','tribute bee gees','tribute phil collins','tribute kool and the gang','tribute matmatah','tribute balavoine','tribute barry white','spectacle cabaret','revue cabaret','groupe de reprises'];
+  let mtChart = null;
+  const mtEl = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+  const mtFmt = (n) => (n === null || n === undefined) ? '—' : Number(n).toLocaleString('fr-FR');
+  const mtPct = (x) => (x === null || x === undefined || !isFinite(x)) ? '—' : (x * 100).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' %';
+  const mtDay = (s) => new Date(s + 'T12:00:00').toLocaleDateString('fr-FR', { weekday:'short', day:'numeric', month:'short' });
+
+  function mtIcon(kind){
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 64 64'); svg.setAttribute('aria-hidden', 'true');
+    const add = (n, at, parent) => { const x = document.createElementNS(NS, n); Object.entries(at).forEach(([k, v]) => x.setAttribute(k, v)); (parent || svg).appendChild(x); return x; };
+    const sun = (cx, cy, r) => { const g = add('g', { class:'mt-rays' }); for (let i = 0; i < 8; i++){ const a = i * Math.PI / 4; add('line', { x1: cx + Math.cos(a)*(r+4), y1: cy + Math.sin(a)*(r+4), x2: cx + Math.cos(a)*(r+10), y2: cy + Math.sin(a)*(r+10), stroke:'#ffb238', 'stroke-width':3, 'stroke-linecap':'round' }, g); } add('circle', { cx, cy, r, fill:'#ffb238' }); };
+    const cloud = (dx, dy) => { const f = '#6b6478'; add('ellipse', { cx:30+dx, cy:40+dy, rx:20, ry:10, fill:f }); add('circle', { cx:24+dx, cy:33+dy, r:10, fill:f }); add('circle', { cx:36+dx, cy:30+dy, r:12, fill:f }); };
+    if (kind === 'soleil') sun(32, 32, 13);
+    else if (kind === 'eclaircies'){ sun(40, 24, 10); cloud(-4, 6); }
+    else if (kind === 'pluie'){ cloud(2, -4); [20, 32, 44].forEach((x) => add('line', { x1:x, y1:50, x2:x-3, y2:58, stroke:'#2f9bff', 'stroke-width':3, 'stroke-linecap':'round' })); }
+    else cloud(2, 0);
+    return svg;
+  }
+
+  function mtRenderSites(sites){
+    const box = document.getElementById('mtSky'); box.replaceChildren();
+    ['slp', 'bmb', 'csa'].forEach((s) => {
+      const r = sites.find((x) => x.site === s) || { aujourdhui:0, hier:0, sept_jours:0, sept_jours_avant:0 };
+      const ev = r.sept_jours_avant > 0 ? (r.sept_jours - r.sept_jours_avant) / r.sept_jours_avant : null;
+      const kind = ev === null ? (r.sept_jours > 0 ? 'soleil' : 'nuages') : ev >= 0.15 ? 'soleil' : ev > -0.15 ? 'eclaircies' : 'pluie';
+      const label = { soleil:'Grand soleil', eclaircies:'Éclaircies', pluie:'Averses', nuages:'Ciel calme' }[kind];
+      const card = mtEl('div', 'mt-site');
+      const head = mtEl('div'); head.append(mtEl('h3', null, MT_SITES[s].nom), mtEl('div', 'sky', label));
+      card.append(head, mtIcon(kind));
+      const figs = mtEl('div', 'mt-figs');
+      const fig = (v, lab, extra) => { const f = mtEl('div', 'mt-fig'); f.append(mtEl('b', null, mtFmt(v)), mtEl('span', null, lab)); if (extra) f.appendChild(extra); figs.appendChild(f); };
+      fig(r.aujourdhui, "aujourd'hui");
+      fig(r.hier, 'hier');
+      let d = null;
+      if (ev !== null){ const cls = ev > 0.02 ? 'mt-up' : ev < -0.02 ? 'mt-down' : 'mt-flat'; d = mtEl('span', 'mt-delta ' + cls, (ev > 0.02 ? '↗ +' : ev < -0.02 ? '↘ ' : '= ') + Math.round(ev * 100) + ' % vs sem. d’avant'); }
+      fig(r.sept_jours, '7 derniers jours', d);
+      card.appendChild(figs); box.appendChild(card);
+    });
+  }
+
+  function mtRenderGoogle(g){
+    const rel = g.releve;
+    const relTxt = document.getElementById('mtGoogleReleve');
+    if (!rel) relTxt.textContent = 'Pas encore de relevé automatique.';
+    else {
+      const when = new Date(rel.fait_le).toLocaleString('fr-FR', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+      relTxt.textContent = rel.ok ? `Dernier relevé automatique : ${when}.` : `⚠️ Le relevé du ${when} a échoué : ${rel.message || 'raison inconnue'}. Vérifie la tâche « Search Console — relevé » dans l’onglet Actions de GitHub.`;
+    }
+    const box = document.getElementById('mtGoogleSites'); box.replaceChildren();
+    ['slp', 'bmb'].forEach((s) => {
+      const jours = g.jours.filter((j) => j.site === s);
+      const last28 = jours.slice(-28);
+      const clics = last28.reduce((a, j) => a + j.clics, 0), imp = last28.reduce((a, j) => a + j.impressions, 0);
+      const pos = imp ? last28.reduce((a, j) => a + j.position * j.impressions, 0) / imp : null;
+      const idx = g.index.filter((i) => i.site === s); const cur = idx[idx.length - 1], prev = idx[idx.length - 2];
+      const card = mtEl('div', 'vz-card'); card.style.gridColumn = 'span 2'; card.style.marginBottom = '0';
+      card.appendChild(mtEl('h3', null, MT_SITES[s].nom));
+      const figs = mtEl('div', 'mt-figs');
+      [[clics, 'clics (28 j)'], [imp, 'impressions (28 j)'], [pos === null ? null : pos.toLocaleString('fr-FR', { maximumFractionDigits:1 }), 'position moyenne']].forEach(([v, l]) => { const f = mtEl('div', 'mt-fig'); f.append(mtEl('b', null, typeof v === 'string' ? v : mtFmt(v)), mtEl('span', null, l)); figs.appendChild(f); });
+      card.appendChild(figs);
+      if (cur){
+        const bar = mtEl('div', 'mt-bar');
+        const seg = (n, c) => { const sp = mtEl('span'); sp.style.width = (100 * n / cur.total) + '%'; sp.style.background = c; bar.appendChild(sp); };
+        seg(cur.indexees, '#6ee7a0'); seg(cur.detectees, '#ffb238'); seg(cur.doublons, '#8b5cf6'); seg(cur.redirections, '#2f9bff'); seg(cur.inconnues, '#6b6478');
+        card.appendChild(bar);
+        const diff = prev ? cur.indexees - prev.indexees : 0;
+        const lg = mtEl('div', 'mt-legend');
+        [['#6ee7a0', `${cur.indexees} indexées` + (diff ? ` (${diff > 0 ? '+' : ''}${diff})` : '')], ['#ffb238', `${cur.detectees} en attente`], ['#8b5cf6', `${cur.doublons} doublons`], ['#2f9bff', `${cur.redirections} redirections`], ['#6b6478', `${cur.inconnues} pas encore connues`]].forEach(([c, t]) => { const sp = mtEl('span'); const i = mtEl('i'); i.style.background = c; sp.append(i, t); lg.appendChild(sp); });
+        card.appendChild(lg);
+        card.appendChild(mtEl('p', 'vz-foot', `Pages du plan de site vérifiées une à une le ${mtDay(cur.releve)} (${cur.total} pages).`));
+      }
+      box.appendChild(card);
+    });
+
+    const days = [...new Set(g.jours.map((j) => j.jour))].sort();
+    const val = (s, d, k) => { const r = g.jours.find((j) => j.site === s && j.jour === d); return r ? r[k] : 0; };
+    if (mtChart) mtChart.destroy();
+    mtChart = new Chart(document.getElementById('mtGoogleChart'), {
+      type: 'bar',
+      data: { labels: days.map((d) => new Date(d + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'short' })),
+        datasets: ['slp', 'bmb'].map((s) => ({ label: MT_SITES[s].nom, data: days.map((d) => val(s, d, 'impressions')), backgroundColor: MT_SITES[s].c, borderRadius: 3, stack: 'imp' })) },
+      options: { maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:'#9a93a6' } },
+          tooltip:{ callbacks:{ afterLabel:(ctx) => `${val(['slp','bmb'][ctx.datasetIndex], days[ctx.dataIndex], 'clics')} clic(s)` } } },
+        scales:{ x:{ stacked:true, ticks:{ color:'#9a93a6', maxRotation:0, autoSkipPadding:12 }, grid:{ display:false } }, y:{ stacked:true, ticks:{ color:'#9a93a6', precision:0 }, grid:{ color:'rgba(255,255,255,.06)' } } } }
+    });
+
+    const tb = document.getElementById('mtRequetes'); tb.replaceChildren();
+    const rows = [...g.requetes].sort((a, b) => (MT_SUIVIES.includes(b.requete) - MT_SUIVIES.includes(a.requete)) || (b.impressions - a.impressions)).slice(0, 30);
+    const max = Math.max(1, ...rows.map((r) => r.impressions));
+    rows.forEach((r) => {
+      const tr = mtEl('tr');
+      const q = mtEl('td'); if (MT_SUIVIES.includes(r.requete)) q.appendChild(mtEl('span', 'mt-star', '★ ')); q.appendChild(document.createTextNode(r.requete));
+      const imp = mtEl('td'); imp.style.textAlign = 'right'; const b = mtEl('span', 'mt-imp'); b.style.width = (3 * r.impressions / max) + 'rem'; imp.append(b, mtFmt(r.impressions));
+      if (r.impressions_avant !== null && r.impressions_avant !== r.impressions) imp.appendChild(mtEl('span', r.impressions > r.impressions_avant ? 'mt-up' : 'mt-down', r.impressions > r.impressions_avant ? ' ↗' : ' ↘'));
+      if (r.impressions_avant === null && g.index.length > 2) imp.appendChild(mtEl('span', 'mt-up', ' nouveau'));
+      const cl = mtEl('td', null, mtFmt(r.clics)); cl.style.textAlign = 'right';
+      const po = mtEl('td', null, r.position === null ? '—' : Number(r.position).toLocaleString('fr-FR', { maximumFractionDigits:1 })); po.style.textAlign = 'right';
+      if (r.position_avant !== null && r.position_avant !== undefined && r.position !== r.position_avant) po.appendChild(mtEl('span', r.position < r.position_avant ? 'mt-up' : 'mt-down', r.position < r.position_avant ? ' ↗' : ' ↘'));
+      tr.append(mtEl('td', null, s2(r.site)), q, imp, cl, po); tb.appendChild(tr);
+    });
+    if (!rows.length) tb.appendChild(Object.assign(mtEl('tr'), { innerHTML: '<td colspan="5" class="empty">Pas encore de recherches relevées.</td>' }));
+    function s2(s){ return s === 'slp' ? 'SLP' : s === 'bmb' ? 'BMB' : s; }
+  }
+
+  function mtRenderBrevo(camps, mails){
+    const box = document.getElementById('mtBrevo'); box.replaceChildren();
+    if (!camps.length){ box.appendChild(mtEl('p', 'empty', 'Aucune campagne relevée pour l’instant.')); return; }
+    camps.forEach((c) => {
+      const card = mtEl('div', 'vz-card');
+      const h = mtEl('div', 'vz-card-h'); h.appendChild(mtEl('h3', null, `n°${c.id} · ${c.nom}`));
+      const st = { sent:['envoyée', 'ok'], suspended:['suspendue', 'bad'], inProcess:['en cours', ''], queued:['programmée', ''] }[c.statut] || [c.statut, ''];
+      h.appendChild(mtEl('span', 'mt-pill ' + st[1], st[0] + (c.date_envoi ? ' · ' + new Date(c.date_envoi + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) : '')));
+      card.appendChild(h);
+      const vraies = Math.max(0, c.ouvreurs - c.ouvertures_apple);
+      [['Envoyés', c.envoyes, '#2f9bff'], ['Délivrés', c.delivres, '#2f9bff'], ['Vraies ouvertures', vraies, '#8b5cf6'], ['Vrais cliqueurs', c.cliqueurs_reels, '#ffb238'], ['Visites sur le site', c.visites_site, '#6ee7a0']].forEach(([l, v, col]) => {
+        if (v === null || v === undefined) return;
+        const r = mtEl('div', 'mt-step'); const t = mtEl('span', 't'); const f = mtEl('span', 'f'); f.style.display = 'block'; f.style.width = Math.max(1.5, 100 * v / (c.envoyes || 1)) + '%'; f.style.background = col; t.appendChild(f);
+        r.append(mtEl('span', null, l), t, mtEl('span', 'v', mtFmt(v))); card.appendChild(r);
+      });
+      const pills = mtEl('div', 'mt-pills');
+      const tInv = c.envoyes ? c.invalides / c.envoyes : null, tDes = c.delivres ? c.desinscrits / c.delivres : null;
+      pills.append(mtEl('span', 'mt-pill', 'ouverture réelle ' + mtPct(c.delivres ? vraies / c.delivres : null)), mtEl('span', 'mt-pill ' + (tInv > 0.02 ? 'bad' : ''), 'adresses invalides ' + mtPct(tInv)), mtEl('span', 'mt-pill ' + (tDes > 0.01 ? 'bad' : ''), 'désinscrits ' + mtPct(tDes)));
+      card.appendChild(pills);
+      card.appendChild(mtEl('p', 'vz-foot', `${mtFmt(c.ouvertures_apple)} ouvertures automatiques Apple retirées · ${mtFmt(c.cliqueurs_robots)} cliqueurs selon Brevo, robots compris` + (c.restants ? ` · ${mtFmt(c.restants)} contacts pas encore servis` : '')));
+      box.appendChild(card);
+    });
+  }
+
+  async function loadMeteo(){
+    try {
+      const res = await fetch('/api/admin/meteo', { headers:{ Authorization:`Bearer ${token}` } });
+      if (!res.ok) throw new Error(res.status === 401 ? 'Accès refusé : reconnecte-toi à l’admin.' : 'Erreur ' + res.status);
+      const d = await res.json();
+      const rap = d.rapport;
+      const resume = rap ? JSON.parse(rap.resume_json || '[]') : [];
+      const actions = rap ? JSON.parse(rap.actions_json || '[]') : [];
+      document.getElementById('mtTitre').textContent = rap && rap.titre ? rap.titre : 'Météo du jour';
+      const ul = document.getElementById('mtResume'); ul.replaceChildren(...(resume.length ? resume.map((t) => mtEl('li', null, t)) : [mtEl('li', null, 'Le premier rapport arrivera vers 7h50.')]));
+      const ol = document.getElementById('mtTodo'); ol.replaceChildren(...actions.map((t) => mtEl('li', null, t)));
+      if (!actions.length) ol.appendChild(mtEl('p', 'empty', 'Rien à faire pour l’instant.'));
+      mtRenderSites(d.sites || []);
+      mtRenderGoogle(d.google);
+      mtRenderBrevo(d.brevo || [], d.mails || []);
+    } catch (e) {
+      document.getElementById('mtResume').replaceChildren(mtEl('li', null, 'Impossible de charger la météo : ' + e.message));
+    }
+  }
+
   function switchTab(name){
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -901,6 +1120,7 @@
     }
     if (name === 'groupview') renderGroupView();
     if (name === 'visits') loadVisitsSummary();
+    if (name === 'meteo') loadMeteo();
     if (name === 'access'){
       document.getElementById('icsFeedUrl').value = `${API_BASE}/api/agenda.ics?key=${encodeURIComponent(token)}`;
     }

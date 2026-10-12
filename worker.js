@@ -272,6 +272,57 @@ function routeDomain(request, url) {
   return null;
 }
 
+
+// Accès admin : mot de passe du site, ou à défaut vérification auprès de l'API admin (slp-api)
+async function isAdminForMeteo(request, env) {
+  if (requireAdmin(request, env)) return true;
+  const auth = request.headers.get("Authorization") || "";
+  if (!auth.startsWith("Bearer ") || auth.length < 9) return false;
+  try {
+    const r = await fetch("https://slp-api.raspy-silence-d4c7.workers.dev/api/admin/products", { headers: { Authorization: auth } });
+    return r.ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Heure de Paris pour SQLite (heure d'été jusqu'au 25/10/2026, d'hiver ensuite ; à revoir le 28/03/2027)
+const PARIS_OFFSET = (col) => `CASE WHEN ${col} >= '2026-10-25 01:00:00' AND ${col} < '2027-03-28 01:00:00' THEN '+1 hours' WHEN ${col} >= '2027-10-31 01:00:00' THEN '+1 hours' ELSE '+2 hours' END`;
+
+async function meteoData(env) {
+  const q = async (sql, ...params) => (await env.DB.prepare(sql).bind(...params).all()).results || [];
+  const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
+  const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails] = await Promise.all([
+    q("SELECT cree_le, moment, titre, resume_json, actions_json FROM rapports ORDER BY id DESC LIMIT 1"),
+    q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations')),
+       v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
+       SELECT s.site, s.nom,
+         COUNT(DISTINCT CASE WHEN v.jour = t.today THEN v.session_id END) AS aujourdhui,
+         COUNT(DISTINCT CASE WHEN v.jour = date(t.today, '-1 day') THEN v.session_id END) AS hier,
+         COUNT(DISTINCT CASE WHEN v.jour BETWEEN date(t.today, '-7 day') AND date(t.today, '-1 day') THEN v.session_id END) AS sept_jours,
+         COUNT(DISTINCT CASE WHEN v.jour BETWEEN date(t.today, '-14 day') AND date(t.today, '-8 day') THEN v.session_id END) AS sept_jours_avant
+       FROM s CROSS JOIN t LEFT JOIN v ON v.site = s.site GROUP BY s.site, s.nom, t.today`),
+    q("SELECT site, jour, clics, impressions, position FROM gsc_jours WHERE jour >= date('now', '-30 days') ORDER BY jour, site"),
+    q("SELECT fait_le, ok, message FROM gsc_releves ORDER BY id DESC LIMIT 1"),
+    q(`WITH last AS (SELECT site, MAX(releve) AS r FROM gsc_requetes GROUP BY site),
+       prev AS (SELECT q.site, MAX(q.releve) AS r FROM gsc_requetes q JOIN last l ON l.site = q.site AND q.releve < l.r GROUP BY q.site)
+       SELECT q.site, q.requete, q.clics, q.impressions, q.position,
+         (SELECT p2.impressions FROM gsc_requetes p2 JOIN prev p ON p.site = p2.site AND p2.releve = p.r WHERE p2.site = q.site AND p2.requete = q.requete) AS impressions_avant,
+         (SELECT p2.position FROM gsc_requetes p2 JOIN prev p ON p.site = p2.site AND p2.releve = p.r WHERE p2.site = q.site AND p2.requete = q.requete) AS position_avant
+       FROM gsc_requetes q JOIN last l ON l.site = q.site AND q.releve = l.r ORDER BY q.impressions DESC LIMIT 60`),
+    q(`SELECT site, releve, COUNT(*) AS total, SUM(verdict = 'PASS') AS indexees,
+         SUM(etat LIKE '%tectée%' OR etat LIKE '%iscovered%' OR etat LIKE '%xplorée%' OR etat LIKE '%rawled%') AS detectees,
+         SUM(etat LIKE '%ouble%' OR etat LIKE '%uplicate%') AS doublons,
+         SUM(etat LIKE '%edirect%') AS redirections,
+         SUM(etat LIKE '%ne reconnaît pas%' OR etat LIKE '%unknown%') AS inconnues
+       FROM gsc_index GROUP BY site, releve ORDER BY releve`),
+    q("SELECT * FROM brevo_campagnes WHERE envoyes > 0 ORDER BY date_envoi DESC, id DESC LIMIT 6"),
+    q(`SELECT date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, COUNT(DISTINCT session_id) AS visiteurs FROM page_visits
+       WHERE is_bot = 0 AND (referrer LIKE 'emailing-sendinblue%' OR referrer LIKE '%sendibm%') AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
+  ]);
+  return { rapport: rapport[0] || null, sites, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, mails };
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -1099,6 +1150,12 @@ export default {
       // Toute route non gérée : si ce n'est pas un appel /api/*, on sert le fichier statique
       // correspondant (site + admin). C'est indispensable avec run_worker_first: true — sans ça,
       // le Worker intercepte TOUTES les requêtes, y compris les pages du site, avant les assets.
+      // GET /api/admin/meteo — rapport du jour : visites, Google, Brevo (admin)
+      if (url.pathname === "/api/admin/meteo" && request.method === "GET") {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        return json(await meteoData(env), 200, origin);
+      }
+
       if (!url.pathname.startsWith("/api/")) {
         return env.ASSETS.fetch(request);
       }
