@@ -224,7 +224,7 @@ function routeDomain(request, url) {
 
   // Ancienne fiche DJ provisoire remplacée par la fiche DJ Animation
   if (path.endsWith("/dj-provisoire.html") || path.endsWith("/dj-provisoire")) {
-    return redirect(`${url.origin}${path.replace(/dj-provisoire(\.html)?$/, "dj-animation.html")}`);
+    return redirect(`${url.origin}${path.replace(/dj-provisoire(\.html)?$/, "dj-animation")}`);
   }
 
   // Ancienne page « Notre philosophie de travail » fusionnée dans l'accueil
@@ -235,7 +235,7 @@ function routeDomain(request, url) {
   const RENAMED = { "the-best-abba-tribute": "tribute-abba", "calo-2-0": "tribute-calogero" };
   const renamedMatch = path.match(/^(.*\/)(the-best-abba-tribute|calo-2-0)(\.html)?$/);
   if (renamedMatch) {
-    return redirect(`${url.origin}${renamedMatch[1]}${RENAMED[renamedMatch[2]]}.html${url.search}`);
+    return redirect(`${url.origin}${renamedMatch[1]}${RENAMED[renamedMatch[2]]}${url.search}`);
   }
 
   const isCom = host.endsWith("soundlightprod.com");
@@ -259,7 +259,9 @@ function routeDomain(request, url) {
     }
     if (langPrefix) return null;
     // Pages françaises (et pages non traduites : boutique, admin…) → .fr
-    if (path.endsWith(".html")) return redirect(`${FR_SITE}${path}${url.search}`);
+    if (path.endsWith(".html")) return redirect(`${FR_SITE}${path.replace(/\.html$/, "")}${url.search}`);
+    // Pages françaises sans extension (adresses « propres ») → .fr
+    if (!/\.[a-z0-9]{2,5}$/i.test(path)) return redirect(`${FR_SITE}${path}${url.search}`);
     return null; // images, PDF, etc. servis tels quels
   }
 
