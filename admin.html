@@ -1090,7 +1090,7 @@
   async function loadMeteo(){
     try {
       const res = await fetch('/api/admin/meteo', { headers:{ Authorization:`Bearer ${token}` } });
-      if (!res.ok) throw new Error(res.status === 401 ? 'Accès refusé : reconnecte-toi à l’admin.' : 'Erreur ' + res.status);
+      if (!res.ok){ let m = ''; try { m = (await res.json()).error || ''; } catch(_){} throw new Error(res.status === 401 ? 'Accès refusé : reconnecte-toi à l’admin.' : 'Erreur ' + res.status + (m ? ' (' + m + ')' : '')); }
       const d = await res.json();
       const rap = d.rapport;
       const resume = rap ? JSON.parse(rap.resume_json || '[]') : [];

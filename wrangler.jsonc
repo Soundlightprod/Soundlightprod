@@ -3,6 +3,10 @@
   "name": "slp-site",
   "compatibility_date": "2026-09-01",
   "main": "worker.js",
+  "keep_vars": true,
+  "d1_databases": [
+    { "binding": "DB", "database_name": "slp-db", "database_id": "c34e8fe6-a869-40cb-961b-778d03fca13b" }
+  ],
   "assets": {
     "directory": "./",
     "binding": "ASSETS",
