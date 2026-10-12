@@ -162,6 +162,13 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+  /* bio-wide */
+  .bio-wrap{align-items:stretch !important; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important; gap:56px !important;}
+  .bio-wrap .logo-frame{aspect-ratio:4/3; height:auto; align-self:center;}
+  .bio-wrap .logo-frame.ph-frame{position:relative; aspect-ratio:auto; min-height:340px; align-self:stretch; padding:0;}
+  .bio-wrap .logo-frame.ph-frame img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .bio-text{align-self:center;}
+  @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr !important; gap:28px !important;} .bio-wrap .logo-frame.ph-frame{min-height:0; aspect-ratio:4/3;} }
 </style>
 
 
@@ -231,7 +238,7 @@
 </section>
 
 <section>
-  <div class="wrap tight narrow">
+  <div class="wrap tight">
     <div class="bio-wrap">
       <div class="logo-frame">
         <!-- LOGO À VENIR : remplacer ce bloc par <img src="voice-of-freedom-logo.png" alt="Voice of Freedom"> -->
