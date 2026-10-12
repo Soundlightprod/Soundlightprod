@@ -336,8 +336,7 @@
     <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">6. 🕰 Historique</button>
     <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">7. 🔑 Accès groupes</button>
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">8. 📦 Suivi des commandes</button>
-    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 📊 Visites des sites</button>
-    <button class="tab-btn" id="tabBtn-meteo" onclick="switchTab('meteo')">10. 🌤 Météo du jour</button>
+    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 🌤 Météo & visites</button>
   </div>
 
   <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
@@ -750,37 +749,18 @@
 
   <!-- ============ ONGLET 8 : VISITES DU SITE ============ -->
 
-  <div class="tab-content" id="tab-meteo">
+  <div class="tab-content" id="tab-visits">
     <div class="mt-head">
       <div>
-        <h2 id="mtTitre">Météo du jour</h2>
-        <p class="vz-sub" id="mtSousTitre">Visites, Google et mails Brevo en un coup d'œil. Rapport mis à jour vers 7h50 et 19h50.</p>
+        <h2 id="mtTitre" style="margin:0;">Météo du jour</h2>
+        <p class="vz-sub" id="mtSousTitre">Le rapport du jour, la météo des sites, Google et les mails Brevo. Rapport mis à jour vers 7h50 et 19h50.</p>
       </div>
       <button class="btn-outline" onclick="loadMeteo()">↻ Actualiser</button>
     </div>
     <div class="vz-card"><ul class="mt-notes" id="mtResume"><li>Chargement…</li></ul></div>
     <div class="mt-sky" id="mtSky"></div>
 
-    <h2>Google</h2>
-    <p class="vz-sub" id="mtGoogleReleve"></p>
-    <div class="mt-g" id="mtGoogleSites" style="margin-top:12px;"></div>
-    <div class="vz-card" style="margin-top:14px;">
-      <div class="vz-card-h"><h3>Impressions Google jour par jour</h3><span class="vz-note">30 derniers jours · Google a 2 à 3 jours de retard</span></div>
-      <div style="height:220px;"><canvas id="mtGoogleChart"></canvas></div>
-    </div>
-    <div class="vz-card">
-      <div class="vz-card-h"><h3>Recherches qui font apparaître les sites</h3><span class="vz-note">★ = suivie en priorité · 28 derniers jours</span></div>
-      <div style="overflow-x:auto;"><table><thead><tr><th>Site</th><th>Recherche</th><th style="text-align:right">Impressions</th><th style="text-align:right">Clics</th><th style="text-align:right">Position</th></tr></thead><tbody id="mtRequetes"></tbody></table></div>
-    </div>
-
-    <h2>Mails Brevo</h2>
-    <p class="vz-sub">Ouvertures automatiques Apple et clics des robots antispam retirés. Chiffres relevés à chaque rapport.</p>
-    <div class="vz-grid2" id="mtBrevo" style="margin-top:12px;"></div>
-
-    <h2>À faire</h2>
-    <ol class="mt-todo" id="mtTodo"></ol>
-  </div>
-  <div class="tab-content" id="tab-visits">
+    <div style="height:28px"></div>
     <div class="vz-head">
       <div>
         <h2 style="margin:0;">Visites des sites</h2>
@@ -894,6 +874,24 @@
     <div class="vz-modal" id="vzJourney" onclick="if(event.target===this)this.classList.remove('open')">
       <div class="vz-modal-box"><div class="vz-card-h"><h3 style="margin:0;">Parcours du visiteur</h3><button class="btn-outline vz-xs" onclick="document.getElementById('vzJourney').classList.remove('open')">✕</button></div><div id="vzJourneyBody"></div></div>
     </div>
+    <h2>Google</h2>
+    <p class="vz-sub" id="mtGoogleReleve"></p>
+    <div class="mt-g" id="mtGoogleSites" style="margin-top:12px;"></div>
+    <div class="vz-card" style="margin-top:14px;">
+      <div class="vz-card-h"><h3>Impressions Google jour par jour</h3><span class="vz-note">30 derniers jours · Google a 2 à 3 jours de retard</span></div>
+      <div style="height:220px;"><canvas id="mtGoogleChart"></canvas></div>
+    </div>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Recherches qui font apparaître les sites</h3><span class="vz-note">★ = suivie en priorité · 28 derniers jours</span></div>
+      <div style="overflow-x:auto;"><table><thead><tr><th>Site</th><th>Recherche</th><th style="text-align:right">Impressions</th><th style="text-align:right">Clics</th><th style="text-align:right">Position</th></tr></thead><tbody id="mtRequetes"></tbody></table></div>
+    </div>
+
+    <h2>Mails Brevo</h2>
+    <p class="vz-sub">Ouvertures automatiques Apple et clics des robots antispam retirés. Chiffres relevés à chaque rapport.</p>
+    <div class="vz-grid2" id="mtBrevo" style="margin-top:12px;"></div>
+
+    <h2>À faire</h2>
+    <ol class="mt-todo" id="mtTodo"></ol>
   </div>
 </div>
 
@@ -1119,8 +1117,7 @@
       if (slot && form && form.parentElement !== slot) slot.appendChild(form);
     }
     if (name === 'groupview') renderGroupView();
-    if (name === 'visits') loadVisitsSummary();
-    if (name === 'meteo') loadMeteo();
+    if (name === 'visits'){ loadVisitsSummary(); loadMeteo(); }
     if (name === 'access'){
       document.getElementById('icsFeedUrl').value = `${API_BASE}/api/agenda.ics?key=${encodeURIComponent(token)}`;
     }
