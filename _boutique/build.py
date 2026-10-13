@@ -10,6 +10,7 @@ Sorties :
 
 Usage : python3 _boutique/build.py [fichier.json | URL]   (défaut : l'API en ligne)
 """
+import unicodedata
 import datetime, html, json, pathlib, re, sys, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -127,6 +128,14 @@ PAGE_CSS = """<style>
   .pp-more a:hover{transform:translateY(-4px); border-color:rgba(255,255,255,.3);}
   .pp-more .im{background:#fff; aspect-ratio:1;} .pp-more .im img{width:100%; height:100%; object-fit:contain; padding:8%;}
   .pp-more .tx{padding:12px 14px;} .pp-more .tx b{display:block; font-size:.9rem; line-height:1.25;} .pp-more .tx span{color:var(--muted); font-size:.85rem;}
+  .pp-need{margin:26px 0 8px; padding:18px; border:1px solid var(--line); border-radius:14px; background:var(--ink-2);}
+  .pp-need h2{margin:0 0 6px !important;} .pp-need p{color:var(--muted); font-size:.88rem; margin:0 0 12px;}
+  .pp-need-i{display:flex; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--line);}
+  .pp-need-i .nm{display:flex; align-items:center; gap:12px; flex:1; text-decoration:none; color:var(--paper); min-width:0;}
+  .pp-need-i .im{width:54px; height:54px; background:#fff; border-radius:10px; flex:none;} .pp-need-i .im img{width:100%; height:100%; object-fit:contain; padding:4px;}
+  .pp-need-i b{font-size:.92rem; line-height:1.25;} .pp-need-i .pr{font-weight:700; white-space:nowrap;}
+  .pp-need-i .btn{padding:9px 16px; font-size:.85rem;}
+  .pp-need-links{display:flex; flex-wrap:wrap; gap:8px;} .pp-need-links a{padding:8px 14px; border:1px solid var(--line); border-radius:100px; text-decoration:none; color:var(--paper); font-size:.88rem;}
 </style>"""
 
 
@@ -154,6 +163,51 @@ def jsonld(p):
         {'@type': 'ListItem', 'position': 3, 'name': p['name'], 'item': f"{SITE}/produits/{p['slug']}"}]}
     return ('<script type="application/ld+json">' + json.dumps(prod, ensure_ascii=False) + '</script>\n'
             '<script type="application/ld+json">' + json.dumps(crumbs, ensure_ascii=False) + '</script>')
+
+
+# --- Produits associés : une machine à effets nécessite un consommable (poudre, liquide…) ---
+FX_KEYS = ('etincelles', 'fumee', 'brouillard', 'mousse', 'bulles')
+
+
+def _norm(s):
+    return ''.join(c for c in unicodedata.normalize('NFD', s or '') if not unicodedata.combining(c)).lower()
+
+
+def is_acc(p):
+    return bool(re.match(r'(poudre|liquide|fluide|recharge)\b', _norm(p['name'])))
+
+
+def fx_key(p):
+    n = _norm(p['name'])
+    return next((k for k in FX_KEYS if k in n), None)
+
+
+def related(p, products):
+    """('acc', [consommables]) pour une machine, ('machines', [machines]) pour un consommable, sinon None."""
+    k = fx_key(p)
+    if not k:
+        return None
+    acc = is_acc(p)
+    others = [q for q in products if q['slug'] != p['slug'] and fx_key(q) == k and is_acc(q) != acc
+              and not (acc and _norm(q['name']).startswith('lot de'))]
+    return ('machines' if acc else 'acc', others) if others else None
+
+
+def need_block(p, products):
+    r = related(p, products)
+    if not r:
+        return ''
+    kind, items = r
+    if kind == 'acc':
+        rows = ''.join(
+            f'<div class="pp-need-i"><a class="nm" href="/produits/{esc(q["slug"])}">'
+            f'<span class="im"><img src="{esc(q.get("image") or "")}" alt="" loading="lazy"></span><b>{esc(q["name"])}</b></a>'
+            f'<span class="pr">{fr_price(q)}</span>'
+            f'<a class="btn btn-primary" href="/boutique.html?ajouter={esc(q["slug"])}">Ajouter</a></div>' for q in items)
+        return ('<section class="pp-need"><h2>À prévoir avec cette machine</h2>'
+                '<p>Consommable nécessaire à son fonctionnement, vendu séparément.</p>' + rows + '</section>')
+    links = ''.join(f'<a href="/produits/{esc(q["slug"])}">{esc(q["name"])}</a>' for q in items)
+    return f'<section class="pp-need"><h2>Compatible avec</h2><div class="pp-need-links">{links}</div></section>'
 
 
 def page(p, products, tpl):
@@ -227,6 +281,7 @@ def page(p, products, tpl):
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       {intro}
       {f'<h2>Caractéristiques techniques</h2><ul class="pp-specs">{spec_html}</ul>' if spec_html else ''}
+      {need_block(p, products)}
       {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact.html" style="color:var(--paper)">contactez-nous</a>.</p>'}
     </div>
   </div>
