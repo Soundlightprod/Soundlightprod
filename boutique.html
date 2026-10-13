@@ -140,6 +140,60 @@
   .refs-col a{color:var(--paper); text-decoration:none;} .refs-col a:hover{text-decoration:underline;}
   .refs-col li span{color:var(--muted); white-space:nowrap;}
   .card h3 a{color:inherit; text-decoration:none;} .card h3 a:hover{text-decoration:underline;}
+
+  /* ===== Boutique v2 : rayons, grille compacte ===== */
+  .page-hero{padding:56px 24px 18px;}
+  .page-hero h1{font-size:clamp(2rem, 5vw, 3.2rem); margin-bottom:10px;}
+  .page-hero p{font-size:1rem;}
+  .wrap{padding-bottom:70px;}
+  .trust{list-style:none; display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:0 0 38px;}
+  .trust li{display:flex; align-items:center; gap:12px; background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-size:.82rem; color:var(--muted); line-height:1.3;}
+  .trust li b{display:block; color:var(--paper); font-size:.88rem;}
+  .trust .ic{font-size:1.4rem; flex-shrink:0;}
+  @media (max-width:900px){ .trust{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .trust li{padding:10px;} .trust .ic{font-size:1.15rem;} }
+  .sec-title{font-size:1.35rem; margin:0 0 18px; display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
+  .sec-title a{font-family:'DM Mono',monospace; font-size:.74rem; font-weight:400; letter-spacing:.05em; color:var(--muted); text-decoration:none;}
+  .sec-title a:hover{color:var(--paper);}
+  .cat-tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:46px;}
+  @media (max-width:860px){ .cat-tiles{grid-template-columns:1fr;} }
+  .cat-tile{display:block; text-decoration:none; color:var(--paper); background:var(--ink-2); border:1px solid var(--line); border-radius:18px; overflow:hidden; transition:transform .25s, border-color .25s;}
+  .cat-tile:hover{transform:translateY(-4px); border-color:rgba(255,255,255,.3);}
+  .cat-tile .pics{display:flex; background:#fff; height:170px; align-items:center; justify-content:center; gap:4px; padding:10px;}
+  .cat-tile .pics img{height:100%; flex:1 1 0; min-width:0; object-fit:contain;}
+  .cat-tile .pics.emoji{background:linear-gradient(135deg,#2a2333,#14121a); font-size:4rem;}
+  .cat-tile .pics.cover{padding:0;} .cat-tile .pics.cover img{object-fit:cover; height:100%; width:100%;}
+  .cat-tile .tx{padding:16px 18px 18px; display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .cat-tile h3{font-size:1.2rem; margin-bottom:3px;}
+  .cat-tile .meta{color:var(--muted); font-size:.8rem; font-family:'DM Mono',monospace;}
+  .cat-tile .go{flex-shrink:0; width:38px; height:38px; border-radius:50%; background:var(--paper); color:var(--ink); display:flex; align-items:center; justify-content:center; font-weight:800;}
+  .crumb{font-family:'DM Mono',monospace; font-size:.76rem; letter-spacing:.05em; color:var(--muted); margin-bottom:14px;}
+  .crumb a{color:var(--muted); text-decoration:none;} .crumb a:hover{color:var(--paper);}
+  .cat-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px;}
+  .cat-head h1{font-size:clamp(1.8rem,4.5vw,2.6rem);}
+  .cat-head .cnt{color:var(--muted); font-size:.85rem; margin-left:8px; font-family:'DM Mono',monospace; font-weight:400;}
+  .sort{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:100px; padding:9px 16px; font-family:'DM Mono',monospace; font-size:.76rem;}
+  .subchips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
+  .subchips button, .tabs a{font-family:'DM Mono',monospace; font-size:.74rem; padding:8px 15px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); background:transparent; color:var(--muted); cursor:pointer; border:none; text-decoration:none; transition:all .2s;}
+  .subchips button.active, .subchips button:hover, .tabs a.active, .tabs a:hover{color:var(--paper); box-shadow:inset 0 0 0 1.5px var(--paper);}
+  .subchips button i{font-style:normal; opacity:.55; margin-left:5px;}
+  .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
+  .grid-sm{display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:16px;}
+  @media (max-width:520px){ .grid-sm{grid-template-columns:repeat(2,1fr); gap:10px;} }
+  .grid-sm .card{padding:10px; gap:8px; border-radius:14px;}
+  .grid-sm .card-img{aspect-ratio:1/1; max-height:190px; width:100%;}
+  .grid-sm .card-img img{padding:6%;}
+  .grid-sm .card-img.has-photo::after{display:none;}
+  .grid-sm .card h3{font-size:.92rem; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.4em;}
+  .grid-sm .card .price-row{margin-top:auto; gap:8px;}
+  .grid-sm .price{font-size:1.1rem; white-space:nowrap;}
+  @media (max-width:520px){ .grid-sm .price{font-size:.98rem;} .grid-sm .btn{padding:8px 11px !important;} }
+  .grid-sm .btn{padding:8px 14px !important; font-size:.8rem !important; min-height:0 !important; gap:0 !important;}
+  .grid-sm .btn::before, .grid-sm .btn::after{display:none !important;}
+  .grid-sm .card .desc{-webkit-line-clamp:2; font-size:.76rem;}
+  .grid-sm .card-img[style]{aspect-ratio:4/3;}
+  .amz-block{margin-top:44px;}
+  [hidden]{display:none !important;}
 </style>
 <link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/charte.css">
@@ -168,35 +222,53 @@
   </div>
 </header>
 
-<section class="page-hero">
+<section class="page-hero" id="shopHero">
   <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
   <div class="page-hero-inner">
     <span class="label">Boutique SLP</span>
-    <h1>Matériel son & lumière à l'achat</h1>
-    <p>Câbles, enceintes, projecteurs, accessoires : nous vous faisons profiter de nos tarifs préférentiels sur du matériel garanti 2&nbsp;ans, à des prix attractifs, expédié partout en France.</p>
+    <h1>Matériel son &amp; lumière</h1>
+    <p>Du matériel de scène garanti 2&nbsp;ans, à prix pros, expédié partout en France.</p>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <div class="filters" id="filters">
-      <button class="filter-btn active" data-cat="all">Tout</button>
-      <button class="filter-btn" data-cat="son">Son</button>
-      <button class="filter-btn" data-cat="lumiere">Lumière</button>
-      <button class="filter-btn" data-cat="consommables">Consommables</button>
-    </div>
-    <div class="grid" id="grid">
-      <p style="color:var(--muted);">Chargement du catalogue…</p>
-    </div>
-  </div>
-</section>
 
-<section>
-  <div class="wrap">
-    <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:18px; flex-wrap:wrap;">
-      <h2 style="font-size:1.2rem; margin:0;">Notre proposition en sonorisation</h2>
+    <!-- Accueil de la boutique : les rayons -->
+    <div id="viewHome">
+      <ul class="trust">
+        <li><span class="ic">🛡️</span><span><b>Garantie 2 ans</b>sur tout le matériel</span></li>
+        <li><span class="ic">🚚</span><span><b>Livraison en France</b>expédié par SLP</span></li>
+        <li><span class="ic">🔒</span><span><b>Paiement sécurisé</b>carte bancaire ou PayPal</span></li>
+        <li><span class="ic">🎛️</span><span><b>Conseils de techniciens</b>au 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</span></li>
+      </ul>
+      <h2 class="sec-title">Nos rayons</h2>
+      <div class="cat-tiles" id="catTiles"></div>
+      <h2 class="sec-title">Sélection SLP <a href="#tous">Tout le catalogue →</a></h2>
+      <div class="grid-sm" id="featured"></div>
     </div>
-    <div class="grid">
+
+    <!-- Page d'un rayon -->
+    <div id="viewCat" hidden>
+      <nav class="crumb"><a href="#">Boutique</a> / <span id="crumbCat"></span></nav>
+      <div class="cat-head">
+        <h1><span id="catTitle"></span><span class="cnt" id="catCount"></span></h1>
+        <select class="sort" id="sortSel" aria-label="Trier">
+          <option value="def">Trier : sélection</option>
+          <option value="asc">Prix croissant</option>
+          <option value="desc">Prix décroissant</option>
+          <option value="name">Nom A → Z</option>
+        </select>
+      </div>
+      <div class="tabs" id="tabsAll" hidden>
+        <a href="#tous" data-c="tous">Tout</a><a href="#lumiere" data-c="lumiere">Lumière</a><a href="#son" data-c="son">Son</a><a href="#consommables" data-c="consommables">Effets &amp; consommables</a>
+      </div>
+      <div class="subchips" id="subchips"></div>
+      <div class="grid-sm" id="grid"><p style="color:var(--muted);">Chargement du catalogue…</p></div>
+
+      <div class="amz-block" id="amazonBlock" hidden>
+        <h2 class="sec-title">Notre sélection en sonorisation</h2>
+        <div class="grid-sm">
       <a href="https://www.amazon.fr/s?k=table+de+mixage&tag=soundlightprod-21" target="_blank" rel="noopener sponsored" class="card" style="text-decoration:none;">
         <div class="card-img" style="background:#14121a;"><img src="https://images.unsplash.com/photo-1535406208535-1429839cfd13?auto=format&fit=crop&w=700&q=75" alt="Table de mixage" loading="lazy" style="width:100%; height:100%; object-fit:cover;"></div>
         <span class="cat">Sonorisation</span>
@@ -247,7 +319,10 @@
         <div class="price-row"><span style="background:#ff9900; color:#111; font-weight:700; padding:8px 16px; border-radius:100px; font-size:0.82rem;">Voir sur Amazon ↗</span></div>
       </a>
     </div>
-    <p style="color:var(--muted); font-size:0.65rem; text-align:right; margin-top:14px; opacity:0.6; font-family:'DM Mono',monospace; letter-spacing:0.05em; text-transform:uppercase;">Publicité · liens affiliés Amazon</p>
+        <p style="color:var(--muted); font-size:0.65rem; text-align:right; margin-top:14px; opacity:0.6; font-family:'DM Mono',monospace; letter-spacing:0.05em; text-transform:uppercase;">Publicité · liens affiliés Amazon</p>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -349,42 +424,126 @@
 
   function saveCart(){ sessionStorage.setItem('slp_cart', JSON.stringify(cart)); renderCart(); }
 
+  const CATS = {
+    lumiere:{ name:'Éclairage scénique', short:'Lumière' },
+    son:{ name:'Sonorisation', short:'Son' },
+    consommables:{ name:'Effets spéciaux & consommables', short:'Effets & consommables' }
+  };
+  const SUBS = [   // sous-rayons de l'éclairage, selon le nom du produit (premier qui correspond)
+    ['Lasers', /laser/i],
+    ['Stroboscopes', /strobe/i],
+    ['Barres LED', /barre|bar light/i],
+    ['DMX & contrôle', /dmx|r[ée]partiteur|console|grandma|tiger/i],
+    ['Projecteurs PAR', /\bpar\b/i],
+    ['Lyres & projecteurs mobiles', /lyre|bee|mobile|beam|moving/i],
+    ['Projecteurs & floods', /./]
+  ];
+  const subOf = p => (SUBS.find(s => s[1].test(p.name)) || SUBS[SUBS.length-1])[0];
+  const AMZ_IMG = 'https://images.unsplash.com/photo-1535406208535-1429839cfd13?auto=format&fit=crop&w=700&q=75';
+  let curSub = 'all';
+
+  function pic(list, re){ const x = list.find(p => p.image && re.test(p.name)); return x ? x.image : ''; }
+
+  function cardHTML(p){
+    const out = p.stock_qty !== undefined && p.stock_qty !== null && Number(p.stock_qty) <= 0;
+    return `
+      <div class="card">
+        <a class="card-img has-photo" href="/produits/${p.slug}" aria-label="${p.name}">${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : 'Photo à venir'}</a>
+        <h3><a href="/produits/${p.slug}">${p.name}</a></h3>
+        <div class="price-row">
+          <span class="price">${money(p.price_cents)}</span>
+          ${out ? '<span class="stock-low">Épuisé</span>' : `<button class="btn btn-primary" onclick="addToCart(${p.id})">Ajouter</button>`}
+        </div>
+      </div>`;
+  }
+
+  function renderHome(){
+    const by = c => products.filter(p => p.category === c);
+    const tiles = [];
+    const mk = (c, imgs, meta, cover) => `
+      <a class="cat-tile" href="#${c}">
+        <div class="pics${cover ? ' cover' : ''}">${imgs.filter(Boolean).map(i => `<img src="${i}" alt="" loading="lazy" onerror="this.remove()">`).join('')}</div>
+        <div class="tx"><div><h3>${CATS[c].name}</h3><div class="meta">${meta}</div></div><span class="go">→</span></div>
+      </a>`;
+    const lum = by('lumiere'), con = by('consommables'), son = by('son');
+    const minP = l => l.length ? ' · dès ' + money(Math.min(...l.map(p => p.price_cents))) : '';
+    if (lum.length) tiles.push(mk('lumiere', [pic(lum,/lyre|bee/i), pic(lum,/\bpar\b/i), pic(lum,/barre/i)], lum.length + ' articles' + minP(lum)));
+    tiles.push(son.length
+      ? mk('son', son.slice(0,3).map(p => p.image), son.length + ' articles' + minP(son))
+      
+      : `<a class="cat-tile" href="#son"><div class="pics emoji">🎧 🔊 🎤</div><div class="tx"><div><h3>${CATS.son.name}</h3><div class="meta">Notre sélection de matériel</div></div><span class="go">→</span></div></a>`);
+    if (con.length) tiles.push(mk('consommables', con.filter(p => p.image).slice(0,3).map(p => p.image), con.length + ' articles' + minP(con)));
+    document.getElementById('catTiles').innerHTML = tiles.join('');
+    // sélection : quelques produits de chaque rayon, le plus abordable en tête
+    const pick = [].concat(lum.slice(0,4), con.slice(0,1)).filter(p => p.image);
+    document.getElementById('featured').innerHTML = pick.map(cardHTML).join('');
+  }
+
+  function renderCat(cat){
+    const all = cat === 'tous';
+    const base = all ? products : products.filter(p => p.category === cat);
+    document.getElementById('catTitle').textContent = all ? 'Tout le catalogue' : CATS[cat].name;
+    document.getElementById('crumbCat').textContent = all ? 'Tout le catalogue' : CATS[cat].name;
+    document.getElementById('tabsAll').hidden = !all;
+    document.querySelectorAll('#tabsAll a').forEach(a => a.classList.toggle('active', a.dataset.c === 'tous'));
+    document.getElementById('amazonBlock').hidden = !(cat === 'son');
+    // sous-rayons (éclairage uniquement)
+    const subsEl = document.getElementById('subchips');
+    let list = base;
+    if (cat === 'lumiere'){
+      const counts = {}; base.forEach(p => { const k = subOf(p); counts[k] = (counts[k]||0) + 1; });
+      const keys = SUBS.map(s => s[0]).filter(k => counts[k]);
+      if (curSub !== 'all' && !counts[curSub]) curSub = 'all';
+      subsEl.innerHTML = `<button data-s="all" class="${curSub==='all'?'active':''}">Tout<i>${base.length}</i></button>` +
+        keys.map(k => `<button data-s="${k}" class="${curSub===k?'active':''}">${k}<i>${counts[k]}</i></button>`).join('');
+      subsEl.hidden = false;
+      subsEl.querySelectorAll('button').forEach(b => b.onclick = () => { curSub = b.dataset.s; renderCat(cat); });
+      if (curSub !== 'all') list = base.filter(p => subOf(p) === curSub);
+    } else { subsEl.innerHTML = ''; subsEl.hidden = true; }
+    const sort = document.getElementById('sortSel').value;
+    list = list.slice();
+    if (sort === 'asc') list.sort((a,b) => a.price_cents - b.price_cents);
+    else if (sort === 'desc') list.sort((a,b) => b.price_cents - a.price_cents);
+    else if (sort === 'name') list.sort((a,b) => a.name.localeCompare(b.name, 'fr'));
+    document.getElementById('catCount').textContent = list.length + ' article' + (list.length > 1 ? 's' : '');
+    const grid = document.getElementById('grid');
+    grid.innerHTML = list.length ? list.map(cardHTML).join('')
+      : (cat === 'son' ? '' : '<p style="color:var(--muted);">Aucun article dans cette catégorie pour le moment.</p>');
+    grid.hidden = !list.length;
+    document.getElementById('catCount').hidden = !list.length;
+    document.getElementById('sortSel').hidden = !list.length;
+  }
+
+  function route(){
+    const h = (location.hash || '').slice(1);
+    const isCat = h === 'tous' || CATS[h];
+    document.getElementById('viewHome').hidden = !!isCat;
+    document.getElementById('viewCat').hidden = !isCat;
+    document.getElementById('shopHero').hidden = !!isCat;
+    if (!products.length && !loaded) return;
+    if (isCat){ if (h !== lastCat) curSub = 'all'; lastCat = h; renderCat(h); window.scrollTo({top:0}); }
+    else renderHome();
+  }
+  let loaded = false, lastCat = '';
+
   async function loadProducts(){
     try {
       const res = await fetch(`${API_BASE}/api/products`);
       products = await res.json();
-      const startCat = (location.hash || '').slice(1);
-      if (['son','lumiere','consommables'].includes(startCat)){
-        renderGrid(startCat);
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === startCat));
-      } else renderGrid('all');
+      loaded = true;
+      route();
       const q = new URLSearchParams(location.search);
       const bySlug = s => products.find(x => x.slug === s);
       if (q.get('ajouter') && bySlug(q.get('ajouter'))) addToCart(bySlug(q.get('ajouter')).id);
       else if (q.get('p') && bySlug(q.get('p'))) openProductDetail(bySlug(q.get('p')).id);
       if (q.get('ajouter') || q.get('p')) history.replaceState(null, '', location.pathname + location.hash);
     } catch(e){
+      document.getElementById('catTiles').innerHTML = '<p style="color:var(--muted);">Catalogue indisponible pour le moment.</p>';
       document.getElementById('grid').innerHTML = '<p style="color:var(--muted);">Catalogue indisponible pour le moment.</p>';
     }
   }
-
-  function renderGrid(cat){
-    const list = cat === 'all' ? products : products.filter(p => p.category === cat);
-    const grid = document.getElementById('grid');
-    if (!list.length){ grid.innerHTML = '<p style="color:var(--muted);">Aucun article dans cette catégorie pour le moment.</p>'; return; }
-    grid.innerHTML = list.map(p => `
-      <div class="card">
-        <div class="card-img${p.image ? ' has-photo' : ''}"${p.image ? ` onclick="openProductDetail(${p.id})"` : ''}>${p.image ? `<img src="${p.image}" alt="${p.name}">` : 'Photo à venir'}</div>
-        <span class="cat">${{ son:'Son', lumiere:'Lumière', consommables:'Consommables' }[p.category] || p.category}</span>
-        <h3><a href="/produits/${p.slug}">${p.name}</a></h3>
-        <p class="desc">${p.description || ''}</p>
-        <div class="price-row">
-          <span class="price">${money(p.price_cents)}</span>
-          <button class="btn btn-primary" onclick="addToCart(${p.id})">Ajouter</button>
-        </div>
-      </div>
-    `).join('');
-  }
+  window.addEventListener('hashchange', route);
+  document.getElementById('sortSel').onchange = () => { const h = location.hash.slice(1); if (h === 'tous' || CATS[h]) renderCat(h); };
 
   function addToCart(id){
     const p = products.find(x => x.id === id);
@@ -472,14 +631,6 @@
   }
   document.getElementById('pdClose').onclick = closeProductDetail;
   document.getElementById('pdOverlay').onclick = closeProductDetail;
-
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.onclick = () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderGrid(btn.dataset.cat);
-    };
-  });
 
   document.getElementById('checkoutBtn').onclick = async () => {
     const msgEl = document.getElementById('cartMsg');
