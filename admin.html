@@ -1095,6 +1095,12 @@
       const resume = rap ? JSON.parse(rap.resume_json || '[]') : [];
       const actions = rap ? JSON.parse(rap.actions_json || '[]') : [];
       document.getElementById('mtTitre').textContent = rap && rap.titre ? rap.titre : 'Météo du jour';
+      if (rap && rap.cree_le){
+        const ecrit = new Date(rap.cree_le.replace(' ', 'T') + 'Z');
+        const h = new Date().getHours();
+        const prochain = (h >= 8 && h < 20) ? 'vers 19h50' : 'vers 7h50';
+        document.getElementById('mtSousTitre').textContent = `Rapport écrit le ${ecrit.toLocaleString('fr-FR', { weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' })} · prochain rapport ${prochain}. Les chiffres (visites, Google) se mettent à jour à chaque « Actualiser ».`;
+      }
       const ul = document.getElementById('mtResume'); ul.replaceChildren(...(resume.length ? resume.map((t) => mtEl('li', null, t)) : [mtEl('li', null, 'Le premier rapport arrivera vers 7h50.')]));
       const ol = document.getElementById('mtTodo'); ol.replaceChildren(...actions.map((t) => mtEl('li', null, t)));
       if (!actions.length) ol.appendChild(mtEl('p', 'empty', 'Rien à faire pour l’instant.'));
