@@ -15,9 +15,10 @@ import datetime, html, json, pathlib, re, sys, urllib.request
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = 'https://soundlightprod.fr'
 API = 'https://slp-api.raspy-silence-d4c7.workers.dev/api/products'
-CATS = {'son': 'Son', 'lumiere': 'Lumière', 'consommables': 'Consommables'}
-CAT_FULL = {'son': 'Sonorisation', 'lumiere': 'Éclairage scénique', 'consommables': 'Effets spéciaux & consommables'}
+CATS = {'son': 'Son', 'lumiere': 'Lumière', 'etincelles': 'Étincelles', 'consommables': 'Consommables'}
+CAT_FULL = {'son': 'Sonorisation', 'lumiere': 'Éclairage scénique', 'etincelles': 'Machines à étincelles', 'consommables': 'Effets spéciaux & consommables'}
 GOOGLE_CAT = {'son': 'Électronique > Audio > Composants audio', 'lumiere': 'Arts et loisirs > Arts du spectacle > Éclairage de scène',
+              'etincelles': 'Arts et loisirs > Fêtes et célébrations > Articles de fête',
               'consommables': 'Arts et loisirs > Fêtes et célébrations > Articles de fête'}
 EMPTY = {'', 'descriptif en préparation'}
 # Photos supplémentaires (la base n'a qu'une image par produit) : slug -> [fichiers du site]
@@ -269,7 +270,7 @@ def update_boutique(products):
     f = ROOT / 'boutique.html'
     s = f.read_text(encoding='utf-8')
     groups = []
-    for c in ('lumiere', 'son', 'consommables'):
+    for c in ('lumiere', 'son', 'etincelles', 'consommables'):
         ps = [p for p in products if p['category'] == c]
         if ps:
             groups.append(f'<div class="refs-col"><h3>{CAT_FULL[c]}</h3><ul>' + ''.join(
@@ -312,7 +313,7 @@ def main():
     products = load(sys.argv[1] if len(sys.argv) > 1 else API)
     if not products:
         sys.exit('Catalogue vide : rien à générer (API indisponible ?)')
-    order = {'lumiere': 0, 'son': 1, 'consommables': 2}
+    order = {'lumiere': 0, 'son': 1, 'etincelles': 2, 'consommables': 3}
     products.sort(key=lambda p: (order.get(p['category'], 9), p['id']))
     out = ROOT / 'produits'
     out.mkdir(exist_ok=True)

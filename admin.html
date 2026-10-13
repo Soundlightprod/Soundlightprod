@@ -1184,7 +1184,7 @@
       const res = await fetch(`${API_BASE}/api/admin/products`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
       if (!Array.isArray(data)) throw new Error(data.error || 'Réponse inattendue');
-      const catLabel = { son:'Son', lumiere:'Lumière', consommables:'Consommables' };
+      const catLabel = { son:'Son', lumiere:'Lumière', etincelles:'Étincelles', consommables:'Consommables' };
       document.querySelector('#stockTable tbody').innerHTML = data.map(p => `
         <tr>
           <td>${p.name}</td>
