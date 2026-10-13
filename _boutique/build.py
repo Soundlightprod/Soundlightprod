@@ -56,9 +56,9 @@ def summary(p):
     cat = CAT_FULL.get(p['category'], 'Matériel')
     base = f"{p['name']} : {cat.lower()} professionnel"
     if sp and len(sp) > 1:
-        return f"{base} — {', '.join(sp[:3])}. Garanti 2 ans, livré partout en France."
+        return f"{base} — {', '.join(sp[:3])}. Garantie 2 ans, livraison partout en France."
     if sp:
-        return f"{sp[0]} Garanti 2 ans, livré partout en France."
+        return f"{sp[0]} Garantie 2 ans, livraison partout en France."
     return f"{base}, garanti 2 ans, livré partout en France par SLP."
 
 
@@ -220,7 +220,7 @@ def page(p, products, tpl):
       <div class="pp-ttc">Prix TTC · Réf. SLP-{p['id']}</div>
       {stock}
       <div class="pp-actions">{buy}<a class="btn btn-ghost" href="/boutique.html">Toute la boutique</a></div>
-      <div class="pp-trust"><div><b>Garanti 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
+      <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       {intro}
       {f'<h2>Caractéristiques techniques</h2><ul class="pp-specs">{spec_html}</ul>' if spec_html else ''}
       {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact.html" style="color:var(--paper)">contactez-nous</a>.</p>'}
