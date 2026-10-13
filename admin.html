@@ -2266,6 +2266,13 @@
   // Multi-sites : SLP, Book My Band, CS Animations (colonne "site" de page_visits)
   const SITE_LABELS = { slp:'SLP', bmb:'Book My Band', csa:'CS Animations', store:'Boutique .store' };
   const SITE_COLORS = { slp:'#ffb238', bmb:'#ff2d6f', csa:'#38bdf8', store:'#a3e635' };
+  // Les dates des visites sont stockées en UTC : on les affiche à l'heure de Paris (été/hiver automatique)
+  function parisDT(s){
+    if (!s) return '';
+    const d = new Date(String(s).replace(' ', 'T') + 'Z'); if (isNaN(d)) return String(s);
+    const p = Object.fromEntries(new Intl.DateTimeFormat('fr-CA', { timeZone:'Europe/Paris', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23' }).formatToParts(d).map(x => [x.type, x.value]));
+    return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}:${p.second}`;
+  }
   let currentVisitsSite = 'slp'; // SLP affiché par défaut
   let customRange = null; // { from:'YYYY-MM-DD', to:'YYYY-MM-DD' } quand une plage de dates est choisie
   function siteQ(){
@@ -2351,7 +2358,7 @@
         const marker = L.circleMarker([p.latitude, p.longitude], {
           radius: 6, color: SITE_COLORS[p.site||'slp'], fillColor: SITE_COLORS[p.site||'slp'], fillOpacity: 0.7, weight: 1,
         });
-        marker.bindPopup(`<strong>${pageLabel(p.page)}</strong> · ${SITE_LABELS[p.site||'slp']}${p.postal_code ? '<br>' + p.postal_code + ' ' + (p.city||'') : ''}${p.network ? '<br>' + p.network : ''}${p.device ? ' · ' + p.device : ''}${p.referrer ? '<br>via ' + p.referrer : ''}<br>${[p.city, p.region, p.country].filter(Boolean).join(', ')}<br>${p.visited_at}`);
+        marker.bindPopup(`<strong>${pageLabel(p.page)}</strong> · ${SITE_LABELS[p.site||'slp']}${p.postal_code ? '<br>' + p.postal_code + ' ' + (p.city||'') : ''}${p.network ? '<br>' + p.network : ''}${p.device ? ' · ' + p.device : ''}${p.referrer ? '<br>via ' + p.referrer : ''}<br>${[p.city, p.region, p.country].filter(Boolean).join(', ')}<br>${parisDT(p.visited_at)}`);
         marker.addTo(visitsMapInstance.markerLayer);
       });
       setTimeout(() => visitsMapInstance.invalidateSize(), 50);
@@ -2391,7 +2398,7 @@
     document.getElementById('geoDetailTitle').textContent = `${dimLabel} — ${label}`;
     const tbody = document.querySelector('#geoDetailTable tbody');
     tbody.innerHTML = rows.map(r => {
-      const [datePart, timePart] = (r.visited_at || '').split(' ');
+      const [datePart, timePart] = parisDT(r.visited_at).split(' ');
       return `
         <tr>
           <td>${datePart || '—'}</td>
@@ -2426,7 +2433,7 @@
     document.getElementById('vzTopPages').innerHTML = top.slice(0, 10).map(([k, n]) => { const [site, page] = k.split('|'); return `
       <div class="row" onclick="showVisitDetail('${page}','${site}')"><div class="bl"><span class="f" style="width:${Math.round(n*100/max)}%"></span><span>${pageLabel(page)}${currentVisitsSite ? '' : ' <span class="vz-note">· ' + (SITE_LABELS[site]||site) + '</span>'}</span></div><span class="n">${n}</span></div>`; }).join('') || '<p class="vz-note">Aucune visite sur la période.</p>';
     document.getElementById('vzFeed').innerHTML = pts.slice(0, 15).map(p => {
-      const [d, t] = (p.visited_at || '').split(' ');
+      const [d, t] = parisDT(p.visited_at).split(' ');
       const when = d ? `${d.split('-').reverse().slice(0,2).join('/')} ${(t||'').slice(0,5)}` : '';
       const loc = [p.city, p.region].filter(Boolean).join(', ') || p.country || 'Lieu inconnu';
       const meta = [p.device, p.referrer ? 'via ' + refLabel(p.referrer) : '', p.network].filter(Boolean).join(' · ');
@@ -2532,7 +2539,7 @@
           <td>${siteTag(p.site)}</td>
           <td>${pageLabel(p.page)}</td>
           <td>${p.total}</td>
-          <td>${p.last_visit || '—'}</td>
+          <td>${p.last_visit ? parisDT(p.last_visit) : '—'}</td>
           <td><button class="btn-info" onclick="showVisitDetail('${p.page}','${p.site||''}')">Détails</button></td>
         </tr>
       `).join('');
@@ -2551,7 +2558,7 @@
       document.getElementById('visitsDetailTitle').textContent = 'Détails — ' + pageLabel(page) + (site ? ' · ' + SITE_LABELS[site] : '');
       const tbody = document.querySelector('#visitsDetailTable tbody');
       tbody.innerHTML = (data.visits || []).map(v => {
-        const [datePart, timePart] = (v.visited_at || '').split(' ');
+        const [datePart, timePart] = parisDT(v.visited_at).split(' ');
         return `
           <tr>
             <td>${datePart || '—'}</td>
@@ -2583,8 +2590,8 @@
       else {
         const first = visits[0];
         const where = [first.city, first.region, first.country].filter(Boolean).join(', ');
-        body.innerHTML = `<p class="vz-note" style="margin:6px 0 10px;">${(first.visited_at||'').split(' ')[0].split('-').reverse().join('/')}${where ? ' · ' + where : ''} · ${visits.length} page(s)</p>` +
-          visits.map(v => `<div class="vz-step"><span class="t">${((v.visited_at||'').split(' ')[1]||'').slice(0,5)}</span><span>${pageLabel(v.page)}${v.site && v.site !== 'slp' ? ' <span class="vz-note">(' + SITE_LABELS[v.site] + ')</span>' : ''}</span></div>`).join('');
+        body.innerHTML = `<p class="vz-note" style="margin:6px 0 10px;">${parisDT(first.visited_at).split(' ')[0].split('-').reverse().join('/')}${where ? ' · ' + where : ''} · ${visits.length} page(s)</p>` +
+          visits.map(v => `<div class="vz-step"><span class="t">${(parisDT(v.visited_at).split(' ')[1]||'').slice(0,5)}</span><span>${pageLabel(v.page)}${v.site && v.site !== 'slp' ? ' <span class="vz-note">(' + SITE_LABELS[v.site] + ')</span>' : ''}</span></div>`).join('');
       }
       document.getElementById('vzJourney').classList.add('open');
     } catch(e){
@@ -2602,7 +2609,7 @@
       const visits = data.visits || [];
       document.getElementById('gvVisitsEmpty').style.display = visits.length ? 'none' : 'block';
       tbody.innerHTML = visits.map(v => {
-        const [datePart, timePart] = (v.visited_at || '').split(' ');
+        const [datePart, timePart] = parisDT(v.visited_at).split(' ');
         return `
           <tr>
             <td>${datePart || '—'}</td>
