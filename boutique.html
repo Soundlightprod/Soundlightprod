@@ -277,8 +277,8 @@
   .hero-side li{display:flex; gap:10px; font-weight:600; font-size:.95rem; line-height:1.3;}
   .hero-side li::before{content:'☑'; font-size:1.15rem;}
   .hero-side a{margin-top:auto; background:#fff; color:#14213d; font-weight:700; text-align:center; border-radius:100px; padding:12px; text-decoration:none; font-size:.92rem;}
-  .tiles4{display:grid; grid-template-columns:repeat(5,1fr); gap:16px; margin-bottom:38px;}
-  @media (max-width:980px){ .tiles4{grid-template-columns:repeat(2,1fr);} .tiles4 .tile4:last-child{grid-column:1/-1;} }
+  .tiles4{display:grid; grid-template-columns:repeat(var(--n,5),1fr); gap:16px; margin-bottom:38px;}
+  @media (max-width:980px){ .tiles4{grid-template-columns:repeat(2,1fr);} .tiles4 .tile4:last-child:nth-child(odd){grid-column:1/-1;} }
   .tile4{position:relative; border-radius:18px; overflow:hidden; min-height:250px; padding:22px; color:#fff; text-decoration:none; display:flex; flex-direction:column; justify-content:space-between; transition:transform .25s;}
   .tile4:hover{transform:translateY(-4px);}
   .tile4 h3{color:#fff; font-size:1.3rem; max-width:90%; position:relative; z-index:2;}
@@ -599,10 +599,11 @@
         <span class="pill">Découvrir</span></a>`;
     document.getElementById('catTiles').innerHTML =
       tile('t-lum', '#lumiere', 'Éclairage scénique', pic(lum, /lyre|bee/i), '') +
-      tile('t-son', '#son', 'Sonorisation', '', '🎧🔊') +
+      (hiddenCat('son') ? '' : tile('t-son', '#son', 'Sonorisation', '', '🎧🔊')) +
       tile('t-etc', '#effets', 'Machines à effets', '/machine-etincelles-800w.png', '') +
       tile('t-con', '#consommables', 'Consommables', '/poudre-etincelles.png', '') +
       tile('t-new', '#nouveautes', 'Nouveautés', pic(lum, /sunstrip/i), '');
+    { const el = document.getElementById('catTiles'); el.style.setProperty('--n', el.children.length); }
     document.getElementById('featured').innerHTML = newest().slice(0,5).map(p => cardHTML(p, true)).join('');
     document.getElementById('featuredLum').innerHTML = lum.filter(p => p.image).slice(0,6).map(p => cardHTML(p, nw.has(p.id))).join('');
   }
@@ -645,7 +646,8 @@
   function route(){
     const q = (new URLSearchParams(location.search).get('q') || '').trim();
     const h = (location.hash || '').slice(1);
-    const [c, sub] = h.split('/');
+    let [c, sub] = h.split('/');
+    if (loaded && hiddenCat(c)){ history.replaceState(null, '', location.pathname + location.search); c = ''; }
     const isList = !!q || c === 'tous' || c === 'nouveautes' || CATS[c];
     document.getElementById('viewHome').hidden = isList;
     document.getElementById('viewCat').hidden = !isList;
@@ -663,12 +665,19 @@
     else renderList({ title: CATS[c].name, base: products.filter(p => p.category === c), amazon: c === 'son' });
   }
   let loaded = false;
+  // Un rayon sans produit (hors éclairage) est masqué : menu, tuile d'accueil et adresse directe
+  const SOFT_HIDE = ['son'];
+  const hiddenCat = c => SOFT_HIDE.includes(c) && !products.some(p => p.category === c);
+  function applyHiddenCats(){
+    SOFT_HIDE.forEach(c => document.querySelectorAll(`.shop-nav a[href$="#${c}"]`).forEach(a => { a.hidden = hiddenCat(c); }));
+  }
 
   async function loadProducts(){
     try {
       const res = await fetch(`${API_BASE}/api/products`);
       products = await res.json();
       loaded = true;
+      applyHiddenCats();
       route();
       const q = new URLSearchParams(location.search);
       const bySlug = s => products.find(x => x.slug === s);

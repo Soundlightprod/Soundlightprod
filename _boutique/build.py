@@ -348,6 +348,9 @@ def update_boutique(products):
     block = ('<!-- refs:start (généré par _boutique/build.py) -->\n'
              '<script type="application/ld+json">' + json.dumps(store, ensure_ascii=False) + '</script>\n'
              '<script type="application/ld+json">' + json.dumps(itemlist, ensure_ascii=False) + '</script>\n<!-- refs:end -->')
+    # Rayon Sonorisation masqué tant qu'il n'a aucun produit (le lien du menu reçoit l'attribut hidden)
+    has_son = any(p['category'] == 'son' for p in products)
+    s = re.sub(r'<a class="top" href="/boutique\.html#son"[^>]*>', '<a class="top" href="/boutique.html#son"' + ('' if has_son else ' hidden') + '>', s, count=1)
     if '<!-- refs:start' in s:
         s = re.sub(r'<!-- refs:start.*?<!-- refs:end -->', lambda _: block, s, flags=re.S)
     else:
