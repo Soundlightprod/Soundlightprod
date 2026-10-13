@@ -564,5 +564,33 @@
     <g:google_product_category>Arts et loisirs &gt; Fêtes et célébrations &gt; Articles de fête</g:google_product_category>
     <g:product_type>Effets spéciaux &amp; consommables</g:product_type>
   </item>
+  <item>
+    <g:id>SLP-44</g:id>
+    <g:title>Poudre pour machine à étincelles — Indoor</g:title>
+    <g:description>Poudre pour machine à étincelles — Indoor : effets spéciaux &amp; consommables professionnel — Poudre pour machine à étincelles froides, version Indoor pour l&#x27;utilisation en intérieur, Sachet individuel, Compatible avec nos machines à étincelles 800W. Garantie 2 ans, livraison partout en France.</g:description>
+    <g:link>https://soundlightprod.fr/produits/poudre-machine-etincelles-indoor</g:link>
+    <g:image_link>https://soundlightprod.fr/poudre-etincelles.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>19.99 EUR</g:price>
+    <g:condition>new</g:condition>
+    <g:brand>SLP Sound Light Prod</g:brand>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>Arts et loisirs &gt; Fêtes et célébrations &gt; Articles de fête</g:google_product_category>
+    <g:product_type>Effets spéciaux &amp; consommables</g:product_type>
+  </item>
+  <item>
+    <g:id>SLP-45</g:id>
+    <g:title>Poudre pour machine à étincelles — Outdoor</g:title>
+    <g:description>Poudre pour machine à étincelles — Outdoor : effets spéciaux &amp; consommables professionnel — Poudre pour machine à étincelles froides, version Outdoor pour l&#x27;utilisation en extérieur, Sachet individuel, Compatible avec nos machines à étincelles 800W. Garantie 2 ans, livraison partout en France.</g:description>
+    <g:link>https://soundlightprod.fr/produits/poudre-machine-etincelles-outdoor</g:link>
+    <g:image_link>https://soundlightprod.fr/poudre-etincelles.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>19.99 EUR</g:price>
+    <g:condition>new</g:condition>
+    <g:brand>SLP Sound Light Prod</g:brand>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>Arts et loisirs &gt; Fêtes et célébrations &gt; Articles de fête</g:google_product_category>
+    <g:product_type>Effets spéciaux &amp; consommables</g:product_type>
+  </item>
 </channel>
 </rss>

@@ -70,5 +70,7 @@
   <url><loc>https://soundlightprod.fr/produits/machine-etincelles-800w</loc><changefreq>weekly</changefreq><priority>0.6</priority><image:image><image:loc>https://soundlightprod.fr/machine-etincelles-800w.png</image:loc></image:image></url>
   <url><loc>https://soundlightprod.fr/produits/machine-etincelles-800w-x2</loc><changefreq>weekly</changefreq><priority>0.6</priority><image:image><image:loc>https://soundlightprod.fr/machine-etincelles-800w.png</image:loc></image:image></url>
   <url><loc>https://soundlightprod.fr/produits/machine-etincelles-800w-x4</loc><changefreq>weekly</changefreq><priority>0.6</priority><image:image><image:loc>https://soundlightprod.fr/machine-etincelles-800w.png</image:loc></image:image></url>
+  <url><loc>https://soundlightprod.fr/produits/poudre-machine-etincelles-indoor</loc><changefreq>weekly</changefreq><priority>0.6</priority><image:image><image:loc>https://soundlightprod.fr/poudre-etincelles.png</image:loc></image:image></url>
+  <url><loc>https://soundlightprod.fr/produits/poudre-machine-etincelles-outdoor</loc><changefreq>weekly</changefreq><priority>0.6</priority><image:image><image:loc>https://soundlightprod.fr/poudre-etincelles.png</image:loc></image:image></url>
   <!-- produits:end -->
 </urlset>
