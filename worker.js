@@ -964,7 +964,7 @@ export default {
 
       // GET /api/admin/visits-journey?session=<id> — toutes les pages vues dans la même session (admin)
       if (url.pathname === "/api/admin/visits-journey" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const session = url.searchParams.get("session");
         if (!session) return json({ visits: [] }, 200, origin);
         const { results } = await env.DB.prepare(
@@ -975,7 +975,7 @@ export default {
 
       // GET /api/admin/visits?artist=<slug> — historique des visites d'une fiche (admin)
       if (url.pathname === "/api/admin/visits" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const artist = url.searchParams.get("artist");
         if (!artist) return json({ total: 0, visits: [] }, 200, origin);
         const { results } = await env.DB.prepare(
@@ -990,7 +990,7 @@ export default {
       // DELETE /api/admin/visits/:id — supprime une visite (ex: une de tes propres visites de test)
       const visitDeleteMatch = url.pathname.match(/^\/api\/admin\/visits\/(\d+)$/);
       if (visitDeleteMatch && request.method === "DELETE") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         await env.DB.prepare("DELETE FROM page_visits WHERE id = ?").bind(visitDeleteMatch[1]).run();
         return json({ ok: true }, 200, origin);
       }
@@ -1071,7 +1071,7 @@ export default {
       // GET /api/admin/visits-timeseries?granularity=day|month — nombre de visites groupées par
       // jour ou par mois, tout le site confondu (admin), pour le graphique d'évolution.
       if (url.pathname === "/api/admin/visits-timeseries" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const granularity = url.searchParams.get("granularity") === "month" ? "month" : "day";
         const substrLen = granularity === "month" ? 7 : 10;
         const { results } = await env.DB.prepare(
@@ -1085,7 +1085,7 @@ export default {
 
       // GET /api/admin/visits-summary — nombre de visites par page, tout le site (admin)
       if (url.pathname === "/api/admin/visits-summary" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const { results } = await env.DB.prepare(
           `SELECT site, artist_slug as page, COUNT(*) as total, MAX(visited_at) as last_visit
            FROM page_visits WHERE ` + siteWhere(url) + ` GROUP BY site, artist_slug ORDER BY total DESC`
@@ -1096,7 +1096,7 @@ export default {
 
       // GET /api/admin/visits-map?period=today|week|month|all — points géolocalisés pour la carte (admin)
       if (url.pathname === "/api/admin/visits-map" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const cutoff = periodCutoff(url.searchParams.get("period"));
         const { results } = await env.DB.prepare(
           `SELECT id, artist_slug as page, city, region, country, latitude, longitude, visited_at, session_id, site, network, device, referrer, is_bot, postal_code
@@ -1109,7 +1109,7 @@ export default {
 
       // GET /api/admin/visits-breakdown?period=today|week|month|all — répartition pays/région/ville (admin)
       if (url.pathname === "/api/admin/visits-breakdown" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const cutoff = periodCutoff(url.searchParams.get("period"));
         const byCountry = await env.DB.prepare(
           `SELECT COALESCE(country, 'Inconnu') as label, COUNT(*) as total FROM page_visits
@@ -1140,7 +1140,7 @@ export default {
 
       // GET /api/admin/artist-tokens — liste les identifiants d'accès groupe (pour l'admin)
       if (url.pathname === "/api/admin/artist-tokens" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const { results } = await env.DB.prepare("SELECT artist_slug, token, password FROM artist_tokens").all();
         return json(results, 200, origin);
       }
@@ -1149,7 +1149,7 @@ export default {
       // (le jeton de session reste stable ; c'est le mot de passe qui protège l'accès).
       const tokenRegenMatch = url.pathname.match(/^\/api\/admin\/artist-tokens\/([a-z-]+)\/regenerate$/);
       if (tokenRegenMatch && request.method === "POST") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
         let newPassword = "";
         const randomBytes = crypto.getRandomValues(new Uint8Array(8));
