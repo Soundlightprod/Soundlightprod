@@ -28,6 +28,14 @@
   .label{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
   h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
 
+  /* Domaine soundlightprod.store : uniquement la boutique, sans le menu du site principal */
+  .only-store{display:none}
+  .on-store body>header{display:none}
+  .on-store .only-site{display:none}
+  .on-store a.only-store, .on-store p.only-store{display:inline}
+  .on-store img.only-store{display:inline-block; height:36px; width:36px; border-radius:50%; vertical-align:middle; margin-right:10px}
+  .on-store .nav-site{display:none}
+  .shop-top a.only-store{color:#3259be; text-decoration:none; font-weight:700}
   header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
   .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
   .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
@@ -342,7 +350,7 @@
 </head>
 <body>
 <!-- Page générée automatiquement par _boutique/build.py — ne pas modifier à la main -->
-<header>
+<header><script>if(/(^|\.)soundlightprod\.store$/.test(location.hostname))document.documentElement.classList.add("on-store")</script>
   <div class="nav-wrap">
     <a href="/./" class="brand"><img src="/slp-sigle.png" alt="SLP - Sound Light Prod"></a>
     <nav>
@@ -362,9 +370,9 @@
 
 <div class="shop-light">
 <!-- shopbar:start -->
-<div class="shop-top"><div class="shop-top-in"><span>Livraison partout en France</span><span>Garantie 2 ans</span><span>Paiement sécurisé</span><span>Conseils d'experts : 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</span></div></div>
+<div class="shop-top"><div class="shop-top-in"><span>Livraison partout en France</span><span>Garantie 2 ans</span><span>Paiement sécurisé</span><span>Conseils d'experts : 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</span><a class="only-store" href="https://soundlightprod.fr/">Prestations &amp; spectacles SLP ↗</a></div></div>
 <div class="shop-bar"><div class="shop-bar-in">
-  <a class="shop-name" href="/boutique.html">Boutique <i>SLP</i></a>
+  <a class="shop-name" href="/boutique.html"><img class="only-store" src="/slp-sigle.png" alt="">Boutique <i>SLP</i></a>
   <form class="shop-search" action="/boutique.html" method="get" role="search"><input type="search" name="q" placeholder="Rechercher un produit (par, lyre, strobe, étincelles…)" aria-label="Rechercher"><button type="submit" aria-label="Rechercher">🔍</button></form>
   <a class="shop-cartlink" id="shopCartLink" href="/boutique.html#panier"><b>🛒</b>Mon panier<span class="n" id="shopCartN"></span></a>
 </div></div>
@@ -408,10 +416,11 @@
       <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
       <div>
         <h3>Sound Light Prod</h3>
-        <p>Gestion d'événements et d'artistes, son et lumière, en France et en Europe.</p>
+        <p class="only-site">Gestion d'événements et d'artistes, son et lumière, en France et en Europe.</p>
+        <p class="only-store">Vente de matériel son et lumière professionnel, garanti 2 ans, livré partout en France.</p>
       </div>
     </div>
-    <div class="footer-col">
+    <div class="footer-col nav-site">
       <h4>Navigation</h4>
       <a href="/./">Accueil</a>
       <a href="/artistes">Nos artistes et spectacles</a>
