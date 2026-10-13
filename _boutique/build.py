@@ -20,6 +20,12 @@ CAT_FULL = {'son': 'Sonorisation', 'lumiere': 'Éclairage scénique', 'consommab
 GOOGLE_CAT = {'son': 'Électronique > Audio > Composants audio', 'lumiere': 'Arts et loisirs > Arts du spectacle > Éclairage de scène',
               'consommables': 'Arts et loisirs > Fêtes et célébrations > Articles de fête'}
 EMPTY = {'', 'descriptif en préparation'}
+# Photos supplémentaires (la base n'a qu'une image par produit) : slug -> [fichiers du site]
+EXTRA_IMAGES = {
+    'machine-etincelles-800w': ['/machine-etincelles-800w-hauteurs.png'],
+    'machine-etincelles-800w-x2': ['/machine-etincelles-800w-hauteurs.png'],
+    'machine-etincelles-800w-x4': ['/machine-etincelles-800w-hauteurs.png'],
+}
 
 
 def load(src):
@@ -93,6 +99,10 @@ PAGE_CSS = """<style>
   @media (max-width:860px){ .pp-grid{grid-template-columns:1fr; gap:28px;} }
   .pp-img{background:#fff; border-radius:18px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid var(--line);}
   .pp-img img{width:100%; height:100%; object-fit:contain; padding:6%;}
+  .pp-thumbs{display:flex; gap:10px; margin-top:12px;}
+  .pp-thumbs button{width:76px; height:76px; padding:4px; background:#fff; border:2px solid var(--line); border-radius:10px; cursor:pointer; opacity:.7;}
+  .pp-thumbs button.on, .pp-thumbs button:hover{border-color:var(--paper); opacity:1;}
+  .pp-thumbs img{width:100%; height:100%; object-fit:contain; display:block;}
   .pp h1{font-size:clamp(1.9rem,4vw,3rem); margin:10px 0 18px; text-transform:none; line-height:1.02;}
   .pp-price{font-family:'League Spartan',sans-serif; font-weight:900; font-size:2.3rem; margin:6px 0 4px;}
   .pp-ttc{color:var(--muted); font-size:.85rem;}
@@ -162,7 +172,18 @@ def page(p, products, tpl):
     more = ''.join(
         f'<a href="/produits/{esc(q["slug"])}"><div class="im"><img src="{esc(q.get("image") or "")}" alt="{esc(q["name"])}" loading="lazy"></div>'
         f'<div class="tx"><b>{esc(q["name"])}</b><span>{fr_price(q)}</span></div></a>' for q in others)
-    img = f'<img src="{esc(p["image"])}" alt="{esc(p["name"])}">' if p.get('image') else ''
+    img = f'<img id="ppMain" src="{esc(p["image"])}" alt="{esc(p["name"])}">' if p.get('image') else ''
+    extras = EXTRA_IMAGES.get(p['slug'], [])
+    thumbs = ''
+    if extras and p.get('image'):
+        js = ("var m=document.getElementById('ppMain');m.src=this.dataset.src;"
+              "document.querySelectorAll('.pp-thumbs button').forEach(function(b){b.classList.remove('on')});this.classList.add('on')")
+        btns = []
+        for i, u in enumerate([p['image']] + extras):
+            cls = 'on' if i == 0 else ''
+            alt = esc(p['name']) + ' – photo ' + str(i + 1)
+            btns.append(f'<button type="button" class="{cls}" data-src="{esc(u)}" onclick="{js}"><img src="{esc(u)}" alt="{alt}"></button>')
+        thumbs = '<div class="pp-thumbs">' + ''.join(btns) + '</div>'
     return f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -191,7 +212,7 @@ def page(p, products, tpl):
 <main class="pp">
   <nav class="pp-crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a> / <a href="/boutique.html">Boutique</a> / <a href="/boutique.html#{esc(p['category'])}">{esc(cat)}</a> / {esc(p['name'])}</nav>
   <div class="pp-grid">
-    <div class="pp-img">{img}</div>
+    <div><div class="pp-img">{img}</div>{thumbs}</div>
     <div>
       <span class="label">{esc(CAT_FULL.get(p['category'], cat))}</span>
       <h1>{esc(p['name'])}</h1>

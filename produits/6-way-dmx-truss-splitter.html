@@ -210,6 +210,10 @@
   @media (max-width:860px){ .pp-grid{grid-template-columns:1fr; gap:28px;} }
   .pp-img{background:#fff; border-radius:18px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid var(--line);}
   .pp-img img{width:100%; height:100%; object-fit:contain; padding:6%;}
+  .pp-thumbs{display:flex; gap:10px; margin-top:12px;}
+  .pp-thumbs button{width:76px; height:76px; padding:4px; background:#fff; border:2px solid var(--line); border-radius:10px; cursor:pointer; opacity:.7;}
+  .pp-thumbs button.on, .pp-thumbs button:hover{border-color:var(--paper); opacity:1;}
+  .pp-thumbs img{width:100%; height:100%; object-fit:contain; display:block;}
   .pp h1{font-size:clamp(1.9rem,4vw,3rem); margin:10px 0 18px; text-transform:none; line-height:1.02;}
   .pp-price{font-family:'League Spartan',sans-serif; font-weight:900; font-size:2.3rem; margin:6px 0 4px;}
   .pp-ttc{color:var(--muted); font-size:.85rem;}
@@ -265,7 +269,7 @@
 <main class="pp">
   <nav class="pp-crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a> / <a href="/boutique.html">Boutique</a> / <a href="/boutique.html#lumiere">Lumière</a> / Répartiteur de structure DMX à 6 voies</nav>
   <div class="pp-grid">
-    <div class="pp-img"><img src="/6-way-dmx-truss-splitter.jpg" alt="Répartiteur de structure DMX à 6 voies"></div>
+    <div><div class="pp-img"><img id="ppMain" src="/6-way-dmx-truss-splitter.jpg" alt="Répartiteur de structure DMX à 6 voies"></div></div>
     <div>
       <span class="label">Éclairage scénique</span>
       <h1>Répartiteur de structure DMX à 6 voies</h1>
