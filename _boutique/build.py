@@ -88,7 +88,8 @@ def template():
     style = re.search(r'<style>.*?</style>', head, re.S).group(0)
     links = '\n'.join(l for l in re.findall(r'<link [^>]*>|<meta name="theme-color"[^>]*>', head)
                       if 'hreflang' not in l and 'canonical' not in l)
-    return style, absolutize(links), absolutize(header), absolutize(footer)
+    shopbar = re.search(r'<!-- shopbar:start -->.*?<!-- shopbar:end -->', s, re.S).group(0)
+    return style, absolutize(links), absolutize(header), absolutize(footer), absolutize(shopbar)
 
 
 PAGE_CSS = """<style>
@@ -155,7 +156,7 @@ def jsonld(p):
 
 
 def page(p, products, tpl):
-    style, links, header, footer = tpl
+    style, links, header, footer, shopbar = tpl
     url = f"{SITE}/produits/{p['slug']}"
     cat = CATS.get(p['category'], p['category'])
     title = f"{p['name']} — {CAT_FULL.get(p['category'], 'Matériel')} | Boutique SLP"
@@ -209,6 +210,8 @@ def page(p, products, tpl):
 <!-- Page générée automatiquement par _boutique/build.py — ne pas modifier à la main -->
 {header}
 
+<div class="shop-light">
+{shopbar}
 <main class="pp">
   <nav class="pp-crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a> / <a href="/boutique.html">Boutique</a> / <a href="/boutique.html#{esc(p['category'])}">{esc(cat)}</a> / {esc(p['name'])}</nav>
   <div class="pp-grid">
@@ -231,6 +234,7 @@ def page(p, products, tpl):
     <div class="pp-more-grid">{more}</div>
   </section>
 </main>
+</div>
 
 {footer}
 </body>
