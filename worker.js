@@ -187,6 +187,20 @@ function roadmapValuesFromBody(body) {
 
 // Calcule la date de départ (format identique à visited_at) pour un filtre de période,
 // ou null pour "tout" (aucun filtre). 'today' = depuis minuit UTC aujourd'hui.
+function siteFromRequest(request, body) { const o = (request.headers.get("Origin") || request.headers.get("Referer") || "").toLowerCase(); if (o.includes("soundlightprod.store")) return "store"; if (o.includes("bookmyband")) return "bmb"; if (o.includes("csanimations")) return "csa"; if (o.includes("soundlightprod")) return "slp"; return ["slp", "bmb", "csa", "store"].includes(body && body.site) ? body.site : "slp"; } // Profil anonyme d'une visite : réseau (opérateur / organisation), appareil, provenance, robot ou non.
+const HOSTING_RE = /amazon|aws|google|microsoft|azure|apple|meta platforms|facebook|digitalocean|ovh|hetzner|linode|akamai connected|oracle|alibaba|tencent|huawei cloud|contabo|scaleway|online s\.a\.s|vultr|choopa|leaseweb|m247|datacamp|hostinger|godaddy|cogent|hurricane electric|zscaler|censys|shodan|clouvider|g-core|gcore|constant company|psychz|colocrossing|servers\.com|hostroyale|packethub|tzulo|internet utilities/i;
+const BOT_UA_RE = /bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|embedly|whatsapp|python|curl|wget|httpclient|go-http|axios|node-fetch|phantom|puppeteer|playwright|selenium/i;
+function visitProfile(request, body, cf) {
+  const ua = request.headers.get("User-Agent") || "";
+  const network = cf.asOrganization || null;
+  const device = /iPad|Tablet/i.test(ua) ? "Tablette" : /Mobi|Android|iPhone/i.test(ua) ? "Mobile" : "Ordinateur";
+  let referrer = null;
+  try { if (body && body.ref) { const h = new URL(body.ref).hostname.replace(/^www\./, ""); if (h && !/soundlightprod|bookmyband|csanimations/.test(h)) referrer = h; } } catch (e) {}
+  const isBot = BOT_UA_RE.test(ua) || (network && HOSTING_RE.test(network)) ? 1 : 0;
+  return { network, device, referrer, isBot };
+}
+
+function siteWhere(url) { const p = []; const s = url.searchParams.get("site"); if (["slp", "bmb", "csa", "store"].includes(s)) p.push("site = '" + s + "'"); const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/; const f = url.searchParams.get("from"), t = url.searchParams.get("to"); if (f && re.test(f)) p.push("visited_at >= '" + f + " 00:00:00'"); if (t && re.test(t)) p.push("visited_at <= '" + t + " 23:59:59'"); if (url.searchParams.get("bots") === "0") p.push("is_bot = 0"); return p.length ? p.join(" AND ") : "1=1"; } 
 function periodCutoff(period) {
   const now = new Date();
   if (period === "today") {
@@ -326,7 +340,7 @@ async function meteoData(env) {
   const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
   const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails] = await Promise.all([
     q("SELECT cree_le, moment, titre, resume_json, actions_json FROM rapports ORDER BY id DESC LIMIT 1"),
-    q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations')),
+    q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique .store')),
        v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
        SELECT s.site, s.nom,
          COUNT(DISTINCT CASE WHEN v.jour = t.today THEN v.session_id END) AS aujourdhui,
@@ -939,12 +953,12 @@ export default {
       // depuis chaque page). session_id (généré côté navigateur, une fois par onglet/session) permet
       // de reconstituer le parcours d'un même visiteur à travers plusieurs pages.
       if (url.pathname === "/api/track-visit" && request.method === "POST") {
-        const { artist_slug, session_id } = await request.json().catch(() => ({}));
+        const body = await request.json().catch(() => ({})); const { artist_slug, session_id } = body; const site = siteFromRequest(request, body); const vp = visitProfile(request, body, request.cf || {});
         if (!artist_slug) return json({ ok: false }, 200, origin);
         const cf = request.cf || {};
         await env.DB.prepare(
-          "INSERT INTO page_visits (artist_slug, city, region, country, latitude, longitude, session_id) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        ).bind(artist_slug, cf.city || null, cf.region || null, cf.country || null, cf.latitude ? Number(cf.latitude) : null, cf.longitude ? Number(cf.longitude) : null, session_id || null).run();
+          "INSERT INTO page_visits (artist_slug, city, region, country, latitude, longitude, session_id, site, is_bot, network, device, referrer, postal_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        ).bind(artist_slug, cf.city || null, cf.region || null, cf.country || null, cf.latitude ? Number(cf.latitude) : null, cf.longitude ? Number(cf.longitude) : null, session_id || null, site, vp.isBot, vp.network, vp.device, vp.referrer, cf.postalCode || null).run();
         return json({ ok: true }, 200, origin);
       }
 
@@ -954,7 +968,7 @@ export default {
         const session = url.searchParams.get("session");
         if (!session) return json({ visits: [] }, 200, origin);
         const { results } = await env.DB.prepare(
-          "SELECT id, artist_slug as page, visited_at FROM page_visits WHERE session_id = ? ORDER BY visited_at ASC"
+          "SELECT id, artist_slug as page, visited_at, site, network, device, referrer FROM page_visits WHERE session_id = ? ORDER BY visited_at ASC"
         ).bind(session).all();
         return json({ visits: results }, 200, origin);
       }
@@ -965,10 +979,10 @@ export default {
         const artist = url.searchParams.get("artist");
         if (!artist) return json({ total: 0, visits: [] }, 200, origin);
         const { results } = await env.DB.prepare(
-          "SELECT id, city, region, country, visited_at, session_id FROM page_visits WHERE artist_slug = ? ORDER BY visited_at DESC LIMIT 200"
+          "SELECT id, city, region, country, visited_at, session_id, site, network, device, referrer, is_bot, postal_code FROM page_visits WHERE artist_slug = ? AND " + siteWhere(url) + " ORDER BY visited_at DESC LIMIT 200"
         ).bind(artist).all();
         const totalRow = await env.DB.prepare(
-          "SELECT COUNT(*) as n FROM page_visits WHERE artist_slug = ?"
+          "SELECT COUNT(*) as n FROM page_visits WHERE artist_slug = ? AND " + siteWhere(url)
         ).bind(artist).first();
         return json({ total: totalRow?.n || 0, visits: results }, 200, origin);
       }
@@ -1028,7 +1042,7 @@ export default {
 
         for (const r of results) {
           const label = r.guest_name || ARTIST_LABELS[r.artist_slug] || r.artist_slug;
-          const icon = r.type === "indisponible" ? "🚫" : (r.type === "cabaret" ? "🎭" : (r.type === "dj" ? "🎧" : (r.type === "animation" ? "🎉" : (r.type === "karaoke" ? "🎙️" : "🎤"))));
+          const icon = r.type === "indisponible" ? "🚫" : (r.type === "cabaret" ? "🎭" : (r.type === "dj" ? "🎧" : "🎤"));
           const summary = `${icon} ${label}${r.label ? " — " + r.label : ""}`;
           const venue = [r.venue_name, r.venue_city].filter(Boolean).join(", ");
           const nextDay = new Date(r.date + "T00:00:00Z");
@@ -1063,7 +1077,7 @@ export default {
         const { results } = await env.DB.prepare(
           `SELECT substr(visited_at, 1, ${substrLen}) as period, COUNT(*) as count
            FROM page_visits
-           GROUP BY period
+           WHERE ` + siteWhere(url) + ` GROUP BY period
            ORDER BY period ASC`
         ).all();
         return json({ granularity, points: results }, 200, origin);
@@ -1073,11 +1087,11 @@ export default {
       if (url.pathname === "/api/admin/visits-summary" && request.method === "GET") {
         if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
         const { results } = await env.DB.prepare(
-          `SELECT artist_slug as page, COUNT(*) as total, MAX(visited_at) as last_visit
-           FROM page_visits GROUP BY artist_slug ORDER BY total DESC`
+          `SELECT site, artist_slug as page, COUNT(*) as total, MAX(visited_at) as last_visit
+           FROM page_visits WHERE ` + siteWhere(url) + ` GROUP BY site, artist_slug ORDER BY total DESC`
         ).all();
-        const grandTotal = await env.DB.prepare("SELECT COUNT(*) as n FROM page_visits").first();
-        return json({ grand_total: grandTotal?.n || 0, pages: results }, 200, origin);
+        const grandTotal = await env.DB.prepare("SELECT COUNT(*) as n FROM page_visits WHERE " + siteWhere(url)).first();
+        const u2 = new URL(url); u2.searchParams.delete("site"); const bySite = await env.DB.prepare("SELECT site, COUNT(*) as n FROM page_visits WHERE " + siteWhere(u2) + " GROUP BY site").all(); return json({ grand_total: grandTotal?.n || 0, pages: results, by_site: bySite.results }, 200, origin);
       }
 
       // GET /api/admin/visits-map?period=today|week|month|all — points géolocalisés pour la carte (admin)
@@ -1085,9 +1099,9 @@ export default {
         if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
         const cutoff = periodCutoff(url.searchParams.get("period"));
         const { results } = await env.DB.prepare(
-          `SELECT id, artist_slug as page, city, region, country, latitude, longitude, visited_at, session_id
+          `SELECT id, artist_slug as page, city, region, country, latitude, longitude, visited_at, session_id, site, network, device, referrer, is_bot, postal_code
            FROM page_visits WHERE latitude IS NOT NULL AND longitude IS NOT NULL
-           AND (? IS NULL OR visited_at >= ?)
+           AND (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + `
            ORDER BY visited_at DESC LIMIT 1000`
         ).bind(cutoff, cutoff).all();
         return json(results, 200, origin);
@@ -1099,24 +1113,28 @@ export default {
         const cutoff = periodCutoff(url.searchParams.get("period"));
         const byCountry = await env.DB.prepare(
           `SELECT COALESCE(country, 'Inconnu') as label, COUNT(*) as total FROM page_visits
-           WHERE (? IS NULL OR visited_at >= ?) GROUP BY country ORDER BY total DESC`
+           WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY country ORDER BY total DESC`
         ).bind(cutoff, cutoff).all();
         const byRegion = await env.DB.prepare(
           `SELECT COALESCE(region, 'Inconnu') as label, COUNT(*) as total FROM page_visits
-           WHERE (? IS NULL OR visited_at >= ?) GROUP BY region ORDER BY total DESC`
+           WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY region ORDER BY total DESC`
         ).bind(cutoff, cutoff).all();
         const byCity = await env.DB.prepare(
           `SELECT COALESCE(city, 'Inconnu') as label, COUNT(*) as total FROM page_visits
-           WHERE (? IS NULL OR visited_at >= ?) GROUP BY city ORDER BY total DESC`
+           WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY city ORDER BY total DESC`
         ).bind(cutoff, cutoff).all();
         const totalRow = await env.DB.prepare(
-          `SELECT COUNT(*) as n FROM page_visits WHERE (? IS NULL OR visited_at >= ?)`
+          `SELECT COUNT(*) as n FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url)
         ).bind(cutoff, cutoff).first();
         return json({
           total: totalRow?.n || 0,
           by_country: byCountry.results,
           by_region: byRegion.results,
           by_city: byCity.results,
+          by_postal: (await env.DB.prepare(`SELECT COALESCE(postal_code || ' ' || COALESCE(city, ''), 'Inconnu') as label, COUNT(*) as total FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY label ORDER BY total DESC LIMIT 50`).bind(cutoff, cutoff).all()).results,
+          by_network: (await env.DB.prepare(`SELECT COALESCE(network, 'Inconnu') as label, COUNT(*) as total FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY network ORDER BY total DESC LIMIT 50`).bind(cutoff, cutoff).all()).results,
+          by_device: (await env.DB.prepare(`SELECT COALESCE(device, 'Inconnu') as label, COUNT(*) as total FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY device ORDER BY total DESC`).bind(cutoff, cutoff).all()).results,
+          by_referrer: (await env.DB.prepare(`SELECT COALESCE(referrer, 'Accès direct / inconnu') as label, COUNT(*) as total FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY referrer ORDER BY total DESC LIMIT 30`).bind(cutoff, cutoff).all()).results,
         }, 200, origin);
       }
 

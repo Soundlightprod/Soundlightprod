@@ -26,6 +26,8 @@ D1_DATABASE_ID = "c34e8fe6-a869-40cb-961b-778d03fca13b"
 SITES = {
     "slp": {"property": "sc-domain:soundlightprod.fr", "sitemap": "https://soundlightprod.fr/sitemap.xml"},
     "bmb": {"property": "sc-domain:bookmyband.fr", "sitemap": "https://bookmyband.fr/sitemap.xml"},
+    # Propriété à ajouter dans Search Console (et à partager avec le compte de service) ; tant que ce n'est pas fait, on l'ignore.
+    "store": {"property": "sc-domain:soundlightprod.store", "sitemap": "https://soundlightprod.store/sitemap.xml", "optionnel": True},
 }
 MAX_INSPECTIONS_PAR_SITE = 300  # quota Google : 2000 par jour et par propriété
 
@@ -96,7 +98,13 @@ def main():
         end = today.isoformat()
 
         # 1. Courbe jour par jour (les derniers jours sont provisoires chez Google)
-        rows = search_analytics(sess, prop, {"startDate": start, "endDate": end, "dimensions": ["date"], "dataState": "all", "rowLimit": 100})
+        try:
+            rows = search_analytics(sess, prop, {"startDate": start, "endDate": end, "dimensions": ["date"], "dataState": "all", "rowLimit": 100})
+        except Exception as e:
+            if not cfg.get("optionnel"):
+                raise
+            bilan.append(f"{site}: propriété Search Console pas encore accessible ({str(e)[:60]})")
+            continue
         upsert("gsc_jours", ["site", "jour", "clics", "impressions", "ctr", "position", "releve_le"],
                [[site, r["keys"][0], int(r["clicks"]), int(r["impressions"]), r["ctr"], round(r["position"], 1), now.isoformat()] for r in rows])
 

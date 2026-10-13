@@ -216,6 +216,14 @@ def need_block(p, products):
     return f'<section class="pp-need"><h2>Compatible avec</h2><div class="pp-need-links">{links}</div></section>'
 
 
+TRACK_JS = """<script>
+(function(){
+  try{ if(localStorage.getItem('slp_admin_token')||localStorage.getItem('slp_notrack')) return; }catch(e){}
+  var sid=null; try{ sid=sessionStorage.getItem('slp_visit_sid'); if(!sid){ sid=Date.now().toString(36)+Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid',sid); } }catch(e){}
+  fetch((/\\.store$/.test(location.hostname)?'':'https://slp-api.raspy-silence-d4c7.workers.dev')+'/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({artist_slug:'boutique/__SLUG__',session_id:sid,ref:document.referrer})}).catch(function(){});
+})();
+</script>"""
+
 def page(p, products, tpl):
     style, links, header, footer, shopbar = tpl
     url = f"{SITE}/produits/{p['slug']}"
@@ -299,6 +307,7 @@ def page(p, products, tpl):
 </div>
 
 {footer}
+{TRACK_JS.replace('__SLUG__', p['slug'])}
 </body>
 </html>
 """
