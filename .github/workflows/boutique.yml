@@ -20,7 +20,7 @@ jobs:
         run: |
           git config user.name "slp-boutique-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A produits boutique.html sitemap.xml
+          git add -A produits boutique.html sitemap.xml sitemap-store.xml
           if git diff --cached --quiet; then echo "Rien à mettre à jour"; exit 0; fi
           git commit -m "Boutique : pages produit mises à jour depuis le catalogue"
           git push

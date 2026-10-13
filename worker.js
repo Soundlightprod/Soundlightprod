@@ -211,7 +211,7 @@ const INTL_LANGS = ["en", "es", "it"];
 //   "off"   : le .store renvoie vers la boutique du .fr (état historique)
 //   "serve" : le .store sert la boutique, non indexée (robots.txt interdit tout) ; le .fr ne change pas
 //   "main"  : le .store est le domaine principal de la boutique ; /boutique et /produits/* du .fr redirigent (301) vers lui
-const STORE_MODE = "serve";
+const STORE_MODE = "main";
 const STORE_SITE = "https://soundlightprod.store";
 // Pages HTML servies sur le .store (le reste du site redirige vers le .fr)
 const STORE_PAGES = /^\/(boutique|boutique-merci|cgv-boutique|mentions-legales)(\.html)?$/;

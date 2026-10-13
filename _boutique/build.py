@@ -14,7 +14,8 @@ import unicodedata
 import datetime, html, json, pathlib, re, sys, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SITE = 'https://soundlightprod.fr'
+SITE = 'https://soundlightprod.store'   # domaine de la boutique
+ORG = 'https://soundlightprod.fr'       # site de l'entreprise
 API = 'https://slp-api.raspy-silence-d4c7.workers.dev/api/products'
 CATS = {'son': 'Son', 'lumiere': 'Lumière', 'effets': 'Effets', 'consommables': 'Consommables'}
 CAT_FULL = {'son': 'Sonorisation', 'lumiere': 'Éclairage scénique', 'effets': 'Machines à effets', 'consommables': 'Consommables'}
@@ -149,7 +150,7 @@ def jsonld(p):
         '@type': 'Offer', 'url': f"{SITE}/produits/{p['slug']}", 'priceCurrency': 'EUR', 'price': price(p),
         'availability': 'https://schema.org/InStock' if in_stock(p) else 'https://schema.org/OutOfStock',
         'itemCondition': 'https://schema.org/NewCondition',
-        'seller': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': SITE + '/'},
+        'seller': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': ORG + '/'},
         'shippingDetails': {'@type': 'OfferShippingDetails',
                             'shippingDestination': {'@type': 'DefinedRegion', 'addressCountry': 'FR'}},
         'hasMerchantReturnPolicy': {'@type': 'MerchantReturnPolicy', 'applicableCountry': 'FR',
@@ -164,7 +165,7 @@ def jsonld(p):
         prod['image'] = [SITE + p['image']]
     crumbs = {'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [
         {'@type': 'ListItem', 'position': 1, 'name': 'Accueil', 'item': SITE + '/'},
-        {'@type': 'ListItem', 'position': 2, 'name': 'Boutique', 'item': SITE + '/boutique.html'},
+        {'@type': 'ListItem', 'position': 2, 'name': 'Boutique', 'item': SITE + '/'},
         {'@type': 'ListItem', 'position': 3, 'name': p['name'], 'item': f"{SITE}/produits/{p['slug']}"}]}
     return ('<script type="application/ld+json">' + json.dumps(prod, ensure_ascii=False) + '</script>\n'
             '<script type="application/ld+json">' + json.dumps(crumbs, ensure_ascii=False) + '</script>')
@@ -322,7 +323,7 @@ def feed(products):
     <g:product_type>{esc(CAT_FULL.get(p['category'], ''))}</g:product_type>
   </item>""")
     return ('<?xml version="1.0" encoding="UTF-8"?>\n<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">\n<channel>\n'
-            f'  <title>Boutique SLP Sound Light Prod</title>\n  <link>{SITE}/boutique.html</link>\n'
+            f'  <title>Boutique SLP Sound Light Prod</title>\n  <link>{SITE}/</link>\n'
             '  <description>Matériel son et lumière garanti 2 ans</description>\n' + '\n'.join(items) + '\n</channel>\n</rss>\n')
 
 
@@ -336,8 +337,8 @@ def update_boutique(products):
             groups.append(f'<div class="refs-col"><h3>{CAT_FULL[c]}</h3><ul>' + ''.join(
                 f'<li><a href="/produits/{esc(p["slug"])}">{esc(p["name"])}</a> <span>{fr_price(p)}</span></li>' for p in ps) + '</ul></div>')
     store = {'@context': 'https://schema.org', '@type': 'OnlineStore', 'name': 'Boutique SLP Sound Light Prod',
-             'url': SITE + '/boutique.html', 'description': 'Matériel son et lumière professionnel garanti 2 ans, livré partout en France.',
-             'parentOrganization': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': SITE + '/'},
+             'url': SITE + '/', 'description': 'Matériel son et lumière professionnel garanti 2 ans, livré partout en France.',
+             'parentOrganization': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': ORG + '/'},
              'hasMerchantReturnPolicy': {'@type': 'MerchantReturnPolicy', 'applicableCountry': 'FR',
                                          'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow', 'merchantReturnDays': 14}}
     itemlist = {'@context': 'https://schema.org', '@type': 'ItemList', 'name': 'Catalogue de la boutique SLP',
@@ -355,18 +356,19 @@ def update_boutique(products):
 
 
 def update_sitemap(products):
+    """Sitemap de la boutique (domaine .store) ; le sitemap du .fr ne liste plus la boutique ni les fiches."""
     f = ROOT / 'sitemap.xml'
     s = f.read_text(encoding='utf-8')
     s = re.sub(r'\s*<!-- produits:start -->.*?<!-- produits:end -->', '', s, flags=re.S)
-    if 'xmlns:image=' not in s:
-        s = s.replace('<urlset ', '<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" ', 1)
-    today = datetime.date.today().isoformat()
-    urls = ''.join(
-        f"\n  <url><loc>{SITE}/produits/{p['slug']}</loc><changefreq>weekly</changefreq><priority>0.6</priority>"
-        + (f"<image:image><image:loc>{SITE}{esc(p['image'])}</image:loc></image:image>" if p.get('image') else '') + '</url>'
-        for p in products)
-    s = s.replace('</urlset>', '  <!-- produits:start -->' + urls + '\n  <!-- produits:end -->\n</urlset>', 1)
+    s = re.sub(r'\s*<url><loc>https://soundlightprod\.fr/boutique</loc>.*?</url>', '', s, flags=re.S)
     f.write_text(s, encoding='utf-8')
+    urls = (f"\n  <url><loc>{SITE}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>" + ''.join(
+        f"\n  <url><loc>{SITE}/produits/{p['slug']}</loc><changefreq>weekly</changefreq><priority>0.7</priority>"
+        + (f"<image:image><image:loc>{SITE}{esc(p['image'])}</image:loc></image:image>" if p.get('image') else '') + '</url>'
+        for p in products))
+    (ROOT / 'sitemap-store.xml').write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+        'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + urls + '\n</urlset>\n', encoding='utf-8')
 
 
 def main():
