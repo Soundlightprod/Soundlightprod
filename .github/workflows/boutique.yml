@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Générer les pages produit depuis le catalogue
         run: python3 _boutique/build.py
       - name: Enregistrer les changements
@@ -23,4 +25,5 @@ jobs:
           git add -A produits boutique.html sitemap.xml sitemap-store.xml
           if git diff --cached --quiet; then echo "Rien à mettre à jour"; exit 0; fi
           git commit -m "Boutique : pages produit mises à jour depuis le catalogue"
+          git pull --rebase origin main
           git push
