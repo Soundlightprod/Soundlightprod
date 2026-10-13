@@ -1,0 +1,21 @@
+name: Photos produits (fournisseur)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: photos-produits
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Télécharger les photos
+        run: python3 _boutique/fetch_images.py
+      - name: Enregistrer
+        run: |
+          git config user.name "slp-boutique-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A galerie-produits
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -m "Boutique : photos supplémentaires des produits d'éclairage"
+          git push

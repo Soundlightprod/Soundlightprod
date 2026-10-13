@@ -28,6 +28,11 @@ EXTRA_IMAGES = {
     'machine-etincelles-800w-x2': ['/machine-etincelles-800w-hauteurs.png'],
     'machine-etincelles-800w-x4': ['/machine-etincelles-800w-hauteurs.png'],
 }
+# Photos du fournisseur téléchargées par _boutique/fetch_images.py (workflow « Photos produits »)
+_gal = ROOT / 'galerie-produits' / 'index.json'
+if _gal.exists():
+    for _slug, _files in json.loads(_gal.read_text(encoding='utf-8')).items():
+        EXTRA_IMAGES.setdefault(_slug, []).extend(f for f in _files if f not in EXTRA_IMAGES.get(_slug, []))
 
 
 def load(src):
