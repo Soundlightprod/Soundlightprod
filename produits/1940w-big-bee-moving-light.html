@@ -201,6 +201,100 @@
   .grid-sm .card-img[style]{aspect-ratio:4/3;}
   .amz-block{margin-top:44px;}
   [hidden]{display:none !important;}
+
+  /* ===== Boutique v3 : habillage "magasin" clair ===== */
+  .shop-light{--ink:#ffffff; --ink-2:#ffffff; --paper:#14213d; --muted:#5b6475; --line:rgba(20,33,61,.14); --navy:#14213d; background:#f3f4f8; color:var(--paper);}
+  .shop-light .label{color:#c2410c;}
+  .shop-light .card{box-shadow:0 1px 3px rgba(20,33,61,.06);}
+  .shop-light .card .cat{color:#c2410c;}
+  .shop-light .btn-primary{background:var(--navy) !important; color:#fff !important;}
+  .shop-light .btn-primary::before{display:none !important;}
+  .shop-light .btn{min-height:46px;}
+  .shop-light .btn-primary:hover{box-shadow:0 10px 30px rgba(20,33,61,.25);}
+  .shop-light .btn-ghost{color:var(--navy) !important; box-shadow:inset 0 0 0 1.5px rgba(20,33,61,.35) !important; background:transparent !important;}
+  .shop-light .grid-sm .card-img{border:1px solid var(--line);}
+  .shop-light .refs{border-top:1px solid var(--line); background:#fff;}
+  .shop-light .refs-col a{color:var(--navy);}
+  .shop-light .cart-fab{background:#fc8024; color:#14213d;}
+  .shop-light .cart-panel{box-shadow:-10px 0 40px rgba(0,0,0,.2);}
+  .shop-light .overlay, .shop-light .product-modal{}
+  .shop-light .cart-form input, .shop-light .cart-form textarea{background:#f3f4f8;}
+  .shop-light .pd-img{border-right:1px solid var(--line);}
+
+  .shop-top{background:#e8eaf0; color:var(--navy); font-size:.78rem; font-weight:600;}
+  .shop-top-in{max-width:1220px; margin:0 auto; padding:8px 24px; display:flex; gap:26px; justify-content:center; flex-wrap:wrap;}
+  .shop-top span::before{content:'✓'; color:#3259be; margin-right:7px; font-weight:800;}
+  .shop-bar{background:#fff; border-bottom:1px solid var(--line);}
+  .shop-bar-in{max-width:1220px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:22px;}
+  .shop-name{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.35rem; color:var(--navy); text-decoration:none; letter-spacing:-.02em; white-space:nowrap;}
+  .shop-name i{font-style:normal; color:#8c3290;}
+  .shop-search{flex:1; display:flex; border:1.5px solid rgba(20,33,61,.2); border-radius:100px; overflow:hidden; background:#fff;}
+  .shop-search input{flex:1; border:none; padding:12px 20px; font-family:'Instrument Sans',sans-serif; font-size:.92rem; color:var(--navy); background:transparent; min-width:0; outline:none;}
+  .shop-search button{border:none; background:transparent; padding:0 18px; cursor:pointer; font-size:1.05rem;}
+  .shop-cartlink{display:flex; flex-direction:column; align-items:center; font-size:.76rem; font-weight:700; color:var(--navy); text-decoration:none; position:relative; white-space:nowrap; line-height:1.2;}
+  .shop-cartlink b{font-size:1.3rem; font-weight:400;}
+  .shop-cartlink .n{position:absolute; top:-6px; right:-2px; background:#ff0953; color:#fff; border-radius:50%; min-width:19px; height:19px; font-size:.68rem; display:none; align-items:center; justify-content:center; padding:0 4px;}
+  .shop-nav{background:var(--navy);}
+  .shop-nav-in{max-width:1220px; margin:0 auto; padding:0 24px; display:flex; gap:4px; flex-wrap:wrap;}
+  .shop-nav a.top{display:block; padding:15px 18px; color:#fff; text-decoration:none; font-weight:700; font-size:.88rem; white-space:nowrap;}
+  .shop-nav a.top:hover, .shop-nav .dd:hover > a.top{background:rgba(255,255,255,.12);}
+  .shop-nav .dd{position:relative;}
+  .shop-nav .dd-menu{display:none; position:absolute; top:100%; left:0; background:#fff; border:1px solid var(--line); border-radius:0 0 12px 12px; min-width:250px; padding:8px; z-index:40; box-shadow:0 16px 40px rgba(20,33,61,.2);}
+  .shop-nav .dd:hover .dd-menu, .shop-nav .dd:focus-within .dd-menu{display:block;}
+  .shop-nav .dd-menu a{display:block; padding:9px 12px; border-radius:8px; color:var(--navy); text-decoration:none; font-size:.86rem; font-weight:600;}
+  .shop-nav .dd-menu a:hover{background:#eef0f6;}
+  @media (max-width:760px){
+    .shop-top-in{gap:6px 16px; padding:7px 14px; justify-content:flex-start; font-size:.72rem;}
+    .shop-bar-in{flex-wrap:wrap; gap:10px 14px; padding:12px 14px;}
+    .shop-search{order:3; flex-basis:100%;}
+    .shop-nav-in{padding:0 8px; overflow-x:auto; flex-wrap:nowrap;}
+    .shop-nav a.top{padding:13px 12px; font-size:.82rem;}
+    .shop-nav .dd-menu{display:none !important;}
+  }
+
+  .hero-row{display:grid; grid-template-columns:2fr 1fr; gap:18px; margin-bottom:22px;}
+  @media (max-width:900px){ .hero-row{grid-template-columns:1fr;} }
+  .hero-ban{position:relative; border-radius:18px; overflow:hidden; min-height:330px; background:radial-gradient(circle at 80% 30%, #3b2a6e, transparent 55%), linear-gradient(135deg,#0c0a14,#1d2a5c); color:#fff; display:grid; grid-template-columns:1.1fr 1fr; align-items:center; text-decoration:none;}
+  .hero-ban .tx{padding:34px 8px 34px 38px; position:relative; z-index:2;}
+  .hero-ban .tag{display:inline-block; background:#ff0953; color:#fff; font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.12em; padding:5px 12px; border-radius:100px; margin-bottom:14px; text-transform:uppercase;}
+  .hero-ban h2{color:#fff; font-size:clamp(1.8rem,3.6vw,2.7rem); margin-bottom:12px;}
+  .hero-ban p{color:#c9cde0; font-size:1rem; margin-bottom:22px;}
+  .hero-ban .pill{display:inline-block; background:#fff; color:#14213d; font-weight:700; padding:12px 24px; border-radius:100px; font-size:.92rem;}
+  .hero-ban .im{height:100%; display:flex; align-items:center; justify-content:center; padding:18px;}
+  .hero-ban .im img{max-height:290px; max-width:100%; border-radius:14px; box-shadow:0 20px 50px rgba(0,0,0,.45); object-fit:cover;}
+  @media (max-width:600px){ .hero-ban{grid-template-columns:1fr;} .hero-ban .tx{padding:26px 22px 8px;} .hero-ban .im img{max-height:200px;} }
+  .hero-side{border-radius:18px; background:linear-gradient(160deg,#fc8024,#e8590c); color:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;}
+  .hero-side h3{color:#fff; font-size:1.5rem; margin-bottom:4px;}
+  .hero-side ul{list-style:none; display:flex; flex-direction:column; gap:11px; margin:6px 0 10px;}
+  .hero-side li{display:flex; gap:10px; font-weight:600; font-size:.95rem; line-height:1.3;}
+  .hero-side li::before{content:'☑'; font-size:1.15rem;}
+  .hero-side a{margin-top:auto; background:#fff; color:#14213d; font-weight:700; text-align:center; border-radius:100px; padding:12px; text-decoration:none; font-size:.92rem;}
+  .tiles4{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:38px;}
+  @media (max-width:980px){ .tiles4{grid-template-columns:repeat(2,1fr);} }
+  .tile4{position:relative; border-radius:18px; overflow:hidden; min-height:250px; padding:22px; color:#fff; text-decoration:none; display:flex; flex-direction:column; justify-content:space-between; transition:transform .25s;}
+  .tile4:hover{transform:translateY(-4px);}
+  .tile4 h3{color:#fff; font-size:1.3rem; max-width:90%; position:relative; z-index:2;}
+  .tile4 .pill{align-self:flex-start; background:#fff; color:#14213d; font-weight:700; font-size:.85rem; padding:9px 18px; border-radius:100px; position:relative; z-index:2;}
+  .tile4 .pic{position:absolute; right:14px; top:86px; bottom:70px; width:52%; display:flex; align-items:center; justify-content:center;}
+  .tile4 .pic img{max-width:100%; max-height:100%; object-fit:contain; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.35);}
+  .tile4 .pic.big{font-size:3.2rem; align-items:center; letter-spacing:.1em;}
+  .t-lum{background:linear-gradient(145deg,#3259be,#8c3290);} .t-son{background:linear-gradient(145deg,#8c3290,#ff0953);} .t-con{background:linear-gradient(145deg,#fc8024,#e8590c);} .t-new{background:linear-gradient(145deg,#0c0a14,#3259be);}
+  @media (max-width:520px){ .tile4{min-height:210px; padding:16px;} .tile4 h3{font-size:1.02rem; max-width:100%;} .tile4 .pic{top:74px; bottom:58px; right:10px; width:60%;} .tile4 .pic.big{font-size:2rem;} .tile4 .pill{padding:8px 14px; font-size:.78rem;} }
+  .badge-new{position:absolute; top:8px; left:8px; background:#ff0953; color:#fff; font-size:.66rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:4px 9px; border-radius:100px; z-index:3;}
+  .grid-sm .card-img{position:relative;}
+  .grid-sm .card .price{color:var(--navy);}
+  .shop-wrap{max-width:1220px; margin:0 auto; padding:30px 24px 70px;}
+  .shop-wrap .sec-title{color:var(--navy);}
+  .shop-wrap .crumb, .shop-wrap .cat-head .cnt{color:var(--muted);}
+  .shop-light .subchips button{color:var(--navy); box-shadow:inset 0 0 0 1.5px rgba(20,33,61,.25); background:#fff;}
+  .shop-light .subchips button.active{background:var(--navy); color:#fff; box-shadow:none;}
+  .shop-light .subchips button:hover{box-shadow:inset 0 0 0 1.5px var(--navy);}
+  .shop-light .subchips button.active:hover{box-shadow:none;}
+  .shop-light .sort{background:#fff; color:var(--navy);}
+  .shop-light .trust li{background:#fff; color:var(--muted);} .shop-light .trust li b{color:var(--navy);}
+  .shop-light .pp{padding-top:30px;}
+  .shop-light .pp-trust div{background:#fff;}
+  .shop-light .pp-thumbs button{border-color:var(--line);} .shop-light .pp-thumbs button.on{border-color:var(--navy);}
 </style>
 <style>
   .pp{max-width:1220px; margin:0 auto; padding:40px 24px 80px;}
@@ -266,6 +360,24 @@
   </div>
 </header>
 
+<div class="shop-light">
+<!-- shopbar:start -->
+<div class="shop-top"><div class="shop-top-in"><span>Livraison partout en France</span><span>Garantie 2 ans</span><span>Paiement sécurisé</span><span>Conseils d'experts : 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</span></div></div>
+<div class="shop-bar"><div class="shop-bar-in">
+  <a class="shop-name" href="/boutique.html">Boutique <i>SLP</i></a>
+  <form class="shop-search" action="/boutique.html" method="get" role="search"><input type="search" name="q" placeholder="Rechercher un produit (par, lyre, strobe, étincelles…)" aria-label="Rechercher"><button type="submit" aria-label="Rechercher">🔍</button></form>
+  <a class="shop-cartlink" id="shopCartLink" href="/boutique.html#panier"><b>🛒</b>Mon panier<span class="n" id="shopCartN"></span></a>
+</div></div>
+<nav class="shop-nav" aria-label="Rayons"><div class="shop-nav-in">
+  <div class="dd"><a class="top" href="/boutique.html#lumiere">Éclairage scénique ▾</a>
+    <div class="dd-menu"><a href="/boutique.html#lumiere/par">Projecteurs PAR</a><a href="/boutique.html#lumiere/lyres">Lyres &amp; projecteurs mobiles</a><a href="/boutique.html#lumiere/barres">Barres LED &amp; Sunstrips</a><a href="/boutique.html#lumiere/strobes">Stroboscopes</a><a href="/boutique.html#lumiere/floods">Projecteurs &amp; floods</a><a href="/boutique.html#lumiere/dmx">DMX &amp; contrôle</a><a href="/boutique.html#lumiere/lasers">Lasers</a></div></div>
+  <a class="top" href="/boutique.html#son">Sonorisation</a>
+  <a class="top" href="/boutique.html#consommables">Effets &amp; consommables</a>
+  <a class="top" href="/boutique.html#nouveautes">Nouveautés</a>
+  <a class="top" href="/boutique.html#tous">Tout le catalogue</a>
+</div></nav>
+<script>(function(){try{var c=JSON.parse(sessionStorage.getItem('slp_cart')||'[]'),n=c.reduce(function(s,x){return s+x.qty},0),e=document.getElementById('shopCartN');if(n&&e){e.textContent=n;e.style.display='flex'}}catch(e){}})();</script>
+<!-- shopbar:end -->
 <main class="pp">
   <nav class="pp-crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a> / <a href="/boutique.html">Boutique</a> / <a href="/boutique.html#lumiere">Lumière</a> / Projecteur mobile Big Bee 1940W</nav>
   <div class="pp-grid">
@@ -288,6 +400,7 @@
     <div class="pp-more-grid"><a href="/produits/aicpose-7x40w-zoom-bee-eye-par-light-"><div class="im"><img src="/aicpose-7x40w-zoom-bee-eye-par-light-.jpg" alt="Projecteur par 7×40W à zoom bee-eye" loading="lazy"></div><div class="tx"><b>Projecteur par 7×40W à zoom bee-eye</b><span>143,99 €</span></div></a><a href="/produits/new-1940w-bee-eye-moving-light-power-750w"><div class="im"><img src="/new-1940w-bee-eye-moving-light-power-750w.jpg" alt="Bee-eye 19×40W" loading="lazy"></div><div class="tx"><b>Bee-eye 19×40W</b><span>274,99 €</span></div></a><a href="/produits/aicpose-ip65-1915w-zoom-par-light--outdoor-waterproof-rgbw-wash"><div class="im"><img src="/aicpose-ip65-1915w-zoom-par-light--outdoor-waterproof-rgbw-wash.jpg" alt="PAR LED 19*15w zoom IP65" loading="lazy"></div><div class="tx"><b>PAR LED 19*15w zoom IP65</b><span>126,99 €</span></div></a><a href="/produits/new-mini295w-beam-moving-light-with-ring"><div class="im"><img src="/new-mini295w-beam-moving-light-with-ring.jpg" alt="lyre 295w avec anneau" loading="lazy"></div><div class="tx"><b>lyre 295w avec anneau</b><span>206,99 €</span></div></a></div>
   </section>
 </main>
+</div>
 
 <footer>
   <div class="footer-wrap">
