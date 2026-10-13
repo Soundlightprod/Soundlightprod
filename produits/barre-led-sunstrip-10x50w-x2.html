@@ -29,6 +29,12 @@
   h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
 
   /* Domaine soundlightprod.store : uniquement la boutique, sans le menu du site principal */
+  .need-box{margin-top:6px; padding:12px 14px; border:1px dashed #3259be; border-radius:12px; background:#f3f6ff; color:#14213d; font-size:.86rem;}
+  .need-box b{display:block; margin-bottom:6px; font-size:.86rem;}
+  .need-row{display:flex; align-items:center; gap:10px; padding:6px 0; border-top:1px solid #dfe5f5;} .need-row:first-of-type{border-top:0;}
+  .need-row span{flex:1; line-height:1.25;} .need-row em{font-style:normal; font-weight:700; white-space:nowrap;}
+  .need-row button{background:#14213d; color:#fff; border:0; border-radius:100px; padding:7px 14px; font-weight:700; font-size:.8rem; cursor:pointer;}
+  .cart-sugg{margin:14px 0 0;} .cart-sugg .need-box{margin-top:10px;}
   .only-store{display:none}
   .on-store body>header{display:none}
   .on-store .only-site{display:none}
@@ -338,6 +344,14 @@
   .pp-more a:hover{transform:translateY(-4px); border-color:rgba(255,255,255,.3);}
   .pp-more .im{background:#fff; aspect-ratio:1;} .pp-more .im img{width:100%; height:100%; object-fit:contain; padding:8%;}
   .pp-more .tx{padding:12px 14px;} .pp-more .tx b{display:block; font-size:.9rem; line-height:1.25;} .pp-more .tx span{color:var(--muted); font-size:.85rem;}
+  .pp-need{margin:26px 0 8px; padding:18px; border:1px solid var(--line); border-radius:14px; background:var(--ink-2);}
+  .pp-need h2{margin:0 0 6px !important;} .pp-need p{color:var(--muted); font-size:.88rem; margin:0 0 12px;}
+  .pp-need-i{display:flex; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--line);}
+  .pp-need-i .nm{display:flex; align-items:center; gap:12px; flex:1; text-decoration:none; color:var(--paper); min-width:0;}
+  .pp-need-i .im{width:54px; height:54px; background:#fff; border-radius:10px; flex:none;} .pp-need-i .im img{width:100%; height:100%; object-fit:contain; padding:4px;}
+  .pp-need-i b{font-size:.92rem; line-height:1.25;} .pp-need-i .pr{font-weight:700; white-space:nowrap;}
+  .pp-need-i .btn{padding:9px 16px; font-size:.85rem;}
+  .pp-need-links{display:flex; flex-wrap:wrap; gap:8px;} .pp-need-links a{padding:8px 14px; border:1px solid var(--line); border-radius:100px; text-decoration:none; color:var(--paper); font-size:.88rem;}
 </style>
 <link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/charte.css">
@@ -401,6 +415,7 @@
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       
       <h2>Caractéristiques techniques</h2><ul class="pp-specs"><li>Lot de 2 barres Sunstrip halogènes ultra-lumineuses 10×50W : projecteurs muraux parfaits pour les DJ professionnels et les décors de discothèque</li><li>Contrôle DMX512 : intégration parfaite et contrôle précis pour des performances dynamiques</li><li>Installation autonome : mise en place facile, idéale pour les changements rapides en déplacement</li><li>Flux lumineux élevé pour un impact visuel vif sur toute scène ou événement</li><li>Plage de tension polyvalente 90 à 240 V</li><li>Tension : AC220V 50/60Hz</li><li>Puissance : 450W</li><li>Source lumineuse : 10 lampes Osram Halopar16 GU10 230V/50W, angle de faisceau ≈35°</li><li>Température de couleur : 2900K</li><li>Durée de vie : 2000h</li><li>Douille : GU10</li><li>Protocole de contrôle : DMX512, RDM</li><li>Canaux DMX : 1CH, 2CH, 3CH, 5CH, 10CH</li><li>Mise à jour du logiciel via connexion DMX</li><li>Connexion du signal : XLR 3 broches</li><li>Protection : IP20</li><li>Supports de montage/sol inclus</li><li>Distance minimale des surfaces inflammables : 0,5 m</li><li>Distance minimale à l&#x27;objet éclairé : 0,8 m</li><li>Dimensions/poids : 104×13×15 cm / 5,7 kg</li><li>Gradation électronique 0-100 %</li><li>Stroboscope 1-25 Hz</li><li>Écran numérique pour régler les paramètres</li><li>Entrée et sortie d&#x27;alimentation (PowerCON), entrée et sortie DMX</li><li>Livrée avec cordon d&#x27;alimentation et notice</li><li>Garantie 2 ans</li></ul>
+      
       
     </div>
   </div>
