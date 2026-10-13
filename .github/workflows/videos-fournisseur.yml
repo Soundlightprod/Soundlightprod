@@ -6,26 +6,47 @@ permissions:
 jobs:
   videos:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        slug:
+          - "1818w-rgbwauv-pixel-control-bar-light"
+          - "aicpose-mini-1940w-big-bee-moving-light-with-ring-wash--beam--spot"
+          - "300w-zoom-cob-spotlight"
+          - "1818w-rgbwauv-led-par-light"
+          - "1940w-big-bee-moving-light"
+          - "1925w-bee-beam-wash-moving-light-k15"
+          - "1940w-big-bee-moving-light-with-ring"
+          - "418w-mini-battery-par-light"
+          - "ip65-4812-segments-control-strobe"
+          - "ip65-1218w-battery-par-light"
+          - "ip65-1818w-led-par-light-ultra"
+          - "418w-battery-parlight"
+          - "ip65-1818w-led-par-light"
+          - "aicpose-500w-cmy-cto-bsw-3in1-moving-light"
+          - "battery-3w-animated-laser-light"
+          - "ip65-618w-battery-par-light"
+          - "ip65-6010w-flood-light"
+          - "ip65-618w-mini-battery-par-light"
     steps:
       - uses: actions/checkout@v4
-      - name: Télécharger les vidéos (hors dépôt)
+      - name: Télécharger la vidéo (hors dépôt)
+        env:
+          SLUG: ${{ matrix.slug }}
         run: |
           mkdir -p videos
           python3 - <<'PY'
-          import json, urllib.request, pathlib
-          base = 'https://shopcdnalpha.grainajz.com/'
-          for slug, path in json.load(open('_boutique/videos_fournisseur.json')).items():
-              req = urllib.request.Request(base + path, headers={'User-Agent': 'Mozilla/5.0 slp-boutique'})
-              try:
-                  data = urllib.request.urlopen(req, timeout=120).read()
-                  pathlib.Path('videos', slug + '.mp4').write_bytes(data)
-                  print(f'{slug}.mp4  {len(data)/1e6:.1f} Mo')
-              except Exception as e:
-                  print('ÉCHEC', slug, e)
+          import json, os, urllib.request, pathlib
+          slug = os.environ['SLUG']
+          path = json.load(open('_boutique/videos_fournisseur.json'))[slug]
+          req = urllib.request.Request('https://shopcdnalpha.grainajz.com/' + path, headers={'User-Agent': 'Mozilla/5.0 slp-boutique'})
+          data = urllib.request.urlopen(req, timeout=300).read()
+          pathlib.Path('videos', slug + '.mp4').write_bytes(data)
+          print(slug, round(len(data) / 1e6, 1), 'Mo')
           PY
-          ls -la videos
       - uses: actions/upload-artifact@v4
         with:
-          name: videos-fournisseur
+          name: ${{ matrix.slug }}
           path: videos/
+          compression-level: 0
           retention-days: 14
