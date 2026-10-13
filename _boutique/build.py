@@ -35,7 +35,7 @@ def video_block(p):
     if not vid:
         return ''
     nm = esc(p['name'])
-    return ('<h2>Vidéo de présentation</h2><div class="pp-video"><button type="button" class="pp-video-btn" data-vid="' + vid + '" '
+    return ('<h2 style="margin-top:22px">Vidéo de présentation</h2><div class="pp-video"><button type="button" class="pp-video-btn" data-vid="' + vid + '" '
             'aria-label="Lire la vidéo : ' + nm + '" onclick="var d=this.parentNode,f=document.createElement(\'iframe\');'
             'f.src=\'https://www.youtube-nocookie.com/embed/\'+this.dataset.vid+\'?autoplay=1&rel=0\';f.title=this.getAttribute(\'aria-label\');'
             'f.allow=\'autoplay; encrypted-media; picture-in-picture; fullscreen\';f.allowFullscreen=true;f.loading=\'lazy\';d.replaceChildren(f);">'
@@ -118,7 +118,7 @@ def template():
 
 
 PAGE_CSS = """<style>
-.pp-video{position:relative;aspect-ratio:16/9;max-width:560px;border-radius:12px;overflow:hidden;background:#000;margin:8px 0 18px}
+.pp-video{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:12px;overflow:hidden;background:#000;margin:8px 0 18px}
 .pp-video-btn{all:unset;cursor:pointer;display:block;width:100%;height:100%;position:relative}
 .pp-video-btn img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}
 .pp-play{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;padding-left:4px}
@@ -307,7 +307,7 @@ def page(p, products, tpl):
 <main class="pp">
   <nav class="pp-crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a> / <a href="/boutique.html">Boutique</a> / <a href="/boutique.html#{esc(p['category'])}">{esc(cat)}</a> / {esc(p['name'])}</nav>
   <div class="pp-grid">
-    <div><div class="pp-img">{img}</div>{thumbs}</div>
+    <div><div class="pp-img">{img}</div>{thumbs}{video_block(p)}</div>
     <div>
       <span class="label">{esc(CAT_FULL.get(p['category'], cat))}</span>
       <h1>{esc(p['name'])}</h1>
@@ -318,7 +318,6 @@ def page(p, products, tpl):
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       {intro}
       {f'<h2>Caractéristiques techniques</h2><ul class="pp-specs">{spec_html}</ul>' if spec_html else ''}
-      {video_block(p)}
       {need_block(p, products)}
       {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact.html" style="color:var(--paper)">contactez-nous</a>.</p>'}
     </div>
