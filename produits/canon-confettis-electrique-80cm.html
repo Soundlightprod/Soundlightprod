@@ -311,6 +311,12 @@
   .shop-light .pp-thumbs button{border-color:var(--line);} .shop-light .pp-thumbs button.on{border-color:var(--navy);}
 </style>
 <style>
+.pp-video{position:relative;aspect-ratio:16/9;max-width:560px;border-radius:12px;overflow:hidden;background:#000;margin:8px 0 18px}
+.pp-video-btn{all:unset;cursor:pointer;display:block;width:100%;height:100%;position:relative}
+.pp-video-btn img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}
+.pp-play{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;padding-left:4px}
+.pp-video-btn:hover .pp-play{background:#e11d48}
+.pp-video iframe{width:100%;height:100%;border:0}
   .pp{max-width:1220px; margin:0 auto; padding:40px 24px 80px;}
   .pp-crumb{font-family:'DM Mono',monospace; font-size:.78rem; letter-spacing:.06em; color:var(--muted); margin-bottom:26px;}
   .pp-crumb a{color:var(--muted); text-decoration:none;} .pp-crumb a:hover{color:var(--paper);}
@@ -414,6 +420,7 @@
       <div class="pp-actions"><a class="btn btn-primary" href="/contact.html">Être prévenu du retour</a><a class="btn btn-ghost" href="/boutique.html">Toute la boutique</a></div>
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       <p class="pp-intro">Canon à confettis électrique rechargeable, longueur 80cm. Déclenchement instantané, sans poudre ni gaz, portée renforcée.</p>
+      
       
       
       

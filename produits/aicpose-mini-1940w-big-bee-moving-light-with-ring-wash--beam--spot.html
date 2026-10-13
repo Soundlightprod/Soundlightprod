@@ -311,6 +311,12 @@
   .shop-light .pp-thumbs button{border-color:var(--line);} .shop-light .pp-thumbs button.on{border-color:var(--navy);}
 </style>
 <style>
+.pp-video{position:relative;aspect-ratio:16/9;max-width:560px;border-radius:12px;overflow:hidden;background:#000;margin:8px 0 18px}
+.pp-video-btn{all:unset;cursor:pointer;display:block;width:100%;height:100%;position:relative}
+.pp-video-btn img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}
+.pp-play{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;padding-left:4px}
+.pp-video-btn:hover .pp-play{background:#e11d48}
+.pp-video iframe{width:100%;height:100%;border:0}
   .pp{max-width:1220px; margin:0 auto; padding:40px 24px 80px;}
   .pp-crumb{font-family:'DM Mono',monospace; font-size:.78rem; letter-spacing:.06em; color:var(--muted); margin-bottom:26px;}
   .pp-crumb a{color:var(--muted); text-decoration:none;} .pp-crumb a:hover{color:var(--paper);}
@@ -415,6 +421,7 @@
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       
       <h2>Caractéristiques techniques</h2><ul class="pp-specs"><li>AC100-240V 50-60Hz</li><li>Max 1000W</li><li>LED Osram 1940W 4en1</li><li>Bande 5050RGB 74pcs 0.12W</li><li>2800-8500K</li><li>50000h</li><li>Écran 1-25/s</li><li>Angle spot 0-60°</li><li>Dimmer 0-100%</li><li>DMX512/voix/auto/maître-esclave</li><li>Canaux 24/26/38/81/95/100/102</li><li>CTO, coloration, faisceau</li><li>Tourbillon, kaléidoscope</li></ul>
+      <h2>Vidéo de présentation</h2><div class="pp-video"><button type="button" class="pp-video-btn" data-vid="4Mhci0f8qIY" aria-label="Lire la vidéo : Mini 1940W Grand Bee Moving Light Wash/Beam/Spot" onclick="var d=this.parentNode,f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+this.dataset.vid+'?autoplay=1&rel=0';f.title=this.getAttribute('aria-label');f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.loading='lazy';d.replaceChildren(f);"><img loading="lazy" src="https://i.ytimg.com/vi/4Mhci0f8qIY/hqdefault.jpg" alt="Mini 1940W Grand Bee Moving Light Wash/Beam/Spot — vidéo"><span class="pp-play" aria-hidden="true">▶</span></button></div>
       
       
     </div>
