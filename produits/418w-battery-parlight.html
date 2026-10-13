@@ -393,7 +393,7 @@
 <nav class="shop-nav" aria-label="Rayons"><div class="shop-nav-in">
   <div class="dd"><a class="top" href="/boutique.html#lumiere">Éclairage scénique ▾</a>
     <div class="dd-menu"><a href="/boutique.html#lumiere/par">Projecteurs PAR</a><a href="/boutique.html#lumiere/lyres">Lyres &amp; projecteurs mobiles</a><a href="/boutique.html#lumiere/barres">Barres LED &amp; Sunstrips</a><a href="/boutique.html#lumiere/strobes">Stroboscopes</a><a href="/boutique.html#lumiere/floods">Projecteurs &amp; floods</a><a href="/boutique.html#lumiere/dmx">DMX &amp; contrôle</a><a href="/boutique.html#lumiere/lasers">Lasers</a></div></div>
-  <a class="top" href="/boutique.html#son">Sonorisation</a>
+  <a class="top" href="/boutique.html#son" hidden>Sonorisation</a>
   <a class="top" href="/boutique.html#effets">Machines à effets</a>
   <a class="top" href="/boutique.html#consommables">Consommables</a>
   <a class="top" href="/boutique.html#nouveautes">Nouveautés</a>
@@ -454,5 +454,12 @@
   </div>
   <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="/mentions-legales" style="color:inherit;">Mentions légales</a> · <a href="/cgv-boutique" style="color:inherit;">CGV Boutique</a></p>
 </footer>
+<script>
+(function(){
+  try{ if(localStorage.getItem('slp_admin_token')||localStorage.getItem('slp_notrack')) return; }catch(e){}
+  var sid=null; try{ sid=sessionStorage.getItem('slp_visit_sid'); if(!sid){ sid=Date.now().toString(36)+Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid',sid); } }catch(e){}
+  fetch((/\.store$/.test(location.hostname)?'':'https://slp-api.raspy-silence-d4c7.workers.dev')+'/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({artist_slug:'boutique/418w-battery-parlight',session_id:sid,ref:document.referrer})}).catch(function(){});
+})();
+</script>
 </body>
 </html>
