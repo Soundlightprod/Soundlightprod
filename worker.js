@@ -318,7 +318,7 @@ async function meteoData(env) {
        FROM gsc_index GROUP BY site, releve ORDER BY releve`),
     q("SELECT * FROM brevo_campagnes WHERE envoyes > 0 ORDER BY date_envoi DESC, id DESC LIMIT 6"),
     q(`SELECT date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, COUNT(DISTINCT session_id) AS visiteurs FROM page_visits
-       WHERE is_bot = 0 AND (referrer LIKE 'emailing-sendinblue%' OR referrer LIKE '%sendibm%') AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
+       WHERE is_bot = 0 AND (referrer LIKE 'emailing-sendinblue%' OR referrer LIKE '%sendibm%' OR referrer LIKE '%em.soundlightprod%') AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
   ]);
   return { rapport: rapport[0] || null, sites, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, mails };
 }
