@@ -207,6 +207,15 @@ const FR_SITE = "https://soundlightprod.fr";
 const INTL_SITE = "https://soundlightprod.com";
 const INTL_LANGS = ["en", "es", "it"];
 
+// Boutique sur soundlightprod.store
+//   "off"   : le .store renvoie vers la boutique du .fr (état historique)
+//   "serve" : le .store sert la boutique, non indexée (robots.txt interdit tout) ; le .fr ne change pas
+//   "main"  : le .store est le domaine principal de la boutique ; /boutique et /produits/* du .fr redirigent (301) vers lui
+const STORE_MODE = "serve";
+const STORE_SITE = "https://soundlightprod.store";
+// Pages HTML servies sur le .store (le reste du site redirige vers le .fr)
+const STORE_PAGES = /^\/(boutique|boutique-merci|cgv-boutique|mentions-legales)(\.html)?$/;
+
 function redirect(to, status = 301) {
   return new Response(null, { status, headers: { Location: to, "Cache-Control": status === 302 ? "no-store" : "public, max-age=3600" } });
 }
@@ -217,9 +226,32 @@ function routeDomain(request, url) {
   const path = url.pathname;
   const isApi = path.startsWith("/api/");
 
-  // .store (et www.) → boutique sur le .fr
+  // .store (et www.) → boutique
   if (host.endsWith("soundlightprod.store")) {
-    return redirect(`${FR_SITE}/boutique.html`);
+    if (STORE_MODE === "off") return redirect(`${FR_SITE}/boutique.html`);
+    if (host.startsWith("www.")) return redirect(`${STORE_SITE}${path}${url.search}`);
+    if (isApi || path.startsWith("/admin")) return isApi ? null : redirect(`${FR_SITE}${path}${url.search}`);
+    if (path === "/robots.txt") {
+      const body = STORE_MODE === "main"
+        ? `User-agent: *\nAllow: /\n\nSitemap: ${STORE_SITE}/sitemap.xml\n`
+        : "User-agent: *\nDisallow: /\n";
+      return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+    }
+    if (path === "/" || path === "/sitemap.xml") return null; // réécrits vers boutique / sitemap-store.xml dans fetch
+    // /boutique et /boutique.html → racine (même contenu, une seule adresse)
+    if (/^\/boutique(\.html)?$/.test(path)) return redirect(`${STORE_SITE}/${url.search}`);
+    if (path.startsWith("/produits/") && path.endsWith(".html")) return redirect(`${STORE_SITE}${path.replace(/\.html$/, "")}${url.search}`);
+    if (path.startsWith("/produits/") || STORE_PAGES.test(path)) return null;
+    // Fichiers statiques (images, css, js, polices, xml…) : servis tels quels
+    if (/\.[a-z0-9]{2,5}$/i.test(path) && !path.endsWith(".html")) return null;
+    // Toute autre page du site (accueil, artistes, contact…) → .fr
+    return redirect(`${FR_SITE}${path.replace(/\.html$/, "")}${url.search}`);
+  }
+
+  // Boutique déplacée sur le .store : /boutique et fiches produit du .fr → .store
+  if (STORE_MODE === "main" && host.endsWith("soundlightprod.fr") && !isApi) {
+    if (/^\/boutique(\.html)?$/.test(path)) return redirect(`${STORE_SITE}/${url.search}`);
+    if (path.startsWith("/produits/")) return redirect(`${STORE_SITE}${path.replace(/\.html$/, "")}${url.search}`);
   }
 
   // Ancienne fiche DJ provisoire remplacée par la fiche DJ Animation
@@ -330,7 +362,7 @@ export default {
     // ============ DOMAINES & LANGUES ============
     // soundlightprod.fr    : site français (racine)
     // soundlightprod.com   : versions anglaise (/en/), espagnole (/es/) et italienne (/it/) uniquement
-    // soundlightprod.store : redirige vers la boutique du .fr
+    // soundlightprod.store : boutique (voir STORE_MODE)
     // Validation Google Search Console (fichiers de vérification, servis tels quels sur .fr et .com)
     if (/^\/google[0-9a-f]{16}\.html$/.test(url.pathname)) {
       return new Response(`google-site-verification: ${url.pathname.slice(1)}`, { headers: { "Content-Type": "text/html; charset=utf-8" } });
@@ -338,6 +370,12 @@ export default {
 
     const domainRedirect = routeDomain(request, url);
     if (domainRedirect) return domainRedirect;
+
+    // .store : la racine affiche la boutique, /sitemap.xml sert le sitemap de la boutique
+    if (STORE_MODE !== "off" && url.hostname.toLowerCase().endsWith("soundlightprod.store") && request.method === "GET") {
+      const rewrite = url.pathname === "/" ? "/boutique" : url.pathname === "/sitemap.xml" ? "/sitemap-store.xml" : null;
+      if (rewrite) return env.ASSETS.fetch(new Request(new URL(rewrite + url.search, url.origin), request));
+    }
 
     const origin = resolveOrigin(request, env);
 
@@ -442,14 +480,17 @@ export default {
         }
         if (!line_items.length) return json({ error: "Aucun article valide" }, 400, origin);
 
+        // Retour de paiement : sur le domaine d'où vient le client (.fr ou .store), sinon SITE_ORIGIN
+        const reqOrigin = request.headers.get("Origin") || "";
+        const returnBase = /^https:\/\/(www\.)?soundlightprod\.(fr|store)$/.test(reqOrigin) ? reqOrigin.replace("://www.", "://") : env.SITE_ORIGIN;
         const session = await stripeRequest(env, "checkout/sessions", {
           mode: "payment",
           payment_method_types: ["card"],
           line_items,
           customer_email,
           shipping_address_collection: { allowed_countries: SHIPPING_COUNTRIES },
-          success_url: `${env.SITE_ORIGIN}/boutique-merci.html?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${env.SITE_ORIGIN}/boutique.html`,
+          success_url: `${returnBase}/boutique-merci.html?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${returnBase}/boutique.html`,
         });
 
         await env.DB.prepare(
