@@ -24,6 +24,23 @@ GOOGLE_CAT = {'son': 'Électronique > Audio > Composants audio', 'lumiere': 'Art
               'consommables': 'Arts et loisirs > Fêtes et célébrations > Articles de fête'}
 EMPTY = {'', 'descriptif en préparation'}
 # Photos supplémentaires (la base n'a qu'une image par produit) : slug -> [fichiers du site]
+# Vidéos de présentation (YouTube, non répertoriées) : slug -> identifiant
+try:
+    VIDEOS = json.loads((pathlib.Path(__file__).parent / 'videos_youtube.json').read_text(encoding='utf-8'))
+except Exception:
+    VIDEOS = {}
+
+def video_block(p):
+    vid = VIDEOS.get(p['slug'])
+    if not vid:
+        return ''
+    nm = esc(p['name'])
+    return ('<h2>Vidéo de présentation</h2><div class="pp-video"><button type="button" class="pp-video-btn" data-vid="' + vid + '" '
+            'aria-label="Lire la vidéo : ' + nm + '" onclick="var d=this.parentNode,f=document.createElement(\'iframe\');'
+            'f.src=\'https://www.youtube-nocookie.com/embed/\'+this.dataset.vid+\'?autoplay=1&rel=0\';f.title=this.getAttribute(\'aria-label\');'
+            'f.allow=\'autoplay; encrypted-media; picture-in-picture; fullscreen\';f.allowFullscreen=true;f.loading=\'lazy\';d.replaceChildren(f);">'
+            '<img loading="lazy" src="https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg" alt="' + nm + ' — vidéo"><span class="pp-play" aria-hidden="true">▶</span></button></div>')
+
 EXTRA_IMAGES = {
     'machine-etincelles-800w': ['/machine-etincelles-800w-hauteurs.png'],
     'machine-etincelles-800w-x2': ['/machine-etincelles-800w-hauteurs.png'],
@@ -101,6 +118,12 @@ def template():
 
 
 PAGE_CSS = """<style>
+.pp-video{position:relative;aspect-ratio:16/9;max-width:560px;border-radius:12px;overflow:hidden;background:#000;margin:8px 0 18px}
+.pp-video-btn{all:unset;cursor:pointer;display:block;width:100%;height:100%;position:relative}
+.pp-video-btn img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}
+.pp-play{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;padding-left:4px}
+.pp-video-btn:hover .pp-play{background:#e11d48}
+.pp-video iframe{width:100%;height:100%;border:0}
   .pp{max-width:1220px; margin:0 auto; padding:40px 24px 80px;}
   .pp-crumb{font-family:'DM Mono',monospace; font-size:.78rem; letter-spacing:.06em; color:var(--muted); margin-bottom:26px;}
   .pp-crumb a{color:var(--muted); text-decoration:none;} .pp-crumb a:hover{color:var(--paper);}
@@ -295,6 +318,7 @@ def page(p, products, tpl):
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       {intro}
       {f'<h2>Caractéristiques techniques</h2><ul class="pp-specs">{spec_html}</ul>' if spec_html else ''}
+      {video_block(p)}
       {need_block(p, products)}
       {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact.html" style="color:var(--paper)">contactez-nous</a>.</p>'}
     </div>
