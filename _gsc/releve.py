@@ -28,6 +28,7 @@ SITES = {
     "bmb": {"property": "sc-domain:bookmyband.fr", "sitemap": "https://bookmyband.fr/sitemap.xml"},
     # Propriété à ajouter dans Search Console (et à partager avec le compte de service) ; tant que ce n'est pas fait, on l'ignore.
     "store": {"property": "sc-domain:soundlightprod.store", "sitemap": "https://soundlightprod.store/sitemap.xml", "optionnel": True},
+    "csa": {"property": "sc-domain:csanimations.fr", "sitemap": "https://csanimations.fr/sitemap.xml", "optionnel": True},
 }
 MAX_INSPECTIONS_PAR_SITE = 300  # quota Google : 2000 par jour et par propriété
 
