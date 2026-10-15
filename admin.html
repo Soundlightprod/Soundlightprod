@@ -815,7 +815,7 @@
 
     <div class="vz-grid3">
       <div class="vz-card"><h3>Villes</h3><table id="breakdownCityTable" class="vz-bt"><tbody></tbody></table></div>
-      <div class="vz-card"><h3>D'où ils arrivent</h3><table id="breakdownReferrerTable" class="vz-bt"><tbody></tbody></table></div>
+      <div class="vz-card"><h3>D'où ils arrivent</h3><div id="socialStrip" class="vz-note" style="margin:0 0 8px;"></div><table id="breakdownReferrerTable" class="vz-bt"><tbody></tbody></table></div>
       <div class="vz-card"><h3>Appareils</h3><table id="breakdownDeviceTable" class="vz-bt"><tbody></tbody></table></div>
     </div>
 
@@ -2384,6 +2384,10 @@
       renderList('#breakdownNetworkTable', data.by_network, 'network');
       renderList('#breakdownDeviceTable', data.by_device, 'device');
       renderList('#breakdownReferrerTable', data.by_referrer, 'referrer');
+      // Résumé réseaux sociaux (Facebook / Instagram / TikTok), toutes lignes de provenance confondues
+      const soc = {}; (data.by_referrer || []).forEach(r => { const so = socialOf(r.label); if(so) soc[so.key] = (soc[so.key] || 0) + r.total; });
+      const strip = document.getElementById('socialStrip');
+      if(strip) strip.innerHTML = SOCIALS.map(x => `${x.icon} ${x.label} : <b>${soc[x.key] || 0}</b>`).join(' &nbsp;·&nbsp; ');
     } catch(e){ /* silencieux */ }
   }
 
@@ -2461,7 +2465,18 @@
 
   function updateNoTrack(){ const el=document.getElementById('vzNoTrackState'); if(!el) return; let on=false; try{ on=!!localStorage.getItem('slp_notrack'); }catch(e){} el.textContent = on ? '✅ actif sur soundlightprod.fr pour cet appareil' : ''; }
   document.addEventListener('DOMContentLoaded', updateNoTrack);
-  function refLabel(r){ if(!r) return r; const m=String(r).match(/^emailing-([^.]+)\.?(.*)$/); if(!m) return r; const src=m[1].charAt(0).toUpperCase()+m[1].slice(1); return '📧 Emailing ' + src + (m[2] ? ' · ' + m[2].replace(/-/g,' ') : ''); }
+  // Plateformes sociales reconnues (hôte du site d'origine OU paramètre utm_source des liens de bio / publications)
+  const SOCIALS = [
+    { key:'facebook',  label:'Facebook',  icon:'📘', re:/(^|\.)(facebook\.com|facebook|fb\.com|fb\.me|fb)$/ },
+    { key:'instagram', label:'Instagram', icon:'📸', re:/(^|\.)(instagram\.com|instagram|ig|insta)$/ },
+    { key:'tiktok',    label:'TikTok',    icon:'🎵', re:/(^|\.)(tiktok\.com|tiktok)$/ }
+  ];
+  function socialOf(r){
+    if(!r) return null; const s = String(r).toLowerCase();
+    const m = s.match(/^emailing-([^.]+)/); const host = m ? m[1] : s;
+    return SOCIALS.find(x => x.re.test(host)) || null;
+  }
+  function refLabel(r){ if(!r) return r; const so = socialOf(r); if(so){ const m0=String(r).match(/^emailing-[^.]+\.(.+)$/); return so.icon + ' ' + so.label + (m0 ? ' · ' + m0[1].replace(/-/g,' ') : ''); } const m=String(r).match(/^emailing-([^.]+)\.?(.*)$/); if(!m) return r; const src=m[1].charAt(0).toUpperCase()+m[1].slice(1); return '📧 Emailing ' + src + (m[2] ? ' · ' + m[2].replace(/-/g,' ') : ''); }
   let visitsChartInstance = null;
   let currentTimeseriesGranularity = 'day';
 
