@@ -95,6 +95,11 @@ def fr_price(p):
     return f"{p['price_cents'] / 100:.2f}".replace('.', ',') + ' €'
 
 
+def fr_price_ht(p):
+    # Prix hors taxe (TVA 20 %), affiché en petit sous le prix TTC
+    return f"{p['price_cents'] / 120:.2f}".replace('.', ',') + ' € HT'
+
+
 def in_stock(p):
     return int(p.get('stock_qty') or 0) > 0
 
@@ -312,7 +317,7 @@ def page(p, products, tpl):
       <span class="label">{esc(CAT_FULL.get(p['category'], cat))}</span>
       <h1>{esc(p['name'])}</h1>
       <div class="pp-price">{fr_price(p)}</div>
-      <div class="pp-ttc">Prix TTC · Réf. SLP-{p['id']}</div>
+      <div class="pp-ttc">Prix TTC · soit {fr_price_ht(p)} · Réf. SLP-{p['id']}</div>
       {stock}
       <div class="pp-actions">{buy}<a class="btn btn-ghost" href="/boutique.html">Toute la boutique</a></div>
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>

@@ -73,6 +73,7 @@
   .card p.desc{color:var(--muted); font-size:0.82rem; flex-grow:1; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis; line-height:1.45;}
   .card .price-row{display:flex; align-items:center; justify-content:space-between;}
   .price{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.2rem;}
+  .price small.ht{display:block; font-family:'Instrument Sans', sans-serif; font-weight:400; font-size:.7rem; color:inherit; opacity:.7; line-height:1.2; margin-top:2px;}
   .stock-low{color:var(--pink); font-size:0.75rem; font-family:'DM Mono', monospace;}
   .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 20px; font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.9rem; text-decoration:none; border-radius:100px; border:none; cursor:pointer; transition:all 0.25s ease;}
   .btn-primary{background:var(--paper); color:var(--ink);}
@@ -548,6 +549,7 @@
   let cart = JSON.parse(sessionStorage.getItem('slp_cart') || '[]');
 
   function money(cents){ return (cents/100).toFixed(2).replace('.', ',') + ' €'; }
+  function moneyHT(cents){ return (cents/120).toFixed(2).replace('.', ',') + ' € HT'; }
 
   function saveCart(){ sessionStorage.setItem('slp_cart', JSON.stringify(cart)); renderCart(); }
 
@@ -582,7 +584,7 @@
         <a class="card-img has-photo" href="/produits/${p.slug}" aria-label="${p.name}">${isNew ? '<span class="badge-new">Nouveau</span>' : ''}${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : 'Photo à venir'}</a>
         <h3><a href="/produits/${p.slug}">${p.name}</a></h3>
         <div class="price-row">
-          <span class="price">${money(p.price_cents)}</span>
+          <span class="price">${money(p.price_cents)}<small class="ht">${moneyHT(p.price_cents)}</small></span>
           <button class="btn btn-primary" onclick="addToCart(${p.id})">Ajouter</button>
         </div>
       </div>`;
@@ -779,7 +781,7 @@
     });
     if (sugg.length) itemsEl.innerHTML += '<div class="cart-sugg">' + sugg.map(s =>
       `<div class="need-box"><b>N'oubliez pas le consommable de votre machine</b>${needRows(s.acc)}</div>`).join('') + '</div>';
-    totalEl.textContent = money(total);
+    totalEl.innerHTML = money(total) + '<small class="ht" style="display:block;text-align:right;font-weight:400;font-size:.7rem;opacity:.7">soit ' + moneyHT(total) + '</small>';
   }
 
   document.getElementById('cartFab').onclick = () => {
@@ -806,7 +808,7 @@
     { const acc = accFor(p);
       document.getElementById('pdNeed').innerHTML = acc.length
         ? `<div class="need-box"><b>À prévoir avec cette machine (vendu séparément)</b>${needRows(acc)}</div>` : ''; }
-    document.getElementById('pdPrice').textContent = money(p.price_cents);
+    document.getElementById('pdPrice').innerHTML = money(p.price_cents) + '<small class="ht">' + moneyHT(p.price_cents) + '</small>';
     document.getElementById('pdAddBtn').onclick = () => { addToCart(p.id); closeProductDetail(); };
     document.getElementById('productModal').classList.add('open');
     document.getElementById('pdOverlay').classList.add('open');
