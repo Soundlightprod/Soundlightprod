@@ -46,6 +46,70 @@ function requireAdmin(request, env) {
   return token && token === env.ADMIN_PASSWORD;
 }
 
+
+// --- Statistiques des comptes sociaux (SLP) : abonnés / portée / vues -----------------------
+// Secrets Worker attendus pour la collecte automatique Meta (wrangler secret put ...) :
+//   META_ACCESS_TOKEN  jeton longue durée de la Page Facebook SLP
+//   META_PAGE_ID       identifiant de la Page Facebook
+//   META_IG_ID         identifiant du compte Instagram professionnel lié
+// TikTok : saisie manuelle depuis l'admin (POST /api/admin/social-stats).
+async function ensureSocialTable(env) {
+  await env.DB.prepare(
+    "CREATE TABLE IF NOT EXISTS social_stats (day TEXT NOT NULL, platform TEXT NOT NULL, followers INTEGER, reach INTEGER, views INTEGER, source TEXT DEFAULT 'auto', note TEXT, PRIMARY KEY (day, platform))"
+  ).run();
+}
+
+async function saveSocialStat(env, day, platform, { followers = null, reach = null, views = null, source = "auto", note = null }) {
+  await ensureSocialTable(env);
+  await env.DB.prepare(
+    "INSERT INTO social_stats (day, platform, followers, reach, views, source, note) VALUES (?,?,?,?,?,?,?) " +
+    "ON CONFLICT(day, platform) DO UPDATE SET followers=COALESCE(excluded.followers, followers), reach=COALESCE(excluded.reach, reach), views=COALESCE(excluded.views, views), source=excluded.source, note=excluded.note"
+  ).bind(day, platform, followers, reach, views, source, note).run();
+}
+
+async function metaGet(env, path, params = {}) {
+  const qs = new URLSearchParams({ ...params, access_token: env.META_ACCESS_TOKEN });
+  const r = await fetch("https://graph.facebook.com/v21.0/" + path + "?" + qs);
+  const j = await r.json();
+  if (j.error) throw new Error(j.error.message || "Erreur API Meta");
+  return j;
+}
+
+function lastInsightValue(j) {
+  const v = j && j.data && j.data[0] && j.data[0].values;
+  if (!v || !v.length) return null;
+  return v[v.length - 1].value;
+}
+
+async function collectMetaStats(env) {
+  if (!env.META_ACCESS_TOKEN) return { skipped: "META_ACCESS_TOKEN absent" };
+  const day = new Date().toISOString().slice(0, 10);
+  const out = {};
+  if (env.META_PAGE_ID) {
+    try {
+      const p = await metaGet(env, env.META_PAGE_ID, { fields: "followers_count,fan_count" });
+      let views = null, note = null;
+      try { views = lastInsightValue(await metaGet(env, env.META_PAGE_ID + "/insights", { metric: "page_media_view", period: "day" })); }
+      catch (e) { note = "vues: " + e.message; }
+      await saveSocialStat(env, day, "facebook", { followers: p.followers_count ?? p.fan_count ?? null, views, note });
+      out.facebook = "ok";
+    } catch (e) { out.facebook = e.message; await saveSocialStat(env, day, "facebook", { note: e.message }); }
+  }
+  if (env.META_IG_ID) {
+    try {
+      const p = await metaGet(env, env.META_IG_ID, { fields: "followers_count" });
+      let reach = null, views = null, note = null;
+      try { reach = lastInsightValue(await metaGet(env, env.META_IG_ID + "/insights", { metric: "reach", period: "day" })); }
+      catch (e) { note = "portée: " + e.message; }
+      try { views = lastInsightValue(await metaGet(env, env.META_IG_ID + "/insights", { metric: "views", period: "day", metric_type: "total_value" })); }
+      catch (e) { /* métrique indisponible selon le compte */ }
+      await saveSocialStat(env, day, "instagram", { followers: p.followers_count ?? null, reach, views, note });
+      out.instagram = "ok";
+    } catch (e) { out.instagram = e.message; await saveSocialStat(env, day, "instagram", { note: e.message }); }
+  }
+  return out;
+}
+
 // --- Stripe REST helpers (pas de SDK, appel direct à l'API) ---
 async function stripeRequest(env, path, params) {
   const body = new URLSearchParams();
@@ -1209,6 +1273,30 @@ export default {
       // Toute route non gérée : si ce n'est pas un appel /api/*, on sert le fichier statique
       // correspondant (site + admin). C'est indispensable avec run_worker_first: true — sans ça,
       // le Worker intercepte TOUTES les requêtes, y compris les pages du site, avant les assets.
+      // GET /api/admin/social-stats — historique abonnés / portée / vues par réseau (admin)
+      if (url.pathname === "/api/admin/social-stats" && request.method === "GET") {
+        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        await ensureSocialTable(env);
+        const { results } = await env.DB.prepare("SELECT * FROM social_stats ORDER BY day DESC LIMIT 400").all();
+        return json({ rows: results || [], meta_configured: !!env.META_ACCESS_TOKEN }, 200, origin);
+      }
+      // POST /api/admin/social-stats — saisie manuelle (ex. TikTok) {platform, followers?, reach?, views?, day?}
+      if (url.pathname === "/api/admin/social-stats" && request.method === "POST") {
+        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        const b = await request.json();
+        const platform = String(b.platform || "").toLowerCase();
+        if (!["facebook", "instagram", "tiktok"].includes(platform)) return json({ error: "Réseau inconnu" }, 400, origin);
+        const num = (v) => (v === "" || v == null || isNaN(Number(v)) ? null : Math.round(Number(v)));
+        const day = /^\d{4}-\d{2}-\d{2}$/.test(b.day || "") ? b.day : new Date().toISOString().slice(0, 10);
+        await saveSocialStat(env, day, platform, { followers: num(b.followers), reach: num(b.reach), views: num(b.views), source: "manuel" });
+        return json({ ok: true }, 200, origin);
+      }
+      // POST /api/admin/social-stats/refresh — relance la collecte Meta maintenant (admin)
+      if (url.pathname === "/api/admin/social-stats/refresh" && request.method === "POST") {
+        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        return json(await collectMetaStats(env), 200, origin);
+      }
+
       // GET /api/admin/meteo — rapport du jour : visites, Google, Brevo (admin)
       if (url.pathname === "/api/admin/meteo" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
@@ -1223,5 +1311,8 @@ export default {
     } catch (err) {
       return json({ error: err.message || "Erreur serveur" }, 500, origin);
     }
+  },
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(collectMetaStats(env));
   },
 };
