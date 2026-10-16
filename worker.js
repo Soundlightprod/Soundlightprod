@@ -253,6 +253,16 @@ function roadmapValuesFromBody(body) {
 
 // Calcule la date de départ (format identique à visited_at) pour un filtre de période,
 // ou null pour "tout" (aucun filtre). 'today' = depuis minuit UTC aujourd'hui.
+// Suivi des lectures YouTube : ajoute /yt-track.js en bas de chaque page HTML du site (pas l'admin).
+// Le script ne fait rien s'il n'y a pas de vidéo YouTube dans la page.
+function withVideoTracking(resp, url) {
+  const ct = resp.headers.get("Content-Type") || "";
+  if (!ct.includes("text/html") || /^\/(admin|mon-agenda)/.test(url.pathname)) return resp;
+  return new HTMLRewriter().on("body", {
+    element(el) { el.append('<script src="/yt-track.js" defer></script>', { html: true }); },
+  }).transform(resp);
+}
+
 function siteFromRequest(request, body) { const o = (request.headers.get("Origin") || request.headers.get("Referer") || "").toLowerCase(); if (o.includes("soundlightprod.store")) return "store"; if (o.includes("bookmyband")) return "bmb"; if (o.includes("csanimations")) return "csa"; if (o.includes("soundlightprod")) return "slp"; return ["slp", "bmb", "csa", "store"].includes(body && body.site) ? body.site : "slp"; } // Profil anonyme d'une visite : réseau (opérateur / organisation), appareil, provenance, robot ou non.
 const HOSTING_RE = /amazon|aws|google|microsoft|azure|apple|meta platforms|facebook|digitalocean|ovh|hetzner|linode|akamai connected|oracle|alibaba|tencent|huawei cloud|contabo|scaleway|online s\.a\.s|vultr|choopa|leaseweb|m247|datacamp|hostinger|godaddy|cogent|hurricane electric|zscaler|censys|shodan|clouvider|g-core|gcore|constant company|psychz|colocrossing|servers\.com|hostroyale|packethub|tzulo|internet utilities/i;
 const BOT_UA_RE = /bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|embedly|whatsapp|python|curl|wget|httpclient|go-http|axios|node-fetch|phantom|puppeteer|playwright|selenium/i;
@@ -1015,6 +1025,21 @@ export default {
       // pas d'IP stockée, pas de cookie, juste ville/région/pays + date. Jamais exposé
       // aux groupes eux-mêmes, uniquement consultable par l'admin.
 
+      // POST /api/track-video — { video_id, event, session_id, page, ref } : lecture d'une vidéo YouTube
+      // intégrée au site (public, envoyé par /yt-track.js). event : play | 25 | 50 | 75 | fin.
+      // Même profil anonyme que les visites (pas d'IP), même session_id pour relier au parcours.
+      if (url.pathname === "/api/track-video" && request.method === "POST") {
+        const body = await request.json().catch(() => ({}));
+        const videoId = String(body.video_id || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 20);
+        const ev = ["play", "25", "50", "75", "fin"].includes(body.event) ? body.event : null;
+        if (!videoId || !ev) return json({ ok: false }, 200, origin);
+        const site = siteFromRequest(request, body); const vp = visitProfile(request, body, request.cf || {}); const cf = request.cf || {};
+        await env.DB.prepare(
+          "INSERT INTO video_events (site, page, video_id, event, session_id, is_bot, city, network, device, referrer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        ).bind(site, String(body.page || "").slice(0, 120) || null, videoId, ev, String(body.session_id || "").slice(0, 40) || null, vp.isBot, cf.city || null, vp.network, vp.device, vp.referrer).run();
+        return json({ ok: true }, 200, origin);
+      }
+
       // POST /api/track-visit — { artist_slug, session_id } : enregistre une visite (public, appelé
       // depuis chaque page). session_id (généré côté navigateur, une fois par onglet/session) permet
       // de reconstituer le parcours d'un même visiteur à travers plusieurs pages.
@@ -1306,7 +1331,7 @@ export default {
       }
 
       if (!url.pathname.startsWith("/api/")) {
-        return env.ASSETS.fetch(request);
+        return withVideoTracking(await env.ASSETS.fetch(request), url);
       }
 
       return json({ error: "Route inconnue" }, 404, origin);
