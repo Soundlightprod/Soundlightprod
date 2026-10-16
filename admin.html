@@ -816,7 +816,7 @@
     <div class="vz-card" id="socialStatsCard">
       <div class="vz-card-h"><h3>Comptes sociaux (SLP)</h3><button class="btn-outline vz-xs" onclick="refreshSocialStats()">↻ Actualiser</button></div>
       <div id="socialStatsNote" class="vz-note" style="margin:0 0 8px;"></div>
-      <table class="vz-bt" id="socialStatsTable"><thead><tr><th>Réseau</th><th>Abonnés</th><th>Évolution</th><th>Portée (jour)</th><th>Vues (jour)</th><th>J'aime</th><th>Date</th></tr></thead><tbody></tbody></table>
+      <table class="vz-bt" id="socialStatsTable"><thead><tr><th>Réseau</th><th>Abonnés</th><th>Évolution</th><th>Portée (jour)</th><th>Vues (jour)</th><th>J'aime</th><th>Partages</th><th>Date</th></tr></thead><tbody></tbody></table>
       <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; align-items:center;">
         <b style="font-size:.85rem;">Saisie manuelle</b>
         <select id="ssPlatform"><option value="tiktok">TikTok</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option></select>
@@ -824,6 +824,7 @@
         <input id="ssReach" type="number" min="0" placeholder="Portée" style="width:100px;">
         <input id="ssViews" type="number" min="0" placeholder="Vues" style="width:100px;">
         <input id="ssLikes" type="number" min="0" placeholder="J'aime" style="width:100px;">
+        <input id="ssShares" type="number" min="0" placeholder="Partages" style="width:100px;">
         <button class="btn-outline vz-xs" onclick="saveSocialManual()">Enregistrer</button>
       </div>
     </div>
@@ -2394,7 +2395,7 @@
         const lf = mine[0], prev = mine.find(r => r.day <= new Date(Date.now()-7*864e5).toISOString().slice(0,10)) || mine[mine.length-1];
         const delta = (lf && prev && lf !== prev) ? (lf.followers - prev.followers) : null;
         const d = delta == null ? '—' : (delta > 0 ? '+' : '') + delta + ' (' + prev.day.slice(5) + ')';
-        return `<tr><td>${SOC_NAMES[p]}</td><td>${n(lf ? lf.followers : null)}</td><td>${d}</td><td>${n(last ? last.reach : null)}</td><td>${n(last ? last.views : null)}</td><td>${n((rows.find(r => r.platform === p && r.likes != null) || {}).likes)}</td><td>${last ? last.day : '—'}${last && last.source === 'manuel' ? ' ✎' : ''}</td></tr>`;
+        return `<tr><td>${SOC_NAMES[p]}</td><td>${n(lf ? lf.followers : null)}</td><td>${d}</td><td>${n(last ? last.reach : null)}</td><td>${n(last ? last.views : null)}</td><td>${n((rows.find(r => r.platform === p && r.likes != null) || {}).likes)}</td><td>${n((rows.find(r => r.platform === p && r.shares != null) || {}).shares)}</td><td>${last ? last.day : '—'}${last && last.source === 'manuel' ? ' ✎' : ''}</td></tr>`;
       }).join('');
       const errs = rows.filter(r => r.note).slice(0,2).map(r => `${r.platform}: ${r.note}`);
       document.getElementById('socialStatsNote').innerHTML = data.meta_configured
@@ -2407,9 +2408,9 @@
     loadSocialStats();
   }
   async function saveSocialManual(){
-    const body = { platform: document.getElementById('ssPlatform').value, followers: document.getElementById('ssFollowers').value, reach: document.getElementById('ssReach').value, views: document.getElementById('ssViews').value, likes: document.getElementById('ssLikes').value };
+    const body = { platform: document.getElementById('ssPlatform').value, followers: document.getElementById('ssFollowers').value, reach: document.getElementById('ssReach').value, views: document.getElementById('ssViews').value, likes: document.getElementById('ssLikes').value, shares: document.getElementById('ssShares').value };
     await fetch('/api/admin/social-stats', { method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`}, body: JSON.stringify(body) });
-    ['ssFollowers','ssReach','ssViews','ssLikes'].forEach(i => document.getElementById(i).value = '');
+    ['ssFollowers','ssReach','ssViews','ssLikes','ssShares'].forEach(i => document.getElementById(i).value = '');
     loadSocialStats();
   }
 

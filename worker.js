@@ -58,14 +58,15 @@ async function ensureSocialTable(env) {
     "CREATE TABLE IF NOT EXISTS social_stats (day TEXT NOT NULL, platform TEXT NOT NULL, followers INTEGER, reach INTEGER, views INTEGER, source TEXT DEFAULT 'auto', note TEXT, PRIMARY KEY (day, platform))"
   ).run();
   try { await env.DB.prepare("ALTER TABLE social_stats ADD COLUMN likes INTEGER").run(); } catch (e) { /* colonne déjà là */ }
+  try { await env.DB.prepare("ALTER TABLE social_stats ADD COLUMN shares INTEGER").run(); } catch (e) { /* colonne déjà là */ }
 }
 
-async function saveSocialStat(env, day, platform, { followers = null, reach = null, views = null, likes = null, source = "auto", note = null }) {
+async function saveSocialStat(env, day, platform, { followers = null, reach = null, views = null, likes = null, shares = null, source = "auto", note = null }) {
   await ensureSocialTable(env);
   await env.DB.prepare(
-    "INSERT INTO social_stats (day, platform, followers, reach, views, likes, source, note) VALUES (?,?,?,?,?,?,?,?) " +
-    "ON CONFLICT(day, platform) DO UPDATE SET followers=COALESCE(excluded.followers, followers), reach=COALESCE(excluded.reach, reach), views=COALESCE(excluded.views, views), likes=COALESCE(excluded.likes, likes), source=excluded.source, note=excluded.note"
-  ).bind(day, platform, followers, reach, views, likes, source, note).run();
+    "INSERT INTO social_stats (day, platform, followers, reach, views, likes, shares, source, note) VALUES (?,?,?,?,?,?,?,?,?) " +
+    "ON CONFLICT(day, platform) DO UPDATE SET followers=COALESCE(excluded.followers, followers), reach=COALESCE(excluded.reach, reach), views=COALESCE(excluded.views, views), likes=COALESCE(excluded.likes, likes), shares=COALESCE(excluded.shares, shares), source=excluded.source, note=excluded.note"
+  ).bind(day, platform, followers, reach, views, likes, shares, source, note).run();
 }
 
 async function metaGet(env, path, params = {}) {
@@ -1289,7 +1290,7 @@ export default {
         if (!["facebook", "instagram", "tiktok"].includes(platform)) return json({ error: "Réseau inconnu" }, 400, origin);
         const num = (v) => (v === "" || v == null || isNaN(Number(v)) ? null : Math.round(Number(v)));
         const day = /^\d{4}-\d{2}-\d{2}$/.test(b.day || "") ? b.day : new Date().toISOString().slice(0, 10);
-        await saveSocialStat(env, day, platform, { followers: num(b.followers), reach: num(b.reach), views: num(b.views), likes: num(b.likes), source: "manuel" });
+        await saveSocialStat(env, day, platform, { followers: num(b.followers), reach: num(b.reach), views: num(b.views), likes: num(b.likes), shares: num(b.shares), source: "manuel" });
         return json({ ok: true }, 200, origin);
       }
       // POST /api/admin/social-stats/refresh — relance la collecte Meta maintenant (admin)
