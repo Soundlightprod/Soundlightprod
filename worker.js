@@ -1275,14 +1275,14 @@ export default {
       // le Worker intercepte TOUTES les requêtes, y compris les pages du site, avant les assets.
       // GET /api/admin/social-stats — historique abonnés / portée / vues par réseau (admin)
       if (url.pathname === "/api/admin/social-stats" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         await ensureSocialTable(env);
         const { results } = await env.DB.prepare("SELECT * FROM social_stats ORDER BY day DESC LIMIT 400").all();
         return json({ rows: results || [], meta_configured: !!env.META_ACCESS_TOKEN }, 200, origin);
       }
       // POST /api/admin/social-stats — saisie manuelle (ex. TikTok) {platform, followers?, reach?, views?, day?}
       if (url.pathname === "/api/admin/social-stats" && request.method === "POST") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const b = await request.json();
         const platform = String(b.platform || "").toLowerCase();
         if (!["facebook", "instagram", "tiktok"].includes(platform)) return json({ error: "Réseau inconnu" }, 400, origin);
@@ -1293,7 +1293,7 @@ export default {
       }
       // POST /api/admin/social-stats/refresh — relance la collecte Meta maintenant (admin)
       if (url.pathname === "/api/admin/social-stats/refresh" && request.method === "POST") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         return json(await collectMetaStats(env), 200, origin);
       }
 
