@@ -775,6 +775,11 @@
       <div class="vz-card-h"><h3>Visiteurs à suivre</h3><span class="vz-note">hier et aujourd'hui · 3 pages ou plus · possibles prospects</span></div>
       <div class="mt-who" id="mtProspects"></div>
     </div>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Contacts</h3><span class="vz-note">clics sur Appeler / WhatsApp / mail et formulaires · 7 derniers jours</span></div>
+      <div class="mt-figs" id="mtContactFigs" style="margin:0 0 12px;"></div>
+      <div class="mt-who" id="mtContactList"></div>
+    </div>
 
     <div style="height:28px"></div>
     <div class="vz-head">
@@ -1156,6 +1161,29 @@
     });
   }
 
+  function mtRenderContact(c){
+    c = c || { clics:[], demandes:[] };
+    const n = (a) => { const r = c.clics.find((x) => x.action === a); return r ? r.n : 0; };
+    const figs = document.getElementById('mtContactFigs'); figs.replaceChildren();
+    [['envoi', 'demandes envoyées'], ['appel', 'clics Appeler'], ['whatsapp', 'clics WhatsApp'], ['mail', 'clics mail'], ['formulaire', 'formulaires commencés']].forEach(([a, l]) => {
+      const f = mtEl('div', 'mt-fig'); f.append(mtEl('b', null, mtFmt(n(a))), mtEl('span', null, l)); figs.appendChild(f);
+    });
+    const box = document.getElementById('mtContactList'); box.replaceChildren();
+    if (!c.demandes.length){ box.appendChild(mtEl('p', 'empty', 'Aucune demande reçue par le formulaire pour l’instant.')); return; }
+    c.demandes.forEach((d) => {
+      const it = mtEl('div', 'it');
+      const quand = new Date(d.cree_le.replace(' ', 'T') + 'Z').toLocaleString('fr-FR', { timeZone:'Europe/Paris', weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+      const l1 = mtEl('div'); l1.append(mtEl('b', null, d.nom || '—'), document.createTextNode(' · ' + (d.sujet || 'Contact')));
+      const contact = mtEl('div', 'p');
+      if (d.telephone){ const a = mtEl('a', null, d.telephone); a.href = 'tel:' + d.telephone.replace(/[^+0-9]/g, ''); a.style.color = 'var(--amber)'; contact.append(a, document.createTextNode('  ')); }
+      if (d.email){ const a = mtEl('a', null, d.email); a.href = 'mailto:' + d.email; a.style.color = 'var(--amber)'; contact.appendChild(a); }
+      const l2 = mtEl('div', 'm', [quand, d.date_event && ('date : ' + d.date_event), d.lieu, d.page_origine && ('venu de ' + d.page_origine), d.device, d.mail_envoye ? 'mail reçu ✓' : '⚠️ mail non parti' + (d.mail_erreur ? ' (' + d.mail_erreur + ')' : '')].filter(Boolean).join(' · '));
+      it.append(l1, contact, l2);
+      if (d.message) it.appendChild(mtEl('div', 'p', d.message));
+      box.appendChild(it);
+    });
+  }
+
   function mtRenderYoutube(y, liens){
     y = y || { videos:[], stats:[], site:[] };
     const rel = document.getElementById('mtYtReleve');
@@ -1226,6 +1254,7 @@
       const titres = {}; ((d.youtube && d.youtube.videos) || []).forEach((v) => { titres[v.video_id] = v.titre; });
       essai(() => mtRenderSites(d.sites || []));
       essai(() => mtRenderProspects(d.prospects || [], d.sites || []));
+      essai(() => mtRenderContact(d.contact));
       essai(() => mtRenderGoogle(d.google));
       essai(() => mtRenderBrevo(d.brevo || [], d.mails || [], d.liens || [], titres));
       essai(() => mtRenderYoutube(d.youtube, d.liens || []));

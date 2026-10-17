@@ -419,7 +419,7 @@ async function meteoData(env) {
   const q = async (sql, ...params) => (await env.DB.prepare(sql).bind(...params).all()).results || [];
   const safe = async (sql) => { try { return await q(sql); } catch (e) { return []; } };
   const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
-  const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, videoSite] = await Promise.all([
+  const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, contactClics, contactDemandes, videoSite] = await Promise.all([
     q("SELECT cree_le, moment, titre, resume_json, actions_json, texte FROM rapports ORDER BY id DESC LIMIT 1"),
     q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique .store')),
        v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, ${NOT_TEST} AS vrai FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
@@ -462,11 +462,14 @@ async function meteoData(env) {
     safe("SELECT fait_le, ok, message FROM yt_releves ORDER BY fait_le DESC LIMIT 1"),
     safe("SELECT video_id, titre, origine FROM yt_videos"),
     safe("SELECT video_id, jour, vues FROM yt_stats WHERE jour >= date('now', '-9 days') ORDER BY jour"),
+    safe(`SELECT action, COUNT(DISTINCT COALESCE(session_id, id)) AS n, SUM(cree_le >= datetime('now', '-1 day')) AS n24 FROM contact_events
+       WHERE is_bot = 0 AND ${NOT_TEST} AND cree_le >= datetime('now', '-7 days') GROUP BY action`),
+    safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests ORDER BY id DESC LIMIT 10"),
     safe(`SELECT video_id, page, COUNT(DISTINCT CASE WHEN event = 'play' THEN session_id END) AS lectures,
          COUNT(DISTINCT CASE WHEN event IN ('75', 'fin') THEN session_id END) AS jusqu_au_bout
        FROM video_events WHERE is_bot = 0 AND ${NOT_TEST} AND created_at >= datetime('now', '-7 days') GROUP BY video_id, page ORDER BY lectures DESC`),
   ]);
-  return { rapport: rapport[0] || null, sites, prospects, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
+  return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, demandes: contactDemandes }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
     youtube: { releve: ytReleve[0] || null, videos: ytVideos, stats: ytStats, site: videoSite } };
 }
 
@@ -1062,6 +1065,59 @@ export default {
         await env.DB.prepare(
           "INSERT INTO video_events (site, page, video_id, event, session_id, is_bot, city, network, device, referrer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         ).bind(site, String(body.page || "").slice(0, 120) || null, videoId, ev, String(body.session_id || "").slice(0, 40) || null, vp.isBot, cf.city || null, vp.network, vp.device, vp.referrer).run();
+        return json({ ok: true }, 200, origin);
+      }
+
+      // POST /api/contact — formulaire de contact : enregistré dans D1 (jamais perdu) puis envoyé par mail via Resend
+      if (url.pathname === "/api/contact" && request.method === "POST") {
+        const body = await request.json().catch(() => ({}));
+        const t = (v, n) => String(v || "").trim().slice(0, n);
+        if (t(body.site_web, 200)) return json({ ok: true }, 200, origin); // champ piège : rempli seulement par les robots
+        const d = { nom: t(body.nom, 120), email: t(body.email, 160), telephone: t(body.telephone, 40), sujet: t(body.sujet, 120),
+          date_event: t(body.date_event, 80), lieu: t(body.lieu, 120), message: t(body.message, 4000), page: t(body.page, 200), sid: t(body.session_id, 60) };
+        if (!d.nom || (!d.email && !d.telephone)) return json({ ok: false, error: "Indiquez votre nom et un email ou un téléphone." }, 400, origin);
+        if (d.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)) return json({ ok: false, error: "L'adresse email semble incomplète." }, 400, origin);
+        const cf = request.cf || {}; const vp = visitProfile(request, body, cf); const site = siteFromRequest(request, body);
+        const ipRaw = request.headers.get("CF-Connecting-IP") || "";
+        const ipHash = ipRaw ? [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ipRaw + "slp")))].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("") : null;
+        if (ipHash) {
+          const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM contact_requests WHERE ip_hash = ? AND cree_le >= datetime('now', '-1 hour')").bind(ipHash).first();
+          if (r && r.n >= 5) return json({ ok: false, error: "Trop d'envois d'un coup : appelez-nous au 06 31 94 96 53." }, 429, origin);
+        }
+        const ins = await env.DB.prepare(
+          "INSERT INTO contact_requests (site, nom, email, telephone, sujet, date_event, lieu, message, page_origine, session_id, city, network, device, ip_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        ).bind(site, d.nom, d.email || null, d.telephone || null, d.sujet || null, d.date_event || null, d.lieu || null, d.message || null, d.page || null, d.sid || null, cf.city || null, vp.network, vp.device, ipHash).run();
+        const id = ins.meta && ins.meta.last_row_id;
+        const esc = (x) => String(x || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+        const ligne = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#666">${k}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>` : "";
+        let mailOk = 0, mailErr = null;
+        try {
+          const resendKey = typeof env.RESEND_API_KEY?.get === "function" ? await env.RESEND_API_KEY.get() : env.RESEND_API_KEY;
+          if (!resendKey) throw new Error("clé Resend absente");
+          const r = await fetch("https://api.resend.com/emails", {
+            method: "POST", headers: { "Authorization": `Bearer ${resendKey}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "Site SLP <contact@soundlightprod.fr>", to: ["contact@soundlightprod.fr"], ...(d.email ? { reply_to: d.email } : {}),
+              subject: `Nouvelle demande : ${d.sujet || "Contact"} — ${d.nom}`,
+              html: `<p>Nouvelle demande reçue depuis le site (n°${id}).</p><table>${ligne("Nom", d.nom)}${ligne("Téléphone", d.telephone)}${ligne("Email", d.email)}${ligne("Sujet", d.sujet)}${ligne("Date", d.date_event)}${ligne("Lieu", d.lieu)}${ligne("Venu de", d.page)}${ligne("Ville (approx.)", cf.city)}</table><p style="white-space:pre-wrap;border-left:3px solid #ffb238;padding-left:10px">${esc(d.message)}</p><p style="color:#666">Répondre à ce mail écrit directement au client${d.email ? "" : " (pas d'email : rappelez-le au téléphone)"}.</p>`,
+            }),
+          });
+          if (r.ok) mailOk = 1; else mailErr = `${r.status} ${(await r.text()).slice(0, 200)}`;
+        } catch (e) { mailErr = String(e.message || e).slice(0, 200); }
+        await env.DB.prepare("UPDATE contact_requests SET mail_envoye = ?, mail_erreur = ? WHERE id = ?").bind(mailOk, mailErr, id).run();
+        await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, 'envoi', ?, ?, ?, ?, ?, ?)")
+          .bind(site, d.page || null, d.sid || null, cf.city || null, vp.network, vp.device, vp.isBot).run();
+        return json({ ok: true }, 200, origin);
+      }
+
+      // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire, page, session_id } : clics vers le contact
+      if (url.pathname === "/api/contact-event" && request.method === "POST") {
+        const body = await request.json().catch(() => ({}));
+        const action = ["appel", "whatsapp", "mail", "formulaire"].includes(body.action) ? body.action : null;
+        if (!action) return json({ ok: false }, 200, origin);
+        const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
+        await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+          .bind(siteFromRequest(request, body), action, String(body.page || "").slice(0, 200) || null, String(body.session_id || "").slice(0, 60) || null, cf.city || null, vp.network, vp.device, vp.isBot).run();
         return json({ ok: true }, 200, origin);
       }
 
