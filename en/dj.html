@@ -31,6 +31,13 @@
   nav a:hover, nav a.current{color:var(--paper);}
   @media (max-width:960px){ nav ul{display:none;} }
 
+  .dj-net{padding-top:10px; padding-bottom:10px;}
+  .dj-net .box{background:var(--ink-2, rgba(255,255,255,.04)); border:1px solid rgba(255,255,255,.1); border-radius:22px; padding:34px 30px;}
+  .dj-net .label{display:block; margin-bottom:12px;}
+  .dj-net h2{font-size:clamp(1.6rem,3.5vw,2.3rem); margin-bottom:14px;}
+  .dj-net p{color:var(--muted); font-size:1.02rem; max-width:720px; line-height:1.65;}
+  .dj-tags{display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; padding:0; list-style:none;}
+  .dj-tags li{font-size:.9rem; font-weight:600; padding:8px 16px; border-radius:100px; border:1px solid rgba(255,255,255,.18);}
   .page-hero{position:relative; padding:110px 24px 70px; overflow:hidden;}
   .hero-blocks{position:absolute; inset:0; z-index:0;}
   .hb{position:absolute; opacity:0.4; filter:blur(2px);}
@@ -262,6 +269,17 @@
     <span class="label">Type of show</span>
     <h1>DJ</h1>
     <p>Entertainer DJs who get every generation dancing: dance parties, weddings, birthdays and family celebrations.</p>
+  </div>
+</section>
+
+<section class="dj-net">
+  <div class="wrap">
+    <div class="box">
+      <span class="label">All over France</span>
+      <h2>Hand-picked DJs near you</h2>
+      <p>We have selected DJs all over France: wherever your event takes place, we offer you a trusted DJ close by, with one single contact from the quote to the big day.</p>
+      <ul class="dj-tags"><li>Private parties</li><li>Entertainment</li><li>Weddings</li><li>Birthdays</li><li>Concerts</li></ul>
+    </div>
   </div>
 </section>
 
