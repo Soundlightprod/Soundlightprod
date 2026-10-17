@@ -260,7 +260,7 @@
   .mt-notes li{display:flex; gap:10px; line-height:1.5; font-size:.95rem;}
   .mt-notes li::before{content:""; flex:none; width:.55rem; height:.55rem; border-radius:50%; background:var(--amber); margin-top:.5rem;}
   .mt-notes li:nth-child(2)::before{background:var(--blue);} .mt-notes li:nth-child(3)::before{background:var(--violet);}
-  .mt-sky{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:14px 0;}
+  .mt-sky{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin:14px 0;}
   .mt-site{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:16px 18px; display:grid; grid-template-columns:1fr auto; gap:6px 12px;}
   .mt-site h3{margin:0;} .mt-site .sky{color:var(--muted); font-size:.8rem;}
   .mt-site svg{width:58px; height:58px; grid-row:span 2;}
@@ -284,6 +284,10 @@
   .mt-todo li{display:grid; grid-template-columns:2rem 1fr; gap:8px; background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:12px 14px; counter-increment:todo; line-height:1.45;}
   .mt-todo li::before{content:counter(todo); font-family:'Space Grotesk',sans-serif; font-size:1.3rem; color:var(--amber); line-height:1;}
   .mt-star{color:var(--amber);}
+  .mt-who{display:grid; gap:8px;}
+  .mt-who .it{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:10px 14px; line-height:1.45;}
+  .mt-who .it b{font-family:'Space Grotesk',sans-serif;} .mt-who .it .m{color:var(--muted); font-size:.8rem;} .mt-who .it .p{font-size:.86rem; margin-top:3px;}
+  .mt-full{white-space:pre-wrap; line-height:1.55; font-size:.92rem; margin:10px 0 0;}
   .mt-imp{display:inline-block; height:7px; border-radius:99px; background:var(--blue); margin-right:6px; vertical-align:middle;}
   @media (prefers-reduced-motion: no-preference){ .mt-rays{transform-origin:32px 32px; animation:mtSpin 24s linear infinite;} @keyframes mtSpin{to{transform:rotate(360deg);}} }
   @media (max-width:980px){ .mt-sky{grid-template-columns:1fr;} .mt-g{grid-template-columns:1fr 1fr;} }
@@ -753,12 +757,18 @@
     <div class="mt-head">
       <div>
         <h2 id="mtTitre" style="margin:0;">Météo du jour</h2>
-        <p class="vz-sub" id="mtSousTitre">Le rapport du jour, la météo des sites, Google et les mails Brevo. Rapport mis à jour vers 7h50 et 19h50.</p>
+        <p class="vz-sub" id="mtSousTitre">Le rapport du jour, la météo des sites, Google, les mails Brevo et YouTube. Rapport mis à jour vers 7h50 et 19h50.</p>
       </div>
       <button class="btn-outline" onclick="loadMeteo()">↻ Actualiser</button>
     </div>
     <div class="vz-card"><ul class="mt-notes" id="mtResume"><li>Chargement…</li></ul></div>
+    <details class="vz-more" id="mtFullWrap" style="display:none;"><summary>Lire le rapport complet</summary><div class="vz-card"><p class="mt-full" id="mtFull"></p></div></details>
     <div class="mt-sky" id="mtSky"></div>
+    <p class="vz-note" id="mtTests" style="display:none; margin:0 0 10px;"></p>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Visiteurs à suivre</h3><span class="vz-note">hier et aujourd'hui · 3 pages ou plus · possibles prospects</span></div>
+      <div class="mt-who" id="mtProspects"></div>
+    </div>
 
     <div style="height:28px"></div>
     <div class="vz-head">
@@ -905,7 +915,16 @@
 
     <h2>Mails Brevo</h2>
     <p class="vz-sub">Ouvertures automatiques Apple et clics des robots antispam retirés. Chiffres relevés à chaque rapport.</p>
+    <p class="vz-note" id="mtMails" style="margin:6px 0 0;"></p>
     <div class="vz-grid2" id="mtBrevo" style="margin-top:12px;"></div>
+
+    <h2>YouTube</h2>
+    <p class="vz-sub" id="mtYtReleve"></p>
+    <div class="mt-figs" id="mtYtFigs" style="margin:10px 0 14px;"></div>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Vidéos</h3><span class="vz-note">vues YouTube toutes provenances · clics depuis les mails (robots possibles) · lectures sur le site (7 j)</span></div>
+      <div style="overflow-x:auto;"><table><thead><tr><th>Vidéo</th><th style="text-align:right">Vues</th><th style="text-align:right">+ hier</th><th style="text-align:right">+ 7 j</th><th style="text-align:right">Clics mails</th><th style="text-align:right">Lectures site</th></tr></thead><tbody id="mtYtTable"></tbody></table></div>
+    </div>
 
     <h2>À faire</h2>
     <ol class="mt-todo" id="mtTodo"></ol>
@@ -1005,8 +1024,9 @@
       card.append(head, mtIcon(kind));
       const figs = mtEl('div', 'mt-figs');
       const fig = (v, lab, extra) => { const f = mtEl('div', 'mt-fig'); f.append(mtEl('b', null, mtFmt(v)), mtEl('span', null, lab)); if (extra) f.appendChild(extra); figs.appendChild(f); };
-      fig(r.aujourdhui, "aujourd'hui");
-      fig(r.hier, 'hier');
+      fig(r.aujourdhui, "aujourd'hui", mtEl('span', 'mt-delta mt-flat', `${mtFmt(r.pages_aujourdhui || 0)} pages`));
+      const dh = r.avant_hier === undefined ? null : r.hier - r.avant_hier;
+      fig(r.hier, 'hier', mtEl('span', 'mt-delta ' + (dh > 0 ? 'mt-up' : dh < 0 ? 'mt-down' : 'mt-flat'), `${mtFmt(r.pages_hier || 0)} pages · veille ${mtFmt(r.avant_hier)}`));
       let d = null;
       if (ev !== null){ const cls = ev > 0.02 ? 'mt-up' : ev < -0.02 ? 'mt-down' : 'mt-flat'; d = mtEl('span', 'mt-delta ' + cls, (ev > 0.02 ? '↗ +' : ev < -0.02 ? '↘ ' : '= ') + Math.round(ev * 100) + ' % vs sem. d’avant'); }
       fig(r.sept_jours, '7 derniers jours', d);
@@ -1023,7 +1043,7 @@
       relTxt.textContent = rel.ok ? `Dernier relevé automatique : ${when}.` : `⚠️ Le relevé du ${when} a échoué : ${rel.message || 'raison inconnue'}. Vérifie la tâche « Search Console — relevé » dans l’onglet Actions de GitHub.`;
     }
     const box = document.getElementById('mtGoogleSites'); box.replaceChildren();
-    ['slp', 'bmb', 'store'].forEach((s) => {
+    ['slp', 'bmb', 'csa', 'store'].forEach((s) => {
       const jours = g.jours.filter((j) => j.site === s);
       const last28 = jours.slice(-28);
       const clics = last28.reduce((a, j) => a + j.clics, 0), imp = last28.reduce((a, j) => a + j.impressions, 0);
@@ -1054,9 +1074,9 @@
     mtChart = new Chart(document.getElementById('mtGoogleChart'), {
       type: 'bar',
       data: { labels: days.map((d) => new Date(d + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'short' })),
-        datasets: ['slp', 'bmb', 'store'].map((s) => ({ label: MT_SITES[s].nom, data: days.map((d) => val(s, d, 'impressions')), backgroundColor: MT_SITES[s].c, borderRadius: 3, stack: 'imp' })) },
+        datasets: ['slp', 'bmb', 'csa', 'store'].map((s) => ({ label: MT_SITES[s].nom, data: days.map((d) => val(s, d, 'impressions')), backgroundColor: MT_SITES[s].c, borderRadius: 3, stack: 'imp' })) },
       options: { maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:'#9a93a6' } },
-          tooltip:{ callbacks:{ afterLabel:(ctx) => `${val(['slp','bmb','store'][ctx.datasetIndex], days[ctx.dataIndex], 'clics')} clic(s)` } } },
+          tooltip:{ callbacks:{ afterLabel:(ctx) => `${val(['slp','bmb','csa','store'][ctx.datasetIndex], days[ctx.dataIndex], 'clics')} clic(s)` } } },
         scales:{ x:{ stacked:true, ticks:{ color:'#9a93a6', maxRotation:0, autoSkipPadding:12 }, grid:{ display:false } }, y:{ stacked:true, ticks:{ color:'#9a93a6', precision:0 }, grid:{ color:'rgba(255,255,255,.06)' } } } }
     });
 
@@ -1075,10 +1095,12 @@
       tr.append(mtEl('td', null, s2(r.site)), q, imp, cl, po); tb.appendChild(tr);
     });
     if (!rows.length) tb.appendChild(Object.assign(mtEl('tr'), { innerHTML: '<td colspan="5" class="empty">Pas encore de recherches relevées.</td>' }));
-    function s2(s){ return s === 'slp' ? 'SLP' : s === 'bmb' ? 'BMB' : s; }
+    function s2(s){ return s === 'slp' ? 'SLP' : s === 'bmb' ? 'BMB' : s === 'csa' ? 'CSA' : s; }
   }
 
-  function mtRenderBrevo(camps, mails){
+  function mtRenderBrevo(camps, mails, liens, titres){
+    const tot = (mails || []).reduce((a, m) => a + m.visiteurs, 0);
+    document.getElementById('mtMails').textContent = `Vraies visites sur le site venues des mails : ${mtFmt(tot)} sur les 14 derniers jours` + (mails && mails.length ? ` (dernière le ${mtDay(mails[mails.length - 1].jour)}).` : '.');
     const box = document.getElementById('mtBrevo'); box.replaceChildren();
     if (!camps.length){ box.appendChild(mtEl('p', 'empty', 'Aucune campagne relevée pour l’instant.')); return; }
     camps.forEach((c) => {
@@ -1094,11 +1116,74 @@
         r.append(mtEl('span', null, l), t, mtEl('span', 'v', mtFmt(v))); card.appendChild(r);
       });
       const pills = mtEl('div', 'mt-pills');
-      const tInv = c.envoyes ? c.invalides / c.envoyes : null, tDes = c.delivres ? c.desinscrits / c.delivres : null;
-      pills.append(mtEl('span', 'mt-pill', 'ouverture réelle ' + mtPct(c.delivres ? vraies / c.delivres : null)), mtEl('span', 'mt-pill ' + (tInv > 0.02 ? 'bad' : ''), 'adresses invalides ' + mtPct(tInv)), mtEl('span', 'mt-pill ' + (tDes > 0.01 ? 'bad' : ''), 'désinscrits ' + mtPct(tDes)));
+      const tInv = c.envoyes ? c.invalides / c.envoyes : null, tDes = c.delivres ? c.desinscrits / c.delivres : null, tSoft = c.envoyes ? (c.refus_temporaires || 0) / c.envoyes : null;
+      pills.append(mtEl('span', 'mt-pill', 'ouverture réelle ' + mtPct(c.delivres ? vraies / c.delivres : null)), mtEl('span', 'mt-pill ' + (tInv > 0.02 ? 'bad' : ''), 'adresses invalides ' + mtPct(tInv)), mtEl('span', 'mt-pill ' + (tSoft > 0.1 ? 'bad' : ''), `refus temporaires ${mtFmt(c.refus_temporaires || 0)} (${mtPct(tSoft)})`), mtEl('span', 'mt-pill ' + (tDes > 0.01 ? 'bad' : ''), 'désinscrits ' + mtPct(tDes)));
       card.appendChild(pills);
+      const ls = (liens || []).filter((l) => l.campagne_id === c.id);
+      if (ls.length){
+        const yt = ls.filter((l) => l.type === 'youtube'), site = ls.filter((l) => l.type !== 'youtube');
+        const nYt = yt.reduce((a, l) => a + l.clics, 0), nSite = site.reduce((a, l) => a + l.clics, 0);
+        const top = yt[0] ? (titres[yt[0].video_id] || yt[0].video_id).split(/ [–|-] /)[0] : '';
+        const page = (u) => { try { return new URL(u).pathname.replace(/^\//, '').replace(/\.html$/, '') || 'accueil'; } catch (_) { return u; } };
+        card.appendChild(mtEl('p', 'vz-foot', `Clics par lien : ${mtFmt(nYt)} vers YouTube` + (top ? ` (surtout ${top})` : '') + ` · ${mtFmt(nSite)} vers le site` + (site.length ? ` (${site.map((l) => page(l.url) + (l.clics > 1 ? ' ×' + l.clics : '')).join(', ')})` : '') + '. Robots de messagerie possibles.'));
+      }
       card.appendChild(mtEl('p', 'vz-foot', `${mtFmt(c.ouvertures_apple)} ouvertures automatiques Apple retirées · ${mtFmt(c.cliqueurs_robots)} cliqueurs selon Brevo, robots compris` + (c.restants ? ` · ${mtFmt(c.restants)} contacts pas encore servis` : '')));
       box.appendChild(card);
+    });
+  }
+
+  function mtRenderProspects(list, sites){
+    const tests = (sites || []).reduce((a, r) => a + (r.tests || 0), 0);
+    const tn = document.getElementById('mtTests');
+    tn.style.display = tests ? '' : 'none';
+    tn.textContent = tests ? `${tests} visite(s) de test depuis ton PC (Pessac, Free) retirée(s) des chiffres depuis hier.` : '';
+    const box = document.getElementById('mtProspects'); box.replaceChildren();
+    if (!list || !list.length){ box.appendChild(mtEl('p', 'empty', 'Personne n’a vu 3 pages ou plus depuis hier.')); return; }
+    const src = (r) => !r ? 'accès direct' : /google/.test(r) ? 'Google' : /^emailing-sendinblue|sendibm|em\.soundlightprod/.test(r) ? 'mail Brevo' : /facebook/.test(r) ? 'Facebook' : /instagram/.test(r) ? 'Instagram' : r;
+    list.forEach((p) => {
+      const it = mtEl('div', 'it');
+      const quand = new Date(p.debut.replace(' ', 'T') + 'Z').toLocaleString('fr-FR', { timeZone:'Europe/Paris', weekday:'short', hour:'2-digit', minute:'2-digit' });
+      const l1 = mtEl('div'); l1.append(mtEl('b', null, `${p.ville || 'Ville inconnue'}`), document.createTextNode(` · ${p.pages} pages`));
+      const l2 = mtEl('div', 'm', [quand, (p.sites || '').split(',').map((x) => MT_SITES[x] ? MT_SITES[x].nom : x).join(' + '), p.appareil, p.reseau, src(p.provenance)].filter(Boolean).join(' · '));
+      it.append(l1, l2, mtEl('div', 'p', p.parcours || ''));
+      box.appendChild(it);
+    });
+  }
+
+  function mtRenderYoutube(y, liens){
+    y = y || { videos:[], stats:[], site:[] };
+    const rel = document.getElementById('mtYtReleve');
+    if (!y.releve) rel.textContent = 'Pas encore de relevé YouTube : la tâche GitHub « YouTube — relevé » n’est pas encore branchée (secret YT_API_KEY).';
+    else {
+      const when = new Date(y.releve.fait_le).toLocaleString('fr-FR', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+      rel.textContent = y.releve.ok ? `Dernier relevé automatique : ${when}.` : `⚠️ Le relevé du ${when} a échoué : ${y.releve.message || 'raison inconnue'}.`;
+    }
+    const jours = [...new Set(y.stats.map((s) => s.jour))].sort();
+    const last = jours[jours.length - 1];
+    const vuesAu = (id, j) => { const r = y.stats.filter((s) => s.video_id === id && s.jour <= j).pop(); return r ? r.vues : null; };
+    const dayBefore = (d, n) => { const x = new Date(d + 'T12:00:00'); x.setDate(x.getDate() - n); return x.toISOString().slice(0, 10); };
+    const jHier = last ? jours.filter((j) => j <= dayBefore(last, 1)).pop() : null;
+    const j7 = last ? jours.filter((j) => j <= dayBefore(last, 7)).pop() || jours[0] : null;
+    const clicsMail = {}; (liens || []).filter((l) => l.type === 'youtube').forEach((l) => { clicsMail[l.video_id] = (clicsMail[l.video_id] || 0) + l.clics; });
+    const lectSite = {}; (y.site || []).forEach((s) => { lectSite[s.video_id] = (lectSite[s.video_id] || { l:0, b:0 }); lectSite[s.video_id].l += s.lectures; lectSite[s.video_id].b += s.jusqu_au_bout; });
+    const rows = y.videos.map((v) => {
+      const vues = last ? vuesAu(v.video_id, last) : null;
+      const g1 = jHier && vues !== null && vuesAu(v.video_id, jHier) !== null ? vues - vuesAu(v.video_id, jHier) : null;
+      const g7 = j7 && j7 !== last && vues !== null && vuesAu(v.video_id, j7) !== null ? vues - vuesAu(v.video_id, j7) : null;
+      return { v, vues, g1, g7, mail: clicsMail[v.video_id] || 0, site: lectSite[v.video_id] };
+    }).sort((a, b) => (b.g7 || 0) - (a.g7 || 0) || (b.vues || 0) - (a.vues || 0));
+    const sum = (k) => rows.reduce((a, r) => a + (r[k] || 0), 0);
+    const figs = document.getElementById('mtYtFigs'); figs.replaceChildren();
+    const lectures = Object.values(lectSite).reduce((a, s) => a + s.l, 0), bout = Object.values(lectSite).reduce((a, s) => a + s.b, 0);
+    [[sum('vues'), 'vues au total'], [jHier ? sum('g1') : null, 'vues gagnées hier'], [j7 && j7 !== last ? sum('g7') : null, 'vues gagnées (7 j)'], [sum('mail'), 'clics YouTube des mails'], [lectures, `lectures sur le site (7 j)${lectures ? ` · ${bout} jusqu’au bout` : ''}`]].forEach(([v, l]) => { const f = mtEl('div', 'mt-fig'); f.append(mtEl('b', null, mtFmt(v)), mtEl('span', null, l)); figs.appendChild(f); });
+    const tb = document.getElementById('mtYtTable'); tb.replaceChildren();
+    if (!rows.length){ tb.appendChild(Object.assign(mtEl('tr'), { innerHTML: '<td colspan="6" class="empty">Pas encore de vidéos relevées.</td>' })); return; }
+    const num = (v, up) => { const td = mtEl('td', up && v > 0 ? 'mt-up' : null, v === null ? '—' : (up && v > 0 ? '+' : '') + mtFmt(v)); td.style.textAlign = 'right'; return td; };
+    rows.forEach((r) => {
+      const tr = mtEl('tr');
+      const t = mtEl('td'); const a = mtEl('a', null, r.v.titre || r.v.video_id); a.href = 'https://www.youtube.com/watch?v=' + r.v.video_id; a.target = '_blank'; a.rel = 'noopener'; a.style.color = 'inherit'; t.appendChild(a);
+      tr.append(t, num(r.vues), num(r.g1, true), num(r.g7, true), num(r.mail), num(r.site ? r.site.l : 0));
+      tb.appendChild(tr);
     });
   }
 
@@ -1120,9 +1205,17 @@
       const ul = document.getElementById('mtResume'); ul.replaceChildren(...(resume.length ? resume.map((t) => mtEl('li', null, t)) : [mtEl('li', null, 'Le premier rapport arrivera vers 7h50.')]));
       const ol = document.getElementById('mtTodo'); ol.replaceChildren(...actions.map((t) => mtEl('li', null, t)));
       if (!actions.length) ol.appendChild(mtEl('p', 'empty', 'Rien à faire pour l’instant.'));
-      mtRenderSites(d.sites || []);
-      mtRenderGoogle(d.google);
-      mtRenderBrevo(d.brevo || [], d.mails || []);
+      const full = rap && rap.texte ? rap.texte.replace(/\*\*/g, '') : '';
+      document.getElementById('mtFullWrap').style.display = full ? '' : 'none';
+      document.getElementById('mtFull').textContent = full;
+      // chaque bloc s'affiche même si un autre plante
+      const essai = (f) => { try { f(); } catch (err) { console.error('Météo :', err); } };
+      const titres = {}; ((d.youtube && d.youtube.videos) || []).forEach((v) => { titres[v.video_id] = v.titre; });
+      essai(() => mtRenderSites(d.sites || []));
+      essai(() => mtRenderProspects(d.prospects || [], d.sites || []));
+      essai(() => mtRenderGoogle(d.google));
+      essai(() => mtRenderBrevo(d.brevo || [], d.mails || [], d.liens || [], titres));
+      essai(() => mtRenderYoutube(d.youtube, d.liens || []));
     } catch (e) {
       document.getElementById('mtResume').replaceChildren(mtEl('li', null, 'Impossible de charger la météo : ' + e.message));
     }

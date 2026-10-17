@@ -411,18 +411,27 @@ async function isAdminForMeteo(request, env) {
 // Heure de Paris pour SQLite (heure d'été jusqu'au 25/10/2026, d'hiver ensuite ; à revoir le 28/03/2027)
 const PARIS_OFFSET = (col) => `CASE WHEN ${col} >= '2026-10-25 01:00:00' AND ${col} < '2027-03-28 01:00:00' THEN '+1 hours' WHEN ${col} >= '2027-10-31 01:00:00' THEN '+1 hours' ELSE '+2 hours' END`;
 
+// Tests de Nj : son PC (Free SAS, Pessac, ordinateur) ; tout le reste est un vrai visiteur
+const NOT_TEST = "NOT (COALESCE(city,'') = 'Pessac' AND COALESCE(network,'') LIKE '%Free SAS%' AND COALESCE(device,'') = 'Ordinateur')";
+const MAIL_REF = "(referrer LIKE 'emailing-sendinblue%' OR referrer LIKE '%sendibm%' OR referrer LIKE '%em.soundlightprod%')";
+
 async function meteoData(env) {
   const q = async (sql, ...params) => (await env.DB.prepare(sql).bind(...params).all()).results || [];
+  const safe = async (sql) => { try { return await q(sql); } catch (e) { return []; } };
   const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
-  const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails] = await Promise.all([
-    q("SELECT cree_le, moment, titre, resume_json, actions_json FROM rapports ORDER BY id DESC LIMIT 1"),
+  const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, videoSite] = await Promise.all([
+    q("SELECT cree_le, moment, titre, resume_json, actions_json, texte FROM rapports ORDER BY id DESC LIMIT 1"),
     q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique .store')),
-       v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
+       v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, ${NOT_TEST} AS vrai FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
        SELECT s.site, s.nom,
-         COUNT(DISTINCT CASE WHEN v.jour = t.today THEN v.session_id END) AS aujourdhui,
-         COUNT(DISTINCT CASE WHEN v.jour = date(t.today, '-1 day') THEN v.session_id END) AS hier,
-         COUNT(DISTINCT CASE WHEN v.jour BETWEEN date(t.today, '-7 day') AND date(t.today, '-1 day') THEN v.session_id END) AS sept_jours,
-         COUNT(DISTINCT CASE WHEN v.jour BETWEEN date(t.today, '-14 day') AND date(t.today, '-8 day') THEN v.session_id END) AS sept_jours_avant
+         COUNT(DISTINCT CASE WHEN v.vrai AND v.jour = t.today THEN v.session_id END) AS aujourdhui,
+         SUM(CASE WHEN v.vrai AND v.jour = t.today THEN 1 ELSE 0 END) AS pages_aujourdhui,
+         COUNT(DISTINCT CASE WHEN v.vrai AND v.jour = date(t.today, '-1 day') THEN v.session_id END) AS hier,
+         SUM(CASE WHEN v.vrai AND v.jour = date(t.today, '-1 day') THEN 1 ELSE 0 END) AS pages_hier,
+         COUNT(DISTINCT CASE WHEN v.vrai AND v.jour = date(t.today, '-2 day') THEN v.session_id END) AS avant_hier,
+         COUNT(DISTINCT CASE WHEN v.vrai AND v.jour BETWEEN date(t.today, '-7 day') AND date(t.today, '-1 day') THEN v.session_id END) AS sept_jours,
+         COUNT(DISTINCT CASE WHEN v.vrai AND v.jour BETWEEN date(t.today, '-14 day') AND date(t.today, '-8 day') THEN v.session_id END) AS sept_jours_avant,
+         COUNT(DISTINCT CASE WHEN NOT v.vrai AND v.jour >= date(t.today, '-1 day') THEN v.session_id END) AS tests
        FROM s CROSS JOIN t LEFT JOIN v ON v.site = s.site GROUP BY s.site, s.nom, t.today`),
     q("SELECT site, jour, clics, impressions, position FROM gsc_jours WHERE jour >= date('now', '-30 days') ORDER BY jour, site"),
     q("SELECT fait_le, ok, message FROM gsc_releves ORDER BY id DESC LIMIT 1"),
@@ -440,9 +449,25 @@ async function meteoData(env) {
        FROM gsc_index GROUP BY site, releve ORDER BY releve`),
     q("SELECT * FROM brevo_campagnes WHERE envoyes > 0 ORDER BY date_envoi DESC, id DESC LIMIT 6"),
     q(`SELECT date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, COUNT(DISTINCT session_id) AS visiteurs FROM page_visits
-       WHERE is_bot = 0 AND (referrer LIKE 'emailing-sendinblue%' OR referrer LIKE '%sendibm%' OR referrer LIKE '%em.soundlightprod%') AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
+       WHERE is_bot = 0 AND ${MAIL_REF} AND ${NOT_TEST} AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
+    // Visiteurs à suivre : hier et aujourd'hui, au moins 3 pages vues (tous sites confondus)
+    q(`WITH t AS (SELECT ${today} AS today),
+       v AS (SELECT session_id, site, artist_slug, visited_at, city, region, network, device, referrer, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour
+             FROM page_visits WHERE is_bot = 0 AND ${NOT_TEST} AND visited_at >= datetime('now', '-3 days') ORDER BY visited_at)
+       -- ville, réseau, appareil et provenance = ceux de la première page vue (colonnes « nues » de SQLite liées au MIN)
+       SELECT session_id, MIN(visited_at) AS debut, GROUP_CONCAT(DISTINCT site) AS sites, city AS ville, region,
+         network AS reseau, device AS appareil, referrer AS provenance, COUNT(*) AS pages, GROUP_CONCAT(artist_slug, ' › ') AS parcours
+       FROM v, t WHERE v.jour >= date(t.today, '-1 day') GROUP BY session_id HAVING COUNT(*) >= 3 ORDER BY pages DESC, debut DESC LIMIT 12`),
+    safe("SELECT campagne_id, url, type, video_id, clics FROM brevo_liens WHERE clics > 0 ORDER BY campagne_id, clics DESC"),
+    safe("SELECT fait_le, ok, message FROM yt_releves ORDER BY fait_le DESC LIMIT 1"),
+    safe("SELECT video_id, titre, origine FROM yt_videos"),
+    safe("SELECT video_id, jour, vues FROM yt_stats WHERE jour >= date('now', '-9 days') ORDER BY jour"),
+    safe(`SELECT video_id, page, COUNT(DISTINCT CASE WHEN event = 'play' THEN session_id END) AS lectures,
+         COUNT(DISTINCT CASE WHEN event IN ('75', 'fin') THEN session_id END) AS jusqu_au_bout
+       FROM video_events WHERE is_bot = 0 AND ${NOT_TEST} AND created_at >= datetime('now', '-7 days') GROUP BY video_id, page ORDER BY lectures DESC`),
   ]);
-  return { rapport: rapport[0] || null, sites, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, mails };
+  return { rapport: rapport[0] || null, sites, prospects, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
+    youtube: { releve: ytReleve[0] || null, videos: ytVideos, stats: ytStats, site: videoSite } };
 }
 
 export default {
