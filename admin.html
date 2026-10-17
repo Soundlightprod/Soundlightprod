@@ -1165,9 +1165,10 @@
     c = c || { clics:[], demandes:[] };
     const n = (a) => { const r = c.clics.find((x) => x.action === a); return r ? r.n : 0; };
     const figs = document.getElementById('mtContactFigs'); figs.replaceChildren();
-    [['envoi', 'demandes envoyées'], ['appel', 'clics Appeler'], ['whatsapp', 'clics WhatsApp'], ['mail', 'clics mail'], ['formulaire', 'formulaires commencés']].forEach(([a, l]) => {
+    [['envoi', 'demandes envoyées'], ['devis', 'clics « Demander un devis »'], ['appel', 'clics Appeler'], ['whatsapp', 'clics WhatsApp'], ['mail', 'clics mail'], ['formulaire', 'formulaires commencés']].forEach(([a, l]) => {
       const f = mtEl('div', 'mt-fig'); f.append(mtEl('b', null, mtFmt(n(a))), mtEl('span', null, l)); figs.appendChild(f);
     });
+    if (c.pages && c.pages.length) figs.appendChild(mtEl('p', 'vz-note', 'Pages qui font le plus contacter : ' + c.pages.map((p) => `${p.page || 'contact'} (${p.n})`).join(', ')));
     const box = document.getElementById('mtContactList'); box.replaceChildren();
     if (!c.demandes.length){ box.appendChild(mtEl('p', 'empty', 'Aucune demande reçue par le formulaire pour l’instant.')); return; }
     c.demandes.forEach((d) => {

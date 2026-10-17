@@ -419,7 +419,7 @@ async function meteoData(env) {
   const q = async (sql, ...params) => (await env.DB.prepare(sql).bind(...params).all()).results || [];
   const safe = async (sql) => { try { return await q(sql); } catch (e) { return []; } };
   const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
-  const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, contactClics, contactDemandes, videoSite] = await Promise.all([
+  const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, contactClics, contactPages, contactDemandes, videoSite] = await Promise.all([
     q("SELECT cree_le, moment, titre, resume_json, actions_json, texte FROM rapports ORDER BY id DESC LIMIT 1"),
     q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique .store')),
        v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, ${NOT_TEST} AS vrai FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
@@ -464,12 +464,14 @@ async function meteoData(env) {
     safe("SELECT video_id, jour, vues FROM yt_stats WHERE jour >= date('now', '-9 days') ORDER BY jour"),
     safe(`SELECT action, COUNT(DISTINCT COALESCE(session_id, id)) AS n, SUM(cree_le >= datetime('now', '-1 day')) AS n24 FROM contact_events
        WHERE is_bot = 0 AND ${NOT_TEST} AND cree_le >= datetime('now', '-7 days') GROUP BY action`),
+    safe(`SELECT page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
+       WHERE is_bot = 0 AND ${NOT_TEST} AND cree_le >= datetime('now', '-7 days') AND action IN ('devis', 'appel', 'whatsapp', 'mail', 'envoi') GROUP BY page ORDER BY n DESC LIMIT 8`),
     safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests ORDER BY id DESC LIMIT 10"),
     safe(`SELECT video_id, page, COUNT(DISTINCT CASE WHEN event = 'play' THEN session_id END) AS lectures,
          COUNT(DISTINCT CASE WHEN event IN ('75', 'fin') THEN session_id END) AS jusqu_au_bout
        FROM video_events WHERE is_bot = 0 AND ${NOT_TEST} AND created_at >= datetime('now', '-7 days') GROUP BY video_id, page ORDER BY lectures DESC`),
   ]);
-  return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, demandes: contactDemandes }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
+  return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, pages: contactPages, demandes: contactDemandes }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
     youtube: { releve: ytReleve[0] || null, videos: ytVideos, stats: ytStats, site: videoSite } };
 }
 
@@ -1110,10 +1112,10 @@ export default {
         return json({ ok: true }, 200, origin);
       }
 
-      // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire, page, session_id } : clics vers le contact
+      // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire|devis, page, session_id } : clics vers le contact
       if (url.pathname === "/api/contact-event" && request.method === "POST") {
         const body = await request.json().catch(() => ({}));
-        const action = ["appel", "whatsapp", "mail", "formulaire"].includes(body.action) ? body.action : null;
+        const action = ["appel", "whatsapp", "mail", "formulaire", "devis"].includes(body.action) ? body.action : null;
         if (!action) return json({ ok: false }, 200, origin);
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
         await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
