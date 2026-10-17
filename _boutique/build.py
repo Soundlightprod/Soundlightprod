@@ -381,8 +381,10 @@ def update_boutique(products):
     itemlist = {'@context': 'https://schema.org', '@type': 'ItemList', 'name': 'Catalogue de la boutique SLP',
                 'itemListElement': [{'@type': 'ListItem', 'position': i, 'url': f"{SITE}/produits/{p['slug']}", 'name': p['name']}
                                     for i, p in enumerate(products, 1)]}
-    # La liste visible des références a été retirée (peu utile pour le visiteur) : on ne garde que les données structurées
-    block = ('<!-- refs:start (généré par _boutique/build.py) -->\n'
+    # Liste des références repliée par défaut (page épurée) : les liens restent dans le HTML pour que Google trouve toutes les fiches
+    block = ('<!-- refs:start (généré par _boutique/build.py) -->\n<section class="refs refs-fold">\n  <div class="wrap">\n'
+             f'    <details><summary>Toutes nos références ({len(products)})</summary>\n    <div class="refs-grid">'
+             + ''.join(groups) + '</div>\n    </details>\n  </div>\n</section>\n'
              '<script type="application/ld+json">' + json.dumps(store, ensure_ascii=False) + '</script>\n'
              '<script type="application/ld+json">' + json.dumps(itemlist, ensure_ascii=False) + '</script>\n<!-- refs:end -->')
     # Rayon Sonorisation masqué tant qu'il n'a aucun produit (le lien du menu reçoit l'attribut hidden)
