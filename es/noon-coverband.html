@@ -62,11 +62,8 @@
 
   .bio-wrap{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:44px; align-items:center;}
   @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr; text-align:center;} }
-  .logo-banner{background:var(--ink-2); border:1px solid var(--line); border-radius:20px; padding:24px; overflow:hidden; display:flex; justify-content:center;}
-  .logo-banner img{display:block; width:100%; max-width:340px; height:auto; border-radius:12px; margin:0 auto;}
-  .bio-text-full{max-width:820px; margin:0 auto;}
-  .bio-text-full p{color:var(--muted); font-size:1.02rem; margin-bottom:16px;}
-  .bio-text-full p:last-child{margin-bottom:0;}
+  .logo-frame{background:var(--ink-2); border:1px solid var(--line); border-radius:20px; padding:26px; display:flex; align-items:center; justify-content:center; aspect-ratio:1;}
+  .logo-frame img{max-width:100%; max-height:100%; object-fit:contain; border-radius:12px;}
   .bio-text p{color:var(--muted); font-size:1.02rem; margin-bottom:16px;}
   .bio-text p:last-child{margin-bottom:0;}
 
@@ -84,13 +81,15 @@
   .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
   .banner-photo .txt{font-size:0.82rem; font-weight:500;}
 
-  .photo-grid-flow{columns:3 220px; column-gap:14px;}
-  .photo-grid-flow img{width:100%; height:auto; display:block; border-radius:16px; margin:0 0 14px; break-inside:avoid;}
-  @media (max-width:700px){ .photo-grid-flow{columns:2 160px;} }
+  .photo-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:14px;}
+  @media (max-width:600px){ .photo-grid{grid-template-columns:1fr;} }
+  .photo-grid a{display:block; border-radius:14px; overflow:hidden; aspect-ratio:4/5; background:var(--ink-2); cursor:zoom-in;}
+  .photo-grid img{width:100%; height:100%; object-fit:cover; object-position:center 20%; display:block; transition:transform .4s ease;}
+  .photo-grid a:hover img{transform:scale(1.04);}
 
   .video-wrap{position:relative; width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);}
   .video-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
-  .video-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;}
+  .video-wrap + .video-wrap{margin-top:20px;}
 
   .venues-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;}
   .venue-card{background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:16px 20px; font-size:0.92rem; color:var(--paper);}
@@ -169,6 +168,11 @@
     header.menu-open nav li:last-child{border-bottom:0;}
     header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
   }
+  /* bio-wide */
+  .bio-wrap{align-items:stretch !important; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important; gap:56px !important;}
+  .bio-wrap .logo-frame{aspect-ratio:1; height:auto; align-self:center;}
+  .bio-text{align-self:center;}
+  @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr !important; gap:28px !important;} }
 </style>
 
 
@@ -201,7 +205,7 @@
     <nav>
       <ul>
         <li><a href="./">Inicio</a></li>
-        <li><a href="artistes">Artistas y espectáculos</a></li>
+        <li><a href="artistes" class="current">Artistas y espectáculos</a></li>
         <li><a href="son-lumiere">Servicios técnicos</a></li>
         <li><a href="agenda">Agenda</a></li>
         <li><a href="galerie">Galería</a></li>
@@ -243,19 +247,16 @@
 
 <section>
   <div class="wrap tight">
-    <div class="logo-banner">
-      <img src="/noon-coverband-new-logo.png" alt="NooN Coverband — Pop Funk Soul Music">
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap tight narrow">
-    <div class="bio-text-full">
-      <p>NooN Coverband nació hace tres años del encuentro de dos artistas: una cantante y un bajista. Con trayectorias musicales variadas (soul, reggae, afro y funk), unieron sus universos para ofrecer veladas memorables a su público.</p>
+    <div class="bio-wrap">
+      <div class="logo-frame">
+        <img src="noon-coverband-new-logo.png" alt="NooN Coverband — Pop Funk Soul Music">
+      </div>
+      <div class="bio-text">
+        <p>NooN Coverband nació hace tres años del encuentro de dos artistas: una cantante y un bajista. Con trayectorias musicales variadas (soul, reggae, afro y funk), unieron sus universos para ofrecer veladas memorables a su público.</p>
       <p>Su repertorio, pensado para adaptarse a cualquier ambiente, puede ser tan íntimo (vino de honor, recepción) como totalmente bailable. Cada actuación, de hasta dos horas y media sin pausa, empieza suave antes de ir subiendo de energía a lo largo de la noche.</p>
       <p>En lo musical: mucho pop internacional (Rihanna, Dua Lipa, The Weeknd, Justin Timberlake, Daft Punk), canción francesa (Rita Mitsouko, Niagara, Superbus, Juliette Armanet, -M-, Claudio Capéo) y clásicos disco/funk (Chic, Patrick Hernandez, Kool & The Gang, Michael Jackson, Jamiroquai). Un repertorio vivo, que se enriquece regularmente con nuevos temas.</p>
       <p>Tras cerca de ciento veinte conciertos en campings, bares, mercados locales y fiestas privadas, NooN Coverband se ha ganado un público fiel y numerosos socios que les renuevan regularmente su confianza.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -264,27 +265,29 @@
 <section>
   <div class="wrap tight narrow">
     <div class="section-head">
-      <span class="label">Vídeos</span>
-      <h2>Algunos fragmentos en directo</h2>
+      <span class="label">En vídeo</span>
+      <h2>NooN Coverband en directo</h2>
     </div>
-    <div class="video-grid">
-      <div class="video-wrap">
+    <div class="video-wrap">
         <iframe src="https://www.youtube-nocookie.com/embed/h1sqE5CJxX4?rel=0&modestbranding=1&iv_load_policy=3" title="NooN Coverband — Fragmento en directo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="video-wrap">
         <iframe src="https://www.youtube-nocookie.com/embed/lz2G_UvzbSM?rel=0&modestbranding=1&iv_load_policy=3" title="NooN Coverband — Fragmento en directo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
-    </div>
   </div>
 </section>
 
 <section>
-  <div class="wrap tight">
-    <div class="photo-grid-flow">
-      <img src="/noon-photo-1.jpg" alt="NooN Coverband, retrato de la cantante y el bajista">
-      <img src="/noon-photo-2.png" alt="NooN Coverband, el bajista en concierto">
-      <img src="/noon-photo-3.png" alt="NooN Coverband, la cantante en plena actuación">
-      <img src="/noon-photo-5.png" alt="NooN Coverband en concierto, blanco y negro">
+  <div class="wrap tight narrow">
+    <div class="section-head">
+      <span class="label">En imágenes</span>
+      <h2>El grupo</h2>
+    </div>
+    <div class="photo-grid">
+      <a href="/noon-photo-1.jpg"><img src="/noon-photo-1.jpg" alt="NooN Coverband, retrato de la cantante y el bajista" loading="lazy"></a>
+      <a href="/noon-photo-2.png"><img src="/noon-photo-2.png" alt="NooN Coverband, el bajista en concierto" loading="lazy"></a>
+      <a href="/noon-photo-3.png"><img src="/noon-photo-3.png" alt="NooN Coverband, la cantante en plena actuación" loading="lazy"></a>
+      <a href="/noon-photo-5.png"><img src="/noon-photo-5.png" alt="NooN Coverband en concierto, blanco y negro" loading="lazy"></a>
     </div>
   </div>
 </section>
@@ -293,7 +296,7 @@
   <div class="wrap tight">
     <div class="section-head">
       <span class="label">Donde han actuado</span>
-      <h2>Cerca de 120 conciertos a sus espaldas</h2>
+      <h2>Cerca de 120 conciertos</h2>
     </div>
     <div class="venues-grid">
       <div class="venue-card">Campings</div>
@@ -465,6 +468,11 @@
 })();
 </script>
 <!-- cta-contact:end -->
+<script>
+document.querySelectorAll('.photo-grid a').forEach(function(a){
+  a.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openLightbox(a.getAttribute('href')); });
+});
+</script>
 </body>
 <script>
 (function(){
