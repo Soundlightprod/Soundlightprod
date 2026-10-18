@@ -1124,6 +1124,39 @@ export default {
         return json({ ok: true }, 200, origin);
       }
 
+      // POST /api/agenda-visit — { artist_slug, action, session_id } : usage des agendas de groupes (compté à part des visites du site)
+      if (url.pathname === "/api/agenda-visit" && request.method === "POST") {
+        const body = await request.json().catch(() => ({}));
+        const action = ["ouverture", "connexion", "ajout", "suppression", "feuille"].includes(body.action) ? body.action : null;
+        const slug = String(body.artist_slug || "").slice(0, 80);
+        if (!action || !slug) return json({ ok: false }, 200, origin);
+        const known = await env.DB.prepare("SELECT 1 AS ok FROM artist_tokens WHERE artist_slug = ?").bind(slug).first();
+        if (!known) return json({ ok: false }, 200, origin);
+        const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
+        await env.DB.prepare("INSERT INTO agenda_visits (artist_slug, action, session_id, city, country, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+          .bind(slug, action, String(body.session_id || "").slice(0, 60) || null, cf.city || null, cf.country || null, vp.network, vp.device, vp.isBot).run();
+        return json({ ok: true }, 200, origin);
+      }
+
+      // GET /api/admin/agenda-usage — utilisation des agendas par groupe (admin)
+      if (url.pathname === "/api/admin/agenda-usage" && request.method === "GET") {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        const { results } = await env.DB.prepare(
+          `SELECT t.artist_slug AS groupe,
+             COUNT(DISTINCT CASE WHEN a.action = 'ouverture' AND a.visited_at >= datetime('now', '-7 days') THEN a.session_id END) AS ouvertures_7j,
+             COUNT(DISTINCT CASE WHEN a.action = 'ouverture' AND a.visited_at >= datetime('now', '-30 days') THEN a.session_id END) AS ouvertures_30j,
+             COUNT(DISTINCT CASE WHEN a.action = 'ouverture' THEN a.session_id END) AS ouvertures_total,
+             SUM(CASE WHEN a.action = 'connexion' AND a.visited_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END) AS connexions_30j,
+             SUM(CASE WHEN a.action = 'ajout' AND a.visited_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END) AS ajouts_30j,
+             SUM(CASE WHEN a.action = 'feuille' AND a.visited_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END) AS feuilles_30j,
+             MAX(a.visited_at) AS derniere
+           FROM artist_tokens t LEFT JOIN agenda_visits a ON a.artist_slug = t.artist_slug AND a.is_bot = 0
+             AND NOT (COALESCE(a.city,'') = 'Pessac' AND COALESCE(a.network,'') LIKE '%Free SAS%' AND COALESCE(a.device,'') = 'Ordinateur')
+           GROUP BY t.artist_slug ORDER BY ouvertures_30j DESC, derniere DESC`
+        ).all();
+        return json({ groupes: results }, 200, origin);
+      }
+
       // POST /api/track-visit — { artist_slug, session_id } : enregistre une visite (public, appelé
       // depuis chaque page). session_id (généré côté navigateur, une fois par onglet/session) permet
       // de reconstituer le parcours d'un même visiteur à travers plusieurs pages.

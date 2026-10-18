@@ -227,6 +227,15 @@
 <script>
   const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
   const ARTIST_SLUG = new URLSearchParams(location.search).get('artist');
+  // Usage de l'agenda (compté à part des visites du site). Pas compté depuis le navigateur où l'admin est connecté.
+  function trackAgenda(action){
+    try {
+      if (!ARTIST_SLUG || localStorage.getItem('slp_admin_token') || localStorage.getItem('slp_notrack')) return;
+      let sid = sessionStorage.getItem('slp_visit_sid');
+      if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+      fetch(`${API_BASE}/api/agenda-visit`, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ artist_slug: ARTIST_SLUG, action, session_id: sid }), keepalive:true }).catch(function(){});
+    } catch(e){}
+  }
   let TOKEN = ARTIST_SLUG ? (localStorage.getItem('slp_band_token_' + ARTIST_SLUG) || sessionStorage.getItem('slp_band_token_' + ARTIST_SLUG)) : null;
   let entries = [];
   const ROADMAP_TYPES = ['concert', 'cabaret', 'dj', 'animation', 'karaoke'];
@@ -273,6 +282,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       TOKEN = data.token;
+      trackAgenda('connexion');
       if (document.getElementById('rememberMe').checked){
         localStorage.setItem('slp_band_token_' + ARTIST_SLUG, TOKEN);
         sessionStorage.removeItem('slp_band_token_' + ARTIST_SLUG);
@@ -498,6 +508,7 @@
   }
 
   async function openRoadmap(actuId){
+    trackAgenda('feuille');
     try {
       const res = await fetch(`${API_BASE}/api/band-agenda/roadmap?token=${encodeURIComponent(TOKEN)}&actu_id=${actuId}`);
       if (!res.ok){ alert('Feuille de route introuvable.'); return; }
@@ -524,6 +535,7 @@
       body: JSON.stringify({ token: TOKEN, start_date, end_date, label })
     });
     const data = await res.json();
+    trackAgenda('ajout');
     if (data.conflicts && data.conflicts.length){
       conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà prises et n'ont pas été modifiées : ${data.conflicts.join(', ')}.</div>`;
     }
@@ -536,9 +548,11 @@
   async function removeIndispo(id){
     if (!confirm('Supprimer cette indisponibilité ?')) return;
     await fetch(`${API_BASE}/api/band-agenda/${id}?token=${encodeURIComponent(TOKEN)}`, { method:'DELETE' });
+    trackAgenda('suppression');
     load();
   }
 
+  trackAgenda('ouverture');
   load();
 </script>
 </body>

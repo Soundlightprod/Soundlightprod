@@ -869,6 +869,11 @@
     </div>
 
 
+    <div class="vz-card" id="agendaUsageCard">
+      <div class="vz-card-h"><h3>Agendas des groupes</h3><span class="vz-note">compté à part, pas dans les visites du site · une ouverture = un visiteur par session</span></div>
+      <div style="overflow-x:auto;"><table class="vz-bt"><thead><tr><th>Groupe</th><th>Ouvert 7 j</th><th>Ouvert 30 j</th><th>Dates ajoutées 30 j</th><th>Feuilles de route 30 j</th><th>Dernière visite</th></tr></thead><tbody id="agendaUsageBody"></tbody></table></div>
+    </div>
+
     <div class="vz-card" id="vzNoTrack">
       <div class="vz-card-h"><h3>Ne pas compter mes propres visites</h3><span class="vz-note" id="vzNoTrackState"></span></div>
       <p class="vz-note" style="margin:0 0 10px;">À faire une fois sur chaque appareil (ordinateur, téléphone…) et chaque navigateur : ouvre ces 4 liens, tes visites ne seront plus enregistrées sur ces sites.</p>
@@ -2793,7 +2798,21 @@
     }
   }
 
+  async function loadAgendaUsage(){
+    try {
+      const res = await fetch(`/api/admin/agenda-usage`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      const tb = document.getElementById('agendaUsageBody'); if (!tb) return;
+      tb.innerHTML = (data.groupes || []).map(g => {
+        const nom = (typeof ARTIST_LABELS !== 'undefined' && ARTIST_LABELS[g.groupe]) || g.groupe;
+        const der = g.derniere ? parisDT(g.derniere).split(' ')[0].split('-').reverse().slice(0,2).join('/') + ' ' + (parisDT(g.derniere).split(' ')[1] || '').slice(0,5) : 'jamais';
+        return `<tr style="cursor:default"><td>${nom}</td><td>${g.ouvertures_7j || 0}</td><td>${g.ouvertures_30j || 0}</td><td>${g.ajouts_30j || 0}</td><td>${g.feuilles_30j || 0}</td><td>${der}</td></tr>`;
+      }).join('') || '<tr><td class="vz-note" style="cursor:default" colspan="6">Aucun groupe</td></tr>';
+    } catch(e){ /* silencieux */ }
+  }
+
   async function loadVisitsSummary(){
+    loadAgendaUsage();
     document.getElementById('visitsDetailBox').style.display = 'none';
     loadVisitsMap();
     loadVisitsBreakdown();
