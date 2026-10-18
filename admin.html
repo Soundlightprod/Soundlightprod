@@ -183,6 +183,18 @@
   @media (max-width:760px){
     body{padding:14px;}
     table{display:block; overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;}
+    /* Tableaux en cartes sur téléphone : une carte par ligne, libellé à gauche, valeur à droite */
+    table.m-cards{display:block; white-space:normal; overflow:visible;}
+    table.m-cards thead{display:none;}
+    table.m-cards tbody{display:block;}
+    table.m-cards tr{display:block; background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:8px 14px; margin-bottom:12px;}
+    table.m-cards td{display:flex; justify-content:space-between; align-items:center; gap:12px; border:0; padding:7px 0; text-align:right; word-break:break-word;}
+    table.m-cards td::before{content:attr(data-label); flex:none; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.66rem; text-transform:uppercase; text-align:left;}
+    table.m-cards td input[type=text]{min-width:0; flex:1;}
+    table.m-cards td.row-actions{flex-direction:column; align-items:stretch;}
+    table.m-cards td.row-actions::before{display:none;}
+    table.m-cards td[colspan]::before{display:none;}
+    table.m-cards td > button{width:100%;}
     .form-row{flex-direction:column; align-items:stretch;}
     .form-row > select, .form-row > input, .form-row > textarea, .form-row > .field-group, .form-row > button{width:100%;}
     .field-group{width:100%;}
@@ -736,7 +748,7 @@
   <div class="tab-content" id="tab-access">
     <h2>Accès agenda des groupes</h2>
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:16px;">Chaque groupe se connecte avec son propre mot de passe sur son lien dédié, pour consulter son agenda et ajouter ses propres indisponibilités (jamais de concert, jamais sur un autre artiste).</p>
-    <table id="tokenTable">
+    <table id="tokenTable" class="m-cards">
       <thead><tr><th>Artiste</th><th>Lien</th><th>Mot de passe</th><th>Actions</th></tr></thead>
       <tbody></tbody>
     </table>
@@ -756,7 +768,7 @@
   <div class="tab-content" id="tab-orders">
 
     <h2>Commandes boutique</h2>
-    <table id="orderTable">
+    <table id="orderTable" class="m-cards">
       <thead><tr><th>Statut</th><th>Client</th><th>Adresse de livraison</th><th>Articles</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead>
       <tbody></tbody>
     </table>
@@ -765,7 +777,7 @@
     <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
       <h2 style="margin-top:0;">Récap des stocks</h2>
       <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Le stock n'est jamais affiché aux clients — c'est ici la seule vue de tes quantités réelles.</p>
-      <table id="stockTable">
+      <table id="stockTable" class="m-cards">
         <thead><tr><th>Référence</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Public</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
@@ -1349,6 +1361,21 @@
       if (name === 'search' && typeof mtChart !== 'undefined' && mtChart) mtChart.resize();
     }, 60);
   }
+
+  // Libellés des colonnes pour l'affichage en cartes sur téléphone
+  (function(){
+    const tables = ['orderTable', 'stockTable', 'tokenTable'];
+    function label(){
+      tables.forEach(id => {
+        const t = document.getElementById(id); if (!t) return;
+        const ths = [...t.querySelectorAll('thead th')].map(th => th.textContent.trim());
+        t.querySelectorAll('tbody tr').forEach(tr => [...tr.children].forEach((td, i) => { if (td.dataset.label === undefined) td.dataset.label = ths[i] || ''; }));
+      });
+    }
+    let pending = false;
+    new MutationObserver(() => { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; label(); }); }).observe(document.documentElement, { childList:true, subtree:true });
+    document.addEventListener('DOMContentLoaded', label);
+  })();
 
   function togglePwdVisibility(){
     const pwd = document.getElementById('pwd');
