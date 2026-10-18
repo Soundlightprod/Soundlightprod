@@ -354,6 +354,7 @@
     <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">7. 🔑 Accès groupes</button>
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">8. 📦 Suivi des commandes</button>
     <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 🌤 Météo & visites</button>
+    <button class="tab-btn" id="tabBtn-devices" onclick="switchTab('devices')">10. 📱 Mes appareils</button>
   </div>
 
   <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
@@ -962,9 +963,25 @@
       <div class="vz-card-h"><h3>Vidéos</h3><span class="vz-note">vues YouTube toutes provenances · clics mails : robots possibles</span></div>
       <div class="mt-yt" id="mtYtTable"></div>
     </div>
+  </div>
 
+  <!-- ============ ONGLET 10 : MES APPAREILS (exclure mes visites) ============ -->
+  <div class="tab-content" id="tab-devices">
+    <h2>Mes appareils</h2>
+    <p class="vz-sub">Pour que tes propres visites ne soient pas comptées dans les stats. Ce navigateur-ci est déjà exclu automatiquement quand tu es dans l'admin.</p>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Exclure un autre appareil ou navigateur</h3></div>
+      <p class="vz-note" style="margin:0 0 12px;">À faire une seule fois sur chaque appareil (ordinateur, téléphone, tablette) et dans chaque navigateur utilisé : ouvre les 5 liens ci-dessous depuis cet appareil. Chaque site garde sa propre mémoire, d'où un lien par site. Les visites de cet appareil ne seront alors plus enregistrées.</p>
+      <div class="vz-seg">
+        <a class="period-btn" style="text-decoration:none;" href="https://soundlightprod.fr/?notrack=1" target="_blank" rel="noopener">soundlightprod.fr</a>
+        <a class="period-btn" style="text-decoration:none;" href="https://soundlightprod.com/en/?notrack=1" target="_blank" rel="noopener">soundlightprod.com</a>
+        <a class="period-btn" style="text-decoration:none;" href="https://bookmyband.fr/?notrack=1" target="_blank" rel="noopener">bookmyband.fr</a>
+        <a class="period-btn" style="text-decoration:none;" href="https://csanimations.fr/?notrack=1" target="_blank" rel="noopener">csanimations.fr</a>
+        <a class="period-btn" style="text-decoration:none;" href="https://soundlightprod.store/?notrack=1" target="_blank" rel="noopener">soundlightprod.store</a>
+      </div>
+      <p class="vz-note" style="margin:12px 0 0;">Pour recompter les visites d'un appareil, remplace <b>notrack=1</b> par <b>notrack=0</b> dans le lien. En plus, les visites de ton PC de Pessac (Free) sont toujours écartées des stats.</p>
     </div>
-
+  </div>
 </div>
 
 <!-- ============ MODAL : APERÇU / IMPRESSION FEUILLE DE ROUTE ============ -->
