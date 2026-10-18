@@ -785,7 +785,7 @@
     <div class="mt-sky" id="mtSky"></div>
     <p class="vz-note" id="mtTests" style="display:none; margin:0 0 10px;"></p>
     <div class="vz-card">
-      <div class="vz-card-h"><h3>Visiteurs à suivre (SLP)</h3><span class="vz-note">hier et aujourd'hui · 3 pages ou plus · possibles prospects</span></div>
+      <div class="vz-card-h"><h3>Visiteurs à suivre (SLP &amp; Book My Band)</h3><span class="vz-note">hier et aujourd'hui · 3 pages ou plus · possibles prospects</span></div>
       <div class="mt-who" id="mtProspects"></div>
     </div>
     <div class="vz-card">
@@ -1177,13 +1177,13 @@
   }
 
   function mtRenderProspects(list, sites){
-    list = (list || []).filter((p) => (p.sites || '').split(',').map((x) => x.trim()).includes('slp')); // uniquement les visiteurs passés par SLP
+    list = (list || []).filter((p) => (p.sites || '').split(',').map((x) => x.trim()).some((x) => x === 'slp' || x === 'bmb')); // visiteurs passés par SLP ou Book My Band
     const tests = (sites || []).reduce((a, r) => a + (r.tests || 0), 0);
     const tn = document.getElementById('mtTests');
     tn.style.display = tests ? '' : 'none';
     tn.textContent = tests ? `${tests} visite(s) de test depuis ton PC (Pessac, Free) retirée(s) des chiffres depuis hier.` : '';
     const box = document.getElementById('mtProspects'); box.replaceChildren();
-    if (!list || !list.length){ box.appendChild(mtEl('p', 'empty', 'Personne n’a vu 3 pages ou plus sur SLP depuis hier.')); return; }
+    if (!list || !list.length){ box.appendChild(mtEl('p', 'empty', 'Personne n’a vu 3 pages ou plus sur SLP ou Book My Band depuis hier.')); return; }
     const src = (r) => !r ? 'accès direct' : /google/.test(r) ? 'Google' : /^emailing-sendinblue|sendibm|em\.soundlightprod/.test(r) ? 'mail Brevo' : /facebook/.test(r) ? 'Facebook' : /instagram/.test(r) ? 'Instagram' : r;
     list.forEach((p) => {
       const it = mtEl('div', 'it');
