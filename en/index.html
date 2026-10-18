@@ -294,6 +294,13 @@
   <div class="bandeau chaud"><div class="defile"><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Weddings</span><span>Private parties</span><span>Festivals</span><span>Galas</span><span>One-off events</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Weddings</span><span>Private parties</span><span>Festivals</span><span>Galas</span><span>One-off events</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Weddings</span><span>Private parties</span><span>Festivals</span><span>Galas</span><span>One-off events</span></div></div>
 </div>
 
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="section-head"><span class="label">How it works</span><h2>Simple, from the first call to the final encore</h2></div>
+    <div class="steps"><div class="step"><h3>Tell us about your project</h3><p>Date, venue, audience, atmosphere: a quick chat is all it takes to understand your needs.</p></div><div class="step"><h3>We send you a proposal</h3><p>A selection of shows and a clear, no-obligation quote within a few days.</p></div><div class="step"><h3>We organise everything</h3><p>Contracts, schedule, technical set-up, artist hospitality: we coordinate every detail.</p></div><div class="step"><h3>On the day, we are there</h3><p>Set-up, soundcheck, show, load-out: you enjoy, we handle it.</p></div></div>
+  </div>
+</section>
+
 <section class="artists-showcase">
   <div class="wrap tight">
     <div class="artists-head">
@@ -508,13 +515,6 @@
   </div>
 </section>
 
-<section>
-  <div class="wrap">
-    <div class="section-head"><span class="label">How it works</span><h2>Simple, from the first call to the final encore</h2></div>
-    <div class="steps"><div class="step"><h3>Tell us about your project</h3><p>Date, venue, audience, atmosphere: a quick chat is all it takes to understand your needs.</p></div><div class="step"><h3>We send you a proposal</h3><p>A selection of shows and a clear, no-obligation quote within a few days.</p></div><div class="step"><h3>We organise everything</h3><p>Contracts, schedule, technical set-up, artist hospitality: we coordinate every detail.</p></div><div class="step"><h3>On the day, we are there</h3><p>Set-up, soundcheck, show, load-out: you enjoy, we handle it.</p></div></div>
-  </div>
-</section>
-
 <div class="bandeaux" aria-hidden="true">
   <div class="bandeau froid"><div class="defile"><span>Production</span><span>Touring</span><span>Sound</span><span>Lighting</span><span>Production</span><span>Touring</span><span>Sound</span><span>Lighting</span><span>Production</span><span>Touring</span><span>Sound</span><span>Lighting</span><span>Production</span><span>Touring</span><span>Sound</span><span>Lighting</span><span>Production</span><span>Touring</span><span>Sound</span><span>Lighting</span><span>Production</span><span>Touring</span><span>Sound</span><span>Lighting</span><span>Production</span><span>Touring</span><span>Sound</span><span>Lighting</span><span>Production</span><span>Touring</span><span>Sound</span><span>Lighting</span></div></div>
   <div class="bandeau chaud"><div class="defile"><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Weddings</span><span>Private parties</span><span>Festivals</span><span>Galas</span><span>One-off events</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Weddings</span><span>Private parties</span><span>Festivals</span><span>Galas</span><span>One-off events</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Weddings</span><span>Private parties</span><span>Festivals</span><span>Galas</span><span>One-off events</span></div></div>
@@ -657,6 +657,19 @@
 @media (max-width:900px){.met,.met.rev{grid-template-columns:1fr}.met-pic{min-height:200px}.met-body{padding:20px 20px}}
 html,body{overflow-x:clip}
 .bandeaux{overflow:hidden}
+/* how-compact:start */
+.how .wrap{padding-top:40px;padding-bottom:32px}
+.how .section-head{margin-bottom:14px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;max-width:none}
+.how .section-head .label{margin:0}
+.how .section-head h2{font-size:clamp(1.05rem,1.8vw,1.3rem)}
+.how .steps{gap:10px}
+.how .step{padding:12px 14px;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:start}
+.how .step::before{font-size:1.5rem;grid-row:1 / span 2;margin:0}
+.how .step h3{font-size:.92rem;margin:0 0 2px}
+.how .step p{font-size:.8rem;line-height:1.4}
+@media (max-width:980px){.how .steps{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.how .steps{grid-template-columns:1fr}}
+/* how-compact:end */
 /* home-compact:end */
 </style>
 </html>
