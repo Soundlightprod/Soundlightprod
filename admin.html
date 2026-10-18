@@ -848,21 +848,20 @@
       <p class="vz-foot"><span id="siteVisitTotal">0</span> <span id="siteVisitTotalLabel">visite(s) sur SLP au total</span></p>
     </div>
 
-    <div class="vz-grid2">
-      <div class="vz-card">
-        <div class="vz-card-h"><h3>Pages les plus vues</h3><span class="vz-note" id="periodTotalLabel"></span></div>
-        <div id="vzTopPages" class="vz-bars"></div>
-      </div>
-      <div class="vz-card" style="padding:0; overflow:hidden;">
-        <div class="vz-card-h" style="padding:16px 18px 0;"><h3>Carte</h3><button class="btn-outline vz-xs" onclick="toggleResizable('visitsMap')" id="visitsMapToggle">⤢ Agrandir</button></div>
-        <div id="visitsMap" style="height:300px; margin-top:12px; transition:height .25s ease;"></div>
-      </div>
+    <div class="vz-card" style="padding:0; overflow:hidden;">
+      <div class="vz-card-h" style="padding:16px 18px 0;"><h3>Carte</h3><button class="btn-outline vz-xs" onclick="toggleResizable('visitsMap')" id="visitsMapToggle">⤢ Agrandir</button></div>
+      <div id="visitsMap" style="height:300px; margin-top:12px; transition:height .25s ease;"></div>
     </div>
 
     <div class="vz-grid3">
       <div class="vz-card"><h3>Villes</h3><table id="breakdownCityTable" class="vz-bt"><tbody></tbody></table></div>
       <div class="vz-card"><h3>D'où ils arrivent</h3><div id="socialStrip" class="vz-note" style="margin:0 0 8px;"></div><table id="breakdownReferrerTable" class="vz-bt"><tbody></tbody></table></div>
       <div class="vz-card"><h3>Appareils</h3><table id="breakdownDeviceTable" class="vz-bt"><tbody></tbody></table></div>
+    </div>
+
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Pages les plus vues</h3><span class="vz-note" id="periodTotalLabel"></span></div>
+      <div id="vzTopPages" class="vz-bars"></div>
     </div>
 
     <div class="vz-card">
