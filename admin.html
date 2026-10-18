@@ -208,6 +208,7 @@
   .vp-nav{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px; padding-bottom:12px; border-bottom:1px solid var(--line);}
   .vp-btn{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:999px; padding:9px 18px; font-size:.88rem; cursor:pointer; font-family:inherit;}
   .vp-btn.active{background:var(--amber, #ffb238); color:#111; border-color:transparent; font-weight:600;}
+  #agendaUsageCard th, #agendaUsageCard td{padding:8px 18px 8px 0; white-space:nowrap; text-align:left;}
   .vp-pane{display:none;} .vp-pane.active{display:block;}
   .vz-head{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
   .vz-sub{color:var(--muted); font-size:.82rem; margin:4px 0 0;}
@@ -704,14 +705,21 @@
     <p class="empty" id="gvEmpty" style="display:none;">Aucune date enregistrée pour ce groupe.</p>
 
     <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
-      <h3 style="margin-top:0;">Visites de sa fiche artiste</h3>
-      <p style="color:var(--muted); font-size:0.82rem; margin-bottom:16px;">Localisation approximative (ville/région/pays fournie par Cloudflare, sans IP ni cookie). Réservé à l'admin — le groupe ne voit jamais ces données.</p>
-      <p style="font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.6rem; margin-bottom:14px;"><span id="gvVisitCount">0</span> <span style="font-size:0.9rem; color:var(--muted); font-weight:500;">visite(s) au total</span></p>
+      <h3 style="margin-top:0;">Utilisation de son agenda</h3>
+      <p style="color:var(--muted); font-size:0.82rem; margin-bottom:16px;">Combien de fois le groupe ouvre sa page « Mon agenda », s'y connecte, ajoute des dates ou consulte une feuille de route. Compté à part des visites du site, tes passages et les robots exclus. Réservé à l'admin.</p>
+      <div class="vz-kpis" id="gvAgendaKpis"></div>
       <table id="gvVisitsTable">
-        <thead><tr><th>Date</th><th>Heure</th><th>Ville</th><th>Région</th><th>Pays</th><th></th></tr></thead>
+        <thead><tr><th>Date</th><th>Heure</th><th>Action</th><th>Lieu</th><th>Appareil</th></tr></thead>
         <tbody></tbody>
       </table>
-      <p class="empty" id="gvVisitsEmpty" style="display:none;">Aucune visite enregistrée pour le moment.</p>
+      <p class="empty" id="gvVisitsEmpty" style="display:none;">Ce groupe n'a pas encore ouvert son agenda.</p>
+
+      <div style="margin-top:32px;"></div>
+    <div class="vz-card" id="agendaUsageCard" style="margin-top:8px;">
+      <div class="vz-card-h"><h3>Agendas des groupes</h3><span class="vz-note">compté à part, pas dans les visites du site · une ouverture = un visiteur par session</span></div>
+      <div style="overflow-x:auto;"><table class="vz-bt"><thead><tr><th>Groupe</th><th>Ouvert 7 j</th><th>Ouvert 30 j</th><th>Dates ajoutées 30 j</th><th>Feuilles de route 30 j</th><th>Dernière visite</th></tr></thead><tbody id="agendaUsageBody"></tbody></table></div>
+    </div>
+
     </div>
   </div>
 
@@ -868,11 +876,6 @@
       <div id="vzFeed" class="vz-feed"></div>
     </div>
 
-
-    <div class="vz-card" id="agendaUsageCard">
-      <div class="vz-card-h"><h3>Agendas des groupes</h3><span class="vz-note">compté à part, pas dans les visites du site · une ouverture = un visiteur par session</span></div>
-      <div style="overflow-x:auto;"><table class="vz-bt"><thead><tr><th>Groupe</th><th>Ouvert 7 j</th><th>Ouvert 30 j</th><th>Dates ajoutées 30 j</th><th>Feuilles de route 30 j</th><th>Dernière visite</th></tr></thead><tbody id="agendaUsageBody"></tbody></table></div>
-    </div>
 
     <div class="vz-card" id="vzNoTrack">
       <div class="vz-card-h"><h3>Ne pas compter mes propres visites</h3><span class="vz-note" id="vzNoTrackState"></span></div>
@@ -2812,7 +2815,6 @@
   }
 
   async function loadVisitsSummary(){
-    loadAgendaUsage();
     document.getElementById('visitsDetailBox').style.display = 'none';
     loadVisitsMap();
     loadVisitsBreakdown();
@@ -2894,33 +2896,28 @@
     }
   }
 
+  const AGENDA_ACTIONS = { ouverture:'📖 A ouvert son agenda', connexion:'🔑 Connexion', ajout:'➕ A ajouté une date', suppression:'🗑 A supprimé une date', feuille:'📄 A consulté une feuille de route' };
+
   async function loadGroupVisits(artistSlug){
-    document.getElementById('gvVisitCount').textContent = '…';
     try {
-      const res = await fetch(`/api/admin/visits?artist=${encodeURIComponent(artistSlug)}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const res = await fetch(`/api/admin/agenda-usage?artist=${encodeURIComponent(artistSlug)}`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
-      document.getElementById('gvVisitCount').textContent = data.total || 0;
-      const tbody = document.querySelector('#gvVisitsTable tbody');
-      const visits = data.visits || [];
-      document.getElementById('gvVisitsEmpty').style.display = visits.length ? 'none' : 'block';
-      tbody.innerHTML = visits.map(v => {
+      const g = (data.groupes || []).find(x => x.groupe === artistSlug) || {};
+      const der = g.derniere ? parisDT(g.derniere).split(' ')[0].split('-').reverse().slice(0,2).join('/') + ' ' + (parisDT(g.derniere).split(' ')[1] || '').slice(0,5) : 'jamais';
+      document.getElementById('gvAgendaKpis').innerHTML =
+        `<div class="vz-kpi"><span class="k">Ouvert (7 jours)</span><b>${g.ouvertures_7j || 0}</b></div>` +
+        `<div class="vz-kpi"><span class="k">Ouvert (30 jours)</span><b>${g.ouvertures_30j || 0}</b><span class="d">${g.ouvertures_total || 0} au total</span></div>` +
+        `<div class="vz-kpi"><span class="k">Dates ajoutées (30 j)</span><b>${g.ajouts_30j || 0}</b></div>` +
+        `<div class="vz-kpi"><span class="k">Dernière visite</span><b class="sm">${der}</b></div>`;
+      const ev = data.evenements || [];
+      document.getElementById('gvVisitsEmpty').style.display = ev.length ? 'none' : 'block';
+      document.querySelector('#gvVisitsTable tbody').innerHTML = ev.map(v => {
         const [datePart, timePart] = parisDT(v.visited_at).split(' ');
-        return `
-          <tr>
-            <td>${datePart || '—'}</td>
-            <td>${(timePart || '').slice(0,5) || '—'}</td>
-            <td>${v.city || '—'}</td>
-            <td>${v.region || '—'}</td>
-            <td>${v.country || '—'}</td>
-            <td class="row-actions">
-              ${v.session_id ? `<button class="btn-yes" onclick="showJourney('${v.session_id}')">Voir le parcours</button>` : ''}
-              <button class="btn-no" onclick="deleteVisit(${v.id}, 'group')">Supprimer</button>
-            </td>
-          </tr>
-        `;
+        return `<tr><td>${datePart || '—'}</td><td>${(timePart || '').slice(0,5) || '—'}</td><td>${AGENDA_ACTIONS[v.action] || v.action}</td><td>${[v.city, v.country].filter(Boolean).join(', ') || '—'}</td><td>${v.device || '—'}</td></tr>`;
       }).join('');
+      loadAgendaUsage();
     } catch(e){
-      document.getElementById('gvVisitCount').textContent = '0';
+      document.getElementById('gvAgendaKpis').innerHTML = '';
     }
   }
 

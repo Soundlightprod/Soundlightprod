@@ -1154,7 +1154,17 @@ export default {
              AND NOT (COALESCE(a.city,'') = 'Pessac' AND COALESCE(a.network,'') LIKE '%Free SAS%' AND COALESCE(a.device,'') = 'Ordinateur')
            GROUP BY t.artist_slug ORDER BY ouvertures_30j DESC, derniere DESC`
         ).all();
-        return json({ groupes: results }, 200, origin);
+        const one = url.searchParams.get("artist");
+        let evenements = [];
+        if (one) {
+          evenements = (await env.DB.prepare(
+            `SELECT action, visited_at, city, country, device, network, session_id FROM agenda_visits
+             WHERE artist_slug = ? AND is_bot = 0
+             AND NOT (COALESCE(city,'') = 'Pessac' AND COALESCE(network,'') LIKE '%Free SAS%' AND COALESCE(device,'') = 'Ordinateur')
+             ORDER BY visited_at DESC LIMIT 100`
+          ).bind(one).all()).results;
+        }
+        return json({ groupes: results, evenements }, 200, origin);
       }
 
       // POST /api/track-visit — { artist_slug, session_id } : enregistre une visite (public, appelé
