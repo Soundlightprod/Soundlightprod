@@ -876,16 +876,6 @@
     </div>
 
 
-    <div class="vz-card" id="vzNoTrack">
-      <div class="vz-card-h"><h3>Ne pas compter mes propres visites</h3><span class="vz-note" id="vzNoTrackState"></span></div>
-      <p class="vz-note" style="margin:0 0 10px;">À faire une fois sur chaque appareil (ordinateur, téléphone…) et chaque navigateur : ouvre ces 4 liens, tes visites ne seront plus enregistrées sur ces sites.</p>
-      <div class="vz-seg">
-        <a class="period-btn" style="text-decoration:none;" href="https://soundlightprod.fr/?notrack=1" target="_blank" rel="noopener" onclick="localStorage.setItem('slp_notrack','1'); setTimeout(updateNoTrack,50)">soundlightprod.fr</a>
-        <a class="period-btn" style="text-decoration:none;" href="https://soundlightprod.com/en/?notrack=1" target="_blank" rel="noopener">soundlightprod.com</a>
-        <a class="period-btn" style="text-decoration:none;" href="https://bookmyband.fr/?notrack=1" target="_blank" rel="noopener">bookmyband.fr</a>
-        <a class="period-btn" style="text-decoration:none;" href="https://csanimations.fr/?notrack=1" target="_blank" rel="noopener">csanimations.fr</a>
-      </div>
-    </div>
     <details class="vz-more">
       <summary>Plus de détails : réseau, régions, pays, codes postaux</summary>
       <div class="vz-grid4">
@@ -2730,7 +2720,8 @@
 
 
   function updateNoTrack(){ const el=document.getElementById('vzNoTrackState'); if(!el) return; let on=false; try{ on=!!localStorage.getItem('slp_notrack'); }catch(e){} el.textContent = on ? '✅ actif sur soundlightprod.fr pour cet appareil' : ''; }
-  document.addEventListener('DOMContentLoaded', updateNoTrack);
+  // Exclusion de tes propres visites : toujours active sur ce navigateur, sans rien afficher
+  try { localStorage.setItem('slp_notrack', '1'); } catch(e){}
   // Plateformes sociales reconnues (hôte du site d'origine OU paramètre utm_source des liens de bio / publications)
   const SOCIALS = [
     { key:'facebook',  label:'Facebook',  icon:'📘', re:/(^|\.)(facebook\.com|facebook|fb\.com|fb\.me|fb)$/ },

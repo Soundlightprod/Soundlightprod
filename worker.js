@@ -277,7 +277,7 @@ function visitProfile(request, body, cf) {
   return { network, device, referrer, isBot };
 }
 
-function siteWhere(url) { const p = []; const s = url.searchParams.get("site"); if (["slp", "bmb", "csa", "store"].includes(s)) p.push("site = '" + s + "'"); const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/; const f = url.searchParams.get("from"), t = url.searchParams.get("to"); if (f && re.test(f)) p.push("visited_at >= '" + f + " 00:00:00'"); if (t && re.test(t)) p.push("visited_at <= '" + t + " 23:59:59'"); if (url.searchParams.get("bots") === "0") p.push("is_bot = 0"); return p.length ? p.join(" AND ") : "1=1"; } 
+function siteWhere(url) { const p = ["NOT (COALESCE(city,'') = 'Pessac' AND COALESCE(network,'') LIKE '%Free SAS%' AND COALESCE(device,'') = 'Ordinateur')"]; const s = url.searchParams.get("site"); if (["slp", "bmb", "csa", "store"].includes(s)) p.push("site = '" + s + "'"); const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/; const f = url.searchParams.get("from"), t = url.searchParams.get("to"); if (f && re.test(f)) p.push("visited_at >= '" + f + " 00:00:00'"); if (t && re.test(t)) p.push("visited_at <= '" + t + " 23:59:59'"); if (url.searchParams.get("bots") === "0") p.push("is_bot = 0"); return p.length ? p.join(" AND ") : "1=1"; } 
 function periodCutoff(period) {
   const now = new Date();
   if (period === "today") {
