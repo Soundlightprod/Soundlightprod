@@ -81,15 +81,9 @@
   .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
   .banner-photo .txt{font-size:0.82rem; font-weight:500;}
 
-  .photo-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:14px;}
-  @media (max-width:600px){ .photo-grid{grid-template-columns:1fr;} }
-  .photo-grid a{display:block; border-radius:14px; overflow:hidden; aspect-ratio:4/5; background:var(--ink-2); cursor:zoom-in;}
-  .photo-grid img{width:100%; height:100%; object-fit:cover; object-position:center 20%; display:block; transition:transform .4s ease;}
-  .photo-grid a:hover img{transform:scale(1.04);}
 
   .video-wrap{position:relative; width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);}
   .video-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
-  .video-wrap + .video-wrap{margin-top:20px;}
 
   .venues-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;}
   .venue-card{background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:16px 20px; font-size:0.92rem; color:var(--paper);}
@@ -173,6 +167,7 @@
   .bio-wrap .logo-frame{aspect-ratio:1; height:auto; align-self:center;}
   .bio-text{align-self:center;}
   @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr !important; gap:28px !important;} }
+
 </style>
 
 
@@ -261,19 +256,20 @@
   </div>
 </section>
 
-
 <section>
   <div class="wrap tight narrow">
     <div class="section-head">
-      <span class="label">On video</span>
-      <h2>NooN Coverband live</h2>
+      <span class="label">Watch</span>
+      <h2>The videos</h2>
     </div>
-    <div class="video-wrap">
+    <div class="video-grid">
+      <div class="video-wrap">
         <iframe src="https://www.youtube-nocookie.com/embed/h1sqE5CJxX4?rel=0&modestbranding=1&iv_load_policy=3" title="NooN Coverband — Live excerpt" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="video-wrap">
         <iframe src="https://www.youtube-nocookie.com/embed/lz2G_UvzbSM?rel=0&modestbranding=1&iv_load_policy=3" title="NooN Coverband — Live excerpt" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
+    </div>
   </div>
 </section>
 
@@ -308,8 +304,8 @@
   </div>
 </section>
 
-<section class="info-strip">
-  <div class="wrap">
+<section>
+  <div class="wrap tight">
     <div class="info-grid">
       <div class="info-item"><span class="mark">→</span><p>Vocals / bass duo</p></div>
       <div class="info-item"><span class="mark">→</span><p>Available anywhere in France</p></div>
@@ -318,7 +314,6 @@
     </div>
   </div>
 </section>
-
 
 <section class="cta-band">
   <div class="wrap tight">
@@ -508,4 +503,37 @@ document.querySelectorAll('.photo-grid a').forEach(function(a){
   }).catch(function(){});
 })();
 </script>
+<style>
+/* artist-compact:start */
+  .page-hero{padding-top:96px; padding-bottom:34px;}
+  .page-hero h1{font-size:clamp(1.9rem,4vw,2.7rem); margin-bottom:12px;}
+  .page-hero p{font-size:1rem;}
+  .wrap.tight{padding-top:20px; padding-bottom:20px;}
+  .section-head{margin-bottom:18px;}
+  .section-head .label{margin-bottom:8px;}
+  .section-head h2{font-size:clamp(1.25rem,2.4vw,1.65rem);}
+  .bio-wrap{gap:34px !important; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) !important; align-items:center !important;}
+  .bio-wrap .logo-frame{aspect-ratio:4/3 !important; height:auto; max-height:300px; padding:18px; align-self:center !important;}
+  .bio-wrap .logo-frame.ph-frame{min-height:0 !important; padding:0 !important; position:relative;}
+  @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr !important; gap:20px !important;} .bio-wrap .logo-frame{max-width:100%; max-height:240px;} .photo-grid{grid-template-columns:repeat(2,1fr);} .photo-grid a.wide{grid-column:span 2;} }
+  .bio-text p{font-size:.95rem; line-height:1.55; margin-bottom:12px;}
+  .members-grid{gap:12px;}
+  .video-wrap, .wrap.narrow > div[style*="aspect-ratio:16/9"]{max-width:640px;}
+  .video-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;}
+  .video-grid .video-wrap{max-width:none;}
+  .photo-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; height:auto;}
+  .photo-grid a{display:block; border-radius:12px; overflow:hidden; aspect-ratio:1/1; background:var(--ink-2); cursor:zoom-in;}
+  .photo-grid img{width:100%; height:100%; object-fit:cover; object-position:center 25%; display:block; transition:transform .4s ease;}
+  .photo-grid a:hover img{transform:scale(1.05);}
+  .photo-grid a.wide{grid-column:span 2; aspect-ratio:2/1;}
+  .photo-grid a.poster img{object-fit:contain; background:#0a0a0c;}
+  .banner-photo{max-width:380px !important; margin-left:auto !important; margin-right:auto !important;}
+  .single-photo{max-width:520px; margin-left:auto; margin-right:auto;}
+  .venue-card{padding:12px 16px;}
+  .info-grid{gap:18px;}
+  .cta-band .wrap.tight{padding-top:40px; padding-bottom:44px;}
+  .cta-band h2{font-size:clamp(1.6rem,3.6vw,2.3rem); margin-bottom:12px;}
+  .cta-band p{font-size:.98rem; margin-bottom:22px;}
+/* artist-compact:end */
+</style>
 </html>
