@@ -305,7 +305,7 @@
   if (params.get('artiste')) from = params.get('artiste');
   var nice = function(slug){ return slug.replace(/^the-best-/, '').split('-').map(function(w){ return w.length > 2 && ['and','the','des','les','aux'].indexOf(w) < 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w; }).join(' '); };
   var subj = document.getElementById('subject'), mess = document.getElementById('message');
-  var techPages = ['son-lumiere', 'diffusion'], djPages = ['dj', 'dj-animation', 'dj-provisoire'], neutral = ['', 'index', 'contact', 'artistes', 'agenda', 'galerie', 'tributes', 'cabaret', 'groupes-de-reprises', 'pop-francaise', 'jazz-soul-funk', 'mentions-legales'];
+  var techPages = ['son-lumiere', 'diffusion'], djPages = ['dj', 'dj-animation'], neutral = ['', 'index', 'contact', 'artistes', 'agenda', 'galerie', 'tributes', 'cabaret', 'groupes-de-reprises', 'pop-francaise', 'jazz-soul-funk', 'mentions-legales'];
   if (techPages.indexOf(from) >= 0) subj.value = 'Devis Prestation technique';
   else if (djPages.indexOf(from) >= 0) subj.value = 'DJ / animation';
   else if (from && neutral.indexOf(from) < 0 && /^[a-z0-9-]+$/.test(from)) { subj.value = "Programmation d'artistes"; mess.value = 'Bonjour, je suis intéressé(e) par ' + (params.get('nom') || nice(from)) + '. '; }
