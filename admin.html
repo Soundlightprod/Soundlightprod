@@ -266,6 +266,8 @@
   .mt-notes li:nth-child(2)::before{background:var(--blue);} .mt-notes li:nth-child(3)::before{background:var(--violet);}
   .mt-sky{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin:14px 0;}
   .mt-site{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:16px 18px; display:grid; grid-template-columns:1fr auto; gap:6px 12px;}
+  .mt-site{cursor:pointer; transition:transform .15s ease, border-color .2s ease;} .mt-site:hover, .mt-site:focus-visible{border-color:var(--amber); transform:translateY(-2px); outline:none;}
+  .mt-site .mt-more{grid-column:1 / -1; color:var(--amber); font-size:.8rem; margin-top:2px;}
   .mt-site h3{margin:0;} .mt-site .sky{color:var(--muted); font-size:.8rem;}
   .mt-site svg{width:58px; height:58px; grid-row:span 2;}
   .mt-figs{grid-column:1/-1; display:flex; gap:22px; flex-wrap:wrap; margin-top:4px;}
@@ -1043,6 +1045,13 @@
     return svg;
   }
 
+  function openSiteStats(site){
+    switchVisitsPane('visits');
+    setVisitsSite(site);
+    const bar = document.getElementById('siteSwitch');
+    if (bar) bar.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
   function mtRenderSites(sites){
     const box = document.getElementById('mtSky'); box.replaceChildren();
     ['slp', 'bmb', 'csa', 'store'].forEach((s) => {
@@ -1051,6 +1060,10 @@
       const kind = ev === null ? (r.sept_jours > 0 ? 'soleil' : 'nuages') : ev >= 0.15 ? 'soleil' : ev > -0.15 ? 'eclaircies' : 'pluie';
       const label = { soleil:'Grand soleil', eclaircies:'Éclaircies', pluie:'Averses', nuages:'Ciel calme' }[kind];
       const card = mtEl('div', 'mt-site');
+      card.setAttribute('role', 'button'); card.tabIndex = 0; card.title = 'Voir les stats détaillées de ' + MT_SITES[s].nom;
+      const ouvrir = () => openSiteStats(s);
+      card.addEventListener('click', ouvrir);
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); ouvrir(); } });
       const head = mtEl('div'); head.append(mtEl('h3', null, MT_SITES[s].nom), mtEl('div', 'sky', label));
       card.append(head, mtIcon(kind));
       const figs = mtEl('div', 'mt-figs');
@@ -1061,7 +1074,7 @@
       let d = null;
       if (ev !== null){ const cls = ev > 0.02 ? 'mt-up' : ev < -0.02 ? 'mt-down' : 'mt-flat'; d = mtEl('span', 'mt-delta ' + cls, (ev > 0.02 ? '↗ +' : ev < -0.02 ? '↘ ' : '= ') + Math.round(ev * 100) + ' % vs sem. d’avant'); }
       fig(r.sept_jours, '7 derniers jours', d);
-      card.appendChild(figs); box.appendChild(card);
+      card.appendChild(figs); card.appendChild(mtEl('div', 'mt-more', 'Voir les stats →')); box.appendChild(card);
     });
   }
 
@@ -1296,7 +1309,7 @@
       if (slot && form && form.parentElement !== slot) slot.appendChild(form);
     }
     if (name === 'groupview') renderGroupView();
-    if (name === 'visits'){ loadVisitsSummary(); loadMeteo(); try { const v = localStorage.getItem('slp_vpane'); if (v) switchVisitsPane(v); } catch(e){} }
+    if (name === 'visits'){ refreshStats(); try { const v = localStorage.getItem('slp_vpane'); if (v) switchVisitsPane(v); } catch(e){} }
     if (name === 'access'){
       document.getElementById('icsFeedUrl').value = `${API_BASE}/api/agenda.ics?key=${encodeURIComponent(token)}`;
     }
@@ -1369,7 +1382,19 @@
     await loadTokens();
     await loadOrders();
     await loadStock();
+    refreshStats();
   }
+
+  let lastStatsRefresh = 0;
+  function refreshStats(){
+    if (!token || document.getElementById('app').style.display === 'none') return;
+    lastStatsRefresh = Date.now();
+    try { loadMeteo(); } catch(e){}
+    try { loadVisitsSummary(); } catch(e){}
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && Date.now() - lastStatsRefresh > 60000) refreshStats();
+  });
 
   async function loadStock(){
     try {
