@@ -183,12 +183,19 @@
   @media (max-width:760px){
     body{padding:14px;}
     table{display:block; overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;}
-    /* Recherches Google : tient dans l'écran sans scroll (Site, Recherche, Impressions) */
-    table.mt-req{display:table; table-layout:fixed; width:100%; white-space:normal; overflow:visible;}
-    table.mt-req th, table.mt-req td{padding:6px 4px; word-break:break-word;}
-    table.mt-req th:nth-child(1), table.mt-req td:nth-child(1){width:2.6rem;}
-    table.mt-req th:nth-child(3), table.mt-req td:nth-child(3){width:4.6rem;}
-    table.mt-req th:nth-child(4), table.mt-req td:nth-child(4), table.mt-req th:nth-child(5), table.mt-req td:nth-child(5){display:none;}
+    /* Recherches Google : une ligne = 2 lignes à l'écran, tout visible sans scroll */
+    table.mt-req, table.mt-req tbody{display:block; width:100%; white-space:normal; overflow:visible;}
+    table.mt-req thead{display:none;}
+    table.mt-req tr{display:grid; grid-template-columns:2.8rem repeat(3,1fr); gap:3px 8px; padding:9px 0; border-bottom:1px solid var(--line);}
+    table.mt-req td{display:block; border:0; padding:0; text-align:left !important; word-break:break-word;}
+    table.mt-req td:nth-child(1){grid-column:1; grid-row:1; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.7rem; align-self:center;}
+    table.mt-req td:nth-child(2){grid-column:2 / -1; grid-row:1; font-weight:600;}
+    table.mt-req td:nth-child(3){grid-column:2; grid-row:2;}
+    table.mt-req td:nth-child(4){grid-column:3; grid-row:2;}
+    table.mt-req td:nth-child(5){grid-column:4; grid-row:2;}
+    table.mt-req td:nth-child(n+3){font-size:0.8rem;}
+    table.mt-req td[data-label]::before{content:attr(data-label) ' '; color:var(--muted); font-size:0.66rem; text-transform:uppercase;}
+    table.mt-req td[colspan]{grid-column:1 / -1;}
     table.mt-req .mt-imp{display:none;}
     /* Tableaux en cartes sur téléphone : une carte par ligne, libellé à gauche, valeur à droite */
     table.m-cards{display:block; white-space:normal; overflow:visible;}
@@ -1208,11 +1215,11 @@
     rows.forEach((r) => {
       const tr = mtEl('tr');
       const q = mtEl('td'); if (MT_SUIVIES.includes(r.requete)) q.appendChild(mtEl('span', 'mt-star', '★ ')); q.appendChild(document.createTextNode(r.requete));
-      const imp = mtEl('td'); imp.style.textAlign = 'right'; const b = mtEl('span', 'mt-imp'); b.style.width = (3 * r.impressions / max) + 'rem'; imp.append(b, mtFmt(r.impressions));
+      const imp = mtEl('td'); imp.style.textAlign = 'right'; imp.dataset.label = 'Impr.'; const b = mtEl('span', 'mt-imp'); b.style.width = (3 * r.impressions / max) + 'rem'; imp.append(b, mtFmt(r.impressions));
       if (r.impressions_avant !== null && r.impressions_avant !== r.impressions) imp.appendChild(mtEl('span', r.impressions > r.impressions_avant ? 'mt-up' : 'mt-down', r.impressions > r.impressions_avant ? ' ↗' : ' ↘'));
       if (r.impressions_avant === null && g.index.length > 2) imp.appendChild(mtEl('span', 'mt-up', ' nouveau'));
-      const cl = mtEl('td', null, mtFmt(r.clics)); cl.style.textAlign = 'right';
-      const po = mtEl('td', null, r.position === null ? '—' : Number(r.position).toLocaleString('fr-FR', { maximumFractionDigits:1 })); po.style.textAlign = 'right';
+      const cl = mtEl('td', null, mtFmt(r.clics)); cl.style.textAlign = 'right'; cl.dataset.label = 'Clics';
+      const po = mtEl('td', null, r.position === null ? '—' : Number(r.position).toLocaleString('fr-FR', { maximumFractionDigits:1 })); po.style.textAlign = 'right'; po.dataset.label = 'Pos.';
       if (r.position_avant !== null && r.position_avant !== undefined && r.position !== r.position_avant) po.appendChild(mtEl('span', r.position < r.position_avant ? 'mt-up' : 'mt-down', r.position < r.position_avant ? ' ↗' : ' ↘'));
       tr.append(mtEl('td', null, s2(r.site)), q, imp, cl, po); tb.appendChild(tr);
     });
