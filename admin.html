@@ -2572,7 +2572,7 @@
     const bits = [v.network, v.device, v.referrer ? 'via ' + refLabel(v.referrer) : ''].filter(Boolean);
     return bits.length ? `<div style="color:var(--muted); font-size:0.76rem; margin-top:2px;">${bits.join(' · ')}${v.is_bot ? ' · 🤖 robot' : ''}</div>` : '';
   }
-  const LANGS = { fr:'🇫🇷 FR', en:'🇬🇧 EN', es:'🇪🇸 ES', it:'🇮🇹 IT', inconnu:'❔ avant le suivi des langues' };
+  const LANGS = { fr:'🇫🇷 FR', en:'🇬🇧 EN', es:'🇪🇸 ES', it:'🇮🇹 IT' };
   const langLabel = (l) => LANGS[l] || String(l || '').toUpperCase();
   const domLabel = (d) => (!d || d === 'inconnu') ? '' : String(d).replace(/^www\./, '');
   function langDom(lang, dom){ return [lang ? langLabel(lang) : '', domLabel(dom)].filter(Boolean).join(' · '); }
