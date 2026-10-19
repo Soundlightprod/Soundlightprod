@@ -12,7 +12,7 @@
     fr: {
       open: 'Ouvrir le chat', close: 'Fermer', title: 'SLP', sub: 'Réponse sous 24 h', teaser: 'Une question ? On vous répond.',
       hello: 'Bonjour ! Je suis l’assistant de SLP. Spectacles, tributes, DJ, son & lumière : que cherchez-vous ?',
-      menu: ['Demander un devis', 'Programmer un spectacle', 'DJ / animation', 'Son & lumière', 'Tarifs', 'Zone d’intervention', 'Parler à quelqu’un'],
+      menu: ['Demander un devis', 'Programmer un spectacle', 'DJ / animation', 'Son & lumière', 'Tarifs', 'Zone d’intervention', 'Parler à quelqu’un', 'Appeler / WhatsApp / mail'],
       back: 'Autre question', again: 'Revenir au menu',
       a: {
         spectacle: 'Nous proposons des tributes 100 % live, des spectacles cabaret, des groupes de reprises et des artistes jazz / soul / funk, pour mairies, comités des fêtes, galas, mariages et soirées privées. Parcourez la page Artistes, ou je prends votre demande tout de suite.',
@@ -32,12 +32,12 @@
       },
       sending: 'Envoi en cours…', done: 'Merci ! Votre demande est bien partie. On vous répond sous 24 h, souvent par téléphone.',
       fail: 'L’envoi n’a pas fonctionné. Appelez-nous au 06 31 94 96 53 ou écrivez à contact@soundlightprod.fr.',
-      badc: 'Il me faut un téléphone ou un email valide pour pouvoir vous répondre.', sujet: 'Devis via le chat', no: /^(non|no|rien|nop)$/i
+      badc: 'Il me faut un téléphone ou un email valide pour pouvoir vous répondre.', live: { intro: 'Vous pouvez écrire ici, Jean-Noël (SLP) vous répond directement quand il est en ligne.', online: 'Votre message est bien arrivé, on vous répond ici dans quelques instants.', offline: 'Nous ne sommes pas en ligne à cet instant. Laissez un téléphone ou un email dans un message, on vous recontacte rapidement.', ph: 'Écrivez votre message…', err: 'Message non envoyé. Appelez-nous au 06 31 94 96 53.' }, sujet: 'Devis via le chat', no: /^(non|no|rien|nop)$/i
     },
     en: {
       open: 'Open chat', close: 'Close', title: 'SLP', sub: 'Reply within 24 h', teaser: 'Any question? We’ll get back to you.',
       hello: 'Hello! I’m the SLP assistant. Live shows, tribute acts, DJs, sound & lighting: what are you looking for?',
-      menu: ['Request a quote', 'Book a show', 'DJ / entertainment', 'Sound & lighting', 'Pricing', 'Where we work', 'Talk to someone'],
+      menu: ['Request a quote', 'Book a show', 'DJ / entertainment', 'Sound & lighting', 'Pricing', 'Where we work', 'Talk to someone', 'Call / WhatsApp / email'],
       back: 'Another question', again: 'Back to menu',
       a: {
         spectacle: 'We offer 100% live tribute acts, cabaret shows, cover bands and jazz / soul / funk artists for town events, festivals, galas, weddings and private parties. Browse the Artists page, or I can take your request right now.',
@@ -57,12 +57,12 @@
       },
       sending: 'Sending…', done: 'Thank you! Your request has been sent. We’ll reply within 24 h.',
       fail: 'Sending failed. Please call +33 6 31 94 96 53 or email contact@soundlightprod.fr.',
-      badc: 'I need a valid phone number or email to be able to reply.', sujet: 'Quote via chat', no: /^(no|non|nothing|nope)$/i
+      badc: 'I need a valid phone number or email to be able to reply.', live: { intro: 'Write here: Jean-Noël (SLP) replies directly when he’s online.', online: 'Your message has arrived, we’ll reply here shortly.', offline: 'We’re not online right now. Please leave a phone number or email in a message and we’ll get back to you quickly.', ph: 'Write your message…', err: 'Message not sent. Please call +33 6 31 94 96 53.' }, sujet: 'Quote via chat', no: /^(no|non|nothing|nope)$/i
     },
     es: {
       open: 'Abrir el chat', close: 'Cerrar', title: 'SLP', sub: 'Respuesta en 24 h', teaser: '¿Alguna pregunta? Le respondemos.',
       hello: '¡Hola! Soy el asistente de SLP. Espectáculos, tributos, DJ, sonido e iluminación: ¿qué busca?',
-      menu: ['Pedir presupuesto', 'Contratar un espectáculo', 'DJ / animación', 'Sonido e iluminación', 'Tarifas', 'Zona de actuación', 'Hablar con alguien'],
+      menu: ['Pedir presupuesto', 'Contratar un espectáculo', 'DJ / animación', 'Sonido e iluminación', 'Tarifas', 'Zona de actuación', 'Hablar con alguien', 'Llamar / WhatsApp / correo'],
       back: 'Otra pregunta', again: 'Volver al menú',
       a: {
         spectacle: 'Ofrecemos tributos 100 % en directo, espectáculos de cabaret, grupos de versiones y artistas de jazz / soul / funk para ayuntamientos, fiestas, galas, bodas y eventos privados. Consulte la página de Artistas, o tomo su solicitud ahora mismo.',
@@ -82,12 +82,12 @@
       },
       sending: 'Enviando…', done: '¡Gracias! Su solicitud ha sido enviada. Le respondemos en 24 h.',
       fail: 'No se pudo enviar. Llame al +33 6 31 94 96 53 o escriba a contact@soundlightprod.fr.',
-      badc: 'Necesito un teléfono o un correo válido para poder responderle.', sujet: 'Presupuesto vía chat', no: /^(no|nada)$/i
+      badc: 'Necesito un teléfono o un correo válido para poder responderle.', live: { intro: 'Escriba aquí: Jean-Noël (SLP) le responde directamente cuando está en línea.', online: 'Su mensaje ha llegado, le respondemos aquí en unos instantes.', offline: 'Ahora mismo no estamos en línea. Deje un teléfono o un correo en un mensaje y le contactamos pronto.', ph: 'Escriba su mensaje…', err: 'Mensaje no enviado. Llame al +33 6 31 94 96 53.' }, sujet: 'Presupuesto vía chat', no: /^(no|nada)$/i
     },
     it: {
       open: 'Apri la chat', close: 'Chiudi', title: 'SLP', sub: 'Risposta entro 24 h', teaser: 'Una domanda? Le rispondiamo.',
       hello: 'Buongiorno! Sono l’assistente di SLP. Spettacoli, tribute, DJ, audio e luci: cosa cerca?',
-      menu: ['Richiedere un preventivo', 'Prenotare uno spettacolo', 'DJ / animazione', 'Audio e luci', 'Tariffe', 'Zona d’intervento', 'Parlare con qualcuno'],
+      menu: ['Richiedere un preventivo', 'Prenotare uno spettacolo', 'DJ / animazione', 'Audio e luci', 'Tariffe', 'Zona d’intervento', 'Parlare con qualcuno', 'Chiama / WhatsApp / mail'],
       back: 'Un’altra domanda', again: 'Torna al menu',
       a: {
         spectacle: 'Proponiamo tribute 100 % live, spettacoli cabaret, cover band e artisti jazz / soul / funk per comuni, feste, gala, matrimoni ed eventi privati. Consulti la pagina Artisti, oppure raccolgo subito la sua richiesta.',
@@ -107,7 +107,7 @@
       },
       sending: 'Invio in corso…', done: 'Grazie! La sua richiesta è stata inviata. Le rispondiamo entro 24 h.',
       fail: 'Invio non riuscito. Chiami il +33 6 31 94 96 53 o scriva a contact@soundlightprod.fr.',
-      badc: 'Mi serve un telefono o una mail valida per poterle rispondere.', sujet: 'Preventivo via chat', no: /^(no|niente)$/i
+      badc: 'Mi serve un telefono o una mail valida per poterle rispondere.', live: { intro: 'Scriva qui: Jean-Noël (SLP) risponde direttamente quando è online.', online: 'Il suo messaggio è arrivato, le rispondiamo qui a breve.', offline: 'Al momento non siamo online. Lasci un telefono o una mail in un messaggio e la ricontatteremo presto.', ph: 'Scriva il suo messaggio…', err: 'Messaggio non inviato. Chiami il +33 6 31 94 96 53.' }, sujet: 'Preventivo via chat', no: /^(no|niente)$/i
     }
   };
   var t = T[L];
@@ -180,7 +180,8 @@
     if (first) say(t.hello);
     choices(t.menu, function (c, i) {
       if (i === 0) return quote();
-      if (i === 6) { say(t.a.contact); return choices([t.again], menu, [
+      if (i === 6) { return live(); }
+      if (i === 7) { say(t.a.contact); return choices([t.again], menu, [
         { label: t.call, href: 'tel:' + PHONE, ev: 'appel' },
         { label: t.wa, href: 'https://wa.me/' + PHONE.replace('+', ''), ev: 'whatsapp', ext: 1 },
         { label: t.mail, href: 'mailto:contact@soundlightprod.fr', ev: 'mail' }]); }
@@ -231,15 +232,59 @@
       .catch(function (e) { wait.textContent = t.fail; choices([t.again], menu, [{ label: t.call, href: 'tel:' + PHONE, ev: 'appel' }]); });
   }
 
+  /* ---- Mode direct : conversation avec Nj via /api/chat/* ---- */
+  var tok = '', lastId = 0, liveOn = false, pollT = null, firstSent = false, hasContact = false;
+  try { tok = localStorage.getItem('slpc_tok') || ''; lastId = parseInt(localStorage.getItem('slpc_last') || '0', 10) || 0; } catch (e) {}
+  function api(path, body) {
+    return fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : undefined)
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); });
+  }
+  function poll() {
+    if (!tok) return;
+    api('/api/chat/poll?token=' + encodeURIComponent(tok) + '&after=' + lastId).then(function (j) {
+      if (!j || !j.ok) { if (j && j.gone) { tok = ''; lastId = 0; try { localStorage.removeItem('slpc_tok'); localStorage.removeItem('slpc_last'); } catch (e) {} } return; }
+      (j.messages || []).forEach(function (m) {
+        lastId = Math.max(lastId, m.id); say(m.body); 
+        if (!box.classList.contains('on')) { tip.textContent = m.body.slice(0, 80); tip.style.display = 'block'; }
+      });
+      try { localStorage.setItem('slpc_last', String(lastId)); } catch (e) {}
+      pollNext();
+    }).catch(pollNext);
+  }
+  function pollNext() { clearTimeout(pollT); pollT = setTimeout(poll, box.classList.contains('on') ? 4000 : 20000); }
+  function live(resume) {
+    liveOn = true; form.classList.add('on'); inp.placeholder = t.live.ph; if (!resume) { say(t.live.intro); choices([t.again], function () { stopLive(); menu(); }, [
+      { label: t.call, href: 'tel:' + PHONE, ev: 'appel' }, { label: t.wa, href: 'https://wa.me/' + PHONE.replace('+', ''), ev: 'whatsapp', ext: 1 }]); }
+    inp.focus();
+    form.onsubmit = function (e) {
+      e.preventDefault(); var v = inp.value.trim(); if (!v) return;
+      say(v, 1); inp.value = '';
+      var em = v.match(/[^@\s]+@[^@\s]+\.[^@\s]+/), ph = v.replace(/[\s.\-()]/g, '').match(/\+?\d{9,15}/);
+      var c = em ? em[0] : (ph ? ph[0] : '');
+      if (c) hasContact = true;
+      api('/api/chat/send', { token: tok, body: v, contact: c, page: 'chat:' + from, lang: L, site_web: hp.value }).then(function (j) {
+        if (!j.ok) { say(j.error || t.live.err); return; }
+        tok = j.token; try { localStorage.setItem('slpc_tok', tok); } catch (e) {}
+        if (!firstSent) { firstSent = true; track('formulaire');
+          api('/api/chat/poll?token=' + encodeURIComponent(tok) + '&after=' + lastId).then(function (p) { say(p && p.online ? t.live.online : t.live.offline); }); }
+        pollNext();
+      }).catch(function () { say(t.live.err); });
+    };
+    pollNext();
+  }
+  function stopLive() { liveOn = false; form.classList.remove('on'); }
+
   var opened = false;
   function toggle(on) {
     box.classList.toggle('on', on); tip.style.display = 'none';
-    if (on && !opened) { opened = true; menu(true); }
+    if (on && !opened) { opened = true; if (tok) { say(t.hello); live(true); } else menu(true); }
+    if (on && tok) { tip.textContent = t.teaser; poll(); }
     btn.setAttribute('aria-expanded', on ? 'true' : 'false');
   }
   btn.addEventListener('click', function () { toggle(!box.classList.contains('on')); });
   box.querySelector('#slpc-x').addEventListener('click', function () { toggle(false); btn.focus(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('on')) { toggle(false); btn.focus(); } });
+  if (tok) pollNext();
   var seen = false; try { seen = sessionStorage.getItem('slpc_tip'); } catch (e) {}
   if (!seen) setTimeout(function () { if (!box.classList.contains('on')) { tip.style.display = 'block'; try { sessionStorage.setItem('slpc_tip', '1'); } catch (e) {} setTimeout(function () { tip.style.display = 'none'; }, 7000); } }, 9000);
 })();

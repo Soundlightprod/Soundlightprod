@@ -40,6 +40,14 @@ function json(data, status = 200, origin) {
   });
 }
 
+async function ensureChatTables(env) {
+  await env.DB.batch([
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_threads (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE NOT NULL, name TEXT, contact TEXT, page TEXT, lang TEXT, city TEXT, ip_hash TEXT, site TEXT, status TEXT DEFAULT 'open', unread_admin INTEGER DEFAULT 0, notified_at TEXT, created_at TEXT, last_visitor_at TEXT)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_messages (id INTEGER PRIMARY KEY AUTOINCREMENT, thread_id INTEGER NOT NULL, sender TEXT NOT NULL, body TEXT NOT NULL, created_at TEXT)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_presence (id INTEGER PRIMARY KEY, last_seen TEXT)"),
+  ]);
+}
+
 function requireAdmin(request, env) {
   const auth = request.headers.get("Authorization") || "";
   const token = auth.replace("Bearer ", "");
@@ -1069,6 +1077,125 @@ export default {
           "INSERT INTO video_events (site, page, video_id, event, session_id, is_bot, city, network, device, referrer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         ).bind(site, String(body.page || "").slice(0, 120) || null, videoId, ev, String(body.session_id || "").slice(0, 40) || null, vp.isBot, cf.city || null, vp.network, vp.device, vp.referrer).run();
         return json({ ok: true }, 200, origin);
+      }
+
+      // ============ CHAT EN DIRECT (visiteur <-> Nj) ============
+      // Public : POST /api/chat/send, GET /api/chat/poll ; Admin : /api/admin/chat/*
+      if (url.pathname.startsWith("/api/chat/") || url.pathname.startsWith("/api/admin/chat/")) {
+        await ensureChatTables(env);
+        const t = (v, n) => String(v || "").trim().slice(0, n);
+        const now = () => new Date().toISOString().slice(0, 19).replace("T", " ");
+
+        // POST /api/chat/send — { token?, body, name?, contact?, page, lang, site_web } : message du visiteur
+        if (url.pathname === "/api/chat/send" && request.method === "POST") {
+          const body = await request.json().catch(() => ({}));
+          if (t(body.site_web, 50)) return json({ ok: true, token: "x" }, 200, origin); // champ piège (robots)
+          const text = t(body.body, 1000);
+          if (!text) return json({ ok: false, error: "Message vide." }, 400, origin);
+          const cf = request.cf || {};
+          let th = null, token = t(body.token, 64);
+          if (token) th = await env.DB.prepare("SELECT * FROM chat_threads WHERE token = ?").bind(token).first();
+          if (!th) {
+            const ipRaw = request.headers.get("CF-Connecting-IP") || "";
+            const ipHash = ipRaw ? [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ipRaw + "slp")))].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("") : null;
+            if (ipHash) {
+              const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM chat_threads WHERE ip_hash = ? AND created_at >= datetime('now', '-1 hour')").bind(ipHash).first();
+              if (r && r.n >= 6) return json({ ok: false, error: "Trop de conversations d'un coup : appelez-nous au 06 31 94 96 53." }, 429, origin);
+            }
+            token = [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, "0")).join("");
+            await env.DB.prepare("INSERT INTO chat_threads (token, name, contact, page, lang, city, ip_hash, site, created_at, last_visitor_at) VALUES (?,?,?,?,?,?,?,?,?,?)")
+              .bind(token, t(body.name, 80) || null, t(body.contact, 120) || null, t(body.page, 200) || null, t(body.lang, 4) || "fr", cf.city || null, ipHash, siteFromRequest(request, body), now(), now()).run();
+            th = await env.DB.prepare("SELECT * FROM chat_threads WHERE token = ?").bind(token).first();
+          } else {
+            const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM chat_messages WHERE thread_id = ? AND sender = 'visitor' AND created_at >= datetime('now', '-10 minutes')").bind(th.id).first();
+            if (r && r.n >= 20) return json({ ok: false, error: "Un peu de calme 🙂 réessayez dans quelques minutes." }, 429, origin);
+          }
+          if (th.status === "closed") await env.DB.prepare("UPDATE chat_threads SET status = 'open' WHERE id = ?").bind(th.id).run();
+          const nm = t(body.name, 80), ct = t(body.contact, 120);
+          if (nm || ct) await env.DB.prepare("UPDATE chat_threads SET name = COALESCE(?, name), contact = COALESCE(?, contact) WHERE id = ?").bind(nm || null, ct || null, th.id).run();
+          const ins = await env.DB.prepare("INSERT INTO chat_messages (thread_id, sender, body, created_at) VALUES (?, 'visitor', ?, ?)").bind(th.id, text, now()).run();
+          await env.DB.prepare("UPDATE chat_threads SET last_visitor_at = ?, unread_admin = unread_admin + 1 WHERE id = ?").bind(now(), th.id).run();
+          // Mail de notification : au plus un toutes les 10 min par conversation (ou tout de suite si le visiteur laisse ses coordonnées)
+          const fresh = await env.DB.prepare("SELECT * FROM chat_threads WHERE id = ?").bind(th.id).first();
+          const lastN = fresh.notified_at ? Date.parse(fresh.notified_at.replace(" ", "T") + "Z") : 0;
+          if (Date.now() - lastN > 10 * 60 * 1000 || ct) {
+            try {
+              const resendKey = typeof env.RESEND_API_KEY?.get === "function" ? await env.RESEND_API_KEY.get() : env.RESEND_API_KEY;
+              if (resendKey) {
+                const esc = (x) => String(x || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+                const who = fresh.name || "Un visiteur";
+                await fetch("https://api.resend.com/emails", {
+                  method: "POST", headers: { "Authorization": `Bearer ${resendKey}`, "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    from: "Chat SLP <contact@soundlightprod.fr>", to: ["contact@soundlightprod.fr"],
+                    subject: `💬 Chat SLP : ${who} — ${text.slice(0, 60)}`,
+                    html: `<p><b>${esc(who)}</b> vous écrit sur le site${fresh.city ? ` (${esc(fresh.city)})` : ""}${fresh.page ? `, page « ${esc(fresh.page)} »` : ""}.</p><p style="white-space:pre-wrap;border-left:3px solid #ffb238;padding-left:10px">${esc(text)}</p>${fresh.contact ? `<p>Coordonnées laissées : <b>${esc(fresh.contact)}</b></p>` : ""}<p><a href="https://soundlightprod.fr/admin.html#chat">Répondre dans l'admin → onglet Chat</a></p>`,
+                  }),
+                });
+                await env.DB.prepare("UPDATE chat_threads SET notified_at = ? WHERE id = ?").bind(now(), th.id).run();
+              }
+            } catch (e) { /* la conversation est enregistrée quoi qu'il arrive */ }
+          }
+          return json({ ok: true, token, id: ins.meta && ins.meta.last_row_id }, 200, origin);
+        }
+
+        // GET /api/chat/poll?token=&after= — nouveaux messages (de Nj) + présence
+        if (url.pathname === "/api/chat/poll" && request.method === "GET") {
+          const th = await env.DB.prepare("SELECT * FROM chat_threads WHERE token = ?").bind(t(url.searchParams.get("token"), 64)).first();
+          if (!th) return json({ ok: false, gone: true }, 200, origin);
+          const after = parseInt(url.searchParams.get("after") || "0", 10) || 0;
+          const rows = await env.DB.prepare("SELECT id, sender, body, created_at FROM chat_messages WHERE thread_id = ? AND id > ? AND sender = 'admin' ORDER BY id LIMIT 50").bind(th.id, after).all();
+          const pres = await env.DB.prepare("SELECT last_seen FROM chat_presence WHERE id = 1").first();
+          const online = !!(pres && Date.now() - Date.parse(pres.last_seen.replace(" ", "T") + "Z") < 3 * 60 * 1000);
+          return json({ ok: true, messages: rows.results || [], online, closed: th.status === "closed" }, 200, origin);
+        }
+
+        // ----- Admin -----
+        if (url.pathname.startsWith("/api/admin/chat/")) {
+          if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+          // GET /api/admin/chat/threads — liste (et marque Nj « en ligne »)
+          if (url.pathname === "/api/admin/chat/threads" && request.method === "GET") {
+            await env.DB.prepare("INSERT INTO chat_presence (id, last_seen) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET last_seen = excluded.last_seen").bind(now()).run();
+            const rows = await env.DB.prepare(
+              "SELECT t.id, t.name, t.contact, t.page, t.lang, t.city, t.status, t.unread_admin, t.created_at, t.last_visitor_at, " +
+              "(SELECT body FROM chat_messages m WHERE m.thread_id = t.id ORDER BY m.id DESC LIMIT 1) AS last_body, " +
+              "(SELECT sender FROM chat_messages m WHERE m.thread_id = t.id ORDER BY m.id DESC LIMIT 1) AS last_sender " +
+              "FROM chat_threads t ORDER BY t.unread_admin > 0 DESC, t.last_visitor_at DESC LIMIT 100"
+            ).all();
+            return json({ ok: true, threads: rows.results || [] }, 200, origin);
+          }
+          // GET /api/admin/chat/thread?id= — messages d'une conversation (marque comme lue)
+          if (url.pathname === "/api/admin/chat/thread" && request.method === "GET") {
+            const id = parseInt(url.searchParams.get("id") || "0", 10);
+            const th = await env.DB.prepare("SELECT id, name, contact, page, lang, city, status, created_at FROM chat_threads WHERE id = ?").bind(id).first();
+            if (!th) return json({ error: "Conversation introuvable" }, 404, origin);
+            await env.DB.prepare("UPDATE chat_threads SET unread_admin = 0 WHERE id = ?").bind(id).run();
+            await env.DB.prepare("INSERT INTO chat_presence (id, last_seen) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET last_seen = excluded.last_seen").bind(now()).run();
+            const rows = await env.DB.prepare("SELECT id, sender, body, created_at FROM chat_messages WHERE thread_id = ? ORDER BY id").bind(id).all();
+            return json({ ok: true, thread: th, messages: rows.results || [] }, 200, origin);
+          }
+          // POST /api/admin/chat/reply — { id, body }
+          if (url.pathname === "/api/admin/chat/reply" && request.method === "POST") {
+            const body = await request.json().catch(() => ({}));
+            const id = parseInt(body.id || 0, 10), text = t(body.body, 2000);
+            if (!id || !text) return json({ error: "Message vide" }, 400, origin);
+            const th = await env.DB.prepare("SELECT id FROM chat_threads WHERE id = ?").bind(id).first();
+            if (!th) return json({ error: "Conversation introuvable" }, 404, origin);
+            await env.DB.prepare("INSERT INTO chat_messages (thread_id, sender, body, created_at) VALUES (?, 'admin', ?, ?)").bind(id, text, now()).run();
+            await env.DB.prepare("UPDATE chat_threads SET status = 'open', unread_admin = 0 WHERE id = ?").bind(id).run();
+            await env.DB.prepare("INSERT INTO chat_presence (id, last_seen) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET last_seen = excluded.last_seen").bind(now()).run();
+            return json({ ok: true }, 200, origin);
+          }
+          // POST /api/admin/chat/close — { id } ; DELETE via { id, delete: true }
+          if (url.pathname === "/api/admin/chat/close" && request.method === "POST") {
+            const body = await request.json().catch(() => ({}));
+            const id = parseInt(body.id || 0, 10);
+            if (!id) return json({ error: "id manquant" }, 400, origin);
+            if (body.delete) { await env.DB.prepare("DELETE FROM chat_messages WHERE thread_id = ?").bind(id).run(); await env.DB.prepare("DELETE FROM chat_threads WHERE id = ?").bind(id).run(); }
+            else await env.DB.prepare("UPDATE chat_threads SET status = 'closed' WHERE id = ?").bind(id).run();
+            return json({ ok: true }, 200, origin);
+          }
+        }
       }
 
       // POST /api/contact — formulaire de contact : enregistré dans D1 (jamais perdu) puis envoyé par mail via Resend

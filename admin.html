@@ -367,6 +367,7 @@
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">8. 📦 Suivi des commandes</button>
     <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 🌤 Météo & visites</button>
     <button class="tab-btn" id="tabBtn-devices" onclick="switchTab('devices')">10. 📱 Mes appareils</button>
+    <button class="tab-btn" id="tabBtn-chat" onclick="switchTab('chat')">11. 💬 Chat <span id="chatBadge" style="display:none;background:#FF0953;color:#fff;border-radius:10px;padding:0 7px;font-size:.75rem;margin-left:4px;"></span></button>
   </div>
 
   <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
@@ -978,6 +979,25 @@
     </div>
   </div>
 
+  <!-- ============ ONGLET 11 : CHAT EN DIRECT ============ -->
+  <div class="tab-content" id="tab-chat">
+    <h2>Chat en direct</h2>
+    <p class="vz-sub">Les visiteurs du site t'écrivent ici ; tant que cet onglet est ouvert, ils te voient « en ligne ». Tu reçois aussi un mail à chaque nouvelle conversation.</p>
+    <div style="display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:14px;align-items:start;">
+      <div class="vz-card" style="padding:8px;max-height:70vh;overflow:auto;"><div id="chatList"></div></div>
+      <div class="vz-card" id="chatPane" style="display:flex;flex-direction:column;min-height:50vh;">
+        <div id="chatHead" style="font-weight:700;margin-bottom:8px;">Choisis une conversation</div>
+        <div id="chatMsgs" style="flex:1;overflow:auto;max-height:50vh;display:flex;flex-direction:column;gap:6px;"></div>
+        <form id="chatForm" onsubmit="chatReply(event)" style="display:none;gap:8px;margin-top:10px;">
+          <input id="chatInput" type="text" maxlength="2000" placeholder="Ta réponse…" style="flex:1;padding:10px;border-radius:8px;border:1px solid #666;background:transparent;color:inherit;font-size:16px;">
+          <button class="period-btn" type="submit">Envoyer</button>
+          <button class="period-btn" type="button" onclick="chatClose(false)">Clore</button>
+          <button class="period-btn" type="button" onclick="chatClose(true)">Suppr.</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ ONGLET 10 : MES APPAREILS (exclure mes visites) ============ -->
   <div class="tab-content" id="tab-devices">
     <h2>Mes appareils</h2>
@@ -1343,11 +1363,62 @@
       if (slot && form && form.parentElement !== slot) slot.appendChild(form);
     }
     if (name === 'groupview') renderGroupView();
+    if (name === 'chat') { chatStartPolling(); try { history.replaceState(null,'','#chat'); } catch(e){} }
     if (name === 'visits'){ refreshStats(); try { const v = localStorage.getItem('slp_vpane'); if (v) switchVisitsPane(v); } catch(e){} }
     if (name === 'access'){
       document.getElementById('icsFeedUrl').value = `${API_BASE}/api/agenda.ics?key=${encodeURIComponent(token)}`;
     }
   }
+
+
+  // ---------- Chat en direct ----------
+  let chatCur = 0, chatTimer = null, chatLastCount = 0;
+  const chatEsc = x => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  async function chatApi(path, body){
+    const r = await fetch(path, body ? { method:'POST', headers:{ Authorization:`Bearer ${token}`, 'Content-Type':'application/json' }, body: JSON.stringify(body) } : { headers:{ Authorization:`Bearer ${token}` } });
+    return r.json();
+  }
+  async function chatLoadList(){
+    if (!token) return;
+    try {
+      const j = await chatApi('/api/admin/chat/threads');
+      if (!j.ok) return;
+      const unread = j.threads.reduce((n,t) => n + (t.unread_admin||0), 0);
+      const b = document.getElementById('chatBadge'); b.style.display = unread ? 'inline' : 'none'; b.textContent = unread;
+      document.getElementById('chatList').innerHTML = j.threads.length ? j.threads.map(t => `<div onclick="chatOpen(${t.id})" style="cursor:pointer;padding:9px;border-radius:8px;margin-bottom:4px;${t.id===chatCur?'background:rgba(251,198,8,.15);':''}border:1px solid rgba(255,255,255,.1);">
+        <b>${chatEsc(t.name || 'Visiteur')}${t.city?' · '+chatEsc(t.city):''}</b>${t.unread_admin?` <span style="background:#FF0953;color:#fff;border-radius:10px;padding:0 6px;font-size:.72rem;">${t.unread_admin}</span>`:''}${t.status==='closed'?' <small>(close)</small>':''}
+        <div style="font-size:.8rem;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.last_sender==='admin'?'Toi : ':''}${chatEsc(t.last_body||'')}</div></div>`).join('') : '<p style="padding:8px;opacity:.7;">Aucune conversation pour le moment.</p>';
+      if (chatCur && unread) chatOpen(chatCur, true);
+    } catch(e){}
+  }
+  async function chatOpen(id, keepScroll){
+    chatCur = id;
+    const j = await chatApi('/api/admin/chat/thread?id=' + id);
+    if (!j.ok) return;
+    const t = j.thread;
+    document.getElementById('chatHead').innerHTML = `${chatEsc(t.name||'Visiteur')}${t.city?' · '+chatEsc(t.city):''} <small style="font-weight:400;opacity:.7;">${t.contact?' · '+chatEsc(t.contact):''} · ${chatEsc(t.page||'')} · ${chatEsc(t.created_at)}</small>`;
+    const box = document.getElementById('chatMsgs');
+    box.innerHTML = j.messages.map(m => `<div style="max-width:80%;padding:8px 12px;border-radius:12px;white-space:pre-wrap;${m.sender==='admin'?'align-self:flex-end;background:#FBC608;color:#0C0A14;':'align-self:flex-start;background:rgba(255,255,255,.12);'}">${chatEsc(m.body)}<div style="font-size:.68rem;opacity:.6;">${chatEsc(m.created_at)}</div></div>`).join('');
+    if (!keepScroll || j.messages.length !== chatLastCount) box.scrollTop = box.scrollHeight;
+    chatLastCount = j.messages.length;
+    document.getElementById('chatForm').style.display = 'flex';
+    chatLoadList();
+  }
+  async function chatReply(e){
+    e.preventDefault();
+    const i = document.getElementById('chatInput'), v = i.value.trim();
+    if (!v || !chatCur) return;
+    i.value = '';
+    await chatApi('/api/admin/chat/reply', { id: chatCur, body: v });
+    chatOpen(chatCur);
+  }
+  async function chatClose(del){
+    if (!chatCur || (del && !confirm('Supprimer cette conversation ?'))) return;
+    await chatApi('/api/admin/chat/close', { id: chatCur, delete: !!del });
+    if (del) { chatCur = 0; document.getElementById('chatMsgs').innerHTML = ''; document.getElementById('chatForm').style.display = 'none'; document.getElementById('chatHead').textContent = 'Choisis une conversation'; }
+    chatLoadList();
+  }
+  function chatStartPolling(){ clearInterval(chatTimer); chatLoadList(); chatTimer = setInterval(() => { if (document.visibilityState === 'visible') chatLoadList(); }, 6000); }
 
   function switchVisitsPane(name){
     document.querySelectorAll('.vp-pane').forEach(el => el.classList.toggle('active', el.id === 'vp-' + name));
@@ -1432,6 +1503,8 @@
     await loadOrders();
     await loadStock();
     refreshStats();
+    chatStartPolling();
+    if (location.hash === '#chat') switchTab('chat');
   }
 
   let lastStatsRefresh = 0;
