@@ -180,11 +180,10 @@ def jsonld(p):
         'itemCondition': 'https://schema.org/NewCondition',
         'seller': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': ORG + '/'},
         'shippingDetails': {'@type': 'OfferShippingDetails',
-                            'shippingRate': {'@type': 'MonetaryAmount', 'value': 0, 'currency': 'EUR'},
                             'shippingDestination': {'@type': 'DefinedRegion', 'addressCountry': 'FR'},
                             'deliveryTime': {'@type': 'ShippingDeliveryTime',
-                                             'handlingTime': {'@type': 'QuantitativeValue', 'minValue': 1, 'maxValue': 2, 'unitCode': 'DAY'},
-                                             'transitTime': {'@type': 'QuantitativeValue', 'minValue': 2, 'maxValue': 5, 'unitCode': 'DAY'}}},
+                                             'handlingTime': {'@type': 'QuantitativeValue', 'minValue': 0, 'maxValue': 2, 'unitCode': 'DAY'},
+                                             'transitTime': {'@type': 'QuantitativeValue', 'minValue': 1, 'maxValue': 8, 'unitCode': 'DAY'}}},  # délai total : 10 jours maximum
         'hasMerchantReturnPolicy': {'@type': 'MerchantReturnPolicy', 'applicableCountry': 'FR',
                                     'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
                                     'merchantReturnDays': 14, 'returnMethod': 'https://schema.org/ReturnByMail',
