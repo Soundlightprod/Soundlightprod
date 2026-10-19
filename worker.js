@@ -259,7 +259,7 @@ function withVideoTracking(resp, url) {
   const ct = resp.headers.get("Content-Type") || "";
   if (!ct.includes("text/html") || /^\/(admin|mon-agenda)/.test(url.pathname)) return resp;
   return new HTMLRewriter().on("body", {
-    element(el) { el.append('<script src="/yt-track.js" defer></script>', { html: true }); },
+    element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script>', { html: true }); },
   }).transform(resp);
 }
 
