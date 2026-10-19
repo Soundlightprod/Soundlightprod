@@ -274,9 +274,12 @@
   }
   function stopLive() { liveOn = false; form.classList.remove('on'); }
 
+  function setSub(online) { var sm = box.querySelector('#slpc-h small'); if (sm) sm.textContent = online ? '🟢 ' + ({ fr: 'En ligne', en: 'Online', es: 'En línea', it: 'Online' })[L] : t.sub; }
+  function refreshStatus() { api('/api/chat/status').then(function (j) { if (j && j.ok) setSub(j.online); }).catch(function () {}); }
   var opened = false;
   function toggle(on) {
     box.classList.toggle('on', on); tip.style.display = 'none';
+    if (on) refreshStatus();
     if (on && !opened) { opened = true; if (tok) { say(t.hello); live(true); } else menu(true); }
     if (on && tok) { tip.textContent = t.teaser; poll(); }
     btn.setAttribute('aria-expanded', on ? 'true' : 'false');

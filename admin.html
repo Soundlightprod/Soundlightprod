@@ -993,6 +993,13 @@
   <div class="tab-content" id="tab-chat">
     <h2>Chat en direct</h2>
     <p class="vz-sub">Les visiteurs du site t'écrivent ici ; tant que cet onglet est ouvert, ils te voient « en ligne ». Tu reçois aussi un mail à chaque nouvelle conversation.</p>
+    <div class="vz-card" style="margin-bottom:12px;">
+      <div class="vz-card-h"><h3>Mes disponibilités <span id="chatOnlineState" style="font-weight:400;font-size:.85rem;"></span></h3></div>
+      <label style="display:block;margin-bottom:8px;"><input type="checkbox" id="chatEnabled" checked> Chat disponible (décoche pour te mettre hors ligne : les visiteurs sont invités à laisser leurs coordonnées)</label>
+      <div id="chatDays" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">De <select id="chatStartH"></select> à <select id="chatEndH"></select> <small>(heure de Paris)</small>
+        <button class="period-btn" type="button" onclick="chatSaveSettings()">Enregistrer</button> <span id="chatSetMsg" class="vz-note"></span></div>
+    </div>
     <p style="margin:0 0 12px;"><button class="period-btn" type="button" id="pushBtn" onclick="chatEnablePush()">🔔 Activer les notifications sur cet appareil</button> <span id="pushMsg" class="vz-note"></span></p>
     <div class="chat-grid">
       <div class="vz-card" style="padding:8px;max-height:70vh;overflow:auto;"><div id="chatList"></div></div>
@@ -1374,7 +1381,7 @@
       if (slot && form && form.parentElement !== slot) slot.appendChild(form);
     }
     if (name === 'groupview') renderGroupView();
-    if (name === 'chat') { chatStartPolling(); try { history.replaceState(null,'','#chat'); } catch(e){} }
+    if (name === 'chat') { chatLoadSettings(); chatStartPolling(); try { history.replaceState(null,'','#chat'); } catch(e){} }
     if (name === 'visits'){ refreshStats(); try { const v = localStorage.getItem('slp_vpane'); if (v) switchVisitsPane(v); } catch(e){} }
     if (name === 'access'){
       document.getElementById('icsFeedUrl').value = `${API_BASE}/api/agenda.ics?key=${encodeURIComponent(token)}`;
@@ -1406,6 +1413,31 @@
       await chatApi('/api/admin/chat/push-test', {});
       msg.textContent = '✅ Activé : une notification de test vient de partir.';
     } catch(e){ msg.textContent = 'Échec : ' + (e && e.message || e); }
+  }
+  const CHAT_DAYS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  function chatInitSettingsUi(){
+    document.getElementById('chatDays').innerHTML = CHAT_DAYS.map((d,i) => `<label><input type="checkbox" class="chatDay" value="${i+1}"> ${d}</label>`).join('');
+    const opts = n0 => Array.from({length:25-n0}, (_,i) => `<option value="${i+n0}">${String(i+n0).padStart(2,'0')}h</option>`).join('');
+    document.getElementById('chatStartH').innerHTML = opts(0); document.getElementById('chatEndH').innerHTML = opts(1);
+  }
+  async function chatLoadSettings(){
+    try {
+      if (!document.querySelector('.chatDay')) chatInitSettingsUi();
+      const j = await chatApi('/api/admin/chat/settings'); if (!j.ok) return;
+      chatApplySettings(j);
+    } catch(e){}
+  }
+  function chatApplySettings(j){
+    const c = j.settings, days = String(c.days).split(',');
+    document.getElementById('chatEnabled').checked = !!c.enabled;
+    document.querySelectorAll('.chatDay').forEach(el => el.checked = days.includes(el.value));
+    document.getElementById('chatStartH').value = c.start_h; document.getElementById('chatEndH').value = c.end_h;
+    document.getElementById('chatOnlineState').textContent = j.online ? '· 🟢 en ligne en ce moment' : '· ⚪ hors ligne en ce moment';
+  }
+  async function chatSaveSettings(){
+    const days = [...document.querySelectorAll('.chatDay:checked')].map(e => e.value).join(',');
+    const j = await chatApi('/api/admin/chat/settings', { enabled: document.getElementById('chatEnabled').checked, days, start_h: document.getElementById('chatStartH').value, end_h: document.getElementById('chatEndH').value });
+    if (j.ok) { chatApplySettings(j); document.getElementById('chatSetMsg').textContent = '✅ Enregistré'; setTimeout(() => document.getElementById('chatSetMsg').textContent = '', 2500); }
   }
   async function chatLoadList(){
     if (!token) return;

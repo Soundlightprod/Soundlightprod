@@ -45,6 +45,7 @@ async function ensureChatTables(env) {
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_threads (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE NOT NULL, name TEXT, contact TEXT, page TEXT, lang TEXT, city TEXT, ip_hash TEXT, site TEXT, status TEXT DEFAULT 'open', unread_admin INTEGER DEFAULT 0, notified_at TEXT, created_at TEXT, last_visitor_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_messages (id INTEGER PRIMARY KEY AUTOINCREMENT, thread_id INTEGER NOT NULL, sender TEXT NOT NULL, body TEXT NOT NULL, created_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_presence (id INTEGER PRIMARY KEY, last_seen TEXT)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_settings (id INTEGER PRIMARY KEY, enabled INTEGER DEFAULT 1, days TEXT DEFAULT '1,2,3,4,5', start_h INTEGER DEFAULT 10, end_h INTEGER DEFAULT 20)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS push_subs (id INTEGER PRIMARY KEY AUTOINCREMENT, endpoint TEXT UNIQUE NOT NULL, p256dh TEXT, auth TEXT, created_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS push_vapid (id INTEGER PRIMARY KEY, pub TEXT, priv TEXT)"),
   ]);
@@ -81,6 +82,19 @@ async function sendAdminPush(env) {
   }));
 }
 
+async function chatSettings(env) {
+  const r = await env.DB.prepare("SELECT enabled, days, start_h, end_h FROM chat_settings WHERE id = 1").first();
+  return r || { enabled: 1, days: "1,2,3,4,5", start_h: 10, end_h: 20 };
+}
+// En ligne = disponibilité activée ET jour/heure dans la plage (heure de Paris). Par défaut : lundi-vendredi 10h-20h.
+async function chatIsOnline(env) {
+  const c = await chatSettings(env);
+  if (!c.enabled) return false;
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", weekday: "short", hour: "numeric", hour12: false }).formatToParts(new Date());
+  const wd = ({ Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 })[parts.find((p) => p.type === "weekday").value];
+  const h = parseInt(parts.find((p) => p.type === "hour").value, 10) % 24;
+  return String(c.days).split(",").map(Number).includes(wd) && h >= c.start_h && h < c.end_h;
+}
 function requireAdmin(request, env) {
   const auth = request.headers.get("Authorization") || "";
   const token = auth.replace("Bearer ", "");
@@ -1174,20 +1188,31 @@ export default {
           return json({ ok: true, token, id: ins.meta && ins.meta.last_row_id }, 200, origin);
         }
 
+        if (url.pathname === "/api/chat/status" && request.method === "GET") return json({ ok: true, online: await chatIsOnline(env) }, 200, origin);
+
         // GET /api/chat/poll?token=&after= — nouveaux messages (de Nj) + présence
         if (url.pathname === "/api/chat/poll" && request.method === "GET") {
           const th = await env.DB.prepare("SELECT * FROM chat_threads WHERE token = ?").bind(t(url.searchParams.get("token"), 64)).first();
           if (!th) return json({ ok: false, gone: true }, 200, origin);
           const after = parseInt(url.searchParams.get("after") || "0", 10) || 0;
           const rows = await env.DB.prepare("SELECT id, sender, body, created_at FROM chat_messages WHERE thread_id = ? AND id > ? AND sender = 'admin' ORDER BY id LIMIT 50").bind(th.id, after).all();
-          const pres = await env.DB.prepare("SELECT last_seen FROM chat_presence WHERE id = 1").first();
-          const online = !!(pres && Date.now() - Date.parse(pres.last_seen.replace(" ", "T") + "Z") < 3 * 60 * 1000);
+          const online = await chatIsOnline(env);
           return json({ ok: true, messages: rows.results || [], online, closed: th.status === "closed" }, 200, origin);
         }
 
         // ----- Admin -----
         if (url.pathname.startsWith("/api/admin/chat/")) {
           if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+          if (url.pathname === "/api/admin/chat/settings") {
+            if (request.method === "POST") {
+              const b = await request.json().catch(() => ({}));
+              const days = [...new Set(String(b.days || "").split(",").map(Number).filter((n) => n >= 1 && n <= 7))].sort().join(",");
+              const sh = Math.min(23, Math.max(0, parseInt(b.start_h, 10) || 0)), eh = Math.min(24, Math.max(sh + 1, parseInt(b.end_h, 10) || 24));
+              await env.DB.prepare("INSERT INTO chat_settings (id, enabled, days, start_h, end_h) VALUES (1,?,?,?,?) ON CONFLICT(id) DO UPDATE SET enabled = excluded.enabled, days = excluded.days, start_h = excluded.start_h, end_h = excluded.end_h")
+                .bind(b.enabled ? 1 : 0, days, sh, eh).run();
+            }
+            return json({ ok: true, settings: await chatSettings(env), online: await chatIsOnline(env) }, 200, origin);
+          }
           // Notifications push : clé publique + abonnement de cet appareil
           if (url.pathname === "/api/admin/chat/push-key" && request.method === "GET") {
             const v = await getVapid(env); return json({ ok: true, key: v.pub }, 200, origin);
