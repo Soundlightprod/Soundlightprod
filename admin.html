@@ -983,6 +983,7 @@
   <div class="tab-content" id="tab-chat">
     <h2>Chat en direct</h2>
     <p class="vz-sub">Les visiteurs du site t'écrivent ici ; tant que cet onglet est ouvert, ils te voient « en ligne ». Tu reçois aussi un mail à chaque nouvelle conversation.</p>
+    <p style="margin:0 0 12px;"><button class="period-btn" type="button" id="pushBtn" onclick="chatEnablePush()">🔔 Activer les notifications sur cet appareil</button> <span id="pushMsg" class="vz-note"></span></p>
     <div style="display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:14px;align-items:start;">
       <div class="vz-card" style="padding:8px;max-height:70vh;overflow:auto;"><div id="chatList"></div></div>
       <div class="vz-card" id="chatPane" style="display:flex;flex-direction:column;min-height:50vh;">
@@ -1377,6 +1378,23 @@
   async function chatApi(path, body){
     const r = await fetch(path, body ? { method:'POST', headers:{ Authorization:`Bearer ${token}`, 'Content-Type':'application/json' }, body: JSON.stringify(body) } : { headers:{ Authorization:`Bearer ${token}` } });
     return r.json();
+  }
+  async function chatEnablePush(){
+    const msg = document.getElementById('pushMsg');
+    try {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) { msg.textContent = "Ce navigateur ne gère pas les notifications. Sur iPhone : ajoute d'abord l'admin à l'écran d'accueil (Partager → Sur l'écran d'accueil), puis rouvre-le depuis l'icône."; return; }
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') { msg.textContent = 'Notifications refusées : autorise-les dans les réglages du navigateur.'; return; }
+      const reg = await navigator.serviceWorker.ready;
+      const k = await chatApi('/api/admin/chat/push-key');
+      const raw = atob(k.key.replace(/-/g,'+').replace(/_/g,'/')), arr = Uint8Array.from(raw, c => c.charCodeAt(0));
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: arr });
+      const r = await chatApi('/api/admin/chat/push-subscribe', { subscription: sub.toJSON() });
+      if (!r.ok) throw new Error(r.error || 'erreur');
+      await chatApi('/api/admin/chat/push-test', {});
+      msg.textContent = '✅ Activé : une notification de test vient de partir.';
+    } catch(e){ msg.textContent = 'Échec : ' + (e && e.message || e); }
   }
   async function chatLoadList(){
     if (!token) return;

@@ -45,7 +45,40 @@ async function ensureChatTables(env) {
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_threads (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE NOT NULL, name TEXT, contact TEXT, page TEXT, lang TEXT, city TEXT, ip_hash TEXT, site TEXT, status TEXT DEFAULT 'open', unread_admin INTEGER DEFAULT 0, notified_at TEXT, created_at TEXT, last_visitor_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_messages (id INTEGER PRIMARY KEY AUTOINCREMENT, thread_id INTEGER NOT NULL, sender TEXT NOT NULL, body TEXT NOT NULL, created_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_presence (id INTEGER PRIMARY KEY, last_seen TEXT)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS push_subs (id INTEGER PRIMARY KEY AUTOINCREMENT, endpoint TEXT UNIQUE NOT NULL, p256dh TEXT, auth TEXT, created_at TEXT)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS push_vapid (id INTEGER PRIMARY KEY, pub TEXT, priv TEXT)"),
   ]);
+}
+
+const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+async function getVapid(env) {
+  let row = await env.DB.prepare("SELECT pub, priv FROM push_vapid WHERE id = 1").first();
+  if (!row) {
+    const kp = await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, ["sign", "verify"]);
+    const pub = b64u(await crypto.subtle.exportKey("raw", kp.publicKey));
+    const priv = JSON.stringify(await crypto.subtle.exportKey("jwk", kp.privateKey));
+    await env.DB.prepare("INSERT OR IGNORE INTO push_vapid (id, pub, priv) VALUES (1, ?, ?)").bind(pub, priv).run();
+    row = await env.DB.prepare("SELECT pub, priv FROM push_vapid WHERE id = 1").first();
+  }
+  return row;
+}
+// Notification push (sans contenu) vers les appareils d'admin abonnés ; le service worker affiche le texte.
+async function sendAdminPush(env) {
+  const subs = (await env.DB.prepare("SELECT id, endpoint FROM push_subs").all()).results || [];
+  if (!subs.length) return;
+  const v = await getVapid(env);
+  const key = await crypto.subtle.importKey("jwk", JSON.parse(v.priv), { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
+  const enc = new TextEncoder();
+  await Promise.all(subs.map(async (sub) => {
+    try {
+      const aud = new URL(sub.endpoint).origin;
+      const head = b64u(enc.encode(JSON.stringify({ typ: "JWT", alg: "ES256" })));
+      const claims = b64u(enc.encode(JSON.stringify({ aud, exp: Math.floor(Date.now() / 1000) + 12 * 3600, sub: "mailto:contact@soundlightprod.fr" })));
+      const sig = await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, key, enc.encode(head + "." + claims));
+      const r = await fetch(sub.endpoint, { method: "POST", headers: { Authorization: `vapid t=${head}.${claims}.${b64u(sig)}, k=${v.pub}`, TTL: "3600", Urgency: "high" } });
+      if (r.status === 404 || r.status === 410) await env.DB.prepare("DELETE FROM push_subs WHERE id = ?").bind(sub.id).run();
+    } catch (e) { /* push best-effort */ }
+  }));
 }
 
 function requireAdmin(request, env) {
@@ -1115,6 +1148,7 @@ export default {
           if (nm || ct) await env.DB.prepare("UPDATE chat_threads SET name = COALESCE(?, name), contact = COALESCE(?, contact) WHERE id = ?").bind(nm || null, ct || null, th.id).run();
           const ins = await env.DB.prepare("INSERT INTO chat_messages (thread_id, sender, body, created_at) VALUES (?, 'visitor', ?, ?)").bind(th.id, text, now()).run();
           await env.DB.prepare("UPDATE chat_threads SET last_visitor_at = ?, unread_admin = unread_admin + 1 WHERE id = ?").bind(now(), th.id).run();
+          try { await sendAdminPush(env); } catch (e) {}
           // Mail de notification : au plus un toutes les 10 min par conversation (ou tout de suite si le visiteur laisse ses coordonnées)
           const fresh = await env.DB.prepare("SELECT * FROM chat_threads WHERE id = ?").bind(th.id).first();
           const lastN = fresh.notified_at ? Date.parse(fresh.notified_at.replace(" ", "T") + "Z") : 0;
@@ -1153,6 +1187,21 @@ export default {
         // ----- Admin -----
         if (url.pathname.startsWith("/api/admin/chat/")) {
           if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+          // Notifications push : clé publique + abonnement de cet appareil
+          if (url.pathname === "/api/admin/chat/push-key" && request.method === "GET") {
+            const v = await getVapid(env); return json({ ok: true, key: v.pub }, 200, origin);
+          }
+          if (url.pathname === "/api/admin/chat/push-subscribe" && request.method === "POST") {
+            const body = await request.json().catch(() => ({}));
+            const sub = body.subscription || {};
+            if (!sub.endpoint || !/^https:\/\//.test(sub.endpoint)) return json({ error: "Abonnement invalide" }, 400, origin);
+            await env.DB.prepare("INSERT INTO push_subs (endpoint, p256dh, auth, created_at) VALUES (?,?,?,?) ON CONFLICT(endpoint) DO UPDATE SET p256dh = excluded.p256dh, auth = excluded.auth")
+              .bind(sub.endpoint, t(sub.keys && sub.keys.p256dh, 200) || null, t(sub.keys && sub.keys.auth, 100) || null, now()).run();
+            return json({ ok: true }, 200, origin);
+          }
+          if (url.pathname === "/api/admin/chat/push-test" && request.method === "POST") {
+            await sendAdminPush(env); return json({ ok: true }, 200, origin);
+          }
           // GET /api/admin/chat/threads — liste (et marque Nj « en ligne »)
           if (url.pathname === "/api/admin/chat/threads" && request.method === "GET") {
             await env.DB.prepare("INSERT INTO chat_presence (id, last_seen) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET last_seen = excluded.last_seen").bind(now()).run();
