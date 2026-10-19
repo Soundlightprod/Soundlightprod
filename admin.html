@@ -183,6 +183,13 @@
   @media (max-width:760px){
     body{padding:14px;}
     table{display:block; overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;}
+    /* Recherches Google : tient dans l'écran sans scroll (Site, Recherche, Impressions) */
+    table.mt-req{display:table; table-layout:fixed; width:100%; white-space:normal; overflow:visible;}
+    table.mt-req th, table.mt-req td{padding:6px 4px; word-break:break-word;}
+    table.mt-req th:nth-child(1), table.mt-req td:nth-child(1){width:2.6rem;}
+    table.mt-req th:nth-child(3), table.mt-req td:nth-child(3){width:4.6rem;}
+    table.mt-req th:nth-child(4), table.mt-req td:nth-child(4), table.mt-req th:nth-child(5), table.mt-req td:nth-child(5){display:none;}
+    table.mt-req .mt-imp{display:none;}
     /* Tableaux en cartes sur téléphone : une carte par ligne, libellé à gauche, valeur à droite */
     table.m-cards{display:block; white-space:normal; overflow:visible;}
     table.m-cards thead{display:none;}
@@ -952,7 +959,7 @@
     </div>
     <div class="vz-card">
       <div class="vz-card-h"><h3>Recherches qui font apparaître les sites</h3><span class="vz-note">★ = suivie en priorité · 28 derniers jours</span></div>
-      <div style="overflow-x:auto;"><table><thead><tr><th>Site</th><th>Recherche</th><th style="text-align:right">Impressions</th><th style="text-align:right">Clics</th><th style="text-align:right">Position</th></tr></thead><tbody id="mtRequetes"></tbody></table></div>
+      <div style="overflow-x:auto;"><table class="mt-req"><thead><tr><th>Site</th><th>Recherche</th><th style="text-align:right">Impressions</th><th style="text-align:right">Clics</th><th style="text-align:right">Position</th></tr></thead><tbody id="mtRequetes"></tbody></table></div>
     </div>
 
     <h2>Mails Brevo</h2>
