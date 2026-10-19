@@ -305,6 +305,7 @@ function withVideoTracking(resp, url) {
 }
 
 function domainFromRequest(request) { try { const o = request.headers.get("Origin") || request.headers.get("Referer") || ""; return o ? new URL(o).hostname.toLowerCase().replace(/^www\./, "").slice(0, 60) : null; } catch (e) { return null; } }
+function langFromReferer(request) { try { const m = new URL(request.headers.get("Referer") || "").pathname.match(/^\/(en|es|it)(\/|$)/); return m ? m[1] : "fr"; } catch (e) { return "fr"; } }
 function siteFromRequest(request, body) { const o = (request.headers.get("Origin") || request.headers.get("Referer") || "").toLowerCase(); if (o.includes("soundlightprod.store")) return "store"; if (o.includes("bookmyband")) return "bmb"; if (o.includes("csanimations")) return "csa"; if (o.includes("soundlightprod")) return "slp"; return ["slp", "bmb", "csa", "store"].includes(body && body.site) ? body.site : "slp"; } // Profil anonyme d'une visite : réseau (opérateur / organisation), appareil, provenance, robot ou non.
 const HOSTING_RE = /amazon|aws|google|microsoft|azure|apple|meta platforms|facebook|digitalocean|ovh|hetzner|linode|akamai connected|oracle|alibaba|tencent|huawei cloud|contabo|scaleway|online s\.a\.s|vultr|choopa|leaseweb|m247|datacamp|hostinger|godaddy|cogent|hurricane electric|zscaler|censys|shodan|clouvider|g-core|gcore|constant company|psychz|colocrossing|servers\.com|hostroyale|packethub|tzulo|internet utilities|chiron|elisteka|wookra|palo alto/i;
 const BOT_UA_RE = /bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|embedly|whatsapp|python|curl|wget|httpclient|go-http|axios|node-fetch|phantom|puppeteer|playwright|selenium/i;
@@ -1352,7 +1353,7 @@ export default {
         const cf = request.cf || {};
         await env.DB.prepare(
           "INSERT INTO page_visits (artist_slug, city, region, country, latitude, longitude, session_id, site, is_bot, network, device, referrer, postal_code, lang, domaine) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        ).bind(artist_slug, cf.city || null, cf.region || null, cf.country || null, cf.latitude ? Number(cf.latitude) : null, cf.longitude ? Number(cf.longitude) : null, session_id || null, site, vp.isBot, vp.network, vp.device, vp.referrer, cf.postalCode || null, (["fr", "en", "es", "it"].includes(body.lang) ? body.lang : "fr"), domainFromRequest(request)).run();
+        ).bind(artist_slug, cf.city || null, cf.region || null, cf.country || null, cf.latitude ? Number(cf.latitude) : null, cf.longitude ? Number(cf.longitude) : null, session_id || null, site, vp.isBot, vp.network, vp.device, vp.referrer, cf.postalCode || null, (["fr", "en", "es", "it"].includes(body.lang) ? body.lang : langFromReferer(request)), domainFromRequest(request)).run();
         // Rafales de robots : 6 sessions différentes ou plus en 2 secondes (scanners répartis sur des dizaines de réseaux) = robots.
         // Marquées is_bot = 2 (comptées comme robots partout, car les stats filtrent is_bot = 0) ; les visites de la rafale déjà
         // enregistrées sont reclassées aussi. Un vrai visiteur ne produit jamais ça (0 cas en un mois de données).
