@@ -45,7 +45,7 @@ async function ensureChatTables(env) {
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_threads (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE NOT NULL, name TEXT, contact TEXT, page TEXT, lang TEXT, city TEXT, ip_hash TEXT, site TEXT, status TEXT DEFAULT 'open', unread_admin INTEGER DEFAULT 0, notified_at TEXT, created_at TEXT, last_visitor_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_messages (id INTEGER PRIMARY KEY AUTOINCREMENT, thread_id INTEGER NOT NULL, sender TEXT NOT NULL, body TEXT NOT NULL, created_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_presence (id INTEGER PRIMARY KEY, last_seen TEXT)"),
-    env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_settings (id INTEGER PRIMARY KEY, enabled INTEGER DEFAULT 1, days TEXT DEFAULT '1,2,3,4,5', start_h INTEGER DEFAULT 10, end_h INTEGER DEFAULT 20)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_settings (id INTEGER PRIMARY KEY, enabled INTEGER DEFAULT 1, days TEXT DEFAULT '1,2,3,4,5', start_h INTEGER DEFAULT 9, end_h INTEGER DEFAULT 20)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS push_subs (id INTEGER PRIMARY KEY AUTOINCREMENT, endpoint TEXT UNIQUE NOT NULL, p256dh TEXT, auth TEXT, created_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS push_vapid (id INTEGER PRIMARY KEY, pub TEXT, priv TEXT)"),
   ]);
@@ -84,9 +84,9 @@ async function sendAdminPush(env) {
 
 async function chatSettings(env) {
   const r = await env.DB.prepare("SELECT enabled, days, start_h, end_h FROM chat_settings WHERE id = 1").first();
-  return r || { enabled: 1, days: "1,2,3,4,5", start_h: 10, end_h: 20 };
+  return r || { enabled: 1, days: "1,2,3,4,5", start_h: 9, end_h: 20 };
 }
-// En ligne = disponibilité activée ET jour/heure dans la plage (heure de Paris). Par défaut : lundi-vendredi 10h-20h.
+// En ligne = disponibilité activée ET jour/heure dans la plage (heure de Paris). Par défaut : lundi-vendredi 9h-20h.
 async function chatIsOnline(env) {
   const c = await chatSettings(env);
   if (!c.enabled) return false;
