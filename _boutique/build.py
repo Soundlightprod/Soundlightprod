@@ -173,18 +173,26 @@ PAGE_CSS = """<style>
 </style>"""
 
 
+def SHIP(rate, min_order, max_order):
+    cond = {'@type': 'ShippingConditions', 'orderValue': {'@type': 'MonetaryAmount', 'currency': 'EUR'}}
+    if min_order is not None: cond['orderValue']['minValue'] = min_order
+    if max_order is not None: cond['orderValue']['maxValue'] = max_order
+    return {'@type': 'OfferShippingDetails',
+            'shippingRate': {'@type': 'MonetaryAmount', 'value': rate, 'currency': 'EUR'},
+            'shippingDestination': {'@type': 'DefinedRegion', 'addressCountry': 'FR'},
+            'deliveryTime': {'@type': 'ShippingDeliveryTime',
+                             'handlingTime': {'@type': 'QuantitativeValue', 'minValue': 0, 'maxValue': 2, 'unitCode': 'DAY'},
+                             'transitTime': {'@type': 'QuantitativeValue', 'minValue': 1, 'maxValue': 8, 'unitCode': 'DAY'}},
+            'shippingConditions': cond}
+
+
 def jsonld(p):
     offer = {
         '@type': 'Offer', 'url': f"{SITE}/produits/{p['slug']}", 'priceCurrency': 'EUR', 'price': price(p),
         'availability': 'https://schema.org/InStock' if in_stock(p) else 'https://schema.org/OutOfStock',
         'itemCondition': 'https://schema.org/NewCondition',
         'seller': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': ORG + '/'},
-        'shippingDetails': {'@type': 'OfferShippingDetails',
-                            'shippingRate': {'@type': 'MonetaryAmount', 'value': 4.99, 'currency': 'EUR'},  # à partir de 4,99 € (dépend du colis)
-                            'shippingDestination': {'@type': 'DefinedRegion', 'addressCountry': 'FR'},
-                            'deliveryTime': {'@type': 'ShippingDeliveryTime',
-                                             'handlingTime': {'@type': 'QuantitativeValue', 'minValue': 0, 'maxValue': 2, 'unitCode': 'DAY'},
-                                             'transitTime': {'@type': 'QuantitativeValue', 'minValue': 1, 'maxValue': 8, 'unitCode': 'DAY'}}},  # délai total : 10 jours maximum
+        'shippingDetails': [SHIP(4.99, None, 99.99), SHIP(0, 100, None)],  # 4,99 € (à partir de), offerte dès 100 € ; délai 10 jours max
         'hasMerchantReturnPolicy': {'@type': 'MerchantReturnPolicy', 'applicableCountry': 'FR',
                                     'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
                                     'merchantReturnDays': 14, 'returnMethod': 'https://schema.org/ReturnByMail',
