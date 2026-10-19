@@ -180,6 +180,7 @@ def jsonld(p):
         'itemCondition': 'https://schema.org/NewCondition',
         'seller': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': ORG + '/'},
         'shippingDetails': {'@type': 'OfferShippingDetails',
+                            'shippingRate': {'@type': 'MonetaryAmount', 'value': 4.99, 'currency': 'EUR'},  # à partir de 4,99 € (dépend du colis)
                             'shippingDestination': {'@type': 'DefinedRegion', 'addressCountry': 'FR'},
                             'deliveryTime': {'@type': 'ShippingDeliveryTime',
                                              'handlingTime': {'@type': 'QuantitativeValue', 'minValue': 0, 'maxValue': 2, 'unitCode': 'DAY'},
