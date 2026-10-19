@@ -10,9 +10,10 @@
   var L = (path.match(/^\/(en|es|it)(\/|$)/) || [, 'fr'])[1];
   var T = {
     fr: {
+      talk: 'Parler à un membre de SLP',
       open: 'Ouvrir le chat', close: 'Fermer', title: 'SLP', sub: 'Réponse sous 24 h', teaser: 'Une question ? On vous répond.',
       hello: 'Bonjour ! Je suis l’assistant de SLP. Spectacles, tributes, DJ, son & lumière : que cherchez-vous ?',
-      menu: ['Demander un devis', 'Programmer un spectacle', 'DJ / animation', 'Son & lumière', 'Tarifs', 'Zone d’intervention', 'Parler à quelqu’un', 'Appeler / WhatsApp / mail'],
+      menu: ['Demander un devis', 'Programmer un spectacle', 'DJ / animation', 'Son & lumière', 'Tarifs', 'Zone d’intervention', 'Parler à un membre de SLP', 'Appeler / WhatsApp / mail'],
       back: 'Autre question', again: 'Revenir au menu',
       a: {
         spectacle: 'Nous proposons des tributes 100 % live, des spectacles cabaret, des groupes de reprises et des artistes jazz / soul / funk, pour mairies, comités des fêtes, galas, mariages et soirées privées. Parcourez la page Artistes, ou je prends votre demande tout de suite.',
@@ -35,9 +36,10 @@
       badc: 'Il me faut un téléphone ou un email valide pour pouvoir vous répondre.', live: { intro: 'Vous pouvez écrire ici, Jean-Noël (SLP) vous répond directement quand il est en ligne.', online: 'Votre message est bien arrivé, on vous répond ici dans quelques instants.', offline: 'Nous ne sommes pas en ligne à cet instant. Laissez un téléphone ou un email dans un message, on vous recontacte rapidement.', ph: 'Écrivez votre message…', err: 'Message non envoyé. Appelez-nous au 06 31 94 96 53.' }, sujet: 'Devis via le chat', no: /^(non|no|rien|nop)$/i
     },
     en: {
+      talk: 'Talk to an SLP team member',
       open: 'Open chat', close: 'Close', title: 'SLP', sub: 'Reply within 24 h', teaser: 'Any question? We’ll get back to you.',
       hello: 'Hello! I’m the SLP assistant. Live shows, tribute acts, DJs, sound & lighting: what are you looking for?',
-      menu: ['Request a quote', 'Book a show', 'DJ / entertainment', 'Sound & lighting', 'Pricing', 'Where we work', 'Talk to someone', 'Call / WhatsApp / email'],
+      menu: ['Request a quote', 'Book a show', 'DJ / entertainment', 'Sound & lighting', 'Pricing', 'Where we work', 'Talk to an SLP team member', 'Call / WhatsApp / email'],
       back: 'Another question', again: 'Back to menu',
       a: {
         spectacle: 'We offer 100% live tribute acts, cabaret shows, cover bands and jazz / soul / funk artists for town events, festivals, galas, weddings and private parties. Browse the Artists page, or I can take your request right now.',
@@ -60,9 +62,10 @@
       badc: 'I need a valid phone number or email to be able to reply.', live: { intro: 'Write here: Jean-Noël (SLP) replies directly when he’s online.', online: 'Your message has arrived, we’ll reply here shortly.', offline: 'We’re not online right now. Please leave a phone number or email in a message and we’ll get back to you quickly.', ph: 'Write your message…', err: 'Message not sent. Please call +33 6 31 94 96 53.' }, sujet: 'Quote via chat', no: /^(no|non|nothing|nope)$/i
     },
     es: {
+      talk: 'Hablar con un miembro de SLP',
       open: 'Abrir el chat', close: 'Cerrar', title: 'SLP', sub: 'Respuesta en 24 h', teaser: '¿Alguna pregunta? Le respondemos.',
       hello: '¡Hola! Soy el asistente de SLP. Espectáculos, tributos, DJ, sonido e iluminación: ¿qué busca?',
-      menu: ['Pedir presupuesto', 'Contratar un espectáculo', 'DJ / animación', 'Sonido e iluminación', 'Tarifas', 'Zona de actuación', 'Hablar con alguien', 'Llamar / WhatsApp / correo'],
+      menu: ['Pedir presupuesto', 'Contratar un espectáculo', 'DJ / animación', 'Sonido e iluminación', 'Tarifas', 'Zona de actuación', 'Hablar con un miembro de SLP', 'Llamar / WhatsApp / correo'],
       back: 'Otra pregunta', again: 'Volver al menú',
       a: {
         spectacle: 'Ofrecemos tributos 100 % en directo, espectáculos de cabaret, grupos de versiones y artistas de jazz / soul / funk para ayuntamientos, fiestas, galas, bodas y eventos privados. Consulte la página de Artistas, o tomo su solicitud ahora mismo.',
@@ -85,9 +88,10 @@
       badc: 'Necesito un teléfono o un correo válido para poder responderle.', live: { intro: 'Escriba aquí: Jean-Noël (SLP) le responde directamente cuando está en línea.', online: 'Su mensaje ha llegado, le respondemos aquí en unos instantes.', offline: 'Ahora mismo no estamos en línea. Deje un teléfono o un correo en un mensaje y le contactamos pronto.', ph: 'Escriba su mensaje…', err: 'Mensaje no enviado. Llame al +33 6 31 94 96 53.' }, sujet: 'Presupuesto vía chat', no: /^(no|nada)$/i
     },
     it: {
+      talk: 'Parlare con un membro di SLP',
       open: 'Apri la chat', close: 'Chiudi', title: 'SLP', sub: 'Risposta entro 24 h', teaser: 'Una domanda? Le rispondiamo.',
       hello: 'Buongiorno! Sono l’assistente di SLP. Spettacoli, tribute, DJ, audio e luci: cosa cerca?',
-      menu: ['Richiedere un preventivo', 'Prenotare uno spettacolo', 'DJ / animazione', 'Audio e luci', 'Tariffe', 'Zona d’intervento', 'Parlare con qualcuno', 'Chiama / WhatsApp / mail'],
+      menu: ['Richiedere un preventivo', 'Prenotare uno spettacolo', 'DJ / animazione', 'Audio e luci', 'Tariffe', 'Zona d’intervento', 'Parlare con un membro di SLP', 'Chiama / WhatsApp / mail'],
       back: 'Un’altra domanda', again: 'Torna al menu',
       a: {
         spectacle: 'Proponiamo tribute 100 % live, spettacoli cabaret, cover band e artisti jazz / soul / funk per comuni, feste, gala, matrimoni ed eventi privati. Consulti la pagina Artisti, oppure raccolgo subito la sua richiesta.',
@@ -159,14 +163,16 @@
 
   function scroll() { msgs.scrollTop = msgs.scrollHeight; }
   function say(txt, me) { var d = document.createElement('div'); d.className = 'slpc-b ' + (me ? 'slpc-me' : 'slpc-bot'); d.textContent = txt; msgs.appendChild(d); scroll(); return d; }
-  function choices(list, cb, links) {
+  function talkBtn(w) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t.talk; b.style.borderColor = '#FBC608'; b.addEventListener('click', function () { var r = w.parentNode; w.remove(); say(t.talk, 1); live(); }); w.appendChild(b); }
+  function choices(list, cb, links, nolive) {
     var w = document.createElement('div'); w.className = 'slpc-ch';
     (links || []).forEach(function (l) { var a = document.createElement('a'); a.href = l.href; a.textContent = l.label; if (l.ext) { a.target = '_blank'; a.rel = 'noopener'; } a.addEventListener('click', function () { track(l.ev); }); w.appendChild(a); });
     list.forEach(function (c, i) { var b = document.createElement('button'); b.type = 'button'; b.textContent = c; b.addEventListener('click', function () { w.remove(); say(c, 1); cb(c, i); }); w.appendChild(b); });
+    if (!nolive && list.indexOf(t.talk) < 0) talkBtn(w);
     msgs.appendChild(w); scroll();
   }
   function ask(label, cb, opt) {
-    say(label); form.classList.add('on'); inp.value = ''; inp.placeholder = t.q.ph; inp.focus();
+    say(label); (function () { var w = document.createElement('div'); w.className = 'slpc-ch'; talkBtn(w); msgs.appendChild(w); scroll(); })(); form.classList.add('on'); inp.value = ''; inp.placeholder = t.q.ph; inp.focus();
     form.onsubmit = function (e) {
       e.preventDefault(); var v = inp.value.trim();
       if (!v) { if (opt) v = ''; else return; }
@@ -254,7 +260,7 @@
   function pollNext() { clearTimeout(pollT); pollT = setTimeout(poll, box.classList.contains('on') ? 4000 : 20000); }
   function live(resume) {
     liveOn = true; form.classList.add('on'); inp.placeholder = t.live.ph; if (!resume) { say(t.live.intro); choices([t.again], function () { stopLive(); menu(); }, [
-      { label: t.call, href: 'tel:' + PHONE, ev: 'appel' }, { label: t.wa, href: 'https://wa.me/' + PHONE.replace('+', ''), ev: 'whatsapp', ext: 1 }]); }
+      { label: t.call, href: 'tel:' + PHONE, ev: 'appel' }, { label: t.wa, href: 'https://wa.me/' + PHONE.replace('+', ''), ev: 'whatsapp', ext: 1 }], true); }
     inp.focus();
     form.onsubmit = function (e) {
       e.preventDefault(); var v = inp.value.trim(); if (!v) return;
