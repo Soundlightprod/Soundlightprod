@@ -1387,6 +1387,7 @@
       if (perm !== 'granted') { msg.textContent = 'Notifications refusées : autorise-les dans les réglages du navigateur.'; return; }
       const reg = await navigator.serviceWorker.ready;
       const k = await chatApi('/api/admin/chat/push-key');
+      if (!k || !k.key) throw new Error('clé serveur indisponible (' + ((k && k.error) || 'réponse vide') + ')');
       const raw = atob(k.key.replace(/-/g,'+').replace(/_/g,'/')), arr = Uint8Array.from(raw, c => c.charCodeAt(0));
       let sub = await reg.pushManager.getSubscription();
       if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: arr });

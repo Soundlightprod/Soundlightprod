@@ -1187,7 +1187,7 @@ export default {
 
         // ----- Admin -----
         if (url.pathname.startsWith("/api/admin/chat/")) {
-          if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+          if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
           // Notifications push : clé publique + abonnement de cet appareil
           if (url.pathname === "/api/admin/chat/push-key" && request.method === "GET") {
             const v = await getVapid(env); return json({ ok: true, key: v.pub }, 200, origin);
