@@ -33,7 +33,7 @@
       },
       sending: 'Envoi en cours…', done: 'Merci ! Votre demande est bien partie. On vous répond sous 24 h, souvent par téléphone.',
       fail: 'L’envoi n’a pas fonctionné. Appelez-nous au 06 31 94 96 53 ou écrivez à contact@soundlightprod.fr.',
-      badc: 'Il me faut un téléphone ou un email valide pour pouvoir vous répondre.', live: { intro: 'Vous pouvez écrire ici, Jean-Noël (SLP) vous répond directement quand il est en ligne.', online: 'Votre message est bien arrivé, on vous répond ici dans quelques instants.', offline: 'Nous ne sommes pas en ligne à cet instant. Laissez un téléphone ou un email dans un message, on vous recontacte rapidement.', ph: 'Écrivez votre message…', err: 'Message non envoyé. Appelez-nous au 06 31 94 96 53.' }, sujet: 'Devis via le chat', no: /^(non|no|rien|nop)$/i
+      badc: 'Il me faut un téléphone ou un email valide pour pouvoir vous répondre.', live: { intro: 'Vous pouvez écrire ici, l’équipe SLP vous répond directement quand elle est en ligne.', online: 'Votre message est bien arrivé, on vous répond ici dans quelques instants.', offline: 'Nous ne sommes pas en ligne à cet instant. Laissez un téléphone ou un email dans un message, on vous recontacte rapidement.', ph: 'Écrivez votre message…', err: 'Message non envoyé. Appelez-nous au 06 31 94 96 53.' }, sujet: 'Devis via le chat', no: /^(non|no|rien|nop)$/i
     },
     en: {
       talk: 'Talk to an SLP team member',
@@ -59,7 +59,7 @@
       },
       sending: 'Sending…', done: 'Thank you! Your request has been sent. We’ll reply within 24 h.',
       fail: 'Sending failed. Please call +33 6 31 94 96 53 or email contact@soundlightprod.fr.',
-      badc: 'I need a valid phone number or email to be able to reply.', live: { intro: 'Write here: Jean-Noël (SLP) replies directly when he’s online.', online: 'Your message has arrived, we’ll reply here shortly.', offline: 'We’re not online right now. Please leave a phone number or email in a message and we’ll get back to you quickly.', ph: 'Write your message…', err: 'Message not sent. Please call +33 6 31 94 96 53.' }, sujet: 'Quote via chat', no: /^(no|non|nothing|nope)$/i
+      badc: 'I need a valid phone number or email to be able to reply.', live: { intro: 'Write here: the SLP team replies directly when online.', online: 'Your message has arrived, we’ll reply here shortly.', offline: 'We’re not online right now. Please leave a phone number or email in a message and we’ll get back to you quickly.', ph: 'Write your message…', err: 'Message not sent. Please call +33 6 31 94 96 53.' }, sujet: 'Quote via chat', no: /^(no|non|nothing|nope)$/i
     },
     es: {
       talk: 'Hablar con un miembro de SLP',
@@ -85,7 +85,7 @@
       },
       sending: 'Enviando…', done: '¡Gracias! Su solicitud ha sido enviada. Le respondemos en 24 h.',
       fail: 'No se pudo enviar. Llame al +33 6 31 94 96 53 o escriba a contact@soundlightprod.fr.',
-      badc: 'Necesito un teléfono o un correo válido para poder responderle.', live: { intro: 'Escriba aquí: Jean-Noël (SLP) le responde directamente cuando está en línea.', online: 'Su mensaje ha llegado, le respondemos aquí en unos instantes.', offline: 'Ahora mismo no estamos en línea. Deje un teléfono o un correo en un mensaje y le contactamos pronto.', ph: 'Escriba su mensaje…', err: 'Mensaje no enviado. Llame al +33 6 31 94 96 53.' }, sujet: 'Presupuesto vía chat', no: /^(no|nada)$/i
+      badc: 'Necesito un teléfono o un correo válido para poder responderle.', live: { intro: 'Escriba aquí: el equipo de SLP le responde directamente cuando está en línea.', online: 'Su mensaje ha llegado, le respondemos aquí en unos instantes.', offline: 'Ahora mismo no estamos en línea. Deje un teléfono o un correo en un mensaje y le contactamos pronto.', ph: 'Escriba su mensaje…', err: 'Mensaje no enviado. Llame al +33 6 31 94 96 53.' }, sujet: 'Presupuesto vía chat', no: /^(no|nada)$/i
     },
     it: {
       talk: 'Parlare con un membro di SLP',
@@ -111,7 +111,7 @@
       },
       sending: 'Invio in corso…', done: 'Grazie! La sua richiesta è stata inviata. Le rispondiamo entro 24 h.',
       fail: 'Invio non riuscito. Chiami il +33 6 31 94 96 53 o scriva a contact@soundlightprod.fr.',
-      badc: 'Mi serve un telefono o una mail valida per poterle rispondere.', live: { intro: 'Scriva qui: Jean-Noël (SLP) risponde direttamente quando è online.', online: 'Il suo messaggio è arrivato, le rispondiamo qui a breve.', offline: 'Al momento non siamo online. Lasci un telefono o una mail in un messaggio e la ricontatteremo presto.', ph: 'Scriva il suo messaggio…', err: 'Messaggio non inviato. Chiami il +33 6 31 94 96 53.' }, sujet: 'Preventivo via chat', no: /^(no|niente)$/i
+      badc: 'Mi serve un telefono o una mail valida per poterle rispondere.', live: { intro: 'Scriva qui: il team SLP risponde direttamente quando è online.', online: 'Il suo messaggio è arrivato, le rispondiamo qui a breve.', offline: 'Al momento non siamo online. Lasci un telefono o una mail in un messaggio e la ricontatteremo presto.', ph: 'Scriva il suo messaggio…', err: 'Messaggio non inviato. Chiami il +33 6 31 94 96 53.' }, sujet: 'Preventivo via chat', no: /^(no|niente)$/i
     }
   };
   var t = T[L];
@@ -245,7 +245,7 @@
       .catch(function (e) { wait.textContent = t.fail; choices([t.again], menu, [{ label: t.call, href: 'tel:' + PHONE, ev: 'appel' }]); });
   }
 
-  /* ---- Mode direct : conversation avec Nj via /api/chat/* ---- */
+  /* ---- Mode direct : conversation avec l'équipe SLP via /api/chat/* ---- */
   var tok = '', lastId = 0, liveOn = false, pollT = null, firstSent = false, hasContact = false;
   try { tok = localStorage.getItem('slpc_tok') || ''; lastId = parseInt(localStorage.getItem('slpc_last') || '0', 10) || 0; } catch (e) {}
   function api(path, body) {
