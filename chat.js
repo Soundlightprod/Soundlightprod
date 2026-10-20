@@ -120,9 +120,9 @@
   var noTrack = false; try { noTrack = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch (e) {}
   var from = path.replace(/^\/(en|es|it)\//, '/').replace(/^\/+|\.html$|\/$/g, '') || 'index';
 
-  function track(action) {
+  function track(action, pg) {
     if (noTrack) return;
-    var d = JSON.stringify({ action: action, page: 'chat:' + from, session_id: sid });
+    var d = JSON.stringify({ action: action, page: pg || ('chat:' + from), session_id: sid });
     try { if (navigator.sendBeacon && navigator.sendBeacon('/api/contact-event', new Blob([d], { type: 'application/json' }))) return; } catch (e) {}
     fetch('/api/contact-event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: d, keepalive: true }).catch(function () {});
   }
@@ -170,7 +170,7 @@
 
   function scroll() { msgs.scrollTop = msgs.scrollHeight; }
   function say(txt, me) { var d = document.createElement('div'); d.className = 'slpc-b ' + (me ? 'slpc-me' : 'slpc-bot'); d.textContent = txt; msgs.appendChild(d); scroll(); return d; }
-  function talkBtn(w) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t.talk; b.style.borderColor = '#FBC608'; b.addEventListener('click', function () { var r = w.parentNode; w.remove(); say(t.talk, 1); live(); }); w.appendChild(b); }
+  function talkBtn(w) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t.talk; b.style.borderColor = '#FBC608'; b.addEventListener('click', function () { var r = w.parentNode; track('chat_menu', 'chatmenu:equipe'); w.remove(); say(t.talk, 1); live(); }); w.appendChild(b); }
   function choices(list, cb, links, nolive) {
     var w = document.createElement('div'); w.className = 'slpc-ch';
     (links || []).forEach(function (l) { var a = document.createElement('a'); a.href = l.href; a.textContent = l.label; if (l.ext) { a.target = '_blank'; a.rel = 'noopener'; } a.addEventListener('click', function () { track(l.ev); }); w.appendChild(a); });
@@ -192,6 +192,7 @@
   function menu(first) {
     if (first) say(t.hello);
     choices(t.menu, function (c, i) {
+      track('chat_menu', 'chatmenu:' + ['devis', 'spectacle', 'dj', 'tech', 'tarifs', 'zone', 'equipe', 'contact'][i]);
       if (i === 0) return quote();
       if (i === 6) { return live(); }
       if (i === 7) { say(t.a.contact); return choices([t.again], menu, [
@@ -293,7 +294,7 @@
   function toggle(on) {
     box.classList.toggle('on', on); tip.style.display = 'none';
     if (on) refreshStatus();
-    if (on && !opened) { opened = true; if (tok) { say(t.hello); live(true); } else menu(true); }
+    if (on && !opened) { opened = true; track('chat'); if (tok) { say(t.hello); live(true); } else menu(true); }
     if (on && tok) { tip.textContent = t.teaser; poll(); }
     btn.setAttribute('aria-expanded', on ? 'true' : 'false');
   }

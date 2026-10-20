@@ -528,7 +528,9 @@ async function meteoData(env) {
          COUNT(DISTINCT CASE WHEN event IN ('75', 'fin') THEN session_id END) AS jusqu_au_bout
        FROM video_events WHERE is_bot = 0 AND ${NOT_TEST} AND created_at >= datetime('now', '-7 days') GROUP BY video_id, page ORDER BY lectures DESC`),
   ]);
-  return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, pages: contactPages, demandes: contactDemandes }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
+  const chatMenu = await safe(`SELECT page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
+       WHERE is_bot = 0 AND ${NOT_TEST} AND action = 'chat_menu' AND cree_le >= datetime('now', '-7 days') GROUP BY page ORDER BY n DESC`);
+  return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, pages: contactPages, demandes: contactDemandes, menu: chatMenu }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
     youtube: { releve: ytReleve[0] || null, videos: ytVideos, stats: ytStats, site: videoSite } };
 }
 
@@ -1318,7 +1320,7 @@ export default {
       // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire|devis|suivre|chat, page, session_id } : clics vers le contact (et « Suivez-nous »)
       if (url.pathname === "/api/contact-event" && request.method === "POST") {
         const body = await request.json().catch(() => ({}));
-        const action = ["appel", "whatsapp", "mail", "formulaire", "devis", "suivre", "chat"].includes(body.action) ? body.action : null;
+        const action = ["appel", "whatsapp", "mail", "formulaire", "devis", "suivre", "chat", "chat_menu"].includes(body.action) ? body.action : null;
         if (!action) return json({ ok: false }, 200, origin);
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
         await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
