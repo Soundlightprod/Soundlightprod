@@ -1590,7 +1590,7 @@
     try { loadVisitsSummary(); } catch(e){}
   }
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && Date.now() - lastStatsRefresh > 60000) refreshStats();
+    if (document.visibilityState === 'visible' && Date.now() - lastStatsRefresh > 15 * 60000) refreshStats(); // au plus toutes les 15 min (quota de lectures D1)
   });
 
   async function loadStock(){
