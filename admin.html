@@ -822,11 +822,15 @@
     <div class="mt-head">
       <div>
         <h2 id="mtTitre" style="margin:0;">Météo du jour</h2>
-        <p class="vz-sub" id="mtSousTitre">Le rapport du jour, la météo des sites, Google, les mails Brevo et YouTube. Rapport mis à jour vers 7h50 et 19h50.</p>
+        <p class="vz-sub" id="mtSousTitre">Le rapport du jour, la météo des sites, Google, les mails Brevo et YouTube. Rapports vers 7h50, 13h50, 19h50 et 22h50.</p>
       </div>
       <button class="btn-outline" onclick="loadMeteo()">↻ Actualiser</button>
     </div>
     <div class="vz-card"><ul class="mt-notes" id="mtResume"><li>Chargement…</li></ul></div>
+    <div class="vz-card" id="mtVisuelWrap" style="display:none; padding:0; overflow:hidden;">
+      <div class="vz-card-h" style="padding:12px 14px 0;"><h3>Rapport visuel</h3><button class="btn-outline" type="button" onclick="mtOuvrirVisuel()">⤢ Ouvrir en grand (zoomable)</button></div>
+      <iframe id="mtVisuel" title="Rapport visuel" sandbox="allow-same-origin" style="width:100%; border:0; display:block; min-height:400px;"></iframe>
+    </div>
     <details class="vz-more" id="mtFullWrap" style="display:none;"><summary>Lire le rapport complet</summary><div class="vz-card"><p class="mt-full" id="mtFull"></p></div></details>
     <div class="mt-sky" id="mtSky"></div>
     <p class="vz-note" id="mtTests" style="display:none; margin:0 0 10px;"></p>
@@ -1348,6 +1352,22 @@
     });
   }
 
+  // Rapport visuel écrit par Claude à chaque passage (colonne rapports.html) : affiché dans un cadre, ouvrable en grand
+  let mtVisuelHtml = '';
+  function mtAfficherVisuel(html){
+    mtVisuelHtml = html;
+    const wrap = document.getElementById('mtVisuelWrap'), fr = document.getElementById('mtVisuel');
+    if (!html){ wrap.style.display = 'none'; return; }
+    wrap.style.display = '';
+    fr.onload = () => { try { fr.style.height = (fr.contentDocument.documentElement.scrollHeight + 4) + 'px'; } catch(e){ fr.style.height = '1600px'; } };
+    fr.srcdoc = html;
+  }
+  function mtOuvrirVisuel(){
+    if (!mtVisuelHtml) return;
+    const url = URL.createObjectURL(new Blob([mtVisuelHtml], { type:'text/html;charset=utf-8' }));
+    window.open(url, '_blank');
+  }
+
   async function loadMeteo(){
     try {
       const res = await fetch('/api/admin/meteo', { headers:{ Authorization:`Bearer ${token}` } });
@@ -1360,7 +1380,7 @@
       if (rap && rap.cree_le){
         const ecrit = new Date(rap.cree_le.replace(' ', 'T') + 'Z');
         const h = new Date().getHours();
-        const prochain = (h >= 8 && h < 20) ? 'vers 19h50' : 'vers 7h50';
+        const prochain = h < 8 ? 'vers 7h50' : h < 14 ? 'vers 13h50' : h < 20 ? 'vers 19h50' : h < 23 ? 'vers 22h50' : 'vers 7h50';
         document.getElementById('mtSousTitre').textContent = `Rapport écrit le ${ecrit.toLocaleString('fr-FR', { weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' })} · prochain rapport ${prochain}. Les chiffres (visites, Google) se mettent à jour à chaque « Actualiser ».`;
       }
       const ul = document.getElementById('mtResume'); ul.replaceChildren(...(resume.length ? resume.map((t) => mtEl('li', null, t)) : [mtEl('li', null, 'Le premier rapport arrivera vers 7h50.')]));
@@ -1368,6 +1388,7 @@
       if (!actions.length) ol.appendChild(mtEl('p', 'empty', 'Rien à faire pour l’instant.'));
       const full = rap && rap.texte ? rap.texte.replace(/\*\*/g, '') : '';
       document.getElementById('mtFullWrap').style.display = full ? '' : 'none';
+      mtAfficherVisuel(rap && rap.html ? rap.html : '');
       document.getElementById('mtFull').textContent = full;
       // chaque bloc s'affiche même si un autre plante
       const essai = (f) => { try { f(); } catch (err) { console.error('Météo :', err); } };
