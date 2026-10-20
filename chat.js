@@ -149,11 +149,18 @@
     '#slpc-i:focus{border-color:#FBC608}' +
     '#slpc-s{border:0;border-radius:100px;padding:0 18px;font:700 .85rem "Instrument Sans",system-ui,sans-serif;color:#0C0A14;background:linear-gradient(90deg,#FF0953,#FC8024 55%,#FBC608);cursor:pointer}' +
     '#slpc-hp{position:absolute;left:-9999px;opacity:0}' +
-    '@media(max-width:480px){#slpc{right:8px;left:8px;bottom:82px;width:auto;max-width:none;height:calc(100vh - 100px)}}';
+    '@media(max-width:480px){#slpc{right:8px;left:8px;bottom:82px;width:auto;max-width:none;height:calc(100vh - 100px)}}' +
+    // Téléphone : la barre de contact (.ctabar, ≤ 760 px) occupe le bas de l'écran → la bulle remonte au-dessus quand elle est affichée
+    '#slpc-btn,#slpc-tip,#slpc{transition:bottom .3s ease,transform .18s}' +
+    '@media(max-width:760px){body:has(.ctabar.on) #slpc-btn{bottom:92px}body:has(.ctabar.on) #slpc-tip{bottom:104px}body:has(.ctabar.on) #slpc{bottom:160px;max-height:calc(100vh - 180px)}}' +
+    // Ordinateur : bouton avec texte, plus visible qu'une simple icône (la bulle d'accueil devient inutile)
+    '#slpc-btn .slpc-l{display:none}' +
+    '@media(min-width:761px){#slpc-btn{width:auto;padding:0 22px 0 18px;gap:9px;border-radius:999px;font:700 .95rem "Instrument Sans",system-ui,sans-serif;color:#0C0A14}#slpc-btn .slpc-l{display:inline}#slpc-btn:hover{transform:translateY(-2px)}#slpc-tip{display:none!important}}' +
+    '@media(prefers-reduced-motion:reduce){#slpc-btn,#slpc-tip,#slpc{transition:none}}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
   var btn = document.createElement('button'); btn.id = 'slpc-btn'; btn.type = 'button'; btn.setAttribute('aria-label', t.open);
-  btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>';
+  btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg><span class="slpc-l">' + ({ fr: 'Une question ?', en: 'Any question?', es: '¿Una pregunta?', it: 'Una domanda?' })[L] + '</span>';
   var tip = document.createElement('div'); tip.id = 'slpc-tip'; tip.textContent = t.teaser;
   var box = document.createElement('div'); box.id = 'slpc'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'SLP');
   box.innerHTML = '<div id="slpc-h"><div><b>' + t.title + '</b><small>' + t.sub + '</small></div><button id="slpc-x" type="button" aria-label="' + t.close + '">×</button></div><div id="slpc-m" aria-live="polite"></div>' +
@@ -295,5 +302,5 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('on')) { toggle(false); btn.focus(); } });
   if (tok) pollNext();
   var seen = false; try { seen = sessionStorage.getItem('slpc_tip'); } catch (e) {}
-  if (!seen) setTimeout(function () { if (!box.classList.contains('on')) { tip.style.display = 'block'; try { sessionStorage.setItem('slpc_tip', '1'); } catch (e) {} setTimeout(function () { tip.style.display = 'none'; }, 7000); } }, 9000);
+  if (!seen) setTimeout(function () { if (!box.classList.contains('on')) { tip.style.display = 'block'; try { sessionStorage.setItem('slpc_tip', '1'); } catch (e) {} setTimeout(function () { tip.style.display = 'none'; }, 10000); } }, 5000);
 })();
