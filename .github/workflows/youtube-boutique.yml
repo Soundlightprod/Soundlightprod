@@ -1,0 +1,51 @@
+name: YouTube — vidéos boutique
+# Met en ligne sur la chaîne SLP les vidéos fournisseur des produits qui n'en ont pas encore,
+# puis enregistre leur identifiant : le workflow « Boutique — pages produit » ajoute la vidéo sur la fiche.
+on:
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "Nombre maximum de vidéos à mettre en ligne"
+        default: "6"
+  schedule:
+    - cron: '41 4 * * *'
+  push:
+    branches: [main]
+    paths: ['_boutique/videos_fournisseur.json']
+permissions:
+  contents: write
+concurrency: youtube-boutique
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Rien à faire ?
+        id: check
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          yt = json.load(open('_boutique/videos_youtube.json')); src = json.load(open('_boutique/videos_fournisseur.json'))
+          print('todo=' + str(len([s for s in src if s not in yt])))
+          PY
+      - name: Mettre en ligne sur YouTube
+        if: steps.check.outputs.todo != '0'
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python3 _boutique/youtube_upload.py "${{ inputs.max || '6' }}"
+      - name: Enregistrer les vidéos et mettre à jour les fiches produit
+        if: always() && steps.check.outputs.todo != '0'
+        run: |
+          git config user.name "slp-boutique-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet _boutique/videos_youtube.json; then echo "Aucune nouvelle vidéo"; exit 0; fi
+          # un push fait par ce workflow ne relance pas « Boutique — pages produit » : on régénère les fiches ici
+          python3 _boutique/build.py || echo "Fiches non régénérées : elles le seront au prochain passage de « Boutique — pages produit »"
+          git add _boutique/videos_youtube.json produits boutique.html sitemap.xml sitemap-store.xml
+          git commit -m "Boutique : nouvelles vidéos YouTube des produits"
+          git pull --rebase origin main
+          git push
