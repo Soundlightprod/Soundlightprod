@@ -522,7 +522,7 @@ async function meteoData(env) {
     safe(`SELECT action, COUNT(DISTINCT COALESCE(session_id, id)) AS n, SUM(cree_le >= datetime('now', '-1 day')) AS n24 FROM contact_events
        WHERE is_bot = 0 AND ${NOT_TEST} AND cree_le >= datetime('now', '-7 days') GROUP BY action`),
     safe(`SELECT page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
-       WHERE is_bot = 0 AND ${NOT_TEST} AND cree_le >= datetime('now', '-7 days') AND action IN ('devis', 'appel', 'whatsapp', 'mail', 'envoi') GROUP BY page ORDER BY n DESC LIMIT 8`),
+       WHERE is_bot = 0 AND ${NOT_TEST} AND cree_le >= datetime('now', '-7 days') AND action IN ('devis', 'appel', 'whatsapp', 'mail', 'chat', 'envoi') GROUP BY page ORDER BY n DESC LIMIT 8`),
     safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests ORDER BY id DESC LIMIT 10"),
     safe(`SELECT video_id, page, COUNT(DISTINCT CASE WHEN event = 'play' THEN session_id END) AS lectures,
          COUNT(DISTINCT CASE WHEN event IN ('75', 'fin') THEN session_id END) AS jusqu_au_bout
@@ -1315,10 +1315,10 @@ export default {
         return json({ ok: true }, 200, origin);
       }
 
-      // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire|devis|suivre, page, session_id } : clics vers le contact (et « Suivez-nous »)
+      // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire|devis|suivre|chat, page, session_id } : clics vers le contact (et « Suivez-nous »)
       if (url.pathname === "/api/contact-event" && request.method === "POST") {
         const body = await request.json().catch(() => ({}));
-        const action = ["appel", "whatsapp", "mail", "formulaire", "devis", "suivre"].includes(body.action) ? body.action : null;
+        const action = ["appel", "whatsapp", "mail", "formulaire", "devis", "suivre", "chat"].includes(body.action) ? body.action : null;
         if (!action) return json({ ok: false }, 200, origin);
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
         await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
