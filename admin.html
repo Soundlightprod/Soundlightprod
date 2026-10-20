@@ -1115,7 +1115,7 @@
 
   // ===== Onglet Météo du jour =====
   const MT_SITES = { slp:{nom:'SLP Sound Light Prod', c:'#ffb238'}, bmb:{nom:'Book My Band', c:'#ff2d6f'}, csa:{nom:'CS Animations', c:'#38bdf8'}, store:{nom:'Boutique .store', c:'#a3e635'} };
-  const MT_SUIVIES = ['dj animation','animateur de soirée','dj animateur de soirée','dj animation anniversaire','sonorisation spectacle','sonorisation éclairage','tribute abba','tribute calogero','tribute bee gees','tribute phil collins','tribute kool and the gang','tribute matmatah','tribute balavoine','tribute barry white','spectacle cabaret','revue cabaret','groupe de reprises'];
+  const MT_SUIVIES = ['dj animation','animateur de soirée','dj animateur de soirée','dj animation anniversaire','sonorisation spectacle','sonorisation éclairage','tribute abba','tribute calogero','tribute bee gees','tribute phil collins','tribute kool and the gang','tribute matmatah','tribute balavoine','tribute barry white','tribute céline dion','spectacle cabaret','revue cabaret','groupe de reprises'];
   let mtChart = null;
   const mtEl = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
   const mtFmt = (n) => (n === null || n === undefined) ? '—' : Number(n).toLocaleString('fr-FR');
