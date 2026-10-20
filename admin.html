@@ -1589,9 +1589,7 @@
     try { loadMeteo(); } catch(e){}
     try { loadVisitsSummary(); } catch(e){}
   }
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && Date.now() - lastStatsRefresh > 15 * 60000) refreshStats(); // au plus toutes les 15 min (quota de lectures D1)
-  });
+  // Pas de rechargement automatique au retour sur l'admin (quota de lectures D1) : bouton « ↻ Actualiser » seulement.
 
   async function loadStock(){
     try {
