@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tribute Céline Dion — SLP Sound Light Prod</title>
+<meta name="description" content="Tribute Céline Dion: un espectáculo en directo con seis artistas en homenaje a Céline Dion, representado por SLP para sus festivales, fiestas y conciertos.">
+<meta name="keywords" content="tribute Céline Dion, tribute ABBA, tribute Calogero, tribute Bee Gees, tribute Phil Collins, tribute Kool and the Gang, tribute Matmatah, tribute Balavoine, tribute Barry White, espectáculo tributo, banda tributo, cabaret, grupo de versiones, DJ, música en directo, concierto, festival, boda, gala, fiesta privada, sonido e iluminación, productor de espectáculos, Francia">
+<style>
+  :root{
+    --ink: #0c0a14; --ink-2: #17142a;
+    --paper: #f7f5f0; --muted: #a9a4bc;
+    --gold: #fbc608;
+    --violet: #8c3290; --blue: #3259be; --amber: #fc8024; --pink: #ff0953;
+    --line: rgba(255,255,255,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; line-height:1.6; overflow-x:hidden;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;} }
+  .label{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+
+  header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{height:58px; width:58px; display:block; border-radius:50%;}
+  nav ul{list-style:none; display:flex; gap:26px; flex-wrap:wrap;}
+  nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; letter-spacing:0.01em; transition:color 0.2s ease;}
+  nav a:hover, nav a.current{color:var(--paper);}
+  @media (max-width:960px){ nav ul{display:none;} }
+
+  .page-hero{position:relative; padding:110px 24px 60px; overflow:hidden;}
+  .hero-blocks{position:absolute; inset:0; z-index:0;}
+  .hb{position:absolute; opacity:0.4; filter:blur(2px);}
+  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--blue), transparent 70%); top:-25vw; left:-10vw;}
+  .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--amber), transparent 70%); top:-10vw; right:-10vw;}
+  .page-hero-inner{position:relative; z-index:2; max-width:800px;}
+
+  /* Silhouette néon de l'artiste (tirée de sa photo) */
+  .hero-art{position:absolute; right:clamp(8px,5vw,90px); bottom:0; height:min(92%,500px); width:min(48vw,620px); z-index:1; pointer-events:none;}
+  .hero-art img{position:absolute; right:0; bottom:0; max-height:100%; max-width:100%; filter:drop-shadow(0 0 12px var(--glow)); animation:artSway 6s ease-in-out infinite; transform-origin:bottom center;}
+  .hero-art .spark{position:absolute; color:#fff; font-size:16px; line-height:1; text-shadow:0 0 10px #fff, 0 0 20px var(--glow); animation:twinkle 2.4s ease-in-out infinite;}
+  .hero-art .s1{right:8%; top:4%;} .hero-art .s2{right:62%; top:18%; font-size:11px; animation-delay:-.8s;} .hero-art .s3{right:-2%; top:38%; font-size:13px; animation-delay:-1.6s;}
+  @keyframes artSway{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-.8deg)}}
+  @keyframes twinkle{0%,100%{opacity:.15; transform:scale(.6)}50%{opacity:1; transform:scale(1.15)}}
+  @media (max-width:900px){ .hero-art{opacity:.28; width:70vw; right:-30px;} }
+  .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
+  .breadcrumb a{color:var(--muted); text-decoration:none;}
+  .breadcrumb a:hover{color:var(--paper);}
+  .page-hero h1{font-size:clamp(2.2rem, 5.5vw, 3.8rem); margin-bottom:18px;}
+  .page-hero p{color:var(--muted); font-size:1.1rem; max-width:600px;}
+  .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:22px;}
+  .tag{font-family:'DM Mono', monospace; font-size:0.72rem; color:var(--paper); box-shadow:inset 0 0 0 1px var(--line); padding:7px 14px; border-radius:20px;}
+
+  section{position:relative; z-index:2;}
+  .wrap{max-width:1220px; margin:0 auto; padding:80px 24px;}
+  .wrap.tight{padding-top:40px; padding-bottom:40px;}
+  .wrap.narrow{max-width:900px;}
+  .section-head{max-width:680px; margin-bottom:40px;}
+  .section-head .label{margin-bottom:16px; display:block;}
+  .section-head h2{font-size:clamp(1.8rem, 4vw, 2.6rem);}
+
+  .bio-wrap{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:44px; align-items:center;}
+  @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr; text-align:center;} }
+  .logo-frame{background:var(--ink-2); border:1px solid var(--line); border-radius:20px; padding:30px; display:flex; align-items:center; justify-content:center; aspect-ratio:4/3;}
+  .logo-frame img{max-width:100%; max-height:100%; object-fit:contain; border-radius:0;}
+  .bio-text p{color:var(--muted); font-size:1.02rem; margin-bottom:16px;}
+  .bio-text p:last-child{margin-bottom:0;}
+
+  .members-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px;}
+  .member-card{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:20px 22px;}
+  .member-card .name{font-family:'League Spartan', sans-serif; font-weight:700; color:var(--paper); font-size:1.02rem; margin-bottom:4px;}
+  .member-card .role{color:var(--amber); font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:10px; display:block;}
+  .member-card p{color:var(--muted); font-size:0.86rem; margin:0;}
+
+  .banner-photo{
+    background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px);
+    border:2px dashed rgba(255,255,255,0.15); border-radius:16px; aspect-ratio:21/8;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color:var(--muted); text-align:center; padding:20px;
+  }
+  .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
+  .banner-photo .txt{font-size:0.82rem; font-weight:500;}
+
+  .info-strip{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--ink-2);}
+  .info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:30px;}
+  .info-item{display:flex; gap:14px; align-items:flex-start;}
+  .info-item .mark{color:var(--amber); font-family:'DM Mono', monospace; font-size:0.95rem; flex-shrink:0;}
+  .info-item p{color:var(--paper); font-size:0.93rem;}
+
+  .links-row{display:flex; flex-wrap:wrap; gap:14px;}
+  .link-pill{display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); color:var(--paper); text-decoration:none; font-size:0.88rem; font-weight:600; transition:all 0.2s ease;}
+  .link-pill:hover{box-shadow:inset 0 0 0 1.5px var(--paper); transform:translateY(-2px);}
+
+  .cta-band{text-align:center; background:linear-gradient(135deg, var(--ink-2) 0%, var(--ink) 100%); border-top:1px solid var(--line);}
+  .cta-band h2{font-size:clamp(2.2rem, 5.5vw, 3.4rem); margin-bottom:20px;}
+  .cta-band p{color:var(--muted); font-size:1.05rem; margin-bottom:36px;}
+  .cta-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:16px 30px; font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.95rem; text-decoration:none; border-radius:100px; transition:all 0.25s ease;}
+  .btn-primary{background:var(--paper); color:var(--ink);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(247,245,240,0.15);}
+  .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25);}
+  .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
+  .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-brand{max-width:320px; display:flex; gap:12px;}
+  .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
+  .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand p{color:var(--muted); font-size:0.85rem;}
+  .footer-col h4{font-family:'DM Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px; transition:color 0.2s ease;}
+  .footer-col a:hover{color:var(--paper);}
+  .social-row{display:flex; gap:10px;}
+  .social-icon{
+    display:flex; align-items:center; justify-content:center;
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    background:rgba(255,255,255,0.06); color:var(--muted);
+    transition:background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .social-icon svg{width:18px; height:18px;}
+  .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
+  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
+
+  .actus-list{display:flex; flex-direction:column; gap:14px;}
+  .actu-item{position:relative; background:linear-gradient(120deg, var(--ink-2), rgba(255,255,255,.02)); border:1px solid var(--line); border-radius:18px; padding:0; display:flex; align-items:stretch; overflow:hidden; min-height:128px;}
+  .actu-item::before{content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:linear-gradient(180deg,#FF0953,#FC8024 55%,#FBC608);}
+  .actu-cal{flex:0 0 118px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:18px 10px; border-right:1px dashed var(--line); background:rgba(255,255,255,.03); text-align:center;}
+  .actu-cal .wd{font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
+  .actu-cal .dd{font-family:'League Spartan',sans-serif; font-weight:800; font-size:2.9rem; line-height:1; color:var(--paper);}
+  .actu-cal .mm{font-family:'DM Mono',monospace; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:#FC8024; font-weight:600;}
+  .actu-item .actu-body{flex:1; min-width:0; padding:20px 26px; display:flex; flex-direction:column; justify-content:center; gap:8px;}
+  .actu-item .actu-date{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:.1em; color:var(--amber); text-transform:uppercase; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .actu-item .actu-date .soon{background:linear-gradient(90deg,#FF0953,#FC8024); color:#fff; border-radius:100px; padding:3px 10px; font-size:.66rem; letter-spacing:.08em;}
+  .actu-item p{color:var(--paper); font-size:1.18rem; font-weight:700; line-height:1.3; margin:0;}
+  .actu-item .actu-meta{color:var(--muted); font-size:0.9rem; font-weight:400; margin:0; display:flex; flex-wrap:wrap; gap:6px 18px;}
+  .actu-item>img{width:190px; height:auto; min-height:128px; object-fit:cover; flex-shrink:0; border-radius:0; display:block;}
+  @media (max-width:640px){ .actu-cal{flex-basis:84px;} .actu-cal .dd{font-size:2.1rem;} .actu-item .actu-body{padding:16px 18px;} .actu-item p{font-size:1rem;} .actu-item>img{display:none;} }
+  .lightbox-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:300; align-items:center; justify-content:center; padding:24px; cursor:zoom-out;}
+  .lightbox-overlay.open{display:flex;}
+  .lightbox-overlay img{max-width:100%; max-height:100%; border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+  .event-card img, .actu-item img{cursor:zoom-in;}
+
+  /* Menu mobile (burger) */
+  .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
+  .burger span{display:block; width:20px; height:2px; background:var(--paper); border-radius:2px; transition:transform .25s ease, opacity .25s ease;}
+  header.menu-open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  header.menu-open .burger span:nth-child(2){opacity:0;}
+  header.menu-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  @media (max-width:960px){
+    .burger{display:flex;}
+    .nav-wrap{position:relative; flex-wrap:nowrap;}
+    .nav-wrap .lang-switch{margin-left:auto;}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0a14 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav li{border-bottom:1px solid var(--line);}
+    header.menu-open nav li:last-child{border-bottom:0;}
+    header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
+  }
+
+  /* bio-wide */
+  .bio-wrap{align-items:stretch !important; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important; gap:56px !important;}
+  .bio-wrap .logo-frame{aspect-ratio:4/3; height:auto; align-self:center;}
+  .bio-wrap .logo-frame.ph-frame{position:relative; aspect-ratio:auto; min-height:340px; align-self:stretch; padding:0;}
+  .bio-wrap .logo-frame.ph-frame img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .bio-text{align-self:center;}
+  @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr !important; gap:28px !important;} .bio-wrap .logo-frame.ph-frame{min-height:0; aspect-ratio:4/3;} }
+
+</style>
+
+
+
+
+
+<!-- i18n:start -->
+<link rel="alternate" hreflang="fr" href="https://soundlightprod.fr/tribute-celine-dion">
+<link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/tribute-celine-dion">
+<link rel="alternate" hreflang="es" href="https://soundlightprod.com/es/tribute-celine-dion">
+<link rel="alternate" hreflang="it" href="https://soundlightprod.com/it/tribute-celine-dion">
+<link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/tribute-celine-dion">
+<style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
+<!-- i18n:end -->
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0A14">
+<link rel="canonical" href="https://soundlightprod.com/es/tribute-celine-dion">
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a href="./" class="brand">
+      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="./">Inicio</a></li>
+        <li><a href="artistes" class="current">Artistas y espectáculos</a></li>
+        <li><a href="son-lumiere">Servicios técnicos</a></li>
+        <li><a href="agenda">Agenda</a></li>
+        <li><a href="galerie">Galería</a></li>
+        <li><a href="https://soundlightprod.store">Tienda</a></li>
+        <li><a href="contact" class="nav-cta">Contacto</a></li>
+      </ul>
+    </nav>
+    <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/tribute-celine-dion" hreflang="fr" lang="fr">FR</a><a href="https://soundlightprod.com/en/tribute-celine-dion" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/tribute-celine-dion" hreflang="es" lang="es" class="on" aria-current="true">ES</a><a href="https://soundlightprod.com/it/tribute-celine-dion" hreflang="it" lang="it">IT</a></div>
+    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
+  <div class="page-hero-inner">
+    <span class="breadcrumb"><a href="tributes">← Tributes</a></span>
+    <span class="label">Tribute Céline Dion</span>
+    <h1>Tribute Céline Dion</h1>
+    <p>El tributo a Céline Dion — seis artistas sobre el escenario y sus mayores éxitos en directo, para una velada llena de emoción.</p>
+  </div>
+</section>
+
+<section id="actus-section" style="display:none;">
+  <div class="wrap tight narrow">
+    <div class="section-head">
+      <span class="label">Noticias</span>
+      <h2>Novedades</h2>
+    </div>
+    <div class="actus-list" id="actus-list"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap tight">
+    <div class="bio-wrap">
+      <div class="logo-frame ph-frame" style="padding:0; overflow:hidden;">
+        <img src="celine-dion-photo-1.jpg" alt="Tribute Céline Dion sobre el escenario" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+      </div>
+      <div class="bio-text">
+        <p>¡Entre en el universo de nuestro Tribute Céline Dion!</p><p>Un homenaje hecho con fidelidad, elegancia y cuidado por el detalle: la cantante interpreta los grandes temas de Céline sin caer nunca en la imitación ni en la caricatura, a partir de versiones en directo cuidadosamente seleccionadas. El espectáculo está pensado para un público francófono, con muchas canciones de los álbumes «D'eux» y «S'il suffisait d'aimer», escritos y compuestos por Jean-Jacques Goldman, sin olvidar los grandes éxitos en inglés «I'm Alive», «My Heart Will Go On» y «All by Myself».</p><p>Seis artistas profesionales suben al escenario — voz, coros, guitarra, bajo, teclados y batería — con un cuidado especial en el vestuario y el maquillaje para sumergir al público en el universo de la cantante, sin caer jamás en el disfraz. Nacido en 2024 en la Alta Saboya, el grupo ya ha llenado Alby-sur-Chéran y Bonneville, ha reunido a más de 800 personas en Thônes y a más de 5.000 espectadores en Cluses el 14 de julio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap tight narrow">
+    <div class="section-head">
+      <span class="label">En imágenes</span>
+      <h2>El grupo</h2>
+    </div>
+    <div class="photo-grid">
+      <a href="celine-dion-photo-1.jpg"><img src="celine-dion-photo-1.jpg" alt="Tribute Céline Dion — photo 1" loading="lazy"></a>
+      <a href="celine-dion-photo-2.jpg"><img src="celine-dion-photo-2.jpg" alt="Tribute Céline Dion — photo 2" loading="lazy"></a>
+      <a class="wide" href="celine-dion-photo-3.jpg"><img src="celine-dion-photo-3.jpg" alt="Tribute Céline Dion — photo 3" loading="lazy"></a>
+      <a href="celine-dion-photo-4.jpg"><img src="celine-dion-photo-4.jpg" alt="Tribute Céline Dion — photo 4" loading="lazy"></a>
+      <a href="celine-dion-photo-5.jpg"><img src="celine-dion-photo-5.jpg" alt="Tribute Céline Dion — photo 5" loading="lazy"></a>
+      <a href="celine-dion-photo-6.jpg"><img src="celine-dion-photo-6.jpg" alt="Tribute Céline Dion — photo 6" loading="lazy"></a>
+      <a class="wide" href="celine-dion-photo-7.jpg"><img src="celine-dion-photo-7.jpg" alt="Tribute Céline Dion — photo 7" loading="lazy"></a>
+      <a href="celine-dion-photo-8.jpg"><img src="celine-dion-photo-8.jpg" alt="Tribute Céline Dion — photo 8" loading="lazy"></a>
+      <a href="celine-dion-photo-9.jpg"><img src="celine-dion-photo-9.jpg" alt="Tribute Céline Dion — photo 9" loading="lazy"></a>
+      <a class="wide" href="celine-dion-photo-10.jpg"><img src="celine-dion-photo-10.jpg" alt="Tribute Céline Dion — photo 10" loading="lazy"></a>
+      <a href="celine-dion-photo-11.jpg"><img src="celine-dion-photo-11.jpg" alt="Tribute Céline Dion — photo 11" loading="lazy"></a>
+      <a href="celine-dion-photo-12.jpg"><img src="celine-dion-photo-12.jpg" alt="Tribute Céline Dion — photo 12" loading="lazy"></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap tight">
+    <div class="info-grid">
+      <div class="info-item"><span class="mark">→</span><p>6 artistas profesionales en escena — voz, coros, guitarra, bajo, teclados, batería</p></div>
+      <div class="info-item"><span class="mark">→</span><p>Repertorio en francés («D'eux», «S'il suffisait d'aimer») y grandes éxitos internacionales</p></div>
+      <div class="info-item"><span class="mark">→</span><p>Más de 5.000 espectadores en Cluses, entradas agotadas en Bonneville</p></div>
+      <div class="info-item"><span class="mark">→</span><p>Sonido e iluminación a cargo de SLP según la fórmula elegida</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap tight">
+    <span class="label">¿Quiere programarlos?</span>
+    <h2>Reserve<br>Tribute Céline Dion</h2>
+    <p>SLP distribuye a este artista y coordina toda la logística de su evento.</p>
+    <div class="cta-row">
+      <a href="contact?artiste=tribute-celine-dion&amp;nom=Tribute%20C%C3%A9line%20Dion" class="btn btn-primary">Pedir presupuesto</a>
+      <a href="tel:+33631949653" class="btn btn-ghost"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>+33 6 31 94 96 53</a>
+      <a href="https://wa.me/33631949653?text=Hola%2C%20les%20contacto%20por%20Tribute%20C%C3%A9line%20Dion%20%28web%20de%20SLP%29%3A%20" target="_blank" rel="noopener" class="btn btn-ghost cta-wa"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
+      <div>
+        <h3>Sound Light Prod</h3>
+        <p>Gestión de eventos y artistas, sonido e iluminación, en Francia y Europa.</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <a href="./">Inicio</a>
+      <a href="artistes">Artistas y espectáculos</a>
+      <a href="son-lumiere">Servicios técnicos</a>
+      <a href="agenda">Agenda</a>
+      <a href="galerie">Galería</a>
+      <a href="contact">Contacto</a>
+      <a href="https://soundlightprod.store">Tienda</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653">+33 6 31 94 96 53</a>
+    </div>
+    <div class="footer-col">
+      <h4>Síganos</h4>
+      <div class="social-row">
+        <a href="https://www.facebook.com/SoundlightP" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.8 8.6h1.9V5.9h-2.2c-2.3 0-3.7 1.5-3.7 3.8v1.6H7.6v2.8h2.2V21h3v-6.9h2.4l.4-2.8h-2.8V9.9c0-.8.3-1.3 1-1.3z"/></svg></a>
+        <a href="https://www.instagram.com/slp_france/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://www.youtube.com/channel/UC6dZffs_G3DbbZPNEhjisLg" target="_blank" rel="noopener" class="social-icon" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><polygon points="10 9.2 15.8 12 10 14.8" fill="currentColor" stroke="none"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="mentions-legales" style="color:inherit;">Aviso legal</a> · <a href="https://soundlightprod.fr/cgv-boutique" style="color:inherit;">Condiciones de venta (FR)</a></p>
+</footer>
+
+<script>
+(function(){
+  const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+  const ARTIST_SLUG = "tribute-celine-dion";
+
+  function formatDate(iso){
+    try {
+      const d = new Date(iso.slice(0,10) + 'T00:00:00');
+      return d.toLocaleDateString('es-ES', { day:'2-digit', month:'short' });
+    } catch(e){ return ''; }
+  }
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  fetch(`${API_BASE}/api/actualites?artist=${ARTIST_SLUG}`)
+    .then(r => r.ok ? r.json() : [])
+    .then(items => {
+      if (!items || !items.length) return;
+      const list = document.getElementById('actus-list');
+      if (!list) return;
+      list.innerHTML = items.map(a => {
+        const icon = { concert:'🎤', cabaret:'🎭', dj:'🎧' }[a.type] || '📣';
+        const dateLabel = a.event_date
+          ? formatDate(a.event_date) + (a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + formatDate(a.event_end_date) : '')
+          : formatDate(a.created_at);
+        const photo = a.photo_url ? `<img src="${a.photo_url}" alt="">` : '';
+        const _lang = (document.documentElement.lang || 'fr').slice(0,2);
+        const _loc = { fr:'fr-FR', en:'en-GB', es:'es-ES', it:'it-IT' }[_lang] || 'fr-FR';
+        const _d = new Date(((a.event_date || a.created_at || '') + '').slice(0,10) + 'T12:00:00');
+        const _ok = !isNaN(_d);
+        const _days = _ok ? Math.round((_d - new Date(new Date().toDateString() + ' 12:00')) / 864e5) : null;
+        const _T = { fr:['Ce soir','Demain','Dans %d jours'], en:['Tonight','Tomorrow','In %d days'], es:['Esta noche','Mañana','En %d días'], it:['Stasera','Domani','Tra %d giorni'] }[_lang] || ['Ce soir','Demain','Dans %d jours'];
+        const _soon = a.event_date && _days !== null && _days >= 0 && _days <= 60 ? (_days === 0 ? _T[0] : _days === 1 ? _T[1] : _T[2].replace('%d', _days)) : '';
+        const _type = ({ fr:{concert:'Concert', cabaret:'Cabaret', dj:'Soirée DJ'}, en:{concert:'Concert', cabaret:'Cabaret', dj:'DJ night'}, es:{concert:'Concierto', cabaret:'Cabaret', dj:'Noche DJ'}, it:{concert:'Concerto', cabaret:'Cabaret', dj:'Serata DJ'} }[_lang] || {})[a.type] || '';
+        const cal = _ok ? `<div class="actu-cal"><span class="wd">${_d.toLocaleDateString(_loc,{weekday:'short'}).replace('.','')}</span><span class="dd">${_d.getDate()}</span><span class="mm">${_d.toLocaleDateString(_loc,{month:'short'}).replace('.','')}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + formatDate(a.event_end_date) : ''}</span></div>` : '';
+        const meta = [
+          a.event_time ? `<span>🕐 ${escapeHtml(a.event_time)}</span>` : '',
+          [a.venue_name, a.venue_city].filter(Boolean).length ? `<span>📍 ${escapeHtml([a.venue_name, a.venue_city].filter(Boolean).join(', '))}</span>` : '',
+        ].filter(Boolean).join('');
+        return `
+          <div class="actu-item">
+            ${cal}
+            <div class="actu-body">
+              <span class="actu-date">${icon} ${_type || dateLabel}${_soon ? `<span class="soon">${_soon}</span>` : ''}</span>
+              <p>${escapeHtml(a.text)}</p>
+              ${meta ? `<p class="actu-meta">${meta}</p>` : ''}
+            </div>
+            ${photo}
+          </div>
+        `;
+      }).join('');
+      document.getElementById('actus-section').style.display = 'block';
+    })
+    .catch(()=>{});
+})();
+</script>
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="">
+</div>
+<!-- cta-contact:start (boutons de contact + suivi des clics) -->
+<style>
+  .cta-row .btn svg{vertical-align:-3px; margin-right:6px;}
+  .cta-wa{color:#25d366 !important;}
+  .ctabar{position:fixed; left:10px; right:10px; bottom:10px; z-index:250; display:none; gap:8px; padding:8px; border-radius:18px; background:rgba(12,11,16,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.12); box-shadow:0 10px 30px rgba(0,0,0,.4); transform:translateY(130%); transition:transform .3s ease;}
+  .ctabar.on{transform:none;}
+  .ctabar a{flex:1; display:flex; align-items:center; justify-content:center; gap:6px; min-height:46px; border-radius:12px; font-weight:700; font-size:.9rem; text-decoration:none; white-space:nowrap;}
+  .ctabar .b1{flex:1.6; background:#f7f5f0; color:#0c0b10;} .ctabar .b2{background:rgba(255,255,255,.08); color:#f7f5f0;} .ctabar .b3{background:#25d366; color:#08260f;}
+  @media (max-width:760px){ .ctabar{display:flex;} body{padding-bottom:76px;} }
+  @media (prefers-reduced-motion: reduce){ .ctabar{transition:none;} }
+</style>
+<nav class="ctabar" aria-label="Contact"><a class="b1" href="contact?artiste=tribute-celine-dion&amp;nom=Tribute%20C%C3%A9line%20Dion">Pedir presupuesto</a><a class="b2" href="tel:+33631949653" aria-label="Llamar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Llamar</a><a class="b3" href="https://wa.me/33631949653?text=Hola%2C%20les%20contacto%20por%20Tribute%20C%C3%A9line%20Dion%20%28web%20de%20SLP%29%3A%20" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg></a></nav>
+<script>
+(function(){
+  var slug = "es/tribute-celine-dion";
+  var bar = document.querySelector('.ctabar');
+  if (bar){
+    var band = document.querySelector('.cta-band'), bandVisible = false;
+    var upd = function(){ bar.classList.toggle('on', window.scrollY > 500 && !bandVisible); };
+    if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
+    window.addEventListener('scroll', upd, { passive:true }); upd();
+  }
+  var skip = false; try { skip = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch(e){}
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href]'); if (!a || skip) return;
+    var h = a.getAttribute('href') || '';
+    var action = /^tel:/.test(h) ? 'appel' : /wa\.me/.test(h) ? 'whatsapp' : /^mailto:/.test(h) ? 'mail' : /^contact\?/.test(h) ? 'devis' : null;
+    if (!action) return;
+    var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch(e){}
+    var data = JSON.stringify({ action: action, page: slug, session_id: sid });
+    try { if (navigator.sendBeacon && navigator.sendBeacon('/api/contact-event', new Blob([data], { type:'application/json' }))) return; } catch(e){}
+    fetch('/api/contact-event', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:data, keepalive:true }).catch(function(){});
+  });
+})();
+</script>
+<!-- cta-contact:end -->
+</body>
+<script>
+(function(){
+  window.openLightbox = function(src){
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxOverlay').classList.add('open');
+  };
+  window.closeLightbox = function(){
+    document.getElementById('lightboxOverlay').classList.remove('open');
+  };
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('.event-card img, .actu-item img');
+    if (!img) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openLightbox(img.src);
+  });
+})();
+</script>
+<script>
+(function(){
+  if (localStorage.getItem('slp_admin_token')) return;
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  (function(){try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("slp_notrack","1");if(/[?&]notrack=0/.test(location.search))localStorage.removeItem("slp_notrack");if(localStorage.getItem("slp_notrack"))return Promise.resolve();}catch(e){}return fetch.apply(window,arguments);})("/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ lang: "es", artist_slug: "tribute-celine-dion", session_id: sid, ref:(function(){try{var q=new URLSearchParams(location.search),s=q.get("utm_source")||(q.get("utm_medium")==="email"?"email":"");if(s){var c=(q.get("utm_campaign")||"").toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,50);return "https://emailing-"+s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")+(c?"."+c:"")+"/";}}catch(e){}return document.referrer;})() })
+  }).catch(function(){});
+})();
+</script>
+<script>
+document.querySelectorAll('.photo-grid a').forEach(function(a){
+  a.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openLightbox(a.getAttribute('href')); });
+});
+</script>
+<style>
+/* artist-compact:start */
+  .page-hero{padding-top:96px; padding-bottom:34px;}
+  .page-hero h1{font-size:clamp(1.9rem,4vw,2.7rem); margin-bottom:12px;}
+  .page-hero p{font-size:1rem;}
+  .wrap.tight{padding-top:20px; padding-bottom:20px;}
+  .section-head{margin-bottom:18px;}
+  .section-head .label{margin-bottom:8px;}
+  .section-head h2{font-size:clamp(1.25rem,2.4vw,1.65rem);}
+  .bio-wrap{gap:34px !important; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) !important; align-items:center !important;}
+  .bio-wrap .logo-frame{aspect-ratio:4/3 !important; height:auto; max-height:300px; padding:18px; align-self:center !important;}
+  .bio-wrap .logo-frame.ph-frame{min-height:0 !important; padding:0 !important; position:relative;}
+  @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr !important; gap:20px !important;} .bio-wrap .logo-frame{max-width:100%; max-height:240px;} .photo-grid{grid-template-columns:repeat(2,1fr);} .photo-grid a.wide{grid-column:span 2;} }
+  .bio-text p{font-size:.95rem; line-height:1.55; margin-bottom:12px;}
+  .members-grid{gap:12px;}
+  .video-wrap, .wrap.narrow > div[style*="aspect-ratio:16/9"]{max-width:640px;}
+  .video-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;}
+  .video-grid .video-wrap{max-width:none;}
+  .photo-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; height:auto;}
+  .photo-grid a{display:block; border-radius:12px; overflow:hidden; aspect-ratio:1/1; background:var(--ink-2); cursor:zoom-in;}
+  .photo-grid img{width:100%; height:100%; object-fit:cover; object-position:center 25%; display:block; transition:transform .4s ease;}
+  .photo-grid a:hover img{transform:scale(1.05);}
+  .photo-grid a.wide{grid-column:span 2; aspect-ratio:2/1;}
+  .photo-grid a.poster img{object-fit:contain; background:#0a0a0c;}
+  .banner-photo{max-width:380px !important; margin-left:auto !important; margin-right:auto !important;}
+  .single-photo{max-width:520px; margin-left:auto; margin-right:auto;}
+  .venue-card{padding:12px 16px;}
+  .info-grid{gap:18px;}
+  .cta-band .wrap.tight{padding-top:40px; padding-bottom:44px;}
+  .cta-band h2{font-size:clamp(1.6rem,3.6vw,2.3rem); margin-bottom:12px;}
+  .cta-band p{font-size:.98rem; margin-bottom:22px;}
+/* artist-compact:end */
+</style>
+</html>
