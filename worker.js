@@ -314,7 +314,7 @@ function withVideoTracking(resp, url) {
   const ct = resp.headers.get("Content-Type") || "";
   if (!ct.includes("text/html") || /^\/(admin|mon-agenda)/.test(url.pathname)) return resp;
   return new HTMLRewriter().on("body", {
-    element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script>', { html: true }); },
+    element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script><script src="/suivez.js" defer></script>', { html: true }); },
   }).transform(resp);
 }
 
@@ -1315,10 +1315,10 @@ export default {
         return json({ ok: true }, 200, origin);
       }
 
-      // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire|devis, page, session_id } : clics vers le contact
+      // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire|devis|suivre, page, session_id } : clics vers le contact (et « Suivez-nous »)
       if (url.pathname === "/api/contact-event" && request.method === "POST") {
         const body = await request.json().catch(() => ({}));
-        const action = ["appel", "whatsapp", "mail", "formulaire", "devis"].includes(body.action) ? body.action : null;
+        const action = ["appel", "whatsapp", "mail", "formulaire", "devis", "suivre"].includes(body.action) ? body.action : null;
         if (!action) return json({ ok: false }, 200, origin);
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
         await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
