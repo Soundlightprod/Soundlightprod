@@ -477,7 +477,7 @@ async function meteoData(env) {
   const safe = async (sql) => { try { return await q(sql); } catch (e) { return []; } };
   const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
   const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, contactClics, contactPages, contactDemandes, videoSite] = await Promise.all([
-    q("SELECT cree_le, moment, titre, resume_json, actions_json, texte FROM rapports ORDER BY id DESC LIMIT 1"),
+    q("SELECT cree_le, moment, titre, resume_json, actions_json, texte, html FROM rapports ORDER BY id DESC LIMIT 1"),
     q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique .store')),
        v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, ${NOT_TEST} AS vrai FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
        SELECT s.site, s.nom,
