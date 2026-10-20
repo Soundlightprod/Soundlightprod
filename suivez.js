@@ -17,6 +17,8 @@
       svg: '<path d="M13.8 8.6h1.9V5.9h-2.2c-2.3 0-3.7 1.5-3.7 3.8v1.6H7.6v2.8h2.2V21h3v-6.9h2.4l.4-2.8h-2.8V9.9c0-.8.3-1.3 1-1.3z"/>' },
     { id: 'instagram', name: 'Instagram', url: 'https://www.instagram.com/slp_france/',
       svg: '<rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/>' },
+    { id: 'tiktok', name: 'TikTok', url: 'https://www.tiktok.com/@soundlightprod',
+      svg: '<path d="M14 3.5v11.2a3.6 3.6 0 1 1-3.1-3.6"/><path d="M14 3.5c.4 2.6 2.2 4.4 5 4.6"/>' },
     { id: 'youtube', name: 'YouTube', url: 'https://www.youtube.com/@SOUNDLIGHTPROD',
       svg: '<rect x="2" y="6" width="20" height="12" rx="4"/><polygon points="10 9.2 15.8 12 10 14.8" fill="currentColor" stroke="none"/>' }
   ];
@@ -55,4 +57,15 @@
     if (a) track(a.getAttribute('data-net'));
   });
   footer.parentNode.insertBefore(sec, footer);
+  // Ajoute aussi TikTok aux petites icônes du pied de page (absent des pages HTML)
+  var row = footer.querySelector('.social-row');
+  if (row && !row.querySelector('a[href*="tiktok.com"]')) {
+    var tk = NETS.filter(function (n) { return n.id === 'tiktok'; })[0];
+    var ic = document.createElement('a');
+    ic.href = tk.url; ic.target = '_blank'; ic.rel = 'noopener'; ic.className = 'social-icon'; ic.setAttribute('aria-label', 'TikTok');
+    ic.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + tk.svg + '</svg>';
+    ic.addEventListener('click', function () { track('tiktok'); });
+    var yt = row.querySelector('a[aria-label="YouTube"]');
+    row.insertBefore(ic, yt || null);
+  }
 })();
