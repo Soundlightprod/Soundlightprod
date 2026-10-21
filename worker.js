@@ -333,7 +333,7 @@ function visitProfile(request, body, cf) {
   return { network, device, referrer, isBot };
 }
 
-function siteWhere(url) { const p = ["NOT (COALESCE(city,'') = 'Pessac' AND COALESCE(network,'') LIKE '%Free SAS%' AND COALESCE(device,'') = 'Ordinateur')"]; const s = url.searchParams.get("site"); if (["slp", "bmb", "csa", "store"].includes(s)) p.push("site = '" + s + "'"); const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/; const f = url.searchParams.get("from"), t = url.searchParams.get("to"); if (f && re.test(f)) p.push("visited_at >= '" + f + " 00:00:00'"); if (t && re.test(t)) p.push("visited_at <= '" + t + " 23:59:59'"); if (url.searchParams.get("bots") === "0") p.push("is_bot = 0"); return p.length ? p.join(" AND ") : "1=1"; } 
+function siteWhere(url) { const p = [notTest("visited_at")]; const s = url.searchParams.get("site"); if (["slp", "bmb", "csa", "store"].includes(s)) p.push("site = '" + s + "'"); const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/; const f = url.searchParams.get("from"), t = url.searchParams.get("to"); if (f && re.test(f)) p.push("visited_at >= '" + f + " 00:00:00'"); if (t && re.test(t)) p.push("visited_at <= '" + t + " 23:59:59'"); if (url.searchParams.get("bots") === "0") p.push("is_bot = 0"); return p.length ? p.join(" AND ") : "1=1"; } 
 function periodCutoff(period) {
   const now = new Date();
   if (period === "today") {
@@ -468,8 +468,10 @@ async function isAdminForMeteo(request, env) {
 // Heure de Paris pour SQLite (heure d'été jusqu'au 25/10/2026, d'hiver ensuite ; à revoir le 28/03/2027)
 const PARIS_OFFSET = (col) => `CASE WHEN ${col} >= '2026-10-25 01:00:00' AND ${col} < '2027-03-28 01:00:00' THEN '+1 hours' WHEN ${col} >= '2027-10-31 01:00:00' THEN '+1 hours' ELSE '+2 hours' END`;
 
-// Tests de Nj : son PC (Free SAS, Pessac, ordinateur) ; tout le reste est un vrai visiteur
-const NOT_TEST = "NOT (COALESCE(city,'') = 'Pessac' AND COALESCE(network,'') LIKE '%Free SAS%' AND COALESCE(device,'') = 'Ordinateur')";
+// Tests de Nj : depuis le 15/10/2026, son PC et son téléphone sont marqués « notrack » et ne sont plus
+// enregistrés du tout. Le filtre « PC de Pessac (Free SAS, ordinateur) » ne s'applique donc plus qu'aux
+// visites d'avant le 15/10/2026 (heure de Paris), qui contenaient ses tests. Tout le reste est un vrai visiteur.
+function notTest(col) { return `NOT (COALESCE(city,'') = 'Pessac' AND COALESCE(network,'') LIKE '%Free SAS%' AND COALESCE(device,'') = 'Ordinateur' AND ${col} < '2026-10-14 22:00:00')`; }
 const MAIL_REF = "(referrer LIKE 'emailing-sendinblue%' OR referrer LIKE '%sendibm%' OR referrer LIKE '%em.soundlightprod%')";
 
 async function meteoData(env) {
@@ -479,7 +481,7 @@ async function meteoData(env) {
   const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, contactClics, contactPages, contactDemandes, videoSite] = await Promise.all([
     q("SELECT cree_le, moment, titre, resume_json, actions_json, texte, html FROM rapports ORDER BY id DESC LIMIT 1"),
     q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique .store')),
-       v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, ${NOT_TEST} AS vrai FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
+       v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, ${notTest("visited_at")} AS vrai FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
        SELECT s.site, s.nom,
          COUNT(DISTINCT CASE WHEN v.vrai AND v.jour = t.today THEN v.session_id END) AS aujourdhui,
          SUM(CASE WHEN v.vrai AND v.jour = t.today THEN 1 ELSE 0 END) AS pages_aujourdhui,
@@ -506,11 +508,11 @@ async function meteoData(env) {
        FROM gsc_index GROUP BY site, releve ORDER BY releve`),
     q("SELECT * FROM brevo_campagnes WHERE envoyes > 0 ORDER BY date_envoi DESC, id DESC LIMIT 6"),
     q(`SELECT date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, COUNT(DISTINCT session_id) AS visiteurs FROM page_visits
-       WHERE is_bot = 0 AND ${MAIL_REF} AND ${NOT_TEST} AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
+       WHERE is_bot = 0 AND ${MAIL_REF} AND ${notTest("visited_at")} AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
     // Visiteurs à suivre : hier et aujourd'hui, au moins 3 pages vues (tous sites confondus)
     q(`WITH t AS (SELECT ${today} AS today),
        v AS (SELECT session_id, site, artist_slug, visited_at, city, region, country, network, device, referrer, lang, domaine, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour
-             FROM page_visits WHERE is_bot = 0 AND ${NOT_TEST} AND visited_at >= datetime('now', '-3 days') ORDER BY visited_at)
+             FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")} AND visited_at >= datetime('now', '-3 days') ORDER BY visited_at)
        -- ville, réseau, appareil et provenance = ceux de la première page vue (colonnes « nues » de SQLite liées au MIN)
        SELECT session_id, MIN(visited_at) AS debut, GROUP_CONCAT(DISTINCT site) AS sites, city AS ville, region,
          network AS reseau, device AS appareil, referrer AS provenance, GROUP_CONCAT(DISTINCT lang) AS langues, GROUP_CONCAT(DISTINCT domaine) AS domaines, country AS pays, COUNT(*) AS pages, GROUP_CONCAT(artist_slug, ' › ') AS parcours
@@ -520,16 +522,16 @@ async function meteoData(env) {
     safe("SELECT video_id, titre, origine FROM yt_videos"),
     safe("SELECT video_id, jour, vues FROM yt_stats WHERE jour >= date('now', '-9 days') ORDER BY jour"),
     safe(`SELECT action, COUNT(DISTINCT COALESCE(session_id, id)) AS n, SUM(cree_le >= datetime('now', '-1 day')) AS n24 FROM contact_events
-       WHERE is_bot = 0 AND ${NOT_TEST} AND cree_le >= datetime('now', '-7 days') GROUP BY action`),
+       WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') GROUP BY action`),
     safe(`SELECT page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
-       WHERE is_bot = 0 AND ${NOT_TEST} AND cree_le >= datetime('now', '-7 days') AND action IN ('devis', 'appel', 'whatsapp', 'mail', 'chat', 'envoi') GROUP BY page ORDER BY n DESC LIMIT 8`),
+       WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') AND action IN ('devis', 'appel', 'whatsapp', 'mail', 'chat', 'envoi') GROUP BY page ORDER BY n DESC LIMIT 8`),
     safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests ORDER BY id DESC LIMIT 10"),
     safe(`SELECT video_id, page, COUNT(DISTINCT CASE WHEN event = 'play' THEN session_id END) AS lectures,
          COUNT(DISTINCT CASE WHEN event IN ('75', 'fin') THEN session_id END) AS jusqu_au_bout
-       FROM video_events WHERE is_bot = 0 AND ${NOT_TEST} AND created_at >= datetime('now', '-7 days') GROUP BY video_id, page ORDER BY lectures DESC`),
+       FROM video_events WHERE is_bot = 0 AND ${notTest("created_at")} AND created_at >= datetime('now', '-7 days') GROUP BY video_id, page ORDER BY lectures DESC`),
   ]);
   const chatMenu = await safe(`SELECT page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
-       WHERE is_bot = 0 AND ${NOT_TEST} AND action = 'chat_menu' AND cree_le >= datetime('now', '-7 days') GROUP BY page ORDER BY n DESC`);
+       WHERE is_bot = 0 AND ${notTest("cree_le")} AND action = 'chat_menu' AND cree_le >= datetime('now', '-7 days') GROUP BY page ORDER BY n DESC`);
   return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, pages: contactPages, demandes: contactDemandes, menu: chatMenu }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
     youtube: { releve: ytReleve[0] || null, videos: ytVideos, stats: ytStats, site: videoSite } };
 }
