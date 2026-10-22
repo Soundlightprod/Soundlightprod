@@ -88,12 +88,12 @@ TERM_KW = [  # (mot dans le NOM du produit, synonymes / requêtes fréquentes) �
     ('moving', ['lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
     ('lyre', ['lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
     ('projecteur mobile', ['lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
-    ('bee eye', ['bee eye', 'projecteur bee eye', 'zoom bee eye']),
-    ('bee-eye', ['bee eye', 'projecteur bee eye', 'zoom bee eye']),
     ('wash', ['projecteur wash', 'wash LED']),
     ('beam', ['projecteur beam', 'beam LED']),
     ('spot', ['projecteur spot']),
     ('par', ['par LED', 'projecteur PAR LED', 'par LED DMX']),
+    ('bee eye', ['lyre LED', 'lyre bee eye', 'moving head', 'lyre zoom']),
+    ('bee-eye', ['lyre LED', 'lyre bee eye', 'moving head', 'lyre zoom']),
     ('barre', ['barre LED', 'barre LED pixel', 'rampe LED']),
     ('sunstrip', ['barre sunstrip', 'barre halogène', 'blinder halogène', 'effet rétro']),
     ('strobe', ['stroboscope', 'strobe LED']),
@@ -115,7 +115,7 @@ TERM_KW = [  # (mot dans le NOM du produit, synonymes / requêtes fréquentes) �
     ('projecteur', ['projecteur LED']),
 ]
 EXACT_KW = {'par', 'wash', 'beam', 'spot', 'moving', 'fog', 'micro'}
-GENERIC_KW = {'lot de', 'ip65', 'projecteur', 'bee eye', 'bee-eye'}
+GENERIC_KW = {'lot de', 'ip65', 'projecteur'}
 
 
 def _matches(p):
@@ -123,6 +123,8 @@ def _matches(p):
     res = []
     for k, syn in TERM_KW:
         if re.search(r'(?<![a-z0-9])' + re.escape(k) + (r'(?![a-z0-9])' if k in EXACT_KW else ''), n):
+            if k.startswith('bee') and any(m[0] == 'par' for m in res):
+                syn = ['bee eye', 'zoom bee eye']  # un PAR bee-eye n'est pas une lyre
             res.append((k, syn))
             if k == 'poudre':
                 break
