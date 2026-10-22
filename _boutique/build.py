@@ -82,43 +82,72 @@ CAT_KW = {
     'effets': ['machine à effets', 'effets spéciaux scène', 'effet de scène', 'matériel DJ', 'animation soirée mariage'],
     'consommables': ['consommable scène', 'liquide machine', 'accessoires scène'],
 }
-TERM_KW = [  # (mot dans le nom, synonymes / requêtes fréquentes)
-    ('moving', ['lyre', 'lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
-    ('lyre', ['lyre', 'lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
-    ('wash', ['lyre wash', 'projecteur wash', 'wash LED']),
-    ('beam', ['lyre beam', 'beam LED', 'projecteur beam']),
-    ('spot', ['lyre spot', 'projecteur spot']),
-    ('bee eye', ['bee eye', 'lyre bee eye', 'lyre zoom']),
+TERM_KW = [  # (mot dans le NOM du produit, synonymes / requêtes fréquentes) — le 1er synonyme sert de libellé de type
+    ('poudre', ['poudre pour machine à étincelles', 'poudre étincelles froides', 'consommable étincelles']),
+    ('lot de', ['lot', 'pack']),
+    ('moving', ['lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
+    ('lyre', ['lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
+    ('projecteur mobile', ['lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
+    ('bee eye', ['bee eye', 'projecteur bee eye', 'zoom bee eye']),
+    ('bee-eye', ['bee eye', 'projecteur bee eye', 'zoom bee eye']),
+    ('wash', ['projecteur wash', 'wash LED']),
+    ('beam', ['projecteur beam', 'beam LED']),
+    ('spot', ['projecteur spot']),
     ('par', ['par LED', 'projecteur PAR LED', 'par LED DMX']),
-    ('bar', ['barre LED', 'barre LED pixel', 'rampe LED']),
+    ('barre', ['barre LED', 'barre LED pixel', 'rampe LED']),
+    ('sunstrip', ['barre sunstrip', 'barre halogène', 'blinder halogène', 'effet rétro']),
     ('strobe', ['stroboscope', 'strobe LED']),
     ('laser', ['laser de scène', 'laser DJ', 'laser RGB']),
-    ('fog', ['machine à fumée', 'fumigène', 'machine à brouillard']),
-    ('fumée', ['machine à fumée', 'fumigène']),
-    ('smoke', ['machine à fumée', 'fumigène']),
+    ('canon à confettis', ['canon à confettis', 'effet confettis', 'effet mariage']),
+    ('jet de scène', ['jet de scène', 'jet CO2 scène', 'effet de scène']),
     ('étincelle', ['machine à étincelles', 'étincelles froides', 'fontaine à étincelles', 'effet mariage']),
-    ('spark', ['machine à étincelles', 'étincelles froides', 'effet mariage']),
+    ('répartiteur', ['splitter DMX', 'répartiteur DMX', 'distribution DMX']),
+    ('fumée', ['machine à fumée', 'fumigène']),
+    ('fog', ['machine à fumée', 'fumigène']),
     ('haze', ['machine à brume', 'brumisateur scène']),
-    ('speaker', ['enceinte', 'enceinte active', 'haut-parleur']),
-    ('enceinte', ['enceinte', 'enceinte active', 'haut-parleur']),
-    ('subwoofer', ['caisson de basse', 'sub actif', 'subwoofer']),
-    ('sub', ['caisson de basse', 'sub actif']),
-    ('micro', ['microphone', 'micro sans fil', 'micro HF']),
-    ('mixer', ['table de mixage', 'console de mixage']),
-    ('mix', ['table de mixage']),
-    ('led', ['LED', 'éclairage LED']),
-    ('dmx', ['DMX512', 'contrôleur DMX']),
-    ('x2', ['lot de 2']), ('x4', ['lot de 4']), ('lot de', ['lot', 'pack']),
+    ('enceinte', ['enceinte active', 'haut-parleur', 'enceinte sono']),
+    ('speaker', ['enceinte active', 'haut-parleur']),
+    ('subwoofer', ['caisson de basse', 'sub actif']),
+    ('caisson', ['caisson de basse', 'sub actif']),
+    ('micro', ['microphone', 'micro sans fil']),
+    ('table de mixage', ['table de mixage', 'console de mixage']),
+    ('ip65', ['projecteur étanche', 'éclairage extérieur IP65']),
+    ('projecteur', ['projecteur LED']),
 ]
+EXACT_KW = {'par', 'wash', 'beam', 'spot', 'moving', 'fog', 'micro'}
+GENERIC_KW = {'lot de', 'ip65', 'projecteur', 'bee eye', 'bee-eye'}
+
+
+def _matches(p):
+    n = p['name'].lower()
+    res = []
+    for k, syn in TERM_KW:
+        if re.search(r'(?<![a-z0-9])' + re.escape(k) + (r'(?![a-z0-9])' if k in EXACT_KW else ''), n):
+            res.append((k, syn))
+            if k == 'poudre':
+                break
+    return res
+
+
+def type_label(p):
+    """Type de matériel d'après le nom du produit seulement (jamais un autre matériel)."""
+    for k, syn in _matches(p):
+        if k in GENERIC_KW or k in ('wash', 'beam', 'spot'):
+            continue
+        lab = syn[0][0].upper() + syn[0][1:]
+        return lab if lab.split()[0].lower() not in p['name'].lower() else None
+    return None
 
 
 def keywords(p):
-    n = (p['name'] + ' ' + p['slug'].replace('-', ' ')).lower()
     out = [p['name']]
-    for k, syn in TERM_KW:
-        if re.search(r'(?<![a-z0-9])' + re.escape(k), n):
-            out += syn
-    out += CAT_KW.get(p['category'], [])
+    ms = _matches(p)
+    for k, syn in ms:
+        out += syn
+    if ms and ms[0][0] == 'poudre':
+        out += ['consommable scène']
+    else:
+        out += CAT_KW.get(p['category'], [])
     out += ['matériel son et lumière', 'boutique SLP', 'livraison France', 'garantie 2 ans']
     seen, res = set(), []
     for k in out:
@@ -130,7 +159,8 @@ def keywords(p):
 def summary(p):
     sp = specs(p)
     cat = CAT_FULL.get(p['category'], 'Matériel')
-    base = f"{p['name']} : {cat.lower()} professionnel"
+    _tl = type_label(p)
+    base = f"{p['name']} : " + (f"{_tl.lower()}, " if _tl else '') + f"{cat.lower()} professionnel"
     if sp and len(sp) > 1:
         return f"{base} — {', '.join(sp[:3])}. Garantie 2 ans, livraison partout en France."
     if sp:
@@ -319,7 +349,8 @@ def page(p, products, tpl):
     style, links, header, footer, shopbar = tpl
     url = f"{SITE}/produits/{p['slug']}"
     cat = CATS.get(p['category'], p['category'])
-    title = f"{p['name']} — {CAT_FULL.get(p['category'], 'Matériel')} | Boutique SLP"
+    _tl = type_label(p)
+    title = f"{p['name']} — " + (f"{_tl}, " if _tl else '') + f"{CAT_FULL.get(p['category'], 'Matériel')} | Boutique SLP"
     desc = summary(p)[:300]
     sp = specs(p)
     spec_html = ''.join(f'<li>{esc(s)}</li>' for s in sp) if len(sp) > 1 else ''
