@@ -76,6 +76,57 @@ def specs(p):
     return [s for s in parts if s]
 
 
+CAT_KW = {
+    'son': ['matériel de sonorisation', 'sono', 'enceinte active', 'système son', 'sono DJ', 'sonorisation concert', 'acheter matériel son'],
+    'lumiere': ['éclairage scénique', 'projecteur LED', 'matériel lumière', 'jeu de lumière', 'lumière DJ', 'éclairage soirée', 'acheter éclairage scène'],
+    'effets': ['machine à effets', 'effets spéciaux scène', 'effet de scène', 'matériel DJ', 'animation soirée mariage'],
+    'consommables': ['consommable scène', 'liquide machine', 'accessoires scène'],
+}
+TERM_KW = [  # (mot dans le nom, synonymes / requêtes fréquentes)
+    ('moving', ['lyre', 'lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
+    ('lyre', ['lyre', 'lyre LED', 'moving head', 'lyre asservie', 'lyre DMX']),
+    ('wash', ['lyre wash', 'projecteur wash', 'wash LED']),
+    ('beam', ['lyre beam', 'beam LED', 'projecteur beam']),
+    ('spot', ['lyre spot', 'projecteur spot']),
+    ('bee eye', ['bee eye', 'lyre bee eye', 'lyre zoom']),
+    ('par', ['par LED', 'projecteur PAR LED', 'par LED DMX']),
+    ('bar', ['barre LED', 'barre LED pixel', 'rampe LED']),
+    ('strobe', ['stroboscope', 'strobe LED']),
+    ('laser', ['laser de scène', 'laser DJ', 'laser RGB']),
+    ('fog', ['machine à fumée', 'fumigène', 'machine à brouillard']),
+    ('fumée', ['machine à fumée', 'fumigène']),
+    ('smoke', ['machine à fumée', 'fumigène']),
+    ('étincelle', ['machine à étincelles', 'étincelles froides', 'fontaine à étincelles', 'effet mariage']),
+    ('spark', ['machine à étincelles', 'étincelles froides', 'effet mariage']),
+    ('haze', ['machine à brume', 'brumisateur scène']),
+    ('speaker', ['enceinte', 'enceinte active', 'haut-parleur']),
+    ('enceinte', ['enceinte', 'enceinte active', 'haut-parleur']),
+    ('subwoofer', ['caisson de basse', 'sub actif', 'subwoofer']),
+    ('sub', ['caisson de basse', 'sub actif']),
+    ('micro', ['microphone', 'micro sans fil', 'micro HF']),
+    ('mixer', ['table de mixage', 'console de mixage']),
+    ('mix', ['table de mixage']),
+    ('led', ['LED', 'éclairage LED']),
+    ('dmx', ['DMX512', 'contrôleur DMX']),
+    ('x2', ['lot de 2']), ('x4', ['lot de 4']), ('lot de', ['lot', 'pack']),
+]
+
+
+def keywords(p):
+    n = (p['name'] + ' ' + p['slug'].replace('-', ' ')).lower()
+    out = [p['name']]
+    for k, syn in TERM_KW:
+        if re.search(r'(?<![a-z0-9])' + re.escape(k), n):
+            out += syn
+    out += CAT_KW.get(p['category'], [])
+    out += ['matériel son et lumière', 'boutique SLP', 'livraison France', 'garantie 2 ans']
+    seen, res = set(), []
+    for k in out:
+        if k.lower() not in seen:
+            seen.add(k.lower()); res.append(k)
+    return ', '.join(res)
+
+
 def summary(p):
     sp = specs(p)
     cat = CAT_FULL.get(p['category'], 'Matériel')
@@ -301,6 +352,7 @@ def page(p, products, tpl):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
+<meta name="keywords" content="{esc(keywords(p))}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="product">
