@@ -438,6 +438,20 @@
 @media (max-width:960px){.cats2{grid-template-columns:repeat(4,1fr)}.cat2,.cat2.big,.cat2.small,.cat2.small:last-child{grid-column:span 2}.cat2:nth-child(4),.cat2:nth-child(5){grid-column:span 2}.cat2:nth-child(5){grid-column:2 / span 2}}
 @media (max-width:600px){.cats2{grid-template-columns:1fr}.cat2,.cat2.big,.cat2.small,.cat2.small:last-child,.cat2:nth-child(4),.cat2:nth-child(5){grid-column:auto}}
 /* cats-equal:end */
+/* cats-5:start */
+@media (min-width:961px){
+.cats2{grid-template-columns:repeat(5,1fr);gap:14px}
+.cat2,.cat2.big,.cat2.small,.cat2.small:last-child,.cat2:nth-child(4),.cat2:nth-child(5){grid-column:auto}
+.cat2 .body{padding:14px 16px 16px;gap:10px;flex-direction:column;align-items:stretch;justify-content:space-between}
+.cat2 .body>div{align-self:stretch}
+.cat2 .go{align-self:flex-end}
+.cat2 .count{font-size:.6rem;margin-bottom:6px}
+.cat2 h3,.cat2.small h3{font-size:clamp(.95rem,1.25vw,1.15rem);margin-bottom:6px}
+.cat2 p{font-size:.8rem;line-height:1.4;margin-bottom:6px}
+.cat2 .names{font-size:.6rem;line-height:1.5}
+.cat2 .go{width:32px;height:32px;font-size:.9rem}
+}
+/* cats-5:end */
 /* cat-compact:end */
 </style>
 </html>
