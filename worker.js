@@ -1572,8 +1572,18 @@ export default {
         const totalRow = await env.DB.prepare(
           `SELECT COUNT(*) as n FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url)
         ).bind(cutoff, cutoff).first();
+        // Retours (visiteurs ayant accepté le suivi : page_visits.visitor_id) sur la période, hors robots.
+        let retours = null;
+        try {
+          const sw = siteWhere(url);
+          const r1 = await env.DB.prepare(`SELECT COUNT(DISTINCT session_id) AS sessions, COUNT(DISTINCT CASE WHEN visitor_id IS NOT NULL THEN session_id END) AS sessions_identifiees FROM page_visits WHERE is_bot = 0 AND (? IS NULL OR visited_at >= ?) AND ` + sw).bind(cutoff, cutoff).first();
+          const r2 = await env.DB.prepare(`SELECT COUNT(*) AS identifies, COALESCE(SUM(CASE WHEN s >= 2 THEN 1 ELSE 0 END), 0) AS revenus FROM (SELECT visitor_id, COUNT(DISTINCT session_id) AS s FROM page_visits WHERE visitor_id IS NOT NULL AND is_bot = 0 AND (? IS NULL OR visited_at >= ?) AND ` + sw + ` GROUP BY visitor_id)`).bind(cutoff, cutoff).first();
+          const liste = await env.DB.prepare(`SELECT COUNT(DISTINCT session_id) AS sessions, COUNT(*) AS pages, MAX(visited_at) AS derniere, MAX(city) AS ville, MAX(device) AS appareil, MAX(network) AS reseau, GROUP_CONCAT(DISTINCT artist_slug) AS pages_vues, (SELECT p2.session_id FROM page_visits p2 WHERE p2.visitor_id = page_visits.visitor_id ORDER BY p2.visited_at DESC LIMIT 1) AS derniere_session FROM page_visits WHERE visitor_id IS NOT NULL AND is_bot = 0 AND (? IS NULL OR visited_at >= ?) AND ` + sw + ` GROUP BY visitor_id HAVING COUNT(DISTINCT session_id) >= 2 ORDER BY sessions DESC, derniere DESC LIMIT 10`).bind(cutoff, cutoff).all();
+          retours = { sessions: r1?.sessions || 0, sessions_identifiees: r1?.sessions_identifiees || 0, identifies: r2?.identifies || 0, revenus: r2?.revenus || 0, liste: liste.results || [] };
+        } catch (e) { retours = null; }
         return json({
           total: totalRow?.n || 0,
+          retours,
           by_country: byCountry.results,
           by_region: byRegion.results,
           by_city: byCity.results,
