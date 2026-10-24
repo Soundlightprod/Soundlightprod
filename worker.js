@@ -313,7 +313,10 @@ function roadmapValuesFromBody(body) {
 function withVideoTracking(resp, url) {
   const ct = resp.headers.get("Content-Type") || "";
   if (!ct.includes("text/html") || /^\/(admin|mon-agenda)/.test(url.pathname)) return resp;
-  return new HTMLRewriter().on("body", {
+  return new HTMLRewriter().on("head", {
+    // consent.js doit être chargé AVANT le script de suivi de chaque page (il complète l'envoi de la visite).
+    element(el) { el.prepend('<script src="/consent.js"></script>', { html: true }); },
+  }).on("body", {
     element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script><script src="/suivez.js" defer></script>', { html: true }); },
   }).transform(resp);
 }
@@ -515,7 +518,9 @@ async function meteoData(env) {
              FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")} AND visited_at >= datetime('now', '-3 days') ORDER BY visited_at)
        -- ville, réseau, appareil et provenance = ceux de la première page vue (colonnes « nues » de SQLite liées au MIN)
        SELECT session_id, MIN(visited_at) AS debut, GROUP_CONCAT(DISTINCT site) AS sites, city AS ville, region,
-         network AS reseau, device AS appareil, referrer AS provenance, GROUP_CONCAT(DISTINCT lang) AS langues, GROUP_CONCAT(DISTINCT domaine) AS domaines, country AS pays, COUNT(*) AS pages, GROUP_CONCAT(artist_slug, ' › ') AS parcours
+         network AS reseau, device AS appareil, referrer AS provenance, GROUP_CONCAT(DISTINCT lang) AS langues, GROUP_CONCAT(DISTINCT domaine) AS domaines, country AS pays, COUNT(*) AS pages, GROUP_CONCAT(artist_slug, ' › ') AS parcours,
+         (SELECT COUNT(DISTINCT p.session_id) FROM page_visits p WHERE p.is_bot = 0 AND p.visited_at >= datetime('now', '-14 days')
+            AND p.visitor_id = (SELECT p2.visitor_id FROM page_visits p2 WHERE p2.session_id = v.session_id AND p2.visitor_id IS NOT NULL LIMIT 1)) AS sessions_14j
        FROM v, t WHERE v.jour >= date(t.today, '-1 day') GROUP BY session_id HAVING COUNT(*) >= 3 ORDER BY pages DESC, debut DESC LIMIT 12`),
     safe("SELECT campagne_id, url, type, video_id, clics FROM brevo_liens WHERE clics > 0 ORDER BY campagne_id, clics DESC"),
     safe("SELECT fait_le, ok, message FROM yt_releves ORDER BY fait_le DESC LIMIT 1"),
@@ -1379,10 +1384,12 @@ export default {
       if (url.pathname === "/api/track-visit" && request.method === "POST") {
         const body = await request.json().catch(() => ({})); const { artist_slug, session_id } = body; const site = siteFromRequest(request, body); const vp = visitProfile(request, body, request.cf || {});
         if (!artist_slug) return json({ ok: false }, 200, origin);
+        // visitor_id : identifiant aléatoire envoyé par /consent.js uniquement si le visiteur a accepté (colonne page_visits.visitor_id).
+        const visitorId = typeof body.visitor_id === "string" && /^[A-Za-z0-9-]{16,64}$/.test(body.visitor_id) ? body.visitor_id : null;
         const cf = request.cf || {};
         await env.DB.prepare(
-          "INSERT INTO page_visits (artist_slug, city, region, country, latitude, longitude, session_id, site, is_bot, network, device, referrer, postal_code, lang, domaine) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        ).bind(artist_slug, cf.city || null, cf.region || null, cf.country || null, cf.latitude ? Number(cf.latitude) : null, cf.longitude ? Number(cf.longitude) : null, session_id || null, site, vp.isBot, vp.network, vp.device, vp.referrer, cf.postalCode || null, (["fr", "en", "es", "it"].includes(body.lang) ? body.lang : langFromReferer(request)), domainFromRequest(request)).run();
+          "INSERT INTO page_visits (artist_slug, city, region, country, latitude, longitude, session_id, site, is_bot, network, device, referrer, postal_code, lang, domaine, visitor_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        ).bind(artist_slug, cf.city || null, cf.region || null, cf.country || null, cf.latitude ? Number(cf.latitude) : null, cf.longitude ? Number(cf.longitude) : null, session_id || null, site, vp.isBot, vp.network, vp.device, vp.referrer, cf.postalCode || null, (["fr", "en", "es", "it"].includes(body.lang) ? body.lang : langFromReferer(request)), domainFromRequest(request), visitorId).run();
         // Rafales de robots : 6 sessions différentes ou plus en 2 secondes (scanners répartis sur des dizaines de réseaux) = robots.
         // Marquées is_bot = 2 (comptées comme robots partout, car les stats filtrent is_bot = 0) ; les visites de la rafale déjà
         // enregistrées sont reclassées aussi. Un vrai visiteur ne produit jamais ça (0 cas en un mois de données).
@@ -1403,7 +1410,13 @@ export default {
         const { results } = await env.DB.prepare(
           "SELECT id, artist_slug as page, visited_at, site, network, device, referrer, lang, domaine, city, country FROM page_visits WHERE session_id = ? ORDER BY visited_at ASC"
         ).bind(session).all();
-        return json({ visits: results }, 200, origin);
+        // Même visiteur (identifiant accepté) : ses autres sessions, pour voir ses retours et ce qu'il a consulté.
+        const vrow = await env.DB.prepare("SELECT visitor_id FROM page_visits WHERE session_id = ? AND visitor_id IS NOT NULL LIMIT 1").bind(session).first();
+        let autres = [];
+        if (vrow && vrow.visitor_id) {
+          autres = (await env.DB.prepare("SELECT session_id, MIN(visited_at) AS debut, COUNT(*) AS pages, GROUP_CONCAT(artist_slug, ' › ') AS parcours FROM page_visits WHERE visitor_id = ? AND session_id <> ? AND is_bot = 0 GROUP BY session_id ORDER BY debut DESC LIMIT 30").bind(vrow.visitor_id, session).all()).results || [];
+        }
+        return json({ visits: results, visitor_connu: !!(vrow && vrow.visitor_id), autres_sessions: autres }, 200, origin);
       }
 
       // GET /api/admin/visits?artist=<slug> — historique des visites d'une fiche (admin)
