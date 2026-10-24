@@ -66,7 +66,9 @@
     es: { t: 'Medición de audiencia', p: 'Contamos las visitas de forma anónima. Con su consentimiento, un identificador aleatorio guardado 13 meses en este dispositivo nos permite reconocer sus regresos. Sin cookies publicitarias ni datos compartidos con terceros.', yes: 'Aceptar', no: 'Rechazar', more: 'Más información', foot: 'Medición de audiencia' },
     it: { t: 'Misurazione del pubblico', p: 'Contiamo le visite in forma anonima. Con il tuo consenso, un identificativo casuale conservato per 13 mesi su questo dispositivo ci permette di riconoscere i tuoi ritorni. Nessun cookie pubblicitario, nulla condiviso con terzi.', yes: 'Accetta', no: 'Rifiuta', more: 'Scopri di più', foot: 'Misurazione del pubblico' }
   }[lang];
-  var legal = (lang === 'fr' ? '' : '/' + lang) + '/mentions-legales';
+  // Page d'information : data-legal sur la balise <script> (sites sans mentions légales), sinon mentions légales de la langue.
+  var cs = document.currentScript, legalAttr = cs && cs.getAttribute('data-legal');
+  var legal = legalAttr || ((lang === 'fr' ? '' : '/' + lang) + '/mentions-legales');
 
   function closeBanner() {
     var b = document.getElementById('slp-consent');
@@ -107,7 +109,8 @@
 
   function addFooterLink() {
     var f = document.querySelector('footer');
-    if (!f || f.querySelector('[data-slp-consent]')) return;
+    if (!f) { f = document.createElement('div'); f.style.cssText = 'padding:14px 0 18px;text-align:center'; (document.body || document.documentElement).appendChild(f); }
+    if (f.querySelector('[data-slp-consent]')) return;
     var b = document.createElement('button');
     b.type = 'button'; b.setAttribute('data-slp-consent', '1'); b.textContent = T.foot;
     b.style.cssText = 'display:block;margin:10px auto 0;background:none;border:0;padding:0;color:inherit;opacity:.65;font:inherit;font-size:12px;text-decoration:underline;cursor:pointer';

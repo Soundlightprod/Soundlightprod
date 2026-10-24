@@ -18,8 +18,12 @@
 // Ajoute/retire des codes ISO 2 lettres selon où tu livres.
 const SHIPPING_COUNTRIES = ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT"];
 
+// Sites frères (Book My Band, CS Animations, boutique) : ils envoient leurs visites à /api/track-visit.
+// Cette autorisation CORS ne vaut que pour cette route.
+const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store"];
 function resolveOrigin(request, env) {
   const requestOrigin = request.headers.get("Origin") || "";
+  try { if (SIBLING_ORIGINS.includes(requestOrigin) && new URL(request.url).pathname === "/api/track-visit") return requestOrigin; } catch (e) {}
   const allowed = (env.ALLOWED_ORIGINS || env.SITE_ORIGIN || "").split(",").map((s) => s.trim());
   return allowed.includes(requestOrigin) ? requestOrigin : (env.SITE_ORIGIN || allowed[0] || "*");
 }
