@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="https://soundlightprod.fr/consent.js" data-legal="https://soundlightprod.fr/mentions-legales"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bee-eye 19×40W — Lyre LED, Éclairage scénique | Boutique SLP</title>
@@ -471,7 +472,7 @@
 (function(){
   try{ if(localStorage.getItem('slp_admin_token')||localStorage.getItem('slp_notrack')) return; }catch(e){}
   var sid=null; try{ sid=sessionStorage.getItem('slp_visit_sid'); if(!sid){ sid=Date.now().toString(36)+Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid',sid); } }catch(e){}
-  fetch((/\.store$/.test(location.hostname)?'':'https://slp-api.raspy-silence-d4c7.workers.dev')+'/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({artist_slug:'boutique/new-1940w-bee-eye-moving-light-power-750w',session_id:sid,ref:document.referrer})}).catch(function(){});
+  fetch('https://soundlightprod.fr/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({artist_slug:'boutique/new-1940w-bee-eye-moving-light-power-750w',session_id:sid,ref:document.referrer})}).catch(function(){});
 })();
 </script>
 </body>
