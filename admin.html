@@ -944,6 +944,12 @@
     </div>
 
 
+    <div class="vz-card" id="retoursCard">
+      <div class="vz-card-h"><h3>Retours de visiteurs</h3><span class="vz-note">visiteurs qui ont accepté le suivi · clique sur une ligne pour voir leurs passages</span></div>
+      <p class="vz-note" id="retoursResume" style="margin:4px 0 8px;">Chargement…</p>
+      <table class="vz-bt" id="retoursTable"><tbody></tbody></table>
+    </div>
+
     <details class="vz-more">
       <summary>Plus de détails : réseau, régions, pays, codes postaux</summary>
       <div class="vz-grid4">
@@ -1304,6 +1310,8 @@
       const it = mtEl('div', 'it');
       const quand = new Date(p.debut.replace(' ', 'T') + 'Z').toLocaleString('fr-FR', { timeZone:'Europe/Paris', weekday:'short', hour:'2-digit', minute:'2-digit' });
       const l1 = mtEl('div'); l1.append(mtEl('b', null, `${p.ville || 'Ville inconnue'}`), document.createTextNode(` · ${p.pages} pages`));
+      if (p.sessions_14j > 1) l1.append(document.createTextNode(` · 🔁 ${p.sessions_14j} passages en 14 jours`));
+      if (p.session_id){ const bt = mtEl('button', 'btn-yes', 'Voir le parcours'); bt.type = 'button'; bt.style.marginLeft = '8px'; bt.addEventListener('click', () => showJourney(p.session_id)); l1.append(bt); }
       const l2 = mtEl('div', 'm', [quand, [(p.langues || '').split(',').filter(Boolean).map((x) => LANGS[x] || x).join(' '), (p.domaines || '').split(',').filter(Boolean).map((x) => x.replace(/^www\./, '')).join(' + ')].filter(Boolean).join(' · '), (p.sites || '').split(',').map((x) => MT_SITES[x] ? MT_SITES[x].nom : x).join(' + '), p.appareil, p.reseau, src(p.provenance)].filter(Boolean).join(' · '));
       it.append(l1, l2, mtEl('div', 'p', p.parcours || ''));
       box.appendChild(it);
@@ -2873,6 +2881,7 @@
       renderList('#breakdownRegionTable', data.by_region, 'region');
       renderList('#breakdownCityTable', data.by_city, 'city');
       renderList('#breakdownPostalTable', data.by_postal, 'postal_label');
+      renderRetours(data.retours);
       renderList('#breakdownNetworkTable', data.by_network, 'network');
       renderList('#breakdownDeviceTable', data.by_device, 'device');
       renderList('#breakdownReferrerTable', data.by_referrer, 'referrer');
@@ -3105,6 +3114,20 @@
     }
   }
 
+  function escH(x){ return String(x == null ? '' : x).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+  function renderRetours(r){
+    const res = document.getElementById('retoursResume'); const tb = document.querySelector('#retoursTable tbody');
+    if (!res || !tb) return;
+    if (!r){ res.textContent = 'Données indisponibles.'; tb.innerHTML = ''; return; }
+    const taux = r.sessions ? Math.round(r.sessions_identifiees * 100 / r.sessions) : 0;
+    res.innerHTML = `<b>${r.identifies}</b> visiteur(s) identifié(s) · dont <b>${r.revenus}</b> revenu(s) · ${taux} % des visites viennent de visiteurs qui ont accepté le suivi (${r.sessions_identifiees} sur ${r.sessions}).`;
+    tb.innerHTML = (r.liste || []).length ? r.liste.map(v => {
+      const d = parisDT(v.derniere).split(' ')[0].split('-').reverse().slice(0,2).join('/');
+      const pages = String(v.pages_vues || '').split(',').filter(Boolean).slice(0,6).map(pageLabel).join(' · ');
+      return `<tr onclick="showJourney('${escapeAttr(v.derniere_session)}')"><td><div class="bl"><span>🔁 <b>${v.sessions}</b> passages · ${escH(v.ville || 'Ville inconnue')} · ${escH(v.appareil || '')} · dernier le ${d}<br><span class="vz-note">${pages}</span></span></div></td></tr>`;
+    }).join('') : '<tr><td class="vz-note" style="cursor:default">Aucun retour pour l’instant : les visiteurs identifiés apparaissent ici dès leur 2ᵉ visite.</td></tr>';
+  }
+
   async function showJourney(sessionId){
     try {
       const res = await fetch(`/api/admin/visits-journey?session=${encodeURIComponent(sessionId)}`, { headers:{ Authorization:`Bearer ${token}` } });
@@ -3119,6 +3142,14 @@
         body.innerHTML = `<p class="vz-note" style="margin:6px 0 4px;">${parisDT(first.visited_at).split(' ')[0].split('-').reverse().join('/')}${where ? ' · ' + where : ''} · ${visits.length} page(s)</p>` +
           `<p class="vz-note" style="margin:0 0 10px;">${[langDom(first.lang, first.domaine), origine, first.device, first.network].filter(Boolean).join(' · ')}</p>` +
           visits.map(v => `<div class="vz-step"><span class="t">${(parisDT(v.visited_at).split(' ')[1]||'').slice(0,5)}</span><span>${pageLabel(v.page)}${v.site && v.site !== 'slp' ? ' <span class="vz-note">(' + SITE_LABELS[v.site] + ')</span>' : ''} <span class="vz-note">${langDom(v.lang, v.domaine)}</span></span></div>`).join('');
+      }
+      if (visits.length){
+        const autres = data.autres_sessions || [];
+        body.innerHTML += data.visitor_connu
+          ? (autres.length
+              ? `<p class="vz-note" style="margin:14px 0 6px;"><b>🔁 Visiteur de retour</b> : ${autres.length} autre(s) passage(s)</p>` + autres.map(a => `<div class="vz-step"><span class="t">${parisDT(a.debut).split(' ')[0].split('-').reverse().slice(0,2).join('/')}</span><span>${a.pages} page(s) · ${String(a.parcours || '').split(' › ').map(pageLabel).join(' › ')}</span></div>`).join('')
+              : '<p class="vz-note" style="margin:14px 0 0;">Visiteur identifié (il a accepté le suivi) : première visite connue.</p>')
+          : '<p class="vz-note" style="margin:14px 0 0;">Visiteur non identifié (pas encore de choix, ou refus) : ses retours ne sont pas suivis.</p>';
       }
       document.getElementById('vzJourney').classList.add('open');
     } catch(e){
