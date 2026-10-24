@@ -343,7 +343,7 @@ TRACK_JS = """<script>
 (function(){
   try{ if(localStorage.getItem('slp_admin_token')||localStorage.getItem('slp_notrack')) return; }catch(e){}
   var sid=null; try{ sid=sessionStorage.getItem('slp_visit_sid'); if(!sid){ sid=Date.now().toString(36)+Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid',sid); } }catch(e){}
-  fetch((/\\.store$/.test(location.hostname)?'':'https://slp-api.raspy-silence-d4c7.workers.dev')+'/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({artist_slug:'boutique/__SLUG__',session_id:sid,ref:document.referrer})}).catch(function(){});
+  fetch('https://soundlightprod.fr/api/track-visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({artist_slug:'boutique/__SLUG__',session_id:sid,ref:document.referrer})}).catch(function(){});
 })();
 </script>"""
 
@@ -381,7 +381,7 @@ def page(p, products, tpl):
     return f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
+<script src="https://soundlightprod.fr/consent.js" data-legal="https://soundlightprod.fr/mentions-legales"></script><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
