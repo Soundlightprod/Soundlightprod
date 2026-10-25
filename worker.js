@@ -321,7 +321,7 @@ function withVideoTracking(resp, url) {
     // consent.js doit être chargé AVANT le script de suivi de chaque page (il complète l'envoi de la visite).
     element(el) { el.prepend('<script src="/consent.js"></script>', { html: true }); },
   }).on("body", {
-    element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script><script src="/suivez.js" defer></script>', { html: true }); },
+    element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script><script src="/suivez.js" defer></script><script src="/contact-track.js" defer></script>', { html: true }); },
   }).transform(resp);
 }
 
