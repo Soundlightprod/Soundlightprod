@@ -22,6 +22,15 @@
     { id: 'youtube', name: 'YouTube', url: 'https://www.youtube.com/@SOUNDLIGHTPROD',
       svg: '<rect x="2" y="6" width="20" height="12" rx="4"/><polygon points="10 9.2 15.8 12 10 14.8" fill="currentColor" stroke="none"/>' }
   ];
+  // Boutique (soundlightprod.store) : comptes Facebook et Instagram propres à la boutique, YouTube de SLP (démos produits)
+  if (/(^|\.)soundlightprod\.store$/i.test(location.hostname)) {
+    T = { k: 'Suivez la boutique', t: 'Nouveautés, démos en vidéo et offres du moment', s: 'Matériel son et lumière en action, arrivages et promos : retrouvez-nous sur nos réseaux.' };
+    NETS = NETS.filter(function (n) { return n.id === 'facebook' || n.id === 'instagram' || n.id === 'youtube'; }).map(function (n) {
+      if (n.id === 'facebook') n.url = 'https://www.facebook.com/share/1Uq4pCR4bB/';
+      if (n.id === 'instagram') n.url = 'https://www.instagram.com/slpfrance_store/';
+      return n;
+    });
+  }
   var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch (e) {}
   var noTrack = false; try { noTrack = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch (e) {}
   var from = path.replace(/^\/(en|es|it)\//, '/').replace(/^\/+|\.html$|\/$/g, '') || 'index';
