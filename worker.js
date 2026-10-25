@@ -374,6 +374,25 @@ function redirect(to, status = 301) {
   return new Response(null, { status, headers: { Location: to, "Cache-Control": status === 302 ? "no-store" : "public, max-age=3600" } });
 }
 
+// Anciennes adresses de fiches produit (nettoyage du catalogue, oct. 2026) → nouvelles adresses.
+// Couvre la page produit, l'image principale et les photos de galerie.
+const PRODUCT_RENAMED = {
+  "aicpose-7x40w-zoom-bee-eye-par-light-": "par-led-7x40w-zoom-bee-eye",
+  "aicpose-ip65-1915w-zoom-par-light--outdoor-waterproof-rgbw-wash": "par-led-19x15w-zoom-ip65",
+  "aicpose-mini-1940w-big-bee-moving-light-with-ring-wash--beam--spot": "lyre-big-bee-1940w-anneau",
+  "aicpose-500w-cmy-cto-bsw-3in1-moving-light": "lyre-500w-cmy-cto-3en1",
+  // doublons fusionnés
+  "1940w-big-bee-moving-light-with-ring": "lyre-big-bee-1940w-anneau",
+  "418w-mini-battery-par-light": "418w-battery-parlight",
+};
+function renamedProductPath(path) {
+  let m = path.match(/^\/produits\/(.+?)(\.html)?$/);
+  if (m && PRODUCT_RENAMED[m[1]]) return `/produits/${PRODUCT_RENAMED[m[1]]}`;
+  m = path.match(/^(\/(?:galerie-produits\/)?)(aicpose-.+?)(-\d+)?(\.[a-z]+)$/);
+  if (m && PRODUCT_RENAMED[m[2]]) return `${m[1]}${PRODUCT_RENAMED[m[2]]}${m[3] || ""}${m[4]}`;
+  return null;
+}
+
 // Renvoie une redirection si la requête n'est pas sur le bon domaine pour sa langue, sinon null.
 function routeDomain(request, url) {
   const host = url.hostname.toLowerCase();
@@ -384,6 +403,8 @@ function routeDomain(request, url) {
   if (host.endsWith("soundlightprod.store")) {
     if (STORE_MODE === "off") return redirect(`${FR_SITE}/boutique.html`);
     if (host.startsWith("www.")) return redirect(`${STORE_SITE}${path}${url.search}`);
+    const renamedTo = isApi ? null : renamedProductPath(path);
+    if (renamedTo) return redirect(`${STORE_SITE}${renamedTo}${url.search}`);
     if (isApi || path.startsWith("/admin")) return isApi ? null : redirect(`${FR_SITE}${path}${url.search}`);
     if (path === "/robots.txt") {
       const body = STORE_MODE === "main"
