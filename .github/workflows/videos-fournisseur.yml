@@ -11,7 +11,7 @@ jobs:
       matrix:
         slug:
           - "1818w-rgbwauv-pixel-control-bar-light"
-          - "aicpose-mini-1940w-big-bee-moving-light-with-ring-wash--beam--spot"
+          - "lyre-big-bee-1940w-anneau"
           - "300w-zoom-cob-spotlight"
           - "1818w-rgbwauv-led-par-light"
           - "1940w-big-bee-moving-light"
@@ -23,7 +23,7 @@ jobs:
           - "ip65-1818w-led-par-light-ultra"
           - "418w-battery-parlight"
           - "ip65-1818w-led-par-light"
-          - "aicpose-500w-cmy-cto-bsw-3in1-moving-light"
+          - "lyre-500w-cmy-cto-3en1"
           - "battery-3w-animated-laser-light"
           - "ip65-618w-battery-par-light"
           - "ip65-6010w-flood-light"

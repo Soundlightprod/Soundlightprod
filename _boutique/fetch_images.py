@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Télécharge les photos supplémentaires des produits d'éclairage (fournisseur AICPOSE) dans galerie-produits/
+"""Télécharge les photos supplémentaires des produits d'éclairage dans galerie-produits/
 et écrit galerie-produits/index.json (slug -> chemins du site). Lancé par le workflow « Photos produits »."""
 import json, pathlib, re, sys, time, urllib.request
 
@@ -7,7 +7,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = 'https://shopcdnalpha.grainajz.com/category/397951/3881/'
 OUT = ROOT / 'galerie-produits'
 OUT.mkdir(exist_ok=True)
-manifest = json.loads((pathlib.Path(__file__).parent / 'aicpose_images.json').read_text(encoding='utf-8'))
+manifest = json.loads((pathlib.Path(__file__).parent / 'fournisseur_images.json').read_text(encoding='utf-8'))
 index, fails = {}, 0
 for slug, paths in manifest.items():
     files = []
