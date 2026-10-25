@@ -265,7 +265,7 @@
       pollNext();
     }).catch(pollNext);
   }
-  function pollNext() { clearTimeout(pollT); pollT = setTimeout(poll, box.classList.contains('on') ? 4000 : 20000); }
+  function pollNext() { clearTimeout(pollT); pollT = setTimeout(poll, box.classList.contains('on') ? 4000 : 60000); }
   function live(resume) {
     liveOn = true; form.classList.add('on'); inp.placeholder = t.live.ph; if (!resume) { say(t.live.intro); choices([t.again], function () { stopLive(); menu(); }, [
       { label: t.call, href: 'tel:' + PHONE, ev: 'appel' }, { label: t.wa, href: 'https://wa.me/' + PHONE.replace('+', ''), ev: 'whatsapp', ext: 1 }], true); }

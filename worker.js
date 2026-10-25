@@ -44,7 +44,9 @@ function json(data, status = 200, origin) {
   });
 }
 
+let chatTablesReady = false;
 async function ensureChatTables(env) {
+  if (chatTablesReady) return;
   await env.DB.batch([
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_threads (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE NOT NULL, name TEXT, contact TEXT, page TEXT, lang TEXT, city TEXT, ip_hash TEXT, site TEXT, status TEXT DEFAULT 'open', unread_admin INTEGER DEFAULT 0, notified_at TEXT, created_at TEXT, last_visitor_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_messages (id INTEGER PRIMARY KEY AUTOINCREMENT, thread_id INTEGER NOT NULL, sender TEXT NOT NULL, body TEXT NOT NULL, created_at TEXT)"),
@@ -53,6 +55,7 @@ async function ensureChatTables(env) {
     env.DB.prepare("CREATE TABLE IF NOT EXISTS push_subs (id INTEGER PRIMARY KEY AUTOINCREMENT, endpoint TEXT UNIQUE NOT NULL, p256dh TEXT, auth TEXT, created_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS push_vapid (id INTEGER PRIMARY KEY, pub TEXT, priv TEXT)"),
   ]);
+  chatTablesReady = true;
 }
 
 const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -112,12 +115,15 @@ function requireAdmin(request, env) {
 //   META_PAGE_ID       identifiant de la Page Facebook
 //   META_IG_ID         identifiant du compte Instagram professionnel lié
 // TikTok : saisie manuelle depuis l'admin (POST /api/admin/social-stats).
+let socialTableReady = false;
 async function ensureSocialTable(env) {
+  if (socialTableReady) return;
   await env.DB.prepare(
     "CREATE TABLE IF NOT EXISTS social_stats (day TEXT NOT NULL, platform TEXT NOT NULL, followers INTEGER, reach INTEGER, views INTEGER, source TEXT DEFAULT 'auto', note TEXT, PRIMARY KEY (day, platform))"
   ).run();
   try { await env.DB.prepare("ALTER TABLE social_stats ADD COLUMN likes INTEGER").run(); } catch (e) { /* colonne déjà là */ }
   try { await env.DB.prepare("ALTER TABLE social_stats ADD COLUMN shares INTEGER").run(); } catch (e) { /* colonne déjà là */ }
+  socialTableReady = true;
 }
 
 async function saveSocialStat(env, day, platform, { followers = null, reach = null, views = null, likes = null, shares = null, source = "auto", note = null }) {
@@ -538,15 +544,20 @@ async function meteoData(env) {
     q(`SELECT date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, COUNT(DISTINCT session_id) AS visiteurs FROM page_visits
        WHERE is_bot = 0 AND ${MAIL_REF} AND ${notTest("visited_at")} AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
     // Visiteurs à suivre : hier et aujourd'hui, au moins 3 pages vues (tous sites confondus)
+    // Optimisation D1 : on retient d'abord les 12 sessions à afficher, puis seulement pour celles-ci on compte
+    // les sessions du même visiteur sur 14 jours (avant : sous-requête sans index lancée pour chaque session).
     q(`WITH t AS (SELECT ${today} AS today),
        v AS (SELECT session_id, site, artist_slug, visited_at, city, region, country, network, device, referrer, lang, domaine, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour
-             FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")} AND visited_at >= datetime('now', '-3 days') ORDER BY visited_at)
-       -- ville, réseau, appareil et provenance = ceux de la première page vue (colonnes « nues » de SQLite liées au MIN)
-       SELECT session_id, MIN(visited_at) AS debut, GROUP_CONCAT(DISTINCT site) AS sites, city AS ville, region,
-         network AS reseau, device AS appareil, referrer AS provenance, GROUP_CONCAT(DISTINCT lang) AS langues, GROUP_CONCAT(DISTINCT domaine) AS domaines, country AS pays, COUNT(*) AS pages, GROUP_CONCAT(artist_slug, ' › ') AS parcours,
+             FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")} AND visited_at >= datetime('now', '-3 days') ORDER BY visited_at),
+       top AS (
+         -- ville, réseau, appareil et provenance = ceux de la première page vue (colonnes « nues » de SQLite liées au MIN)
+         SELECT session_id, MIN(visited_at) AS debut, GROUP_CONCAT(DISTINCT site) AS sites, city AS ville, region,
+           network AS reseau, device AS appareil, referrer AS provenance, GROUP_CONCAT(DISTINCT lang) AS langues, GROUP_CONCAT(DISTINCT domaine) AS domaines, country AS pays, COUNT(*) AS pages, GROUP_CONCAT(artist_slug, ' › ') AS parcours
+         FROM v, t WHERE v.jour >= date(t.today, '-1 day') GROUP BY session_id HAVING COUNT(*) >= 3 ORDER BY pages DESC, debut DESC LIMIT 12)
+       SELECT top.*,
          (SELECT COUNT(DISTINCT p.session_id) FROM page_visits p WHERE p.is_bot = 0 AND p.visited_at >= datetime('now', '-14 days')
-            AND p.visitor_id = (SELECT p2.visitor_id FROM page_visits p2 WHERE p2.session_id = v.session_id AND p2.visitor_id IS NOT NULL LIMIT 1)) AS sessions_14j
-       FROM v, t WHERE v.jour >= date(t.today, '-1 day') GROUP BY session_id HAVING COUNT(*) >= 3 ORDER BY pages DESC, debut DESC LIMIT 12`),
+            AND p.visitor_id = (SELECT p2.visitor_id FROM page_visits p2 WHERE p2.session_id = top.session_id AND p2.visitor_id IS NOT NULL LIMIT 1)) AS sessions_14j
+       FROM top ORDER BY pages DESC, debut DESC`),
     safe("SELECT campagne_id, url, type, video_id, clics FROM brevo_liens WHERE clics > 0 ORDER BY campagne_id, clics DESC"),
     safe("SELECT fait_le, ok, message FROM yt_releves ORDER BY fait_le DESC LIMIT 1"),
     safe("SELECT video_id, titre, origine FROM yt_videos"),
@@ -564,6 +575,20 @@ async function meteoData(env) {
        WHERE is_bot = 0 AND ${notTest("cree_le")} AND action = 'chat_menu' AND cree_le >= datetime('now', '-7 days') GROUP BY page ORDER BY n DESC`);
   return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, pages: contactPages, demandes: contactDemandes, menu: chatMenu }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
     youtube: { releve: ytReleve[0] || null, videos: ytVideos, stats: ytStats, site: videoSite } };
+}
+
+// Cache de 2 min pour les gros rapports admin (rapport météo, statistiques de visites) : un même écran rechargé
+// ou plusieurs appareils ouverts ne relancent plus les mêmes lectures D1 (quota gratuit : 5 M de lignes lues/jour).
+// Ajouter &fresh=1 à l'URL pour forcer un recalcul. Le contrôle d'accès admin est fait AVANT d'appeler cette fonction.
+async function cachedAdminJson(url, ttlSec, origin, compute) {
+  const key = new Request("https://cache.slp.internal" + url.pathname + url.search.replace(/[?&]fresh=1/, ""));
+  const hdr = { "Content-Type": "application/json", ...cors(origin) };
+  if (url.searchParams.get("fresh") !== "1") {
+    try { const hit = await caches.default.match(key); if (hit) return new Response(await hit.text(), { status: 200, headers: { ...hdr, "X-Cache": "HIT" } }); } catch (e) {}
+  }
+  const body = JSON.stringify(await compute());
+  try { await caches.default.put(key, new Response(body, { headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=" + ttlSec } })); } catch (e) {}
+  return new Response(body, { status: 200, headers: hdr });
 }
 
 export default {
@@ -1543,6 +1568,7 @@ export default {
       // jour ou par mois, tout le site confondu (admin), pour le graphique d'évolution.
       if (url.pathname === "/api/admin/visits-timeseries" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        return cachedAdminJson(url, 120, origin, async () => {
         const granularity = url.searchParams.get("granularity") === "month" ? "month" : "day";
         const substrLen = granularity === "month" ? 7 : 10;
         const { results } = await env.DB.prepare(
@@ -1551,23 +1577,25 @@ export default {
            WHERE ` + siteWhere(url) + ` GROUP BY period
            ORDER BY period ASC`
         ).all();
-        return json({ granularity, points: results }, 200, origin);
+        return { granularity, points: results }; });
       }
 
       // GET /api/admin/visits-summary — nombre de visites par page, tout le site (admin)
       if (url.pathname === "/api/admin/visits-summary" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        return cachedAdminJson(url, 120, origin, async () => {
         const { results } = await env.DB.prepare(
           `SELECT site, artist_slug as page, COUNT(*) as total, MAX(visited_at) as last_visit
            FROM page_visits WHERE ` + siteWhere(url) + ` GROUP BY site, artist_slug ORDER BY total DESC`
         ).all();
         const grandTotal = await env.DB.prepare("SELECT COUNT(*) as n FROM page_visits WHERE " + siteWhere(url)).first();
-        const u2 = new URL(url); u2.searchParams.delete("site"); const bySite = await env.DB.prepare("SELECT site, COUNT(*) as n FROM page_visits WHERE " + siteWhere(u2) + " GROUP BY site").all(); return json({ grand_total: grandTotal?.n || 0, pages: results, by_site: bySite.results }, 200, origin);
+        const u2 = new URL(url); u2.searchParams.delete("site"); const bySite = await env.DB.prepare("SELECT site, COUNT(*) as n FROM page_visits WHERE " + siteWhere(u2) + " GROUP BY site").all(); return { grand_total: grandTotal?.n || 0, pages: results, by_site: bySite.results }; });
       }
 
       // GET /api/admin/visits-map?period=today|week|month|all — points géolocalisés pour la carte (admin)
       if (url.pathname === "/api/admin/visits-map" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        return cachedAdminJson(url, 120, origin, async () => {
         const cutoff = periodCutoff(url.searchParams.get("period"));
         const { results } = await env.DB.prepare(
           `SELECT id, artist_slug as page, city, region, country, latitude, longitude, visited_at, session_id, site, network, device, referrer, is_bot, postal_code, lang, domaine
@@ -1575,12 +1603,13 @@ export default {
            AND (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + `
            ORDER BY visited_at DESC LIMIT 1000`
         ).bind(cutoff, cutoff).all();
-        return json(results, 200, origin);
+        return results; });
       }
 
       // GET /api/admin/visits-breakdown?period=today|week|month|all — répartition pays/région/ville (admin)
       if (url.pathname === "/api/admin/visits-breakdown" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        return cachedAdminJson(url, 120, origin, async () => {
         const cutoff = periodCutoff(url.searchParams.get("period"));
         const byCountry = await env.DB.prepare(
           `SELECT COALESCE(country, 'Inconnu') as label, COUNT(*) as total FROM page_visits
@@ -1606,7 +1635,7 @@ export default {
           const liste = await env.DB.prepare(`SELECT COUNT(DISTINCT session_id) AS sessions, COUNT(*) AS pages, MAX(visited_at) AS derniere, MAX(city) AS ville, MAX(device) AS appareil, MAX(network) AS reseau, GROUP_CONCAT(DISTINCT artist_slug) AS pages_vues, (SELECT p2.session_id FROM page_visits p2 WHERE p2.visitor_id = page_visits.visitor_id ORDER BY p2.visited_at DESC LIMIT 1) AS derniere_session FROM page_visits WHERE visitor_id IS NOT NULL AND is_bot = 0 AND (? IS NULL OR visited_at >= ?) AND ` + sw + ` GROUP BY visitor_id HAVING COUNT(DISTINCT session_id) >= 2 ORDER BY sessions DESC, derniere DESC LIMIT 10`).bind(cutoff, cutoff).all();
           retours = { sessions: r1?.sessions || 0, sessions_identifiees: r1?.sessions_identifiees || 0, identifies: r2?.identifies || 0, revenus: r2?.revenus || 0, liste: liste.results || [] };
         } catch (e) { retours = null; }
-        return json({
+        return {
           total: totalRow?.n || 0,
           retours,
           by_country: byCountry.results,
@@ -1619,7 +1648,7 @@ export default {
           by_domain: (await env.DB.prepare(`SELECT COALESCE(domaine, 'Inconnu') as label, COUNT(*) as total FROM page_visits WHERE domaine IS NOT NULL AND (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY domaine ORDER BY total DESC LIMIT 20`).bind(cutoff, cutoff).all()).results,
           by_lang_place: (await env.DB.prepare(`SELECT COALESCE(lang, 'inconnu') as lang, COALESCE(domaine, 'inconnu') as domaine, COALESCE(country, 'Inconnu') as country, COALESCE(city, 'Inconnu') as city, COUNT(*) as total, COUNT(DISTINCT session_id) as visiteurs FROM page_visits WHERE lang IS NOT NULL AND (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY COALESCE(lang, 'inconnu'), domaine, country, city ORDER BY total DESC LIMIT 60`).bind(cutoff, cutoff).all()).results,
           by_referrer: (await env.DB.prepare(`SELECT COALESCE(referrer, 'Accès direct / inconnu') as label, COUNT(*) as total FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY referrer ORDER BY total DESC LIMIT 30`).bind(cutoff, cutoff).all()).results,
-        }, 200, origin);
+        }; });
       }
 
       // GET /api/admin/artist-tokens — liste les identifiants d'accès groupe (pour l'admin)
@@ -1720,7 +1749,7 @@ export default {
       // GET /api/admin/meteo — rapport du jour : visites, Google, Brevo (admin)
       if (url.pathname === "/api/admin/meteo" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
-        return json(await meteoData(env), 200, origin);
+        return cachedAdminJson(url, 120, origin, () => meteoData(env));
       }
 
       if (!url.pathname.startsWith("/api/")) {
