@@ -11,6 +11,7 @@ Sorties :
 Usage : python3 _boutique/build.py [fichier.json | URL]   (défaut : l'API en ligne)
 """
 import unicodedata
+import urllib.parse
 import datetime, html, json, pathlib, re, sys, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -206,6 +207,8 @@ def template():
 
 
 PAGE_CSS = """<style>
+.pp-wa{display:inline-flex;align-items:center;gap:8px;margin-top:14px;color:var(--paper);text-decoration:none;font-weight:700;font-size:.92rem;padding:10px 16px;border-radius:999px;border:1px solid rgba(37,211,102,.55);background:rgba(37,211,102,.1)}
+.pp-wa:hover,.pp-wa:focus-visible{background:rgba(37,211,102,.24);outline:none}
 .pp-video{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:12px;overflow:hidden;background:#000;margin:8px 0 18px}
 .pp-video-btn{all:unset;cursor:pointer;display:block;width:100%;height:100%;position:relative}
 .pp-video-btn img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}
@@ -366,6 +369,10 @@ def page(p, products, tpl):
     more = ''.join(
         f'<a href="/produits/{esc(q["slug"])}"><div class="im"><img src="{esc(q.get("image") or "")}" alt="{esc(q["name"])}" loading="lazy"></div>'
         f'<div class="tx"><b>{esc(q["name"])}</b><span>{fr_price(q)}</span></div></a>' for q in others)
+    _wa_txt = f"Bonjour, j'ai une question sur : {p['name']} (réf. SLP-{p['id']}) — boutique SLP"
+    wa = ('<a class="pp-wa" href="https://wa.me/33631949653?text=' + urllib.parse.quote(_wa_txt) + '" target="_blank" rel="noopener">'
+          '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 .9c.3.1.5.2.5.4.1.2.1.8-.1 1.4z"/></svg>'
+          'Une question ? Écrivez-nous sur WhatsApp</a>')
     img = f'<img id="ppMain" src="{esc(p["image"])}" alt="{esc(p["name"])}">' if p.get('image') else ''
     extras = EXTRA_IMAGES.get(p['slug'], [])
     thumbs = ''
@@ -417,6 +424,7 @@ def page(p, products, tpl):
       <div class="pp-ttc">Prix TTC · soit {fr_price_ht(p)} · Réf. SLP-{p['id']}</div>
       {stock}
       <div class="pp-actions">{buy}<a class="btn btn-ghost" href="/boutique.html">Toute la boutique</a></div>
+      {wa}
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       {intro}
       {f'<h2>Caractéristiques techniques</h2><ul class="pp-specs">{spec_html}</ul>' if spec_html else ''}
