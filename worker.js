@@ -25,7 +25,7 @@ function shippingFor(totalCents) {
   if (totalCents >= FREE_SHIPPING_FROM_CENTS) return 0;
   return totalCents < SMALL_ORDER_BELOW_CENTS ? SMALL_ORDER_FEE_CENTS : SHIPPING_FEE_CENTS;
 }
-const SHIPPING_COUNTRIES = ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT"];
+const SHIPPING_COUNTRIES = ["FR"];
 
 // Sites frères (Book My Band, CS Animations, boutique) : ils envoient leurs visites à /api/track-visit.
 // Cette autorisation CORS ne vaut que pour cette route.
