@@ -185,6 +185,7 @@
 <link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/bim-bam-boom">
 <style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
 <!-- i18n:end -->
+<link rel="preload" as="image" href="images/bim-bam-boom-photo-1-800.webp" imagesrcset="images/bim-bam-boom-photo-1-480.webp 480w, images/bim-bam-boom-photo-1-800.webp 800w, images/bim-bam-boom-photo-1-1200.webp 1200w" imagesizes="(max-width:900px) 92vw, 560px" fetchpriority="high">
 <link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/charte.css">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -192,7 +193,54 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.fr/bim-bam-boom">
-</head>
+<style id="fiche-v2">
+/* Fiche spectacle v2  */
+.fiche-hero{position:relative; padding:96px 24px 26px;}
+.fiche-hero-inner>*{min-width:0;}
+.fiche-hero-inner{max-width:1220px; margin:0 auto; display:grid; grid-template-columns:1.05fr .95fr; grid-template-areas:"text photo" "resume photo"; column-gap:44px; row-gap:18px; align-items:start;}
+.fiche-text{grid-area:text;} .fiche-photo{grid-area:photo; margin:0; border-radius:20px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,.45); aspect-ratio:3/2; background:var(--ink-2); align-self:center;}
+.fiche-photo img{display:block; width:100%; height:100%; object-fit:cover;}
+.fiche-resume{grid-area:resume;}
+.fiche-text .breadcrumb{display:block; margin-bottom:14px; color:var(--muted); font-size:.85rem;} .fiche-text .breadcrumb a{color:var(--muted); text-decoration:none;}
+.fiche-text .label{display:block; margin-bottom:10px;}
+.fiche-text h1{font-size:clamp(2.1rem,5vw,3.4rem); line-height:1.02; margin-bottom:12px;}
+.promesse{color:var(--paper); font-size:1.05rem; line-height:1.5; max-width:46ch;}
+.resume{list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0; margin:0 0 18px;}
+.resume li{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:12px 12px 12px; display:flex; flex-direction:column; gap:2px;}
+.resume strong{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.55rem; line-height:1; color:var(--gold);}
+.resume span{font-size:.82rem; color:var(--muted); line-height:1.35;}
+.fiche-actions{display:flex; flex-wrap:wrap; gap:12px;}
+.fiche-actions .btn{min-height:52px; padding:0 24px; justify-content:center; font-size:1rem;}
+.fiche-note{margin-top:12px; font-size:.85rem; color:var(--muted);}
+@media (max-width:900px){
+  .fiche-hero{padding:88px 20px 18px;}
+  .fiche-hero-inner{grid-template-columns:minmax(0,1fr); grid-template-areas:"text" "photo" "resume"; row-gap:16px;}
+  .fiche-actions .btn{flex:1 1 100%;}
+  .resume{grid-template-columns:1fr 1fr 1fr; gap:8px;} .resume li{padding:10px 9px;} .resume strong{font-size:1.3rem;} .resume span{font-size:.74rem;}
+}
+.video16x9{position:relative; aspect-ratio:16/9; border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#000;}
+.video16x9 iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+.video-tabs{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:12px;}
+.video-tabs button{min-height:44px; padding:0 18px; border-radius:100px; background:transparent; color:var(--paper); border:1.5px solid rgba(255,255,255,.25); font:inherit; font-weight:700; cursor:pointer;}
+.video-tabs button[aria-pressed="true"]{background:var(--paper); color:var(--ink);}
+.video-tabs button:focus-visible,.video-alt:focus-visible,.fiche-actions .btn:focus-visible,.gal a:focus-visible,.show-card:focus-visible,summary:focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+.video-alt{color:var(--muted); font-size:.9rem; margin-left:auto; padding:10px 4px;}
+.gal{list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+@media (max-width:600px){ .gal{grid-template-columns:1fr 1fr;} }
+.gal a{display:block; aspect-ratio:3/2; border-radius:12px; overflow:hidden; background:var(--ink-2);} .gal img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s;} .gal a:hover img{transform:scale(1.05);}
+.gal-more{margin-top:12px;} .gal-more summary,.bio-more summary{cursor:pointer; font-weight:700; padding:12px 0; min-height:44px; color:var(--amber);} .gal-more .gal{margin-top:6px;}
+.bio-text p{color:var(--paper); line-height:1.6; margin-bottom:12px; max-width:70ch;} .bio-more p{margin-top:12px;}
+.show-grid{list-style:none; padding:0; margin:0; display:grid; gap:14px; grid-template-columns:repeat(3,1fr);} @media (max-width:600px){ .show-grid{grid-template-columns:1fr 1fr;} .show-grid li:last-child{grid-column:1/-1;} .show-grid li:last-child .show-card{aspect-ratio:16/9;} }
+.show-card{position:relative; display:flex; flex-direction:column; border-radius:18px; overflow:hidden; border:1px solid var(--line); text-decoration:none; color:var(--paper); background:var(--ink-2);}
+.show-card img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+.show-card .shade{position:absolute; inset:0; background:linear-gradient(180deg,rgba(12,10,20,0) 18%,rgba(12,10,20,.82) 52%,rgba(12,10,20,.98) 100%);}
+.show-card .info{position:absolute; left:0; right:0; bottom:0; padding:14px; display:flex; flex-direction:column; gap:4px;}
+.show-card .tag{font-family:'DM Mono',monospace; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold);} .show-card strong{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.15rem; line-height:1.1;} .show-card .go{font-size:.82rem; font-weight:700; margin-top:2px;}
+:target{scroll-margin-top:96px;} html{scroll-padding-top:96px;}
+.show-card img{position:static !important; display:block; width:100%; height:auto !important; aspect-ratio:3/2; object-fit:cover;} .show-card .shade{display:none;} .show-card .info{position:static !important; padding:12px 14px 14px;}
+.extra-sec .info-grid{margin-top:4px;}
+</style>
+<style>.tag-excl{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px 10px;padding:3px 10px;border-radius:100px;background:var(--gold);color:var(--ink);font-weight:700;font-size:.78rem;vertical-align:middle}</style></head>
 <body>
 
 <header>
@@ -216,23 +264,15 @@
   </div>
 </header>
 
-<section class="page-hero">
-  <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
-  <div class="hero-art" aria-hidden="true" style="--glow:rgba(255,120,150,.55); width:min(38vw,500px)">
-    <img src="panache-silhouette.png" alt="">
-    <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span>
-  </div>
-  <div class="page-hero-inner">
-    <span class="breadcrumb"><a href="cabaret">← Spectacles Cabaret</a></span>
-    <span class="label">Cabaret</span>
-    <h1>Bim Bam Boom</h1>
-    <p>Une revue de cabaret itinérante mêlant tableaux dynamiques, chant en live, plumes et strass — pour illuminer vos galas, soirées d'entreprise et événements privés.</p>
-    <div class="tags">
-      <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="slp-sigle.png" alt="" style="height:11px; width:auto; display:block;" loading="lazy" decoding="async">Exclusivité SLP</span>
-    </div>
-  </div>
-</section>
-
+<section class="fiche-hero" id="top"><div class="fiche-hero-inner"><div class="fiche-text">
+      <span class="breadcrumb"><a href="cabaret">← Spectacles Cabaret</a></span>
+      <span class="label">Cabaret</span><span class="tag-excl"><img src="slp-sigle.png" alt="" height="11">Exclusivité SLP</span><h1>Bim Bam Boom</h1><p class="promesse">Une revue de cabaret itinérante mêlant tableaux dynamiques, chant en live, plumes et strass — pour illuminer vos galas, soirées d'entreprise et événements privés.</p></div>
+    <figure class="fiche-photo"><img src="images/bim-bam-boom-photo-1-800.webp" srcset="images/bim-bam-boom-photo-1-480.webp 480w, images/bim-bam-boom-photo-1-800.webp 800w, images/bim-bam-boom-photo-1-1200.webp 1200w" sizes="(max-width:900px) 92vw, 560px" width="800" height="600" alt="Bim Bam Boom sur scène" fetchpriority="high" decoding="async"></figure>
+    <div class="fiche-resume"><ul class="resume" aria-label="L&rsquo;essentiel du spectacle"><li><strong>4 à 8</strong><span>artistes, format modulable</span></li><li><strong>30 min</strong><span>à 1 h 30 selon l&rsquo;événement</span></li><li><strong>Live</strong><span>chant en direct</span></li></ul>
+      <div class="fiche-actions"><a href="contact?artiste=bim-bam-boom&amp;nom=Bim%20Bam%20Boom#contact-form" class="btn btn-primary" data-contact="devis">Demander un devis pour ce spectacle</a><a href="#extrait" class="btn btn-ghost">Voir l&rsquo;extrait live</a></div>
+      <p class="fiche-note">Premier retour rapide ; devis détaillé après vérification de la date et de vos besoins.</p></div></div></section>
+<section class="extrait" id="extrait"><div class="wrap tight narrow"><div class="section-head"><span class="label">Voir</span><h2>L&rsquo;extrait live</h2></div>
+    <div class="video16x9"><iframe id="videoFrame" src="https://www.youtube-nocookie.com/embed/vfyqjnU4XhU" title="Bim Bam Boom — Cabaret itinérant (vidéo)" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="video-tabs"><a class="video-alt" id="videoAlt" href="https://www.youtube.com/watch?v=vfyqjnU4XhU" target="_blank" rel="noopener">Ouvrir sur YouTube</a></div></div></section>
 <section id="actus-section" style="display:none;">
   <div class="wrap tight narrow">
     <div class="section-head">
@@ -242,23 +282,7 @@
     <div class="actus-list" id="actus-list"></div>
   </div>
 </section>
-
-<section>
-  <div class="wrap tight">
-    <div class="bio-wrap">
-      <div class="logo-frame">
-        <img src="bim-bam-boom-logo.png" srcset="images/bim-bam-boom-logo-480.webp 480w, images/bim-bam-boom-logo-800.webp 800w" sizes="(max-width:700px) 100vw, 1100px" alt="Bim Bam Boom — Cabaret" style="border-radius:0">
-      </div>
-      <div class="bio-text">
-        <p>Bim Bam Boom est une revue de cabaret haut de gamme, pensée pour se déplacer partout en France. Sur un format modulable de 4 à 8 artistes, elle enchaîne des tableaux dynamiques, colorés et innovants, portés par du chant en live.</p>
-        <p>Plumes et strass composent l'univers visuel du spectacle, dans le plus pur esprit des revues parisiennes de music-hall.</p>
-        <p>Diffusée par SLP, la revue s'adapte à la durée et au format de votre événement — d'un showcase de 30 minutes à une grande soirée de 1h30.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
+<section class="extra-sec">
   <div class="wrap tight">
     <div class="section-head">
       <span class="label">Le spectacle</span>
@@ -271,46 +295,14 @@
       <div class="member-card"><div class="name">Plumes & strass</div><div class="role">Esprit revue parisienne</div></div>
     </div>
   </div>
-</section>
-
-<section>
-  <div class="wrap tight narrow">
-    <div class="section-head">
-      <span class="label">Voir</span>
-      <h2>La revue en tournée</h2>
-    </div>
-    <div class="video-wrap">
-      <iframe src="https://www.youtube.com/embed/vfyqjnU4XhU" title="Bim Bam Boom — Cabaret itinérant (vidéo)" style="position:absolute; inset:0; width:100%; height:100%; border:0;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap tight narrow">
-    <div class="section-head">
-      <span class="label">En images</span>
-      <h2>La revue sur scène</h2>
-    </div>
-    <div class="photo-grid">
-      <a href="bim-bam-boom-photo-1.jpg"><img src="bim-bam-boom-photo-1.jpg" srcset="images/bim-bam-boom-photo-1-480.webp 480w, images/bim-bam-boom-photo-1-800.webp 800w, images/bim-bam-boom-photo-1-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="Bim Bam Boom — photo 1" loading="lazy"></a>
-      <a href="bim-bam-boom-photo-2.jpg"><img src="bim-bam-boom-photo-2.jpg" alt="Bim Bam Boom — photo 2" loading="lazy"></a>
-      <a href="bim-bam-boom-photo-3.jpg"><img src="bim-bam-boom-photo-3.jpg" alt="Bim Bam Boom — photo 3" loading="lazy"></a>
-      <a href="bim-bam-boom-photo-4.jpg"><img src="bim-bam-boom-photo-4.jpg" alt="Bim Bam Boom — photo 4" loading="lazy"></a>
-      <a href="bim-bam-boom-photo-5.jpg"><img src="bim-bam-boom-photo-5.jpg" srcset="images/bim-bam-boom-photo-5-480.webp 480w, images/bim-bam-boom-photo-5-800.webp 800w, images/bim-bam-boom-photo-5-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="Bim Bam Boom — photo 5" loading="lazy"></a>
-    </div>
-  </div>
-</section>
-
-<section>
+</section><section class="extra-sec">
   <div class="wrap tight">
     <div class="bbb-duo">
       <img src="bim-bam-boom-affiche.jpg" srcset="images/bim-bam-boom-affiche-480.webp 480w, images/bim-bam-boom-affiche-800.webp 800w, images/bim-bam-boom-affiche-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="Affiche de la revue Bim Bam Boom" loading="lazy">
       <img src="bim-bam-boom-photo.jpg" srcset="images/bim-bam-boom-photo-480.webp 480w, images/bim-bam-boom-photo-800.webp 800w" sizes="(max-width:700px) 100vw, 1100px" alt="La troupe de Bim Bam Boom sur scène" loading="lazy">
     </div>
   </div>
-</section>
-
-<section>
+</section><section class="extra-sec">
   <div class="wrap tight">
     <div class="section-head">
       <span class="label">Idéal pour</span>
@@ -324,9 +316,7 @@
       <div class="venue-card">Événements privés</div>
     </div>
   </div>
-</section>
-
-<section>
+</section><section class="extra-sec">
   <div class="wrap tight">
     <div class="info-grid">
       <div class="info-item"><span class="mark">→</span><p>Revue itinérante</p></div>
@@ -335,6 +325,9 @@
     </div>
   </div>
 </section>
+<section><div class="wrap tight narrow"><div class="section-head"><span class="label">En images</span><h2>Sur scène</h2></div><ul class="gal"><li><a href="bim-bam-boom-photo-1.jpg" data-lightbox><img src="images/bim-bam-boom-photo-1-800.webp" srcset="images/bim-bam-boom-photo-1-480.webp 480w, images/bim-bam-boom-photo-1-800.webp 800w, images/bim-bam-boom-photo-1-1200.webp 1200w" sizes="(max-width:600px) 46vw, 280px" width="800" height="600" alt="Bim Bam Boom — photo 1" loading="lazy" decoding="async"></a></li><li><a href="bim-bam-boom-photo-2.jpg" data-lightbox><img src="images/bim-bam-boom-photo-2-480.webp" srcset="images/bim-bam-boom-photo-2-480.webp 480w" sizes="(max-width:600px) 46vw, 280px" width="800" height="800" alt="Bim Bam Boom — photo 2" loading="lazy" decoding="async"></a></li><li><a href="bim-bam-boom-photo-3.jpg" data-lightbox><img src="images/bim-bam-boom-photo-3-800.webp" srcset="images/bim-bam-boom-photo-3-480.webp 480w, images/bim-bam-boom-photo-3-800.webp 800w" sizes="(max-width:600px) 46vw, 280px" width="800" height="451" alt="Bim Bam Boom — photo 3" loading="lazy" decoding="async"></a></li><li><a href="bim-bam-boom-photo-4.jpg" data-lightbox><img src="images/bim-bam-boom-photo-4-800.webp" srcset="images/bim-bam-boom-photo-4-480.webp 480w, images/bim-bam-boom-photo-4-800.webp 800w" sizes="(max-width:600px) 46vw, 280px" width="800" height="434" alt="Bim Bam Boom — photo 4" loading="lazy" decoding="async"></a></li><li><a href="bim-bam-boom-photo-5.jpg" data-lightbox><img src="images/bim-bam-boom-photo-5-800.webp" srcset="images/bim-bam-boom-photo-5-480.webp 480w, images/bim-bam-boom-photo-5-800.webp 800w, images/bim-bam-boom-photo-5-1200.webp 1200w" sizes="(max-width:600px) 46vw, 280px" width="800" height="720" alt="Bim Bam Boom — photo 5" loading="lazy" decoding="async"></a></li></ul></div></section>
+<section><div class="wrap tight narrow bio"><div class="section-head"><span class="label">Le spectacle</span><h2>La revue Bim Bam Boom</h2></div><div class="bio-text"><p>Bim Bam Boom est une revue de cabaret haut de gamme, pensée pour se déplacer partout en France. Sur un format modulable de 4 à 8 artistes, elle enchaîne des tableaux dynamiques, colorés et innovants, portés par du chant en live.</p><p>Plumes et strass composent l'univers visuel du spectacle, dans le plus pur esprit des revues parisiennes de music-hall.</p><details class="bio-more"><summary>Lire la suite</summary><p>Diffusée par SLP, la revue s'adapte à la durée et au format de votre événement — d'un showcase de 30 minutes à une grande soirée de 1h30.</p></details></div></div></section>
+<section><div class="wrap tight narrow"><div class="section-head"><span class="label">À découvrir aussi</span><h2>Des spectacles proches</h2></div><ul class="show-grid three"><li><a class="show-card" href="panache"><img src="images/panache-photo-2-800.webp" srcset="images/panache-photo-2-480.webp 480w, images/panache-photo-2-800.webp 800w, images/panache-photo-2-1200.webp 1200w" sizes="(max-width:600px) 46vw, 300px" width="800" height="534" alt="Panache sur scène" loading="lazy" decoding="async"><span class="info"><span class="tag">Cabaret</span><strong>Panache</strong><span class="go">Voir le spectacle →</span></span></a></li></ul></div></section>
 
 <section class="cta-band">
   <div class="wrap tight">
@@ -342,7 +335,7 @@
     <h2>Réservez cette revue<br>pour votre événement</h2>
     <p>SLP diffuse ce spectacle et coordonne toute la logistique de votre événement.</p>
     <div class="cta-row">
-      <a href="contact?artiste=bim-bam-boom&amp;nom=Bim%20Bam%20Boom" class="btn btn-primary" data-contact="devis">Demander un devis</a>
+      <a href="contact?artiste=bim-bam-boom&amp;nom=Bim%20Bam%20Boom#contact-form" class="btn btn-primary" data-contact="devis">Demander un devis</a>
       <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>06 31 94 96 53</a>
       <a href="https://wa.me/33631949653?text=Bonjour%2C%20je%20vous%20contacte%20pour%20Bim%20Bam%20Boom%20%28site%20SLP%29%20%3A%20" target="_blank" rel="noopener" class="btn btn-ghost cta-wa" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
     </div>
@@ -458,7 +451,7 @@
   @media (max-width:760px){ .ctabar{display:flex;} body{padding-bottom:76px;} }
   @media (prefers-reduced-motion: reduce){ .ctabar{transition:none;} }
 </style>
-<nav class="ctabar" aria-label="Contact"><a class="b1" href="contact?artiste=bim-bam-boom&amp;nom=Bim%20Bam%20Boom" data-contact="devis">Demander un devis</a><a class="b2" href="tel:+33631949653" aria-label="Appeler" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Appeler</a><a class="b3" href="https://wa.me/33631949653?text=Bonjour%2C%20je%20vous%20contacte%20pour%20Bim%20Bam%20Boom%20%28site%20SLP%29%20%3A%20" target="_blank" rel="noopener" aria-label="WhatsApp" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg></a></nav>
+<nav class="ctabar" aria-label="Contact"><a class="b1" href="contact?artiste=bim-bam-boom&amp;nom=Bim%20Bam%20Boom#contact-form" data-contact="devis">Demander un devis</a><a class="b2" href="tel:+33631949653" aria-label="Appeler" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Appeler</a><a class="b3" href="https://wa.me/33631949653?text=Bonjour%2C%20je%20vous%20contacte%20pour%20Bim%20Bam%20Boom%20%28site%20SLP%29%20%3A%20" target="_blank" rel="noopener" aria-label="WhatsApp" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg></a></nav>
 <script>
 (function(){
   var slug = "bim-bam-boom";
@@ -508,7 +501,7 @@
 })();
 </script>
 <script>
-document.querySelectorAll('.photo-grid a').forEach(function(a){
+document.querySelectorAll('.gal a').forEach(function(a){
   a.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openLightbox(a.getAttribute('href')); });
 });
 </script>
