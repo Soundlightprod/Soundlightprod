@@ -260,9 +260,12 @@
 .hero-v2 .hero-text p.hero-lead{opacity:1; animation:none; color:var(--paper); font-size:1.12rem; line-height:1.5; max-width:34ch; margin:0 0 24px;}
 .hero-v2 .cta-row{opacity:1; animation:none; gap:12px; margin-bottom:18px;}
 .hero-v2 .cta-row .btn{min-height:52px; padding:0 26px !important; font-size:1rem; justify-content:center;}
-.hero-v2 .feux-dot{left:max(14px,calc((100% - 1220px)/2 - 20px)); top:150px;}
-.hero-v2 .hero-inner{padding-left:56px;}
-@media (max-width:960px){ .hero-v2 .feux-dot{left:-6px; top:22px;} .hero-v2 .hero-inner{padding-left:0;} }
+@media (min-width:961px){
+  .hero-v2 .feux-dot{left:auto; right:max(14px,calc((100% - 1220px)/2 + 8px)); top:92px;}
+  .hero-v2 .hero-inner{align-items:end;}
+  .hero-v2 .hero-photo{width:60%; justify-self:end; margin-bottom:0;}
+}
+@media (max-width:960px){ .hero-v2 .feux-dot{left:-6px; top:22px;} }
 .reassure{list-style:none; display:flex; flex-wrap:wrap; gap:6px 18px; color:var(--muted); font-size:.9rem; margin:0; padding:0;}
 .reassure li::before{content:'✓ '; color:var(--amber); font-weight:700;}
 .hero-photo{margin:0; position:relative; z-index:4; border-radius:20px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,.45); aspect-ratio:3/2; background:var(--ink-2);}
@@ -356,7 +359,7 @@ html{scroll-padding-top:96px;}
   </div>
 </header>
 
-<section class="hero feux hero-v2" id="top" data-angle="96" data-angle-m="128">
+<section class="hero feux hero-v2" id="top" data-angle="260" data-angle-m="128">
   <div class="feux-halo" aria-hidden="true"></div><div class="feux-dot" aria-hidden="true"></div><div class="feux-light" aria-hidden="true"></div>
   <div class="hero-inner">
     <div class="hero-text">
