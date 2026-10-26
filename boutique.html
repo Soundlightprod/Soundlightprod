@@ -308,6 +308,8 @@
   .shop-light .trust li{background:#fff; color:var(--muted);} .shop-light .trust li b{color:var(--navy);}
   .shop-light .pp{padding-top:30px;}
   .shop-light .pp-trust div{background:#fff;}
+  .pack-line{font-size:.8rem; color:var(--muted); line-height:1.4;}
+  .pack-line b{color:var(--navy);} .pack-line .save{display:block; color:#1d7a46; font-weight:600;}
   .shop-light .pp-thumbs button{border-color:var(--line);} .shop-light .pp-thumbs button.on{border-color:var(--navy);}
 </style>
 <link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -381,6 +383,10 @@
       <div class="grid-sm" id="featured" style="margin-bottom:38px;"></div>
       <h2 class="sec-title">Éclairage scénique <a href="#lumiere">Tout voir →</a></h2>
       <div class="grid-sm" id="featuredLum" style="margin-bottom:38px;"></div>
+      <div id="packsBlock" hidden>
+        <h2 class="sec-title">Packs et lots <a href="#tous">Tout le catalogue →</a></h2>
+        <div class="grid-sm" id="featuredPacks" style="margin-bottom:38px;"></div>
+      </div>
       <ul class="trust">
         <li><span class="ic">🛡️</span><span><b>Garantie 2 ans</b>sur tout le matériel</span></li>
         <li><span class="ic">🚚</span><span><b>Livraison en France</b>expédié par SLP</span></li>
@@ -548,6 +554,20 @@
       </div>`;
   }
 
+  // Lot (-x2, -x4…) : prix à l'unité et économie par rapport à N produits achetés séparément (calculés, aucune remise ajoutée)
+  function packInfo(p){
+    const m = p.slug.match(/-x([0-9]+)$/);
+    if (!m) return null;
+    const n = parseInt(m[1], 10);
+    const base = products.find(q => q.slug === p.slug.replace(/-x[0-9]+$/, ''));
+    return { n, unit: Math.round(p.price_cents / n), save: base ? base.price_cents * n - p.price_cents : 0 };
+  }
+  function packHTML(p){
+    const i = packInfo(p);
+    const line = `<p class="pack-line"><b>Lot de ${i.n}</b>, soit ${money(i.unit)} l'unité${i.save > 0 ? `<span class="save">${money(i.save)} d'économie par rapport à ${i.n} achetés séparément</span>` : ''}</p>`;
+    return cardHTML(p, false).replace('<div class="price-row">', line + '<div class="price-row">');
+  }
+
   function renderHome(){
     const by = c => products.filter(p => p.category === c);
     const lum = by('lumiere'), con = by('consommables');
@@ -565,6 +585,9 @@
       tile('t-new', '#nouveautes', 'Nouveautés', pic(lum, /sunstrip/i), '');
     { const el = document.getElementById('catTiles'); el.style.setProperty('--n', el.children.length); }
     document.getElementById('featured').innerHTML = newest().slice(0,5).map(p => cardHTML(p, true)).join('');
+    { const packs = products.filter(p => p.image && packInfo(p));
+      document.getElementById('packsBlock').hidden = !packs.length;
+      document.getElementById('featuredPacks').innerHTML = packs.map(packHTML).join(''); }
     document.getElementById('featuredLum').innerHTML = lum.filter(p => p.image).slice(0,6).map(p => cardHTML(p, nw.has(p.id))).join('');
   }
 
