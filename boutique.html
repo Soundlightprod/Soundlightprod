@@ -98,6 +98,7 @@
   .cart-item .qty-ctrl button{width:24px; height:24px; border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--paper); cursor:pointer;}
   .cart-empty{color:var(--muted); text-align:center; padding:40px 0; font-size:0.9rem;}
   .cart-foot{padding:20px 24px; border-top:1px solid var(--line);}
+  .cart-ship{font-size:.88rem; color:var(--muted); margin-bottom:12px;} .cart-ship div{display:flex; justify-content:space-between; padding:2px 0;} .cart-ship .hint{display:block; color:#1d7a46; font-weight:600; padding-top:4px;}
   .cart-total{display:flex; justify-content:space-between; margin-bottom:16px; font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.1rem;}
   .cart-form input, .cart-form textarea{width:100%; margin-bottom:10px; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; font-size:0.88rem;}
   .cart-msg{font-size:0.82rem; margin-top:10px;}
@@ -428,6 +429,7 @@
     <p class="cart-empty">Votre panier est vide.</p>
   </div>
   <div class="cart-foot" id="cartFoot" style="display:none;">
+    <div class="cart-ship" id="cartShip"></div>
     <div class="cart-total"><span>Total</span><span id="cartTotal">0,00 €</span></div>
     <div class="cart-form">
       <input type="text" id="custName" placeholder="Nom et prénom *" required>
@@ -707,6 +709,9 @@
     saveCart();
   }
 
+  // Frais de livraison (TTC) : 6,99 € jusqu'à 20 €, 14,99 € de 20 € à 99,99 €, offerts dès 100 € — identique côté serveur (slp-api)
+  function shipCents(sub){ return sub <= 2000 ? 699 : (sub < 10000 ? 1499 : 0); }
+
   function renderCart(){
     const itemsEl = document.getElementById('cartItems');
     const footEl = document.getElementById('cartFoot');
@@ -749,6 +754,12 @@
     });
     if (sugg.length) itemsEl.innerHTML += '<div class="cart-sugg">' + sugg.map(s =>
       `<div class="need-box"><b>N'oubliez pas le consommable de votre machine</b>${needRows(s.acc)}</div>`).join('') + '</div>';
+    const ship = shipCents(total), grand = total + ship;
+    document.getElementById('cartShip').innerHTML =
+      '<div><span>Sous-total</span><span>' + money(total) + '</span></div>' +
+      '<div><span>Livraison en France</span><span>' + (ship ? money(ship) : 'Offerte') + '</span></div>' +
+      (ship ? '<span class="hint">Plus que ' + money(10000 - total) + ' pour la livraison offerte</span>' : '');
+    total = grand;
     totalEl.innerHTML = money(total) + '<small class="ht" style="display:block;text-align:right;font-weight:400;font-size:.7rem;opacity:.7">soit ' + moneyHT(total) + '</small>';
   }
 

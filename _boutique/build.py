@@ -297,7 +297,7 @@ def jsonld(p):
         'availability': 'https://schema.org/InStock' if in_stock(p) else 'https://schema.org/OutOfStock',
         'itemCondition': 'https://schema.org/NewCondition',
         'seller': {'@type': 'Organization', 'name': 'SLP Sound Light Prod', 'url': ORG + '/'},
-        'shippingDetails': [SHIP(4.99, None, 99.99), SHIP(0, 100, None)],  # 4,99 € (à partir de), offerte dès 100 € ; délai 10 jours max
+        'shippingDetails': [SHIP(6.99, None, 20), SHIP(14.99, 20.01, 99.99), SHIP(0, 100, None)],  # 6,99 € jusqu'à 20 €, 14,99 € de 20 à 99,99 €, offerte dès 100 €
         'hasMerchantReturnPolicy': {'@type': 'MerchantReturnPolicy', 'applicableCountry': 'FR',
                                     'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
                                     'merchantReturnDays': 14, 'returnMethod': 'https://schema.org/ReturnByMail',
