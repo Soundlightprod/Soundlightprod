@@ -248,7 +248,7 @@
 <style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
 <!-- i18n:end -->
 <link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="images/abba-photo-1-800.webp" imagesrcset="images/abba-photo-1-480.webp 480w, images/abba-photo-1-800.webp 800w, images/abba-photo-1-1200.webp 1200w" imagesizes="(max-width:960px) 92vw, 560px" fetchpriority="high">
+<link rel="preload" as="image" href="images/abba-photo-3-800.webp" imagesrcset="images/abba-photo-3-480.webp 480w, images/abba-photo-3-800.webp 800w, images/abba-photo-3-1200.webp 1200w" imagesizes="(max-width:960px) 92vw, 360px" fetchpriority="high">
 <link rel="stylesheet" href="/charte.css">
 <style id="accueil-v2">
 /* Accueil v2 (pilote) — identité « Plein feux » conservée : fond sombre, logo, polices locales, accents colorés */
@@ -270,6 +270,9 @@
 .reassure li::before{content:'✓ '; color:var(--amber); font-weight:700;}
 .hero-photo{margin:0; position:relative; z-index:4; border-radius:20px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,.45); aspect-ratio:3/2; background:var(--ink-2);}
 .hero-photo img{display:block; width:100%; height:100%; object-fit:cover;}
+.hero-photo .slide{position:absolute; inset:0; opacity:0; transition:opacity .9s ease;} .hero-photo .slide.on{opacity:1;}
+@media (prefers-reduced-motion:reduce){ .hero-photo .slide{transition:none;} }
+
 .hero-photo figcaption{position:absolute; left:12px; bottom:10px; font-size:.78rem; padding:4px 10px; border-radius:100px; background:rgba(12,10,20,.72); color:var(--paper);}
 @media (max-width:960px){
   .hero.hero-v2{padding:96px 20px 28px;}
@@ -371,8 +374,11 @@ html{scroll-padding-top:96px;}
       </div>
       <ul class="reassure"><li>Un seul interlocuteur</li><li>Partout en France</li><li>Premier retour rapide</li></ul>
     </div>
-    <figure class="hero-photo">
-      <img src="images/abba-photo-1-800.webp" srcset="images/abba-photo-1-480.webp 480w, images/abba-photo-1-800.webp 800w, images/abba-photo-1-1200.webp 1200w" sizes="(max-width:960px) 92vw, 560px" width="1200" height="800" alt="Tribute ABBA sur scène devant un public nombreux" fetchpriority="high" decoding="async">
+    <figure class="hero-photo" id="heroSlides">
+      <img class="slide on" data-cap="Tribute ABBA en concert" src="images/abba-photo-3-800.webp" srcset="images/abba-photo-3-480.webp 480w, images/abba-photo-3-800.webp 800w, images/abba-photo-3-1200.webp 1200w" sizes="(max-width:960px) 92vw, 360px" width="1200" height="800" alt="Tribute ABBA sur scène, les deux chanteuses en tenue de scène" fetchpriority="high" decoding="async">
+      <img class="slide" data-cap="Alchimie, en plein air" src="images/alchimie-photo-2-800.webp" srcset="images/alchimie-photo-2-480.webp 480w, images/alchimie-photo-2-800.webp 800w, images/alchimie-photo-2-1200.webp 1200w" sizes="(max-width:960px) 92vw, 360px" width="1200" height="800" alt="Le groupe Alchimie sur une scène en plein air au bord de l'eau" loading="lazy" decoding="async">
+      <img class="slide" data-cap="Tribute Calogero en concert" src="images/calo-photo-2-800.webp" srcset="images/calo-photo-2-480.webp 480w, images/calo-photo-2-800.webp 800w, images/calo-photo-2-1200.webp 1200w" sizes="(max-width:960px) 92vw, 360px" width="1200" height="800" alt="Le quatuor du Tribute Calogero sous les projecteurs" loading="lazy" decoding="async">
+      <img class="slide" data-cap="Panache, revue de cabaret" src="images/panache-photo-2-800.webp" srcset="images/panache-photo-2-480.webp 480w, images/panache-photo-2-800.webp 800w, images/panache-photo-2-1200.webp 1200w" sizes="(max-width:960px) 92vw, 360px" width="1200" height="800" alt="Les danseuses de la revue Panache, plumes et strass" loading="lazy" decoding="async">
       <figcaption>Tribute ABBA en concert</figcaption>
     </figure>
   </div>
@@ -492,6 +498,11 @@ html{scroll-padding-top:96px;}
   <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="mentions-legales" style="color:inherit;">Mentions légales</a> · <a href="cgv-boutique" style="color:inherit;">CGV Boutique</a></p>
 </footer>
 
+<script id="hero-slides">(function(){var f=document.getElementById('heroSlides');if(!f)return;var s=f.querySelectorAll('.slide'),c=f.querySelector('figcaption'),i=0,t=null;
+if(s.length<2||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))return;
+function go(){s[i].classList.remove('on');i=(i+1)%s.length;s[i].classList.add('on');c.textContent=s[i].getAttribute('data-cap');}
+function start(){if(!t)t=setInterval(go,5000);}function stop(){clearInterval(t);t=null;}
+f.addEventListener('mouseenter',stop);f.addEventListener('mouseleave',start);document.addEventListener('visibilitychange',function(){document.hidden?stop():start();});start();})();</script>
 <script src="/feux.js" defer></script>
 <!-- cta-contact:start (boutons de contact + suivi des clics) -->
 <style>
