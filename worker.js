@@ -327,7 +327,7 @@ function withVideoTracking(resp, url) {
     // consent.js doit être chargé AVANT le script de suivi de chaque page (il complète l'envoi de la visite).
     element(el) { el.prepend('<script src="/consent.js"></script>', { html: true }); },
   }).on("body", {
-    element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script><script src="/suivez.js" defer></script><script src="/contact-track.js" defer></script>', { html: true }); },
+    element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script><script src="/suivez.js" defer></script><script src="/contact-track.js" defer></script><script src="/a11y.js" defer></script>', { html: true }); },
   }).transform(resp);
 }
 
@@ -566,7 +566,7 @@ async function meteoData(env) {
        WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') GROUP BY action`),
     safe(`SELECT page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
        WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') AND action IN ('devis', 'appel', 'whatsapp', 'mail', 'chat', 'envoi') GROUP BY page ORDER BY n DESC LIMIT 8`),
-    safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests ORDER BY id DESC LIMIT 10"),
+    (async () => { try { return await q("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur, reference, artiste_nom, mail_tentatives FROM contact_requests ORDER BY id DESC LIMIT 10"); } catch (e) { return safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests ORDER BY id DESC LIMIT 10"); } })(),
     safe(`SELECT video_id, page, COUNT(DISTINCT CASE WHEN event = 'play' THEN session_id END) AS lectures,
          COUNT(DISTINCT CASE WHEN event IN ('75', 'fin') THEN session_id END) AS jusqu_au_bout
        FROM video_events WHERE is_bot = 0 AND ${notTest("created_at")} AND created_at >= datetime('now', '-7 days') GROUP BY video_id, page ORDER BY lectures DESC`),
@@ -591,8 +591,73 @@ async function cachedAdminJson(url, ttlSec, origin, compute) {
   return new Response(body, { status: 200, headers: hdr });
 }
 
+// --- Demandes de devis (POST /api/contact) -----------------------------------------------------
+// Principe : « succès » = la demande est ENREGISTRÉE dans D1. L'email (Resend) et la statistique sont des
+// opérations secondaires, exécutées après la réponse (waitUntil) : leur échec n'est jamais renvoyé au visiteur
+// (donc jamais de fausse erreur ni de doublon à la reprise). Un email non parti reste visible dans l'admin
+// (mail_envoye = 0, mail_erreur) et est repris automatiquement (cron quotidien, passage d'une nouvelle demande,
+// ou POST /api/admin/contact-retry). Une clé d'idempotence (cle) fournie par le navigateur garantit qu'une même
+// soumission reprise (coupure, double clic) ne crée qu'une seule demande.
+const CONTACT_COLS = [["cle", "TEXT"], ["reference", "TEXT"], ["artiste", "TEXT"], ["artiste_nom", "TEXT"], ["organisme", "TEXT"], ["type_evenement", "TEXT"], ["jauge", "TEXT"], ["budget", "TEXT"], ["technique", "TEXT"], ["lang", "TEXT"], ["mail_tentatives", "INTEGER DEFAULT 0"], ["mail_derniere", "TEXT"]];
+let contactSchemaReady = false;
+async function ensureContactSchema(env) {
+  if (contactSchemaReady) return;
+  const have = new Set(((await env.DB.prepare("PRAGMA table_info(contact_requests)").all()).results || []).map((r) => r.name));
+  for (const [c, type] of CONTACT_COLS) {
+    if (have.has(c)) continue;
+    try { await env.DB.prepare(`ALTER TABLE contact_requests ADD COLUMN ${c} ${type}`).run(); } catch (e) { if (!/duplicate column/i.test(String(e && e.message))) throw e; }
+  }
+  await env.DB.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_contact_requests_cle ON contact_requests(cle) WHERE cle IS NOT NULL").run();
+  await env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_contact_requests_mail ON contact_requests(mail_envoye, id)").run();
+  contactSchemaReady = true;
+}
+function contactReference(id) { return `SLP-${new Date().getFullYear()}-${String(id).padStart(5, "0")}`; }
+
+async function notifyContactMail(env, r) {
+  const esc = (x) => String(x || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const ligne = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#666">${k}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>` : "";
+  let ok = 0, err = null;
+  try {
+    const resendKey = typeof env.RESEND_API_KEY?.get === "function" ? await env.RESEND_API_KEY.get() : env.RESEND_API_KEY;
+    if (!resendKey) throw new Error("clé Resend absente");
+    const res = await fetch(env.RESEND_API_URL || "https://api.resend.com/emails", {
+      method: "POST",
+      // Idempotency-Key : si une reprise renvoie le même mail après un échec ambigu, Resend ne le double pas.
+      headers: { "Authorization": `Bearer ${resendKey}`, "Content-Type": "application/json", "Idempotency-Key": `contact-request-${r.id}` },
+      body: JSON.stringify({
+        from: "Site SLP <contact@soundlightprod.fr>", to: [env.CONTACT_TO || "contact@soundlightprod.fr"], ...(r.email ? { reply_to: r.email } : {}),
+        subject: `Nouvelle demande ${r.reference || "#" + r.id} : ${r.artiste_nom || r.sujet || "Contact"} — ${r.nom}`,
+        html: `<p>Nouvelle demande reçue depuis le site (${esc(r.reference || "n°" + r.id)}).</p><table>${ligne("Spectacle", r.artiste_nom)}${ligne("Nom", r.nom)}${ligne("Téléphone", r.telephone)}${ligne("Email", r.email)}${ligne("Organisme / commune", r.organisme)}${ligne("Sujet", r.sujet)}${ligne("Type d'événement", r.type_evenement)}${ligne("Date", r.date_event)}${ligne("Lieu", r.lieu)}${ligne("Jauge", r.jauge)}${ligne("Budget", r.budget)}${ligne("Besoin son et lumière", r.technique)}${ligne("Venu de", r.page_origine)}${ligne("Ville (approx.)", r.city)}</table><p style="white-space:pre-wrap;border-left:3px solid #ffb238;padding-left:10px">${esc(r.message)}</p><p style="color:#666">Répondre à ce mail écrit directement au client${r.email ? "" : " (pas d'email : rappelez-le au téléphone)"}.</p>`,
+      }),
+    });
+    if (res.ok) ok = 1; else err = `${res.status} ${(await res.text()).slice(0, 200)}`;
+  } catch (e) { err = String((e && e.message) || e).slice(0, 200); }
+  try {
+    await env.DB.prepare("UPDATE contact_requests SET mail_envoye = ?, mail_erreur = ?, mail_tentatives = COALESCE(mail_tentatives, 0) + 1, mail_derniere = datetime('now') WHERE id = ?").bind(ok, err, r.id).run();
+  } catch (e) { console.error("contact: statut mail non enregistré", r.id, e && e.message); }
+  return ok;
+}
+
+// Reprise des notifications non parties (7 derniers jours, 8 essais maximum par demande).
+async function retryFailedContactMails(env, { minAgeMin = 2, limit = 10 } = {}) {
+  await ensureContactSchema(env);
+  const { results } = await env.DB.prepare(
+    "SELECT id, reference, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, artiste_nom, organisme, type_evenement, jauge, budget, technique FROM contact_requests WHERE COALESCE(mail_envoye, 0) = 0 AND COALESCE(mail_tentatives, 0) < 8 AND cree_le >= datetime('now', '-7 days') AND cree_le <= datetime('now', ?) ORDER BY id LIMIT ?"
+  ).bind(`-${Math.max(0, minAgeMin | 0)} minutes`, limit).all();
+  let envoyes = 0;
+  for (const r of results || []) if (await notifyContactMail(env, r)) envoyes++;
+  return { essayes: (results || []).length, envoyes };
+}
+
+async function recordContactEvent(env, site, d, cf, vp) {
+  try {
+    await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, 'envoi', ?, ?, ?, ?, ?, ?)")
+      .bind(site, d.page || null, d.sid || null, cf.city || null, vp.network, vp.device, vp.isBot).run();
+  } catch (e) { console.error("contact: statistique non enregistrée", e && e.message); }
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // ============ DOMAINES & LANGUES ============
@@ -1332,15 +1397,28 @@ export default {
         }
       }
 
-      // POST /api/contact — formulaire de contact : enregistré dans D1 (jamais perdu) puis envoyé par mail via Resend
+      // POST /api/contact — demande de devis : enregistrée dans D1 (jamais perdue, une seule fois par soumission),
+      // puis notification email et statistique en tâche secondaire. Réponse : { ok, reference }.
       if (url.pathname === "/api/contact" && request.method === "POST") {
         const body = await request.json().catch(() => ({}));
         const t = (v, n) => String(v || "").trim().slice(0, n);
         if (t(body.site_web, 200)) return json({ ok: true }, 200, origin); // champ piège : rempli seulement par les robots
         const d = { nom: t(body.nom, 120), email: t(body.email, 160), telephone: t(body.telephone, 40), sujet: t(body.sujet, 120),
-          date_event: t(body.date_event, 80), lieu: t(body.lieu, 120), message: t(body.message, 4000), page: t(body.page, 200), sid: t(body.session_id, 60) };
-        if (!d.nom || (!d.email && !d.telephone)) return json({ ok: false, error: "Indiquez votre nom et un email ou un téléphone." }, 400, origin);
-        if (d.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)) return json({ ok: false, error: "L'adresse email semble incomplète." }, 400, origin);
+          date_event: t(body.date_event, 80), lieu: t(body.lieu, 120), message: t(body.message, 4000), page: t(body.page, 200), sid: t(body.session_id, 60),
+          artiste: /^[a-z0-9-]{0,60}$/.test(t(body.artiste, 60)) ? t(body.artiste, 60) : "", artiste_nom: t(body.artiste_nom, 80), organisme: t(body.organisme, 120),
+          type_evenement: t(body.type_evenement, 80), jauge: t(body.jauge, 40), budget: t(body.budget, 60), technique: t(body.technique, 80),
+          lang: ["fr", "en", "es", "it"].includes(t(body.lang, 2)) ? t(body.lang, 2) : "fr" };
+        const cle = /^[A-Za-z0-9._-]{8,100}$/.test(String(body.cle || "")) ? String(body.cle) : null;
+        if (!d.nom) return json({ ok: false, champ: "nom", error: "Indiquez votre nom." }, 400, origin);
+        if (!d.email && !d.telephone) return json({ ok: false, champ: "email", error: "Indiquez un email ou un téléphone." }, 400, origin);
+        if (d.email && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(d.email)) return json({ ok: false, champ: "email", error: "L'adresse email semble incomplète." }, 400, origin);
+        if (d.telephone && d.telephone.replace(/\D/g, "").length < 6) return json({ ok: false, champ: "telephone", error: "Ce numéro semble trop court." }, 400, origin);
+        await ensureContactSchema(env);
+        // Reprise d'une soumission déjà enregistrée : on renvoie le même résultat, sans rien recréer.
+        if (cle) {
+          const deja = await env.DB.prepare("SELECT id, reference FROM contact_requests WHERE cle = ?").bind(cle).first();
+          if (deja) return json({ ok: true, reference: deja.reference || contactReference(deja.id), deja_recue: true }, 200, origin);
+        }
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf); const site = siteFromRequest(request, body);
         const ipRaw = request.headers.get("CF-Connecting-IP") || "";
         const ipHash = ipRaw ? [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ipRaw + "slp")))].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("") : null;
@@ -1348,30 +1426,37 @@ export default {
           const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM contact_requests WHERE ip_hash = ? AND cree_le >= datetime('now', '-1 hour')").bind(ipHash).first();
           if (r && r.n >= 5) return json({ ok: false, error: "Trop d'envois d'un coup : appelez-nous au 06 31 94 96 53." }, 429, origin);
         }
-        const ins = await env.DB.prepare(
-          "INSERT INTO contact_requests (site, nom, email, telephone, sujet, date_event, lieu, message, page_origine, session_id, city, network, device, ip_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        ).bind(site, d.nom, d.email || null, d.telephone || null, d.sujet || null, d.date_event || null, d.lieu || null, d.message || null, d.page || null, d.sid || null, cf.city || null, vp.network, vp.device, ipHash).run();
-        const id = ins.meta && ins.meta.last_row_id;
-        const esc = (x) => String(x || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-        const ligne = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#666">${k}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>` : "";
-        let mailOk = 0, mailErr = null;
+        let id;
         try {
-          const resendKey = typeof env.RESEND_API_KEY?.get === "function" ? await env.RESEND_API_KEY.get() : env.RESEND_API_KEY;
-          if (!resendKey) throw new Error("clé Resend absente");
-          const r = await fetch("https://api.resend.com/emails", {
-            method: "POST", headers: { "Authorization": `Bearer ${resendKey}`, "Content-Type": "application/json" },
-            body: JSON.stringify({
-              from: "Site SLP <contact@soundlightprod.fr>", to: ["contact@soundlightprod.fr"], ...(d.email ? { reply_to: d.email } : {}),
-              subject: `Nouvelle demande : ${d.sujet || "Contact"} — ${d.nom}`,
-              html: `<p>Nouvelle demande reçue depuis le site (n°${id}).</p><table>${ligne("Nom", d.nom)}${ligne("Téléphone", d.telephone)}${ligne("Email", d.email)}${ligne("Sujet", d.sujet)}${ligne("Date", d.date_event)}${ligne("Lieu", d.lieu)}${ligne("Venu de", d.page)}${ligne("Ville (approx.)", cf.city)}</table><p style="white-space:pre-wrap;border-left:3px solid #ffb238;padding-left:10px">${esc(d.message)}</p><p style="color:#666">Répondre à ce mail écrit directement au client${d.email ? "" : " (pas d'email : rappelez-le au téléphone)"}.</p>`,
-            }),
-          });
-          if (r.ok) mailOk = 1; else mailErr = `${r.status} ${(await r.text()).slice(0, 200)}`;
-        } catch (e) { mailErr = String(e.message || e).slice(0, 200); }
-        await env.DB.prepare("UPDATE contact_requests SET mail_envoye = ?, mail_erreur = ? WHERE id = ?").bind(mailOk, mailErr, id).run();
-        await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, 'envoi', ?, ?, ?, ?, ?, ?)")
-          .bind(site, d.page || null, d.sid || null, cf.city || null, vp.network, vp.device, vp.isBot).run();
-        return json({ ok: true }, 200, origin);
+          const ins = await env.DB.prepare(
+            "INSERT INTO contact_requests (site, nom, email, telephone, sujet, date_event, lieu, message, page_origine, session_id, city, network, device, ip_hash, cle, artiste, artiste_nom, organisme, type_evenement, jauge, budget, technique, lang) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+          ).bind(site, d.nom, d.email || null, d.telephone || null, d.sujet || null, d.date_event || null, d.lieu || null, d.message || null, d.page || null, d.sid || null, cf.city || null, vp.network, vp.device, ipHash,
+            cle, d.artiste || null, d.artiste_nom || null, d.organisme || null, d.type_evenement || null, d.jauge || null, d.budget || null, d.technique || null, d.lang).run();
+          id = ins.meta && ins.meta.last_row_id;
+        } catch (e) {
+          // Deux envois simultanés de la même soumission (double clic) : le second tombe sur la clé unique.
+          if (cle && /UNIQUE|constraint/i.test(String((e && e.message) || e))) {
+            const deja = await env.DB.prepare("SELECT id, reference FROM contact_requests WHERE cle = ?").bind(cle).first();
+            if (deja) return json({ ok: true, reference: deja.reference || contactReference(deja.id), deja_recue: true }, 200, origin);
+          }
+          throw e;
+        }
+        const reference = contactReference(id);
+        try { await env.DB.prepare("UPDATE contact_requests SET reference = ? WHERE id = ?").bind(reference, id).run(); } catch (e) { console.error("contact: référence non enregistrée", id, e && e.message); }
+        // Tâches secondaires : leur échec ne change jamais la réponse (la demande est déjà enregistrée).
+        const secondaire = (async () => {
+          try { await notifyContactMail(env, { id, reference, nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, page_origine: d.page, city: cf.city, artiste_nom: d.artiste_nom, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget, technique: d.technique }); } catch (e) { console.error("contact: notification", e && e.message); }
+          await recordContactEvent(env, site, d, cf, vp);
+          try { await retryFailedContactMails(env, { minAgeMin: 2, limit: 3 }); } catch (e) { console.error("contact: reprise", e && e.message); }
+        })();
+        if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(secondaire); else await secondaire;
+        return json({ ok: true, reference }, 200, origin);
+      }
+
+      // POST /api/admin/contact-retry — relance maintenant les emails de demandes non partis (admin)
+      if (url.pathname === "/api/admin/contact-retry" && request.method === "POST") {
+        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        return json({ ok: true, ...(await retryFailedContactMails(env, { minAgeMin: 0, limit: 50 })) }, 200, origin);
       }
 
       // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire|devis|suivre|chat, page, session_id } : clics vers le contact (et « Suivez-nous »)
@@ -1763,5 +1848,6 @@ export default {
   },
   async scheduled(event, env, ctx) {
     ctx.waitUntil(collectMetaStats(env));
+    ctx.waitUntil(retryFailedContactMails(env, { minAgeMin: 5, limit: 50 }).catch((e) => console.error("contact: reprise cron", e && e.message)));
   },
 };

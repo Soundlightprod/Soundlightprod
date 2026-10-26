@@ -148,6 +148,42 @@
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.fr/contact">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "ContactPage", "name": "Contact et devis gratuit", "url": "https://soundlightprod.fr/contact", "about": {"@type": "Organization", "@id": "https://soundlightprod.fr/#org", "name": "SLP Sound Light Prod", "url": "https://soundlightprod.fr/", "logo": "https://soundlightprod.fr/slp-logo-complet.png", "telephone": "+33631949653", "areaServed": "FR", "description": "Tributes, spectacles cabaret, groupes de reprises, DJ, son et lumière pour mairies, comités des fêtes et soirées privées."}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://soundlightprod.fr/"}, {"@type": "ListItem", "position": 2, "name": "Contact", "item": "https://soundlightprod.fr/contact"}]}]}</script>
+
+
+
+<style id="devis-css">
+  .page-hero.compact{padding:44px 24px 8px;}
+  .page-hero.compact .hero-blocks{opacity:.6}
+  .page-hero.compact h1{font-size:clamp(1.9rem,5vw,3rem); margin-bottom:12px;}
+  .page-hero.compact p{font-size:1rem; margin:0;}
+  .page-hero.compact .label{margin-bottom:12px;}
+  .contact-grid{grid-template-columns:1.35fr 1fr; align-items:start;}
+  @media (max-width:760px){ .contact-grid{grid-template-columns:1fr;} .wrap{padding-top:16px;} .contact-info,.contact-form{padding:28px 20px;} }
+  .contact-form{order:0 !important; scroll-margin-top:96px;}
+  .contact-form:focus{outline:none}
+  .contact-form .lead{color:var(--muted); font-size:.92rem; margin-bottom:20px;}
+  .sel{background:var(--ink); border:1px solid var(--line); border-left:3px solid var(--amber); border-radius:12px; padding:14px 16px; margin-bottom:22px;}
+  .sel-line{display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px;}
+  .sel-line .label{flex:0 0 100%;}
+  .sel-line strong{font-family:'League Spartan',sans-serif; font-size:1.25rem; letter-spacing:-.01em;}
+  .linkbtn{background:none; border:0; color:var(--amber); font:inherit; font-weight:700; font-size:.9rem; text-decoration:underline; cursor:pointer; padding:10px 4px; min-height:44px;}
+  .sel .field{margin:12px 0 0;}
+  .field .err{color:#ff7a99; font-size:.85rem; margin-top:6px;}
+  .field [aria-invalid="true"]{border-color:#ff7a99;}
+  .field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible,.btn-submit:focus-visible,.linkbtn:focus-visible,.quick a:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  details.more{margin:4px 0 22px; border:1px solid var(--line); border-radius:12px; padding:0 16px;}
+  details.more summary{cursor:pointer; padding:14px 0; font-weight:700; color:var(--paper); min-height:44px;}
+  details.more[open] summary{border-bottom:1px solid var(--line); margin-bottom:16px;}
+  details.more .field:last-child{margin-bottom:18px;}
+  .field input,.field select,.field textarea{font-size:16px;}
+  .form-msg{margin-top:14px; font-size:.95rem; text-align:center;} .form-msg.err{color:#ff7a99;}
+  .form-msg a{color:inherit; text-decoration:underline;}
+  .merci:focus{outline:none} .merci .ref{display:inline-block; margin:6px 0 14px; padding:6px 14px; border:1px dashed var(--amber); border-radius:100px; font-family:'DM Mono',monospace; letter-spacing:.06em;}
+  .contact-info .quick{margin-top:0; margin-bottom:18px;} .contact-info .q-note{margin:-6px 0 22px;}
+  .contact-info h2{font-size:1.25rem;}
+  .form-note a{color:inherit;}
+  .btn-submit[disabled]{opacity:.7; cursor:progress;}
+</style>
 </head>
 <body>
 
@@ -172,72 +208,46 @@
   </div>
 </header>
 
-<section class="page-hero">
+<section class="page-hero compact">
   <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
   <div class="page-hero-inner">
     <span class="label">Contact</span>
-    <h1>Parlons de votre projet</h1>
-    <p>Un spectacle, un plateau clé en main, avec le son et la lumière si besoin : nous vous conseillons, vous épaulons et coordonnons tout. Un seul interlocuteur, une réponse rapide.</p>
-      <div class="quick">
-        <a class="q-chat" href="#chat" data-contact="chat"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Parler tout de suite à l'équipe</a>
-        <a class="q-call" href="tel:+33631949653" data-contact="appel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Appeler · 06 31 94 96 53</a>
-        <a class="q-wa" href="https://wa.me/33631949653?text=Bonjour%2C%20je%20vous%20contacte%20depuis%20le%20site%20SLP%20%3A%20" target="_blank" rel="noopener" data-contact="whatsapp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
-        <a class="q-mail" href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
-      </div>
-      <p class="q-note">Écrivez-nous en direct : l'équipe SLP vous répond dès qu'elle est en ligne.</p>
-      <div class="trust"><span>Devis gratuit</span><span>Réponse sous 24 h</span><span>Un seul interlocuteur</span></div>
+    <h1>Recevez une proposition adaptée à votre événement</h1>
+    <p>Quelques informations suffisent. Nous revenons vers vous rapidement.</p>
   </div>
 </section>
 
 <section>
   <div class="wrap">
     <div class="contact-grid">
-      <div class="contact-info">
-        <h2>Coordonnées</h2>
-        <div class="info-block">
-          <span class="label">Email</span>
-          <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
-        </div>
-        <div class="info-block">
-          <span class="label">Téléphone / WhatsApp</span>
-          <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
-        </div>
-        <div class="info-block">
-          <span class="label">Adresse</span>
-          <p>173 rue de Courcelles<br>75017 Paris</p>
-        </div>
-        <div class="info-block">
-          <span class="label">Zone d'intervention</span>
-          <p>France / Europe</p>
-        </div>
-      </div>
-
-      <div class="contact-form">
+      <div class="contact-form" id="contact-form" tabindex="-1">
         <h2>Demandez votre devis</h2>
-        <p>Quelques infos suffisent : on vous rappelle ou on vous répond par mail sous 24 h.</p>
-        <form id="contact-form" novalidate>
+        <p class="lead">Premier retour rapide ; le devis détaillé suit après vérification de la disponibilité et de vos besoins.</p>
+        <form id="devis-form" novalidate>
+          <div class="sel" id="sel">
+            <div class="sel-line"><span class="label" id="selLabel">Votre sélection</span><strong id="selName" aria-live="polite"></strong><button type="button" class="linkbtn" id="selEdit" aria-expanded="false" aria-controls="selField">Modifier</button></div>
+            <div class="field" id="selField" hidden><label for="artiste">Spectacle concerné</label>
+              <select id="artiste" name="artiste"><option value="">Pas encore choisi : conseillez-moi</option><option value="tribute-abba">Tribute ABBA</option><option value="tribute-calogero">Tribute Calogero</option><option value="tribute-matmatah">Tribute Matmatah</option><option value="tribute-celine-dion">Tribute Céline Dion</option><option value="tribute-kool-and-the-gang">Tribute Kool &amp; the Gang</option><option value="tribute-bee-gees">Tribute Bee Gees</option><option value="tribute-phil-collins">Tribute Phil Collins</option><option value="tribute-balavoine">Tribute Balavoine</option><option value="tribute-barry-white">Tribute Barry White</option><option value="panache">Panache (cabaret)</option><option value="bim-bam-boom">Bim Bam Boom (cabaret)</option><option value="cache-candy">Cache Candy</option><option value="alchimie">Alchimie</option><option value="the-fine-allies">The Fine Allies</option><option value="noon-coverband">NooN Coverband</option></select></div>
+          </div>
+          <div class="field" id="subjField" hidden>
+            <label for="subject">Votre demande</label>
+            <select id="subject"><option value="Programmation d'artistes">Un artiste / un spectacle</option><option value="Devis Prestation technique">Son et lumière (prestation technique)</option><option value="DJ / animation">DJ / animation de soirée</option><option value="Autre demande">Autre demande</option></select>
+          </div>
           <div class="row-2">
             <div class="field">
-              <label for="name">Nom</label>
-              <input type="text" id="name" autocomplete="name" required>
+              <label for="name">Nom *</label>
+              <input type="text" id="name" autocomplete="name" required aria-describedby="name-err">
+              <p class="err" id="name-err" hidden></p>
             </div>
             <div class="field">
               <label for="phone">Téléphone</label>
-              <input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="06 …">
+              <input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="06 …" aria-describedby="contact-err">
             </div>
           </div>
           <div class="field">
             <label for="email">Email <span class="opt">(ou le téléphone, l'un des deux suffit)</span></label>
-            <input type="email" id="email" autocomplete="email" inputmode="email">
-          </div>
-          <div class="field">
-            <label for="subject">Votre demande</label>
-            <select id="subject">
-              <option value="Programmation d'artistes">Un artiste / un spectacle</option>
-              <option value="Devis Prestation technique">Son et lumière (prestation technique)</option>
-              <option value="DJ / animation">DJ / animation de soirée</option>
-              <option value="Autre demande">Autre demande</option>
-            </select>
+            <input type="email" id="email" autocomplete="email" inputmode="email" aria-describedby="contact-err">
+            <p class="err" id="contact-err" hidden></p>
           </div>
           <div class="row-2">
             <div class="field">
@@ -246,19 +256,55 @@
             </div>
             <div class="field">
               <label for="place">Ville / lieu</label>
-              <input type="text" id="place" placeholder="ex. Bordeaux, salle des fêtes">
+              <input type="text" id="place" placeholder="ex. Bordeaux, salle des fêtes" autocomplete="address-level2">
             </div>
           </div>
           <div class="field">
             <label for="message">Votre projet <span class="opt">(facultatif)</span></label>
-            <textarea id="message" placeholder="Type d'événement, nombre de personnes, budget…"></textarea>
+            <textarea id="message" placeholder="Type d'événement, ambiance souhaitée, contraintes…"></textarea>
           </div>
+          <details class="more" id="more">
+            <summary>Précisions utiles (facultatif)</summary>
+            <div class="field"><label for="organisme">Commune ou organisme</label><input type="text" id="organisme" autocomplete="organization"></div>
+            <div class="field"><label for="type-evt">Type d'événement</label><select id="type-evt"><option value="">À définir</option><option value="Fête communale / festivités">Fête communale / festivités</option><option value="Marché gourmand / saison culturelle">Marché gourmand / saison culturelle</option><option value="Mariage / soirée privée">Mariage / soirée privée</option><option value="Gala / entreprise">Gala / entreprise</option><option value="Association">Association</option><option value="Autre">Autre</option></select></div>
+            <div class="row-2">
+              <div class="field"><label for="jauge">Nombre de personnes attendu</label><input type="text" id="jauge" inputmode="numeric" placeholder="À définir"></div>
+              <div class="field"><label for="budget">Enveloppe budgétaire</label><input type="text" id="budget" placeholder="À définir"></div>
+            </div>
+            <div class="field"><label for="tech">Son et lumière</label><select id="tech"><option value="">À définir</option><option value="Pas de besoin technique">Pas de besoin technique</option><option value="Besoin de son et lumière (prestation distincte)">Besoin de son et lumière (prestation distincte)</option><option value="Je ne sais pas encore">Je ne sais pas encore</option></select></div>
+          </details>
           <div class="hp" aria-hidden="true"><label for="site_web">Ne pas remplir</label><input type="text" id="site_web" tabindex="-1" autocomplete="off"></div>
           <button type="submit" class="btn-submit" id="btnSend">Envoyer ma demande</button>
-          <p class="form-msg" id="formMsg" role="status"></p>
-          <p class="form-note">Vos coordonnées servent uniquement à vous répondre.</p>
+          <p class="form-msg" id="formMsg" role="alert"></p>
+          <p class="form-note">Vos coordonnées servent uniquement à vous répondre. <a href="mentions-legales">En savoir plus</a>.</p>
         </form>
       </div>
+
+      <aside class="contact-info" aria-labelledby="asideTitle">
+        <h2 id="asideTitle">Plutôt échanger directement ?</h2>
+        <div class="quick">
+        <a class="q-chat" href="#chat" data-contact="chat"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Parler tout de suite à l'équipe</a>
+        <a class="q-call" href="tel:+33631949653" data-contact="appel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Appeler · 06 31 94 96 53</a>
+        <a class="q-wa" href="https://wa.me/33631949653?text=Bonjour%2C%20je%20vous%20contacte%20depuis%20le%20site%20SLP%20%3A%20" target="_blank" rel="noopener" data-contact="whatsapp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
+        <a class="q-mail" href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
+      </div>
+        <p class="q-note">Écrivez-nous en direct : l'équipe SLP vous répond dès qu'elle est en ligne.</p>
+        <div class="trust"><span>Devis gratuit</span><span>Réponse sous 24 h</span><span>Un seul interlocuteur</span></div>
+        <div style="height:22px"></div>
+        <div class="info-block">
+          <span class="label">Email</span>
+          <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
+        </div><div class="info-block">
+          <span class="label">Téléphone / WhatsApp</span>
+          <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
+        </div><div class="info-block">
+          <span class="label">Adresse</span>
+          <p>173 rue de Courcelles<br>75017 Paris</p>
+        </div><div class="info-block">
+          <span class="label">Zone d'intervention</span>
+          <p>France / Europe</p>
+        </div>
+      </aside>
     </div>
   </div>
 </section>
@@ -300,55 +346,141 @@
 </footer>
 
 <script>
-(function(){
-  var form = document.getElementById('contact-form'), msg = document.getElementById('formMsg'), btn = document.getElementById('btnSend');
-  var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch(e){}
-  var noTrack = false; try { noTrack = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch(e){}
-  // Page d'où vient le visiteur (artiste, prestation…) : sert à préremplir la demande
+// DEVIS-FORM
+window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero": "Tribute Calogero", "tribute-matmatah": "Tribute Matmatah", "tribute-celine-dion": "Tribute Céline Dion", "tribute-kool-and-the-gang": "Tribute Kool & the Gang", "tribute-bee-gees": "Tribute Bee Gees", "tribute-phil-collins": "Tribute Phil Collins", "tribute-balavoine": "Tribute Balavoine", "tribute-barry-white": "Tribute Barry White", "panache": "Panache (cabaret)", "bim-bam-boom": "Bim Bam Boom (cabaret)", "cache-candy": "Cache Candy", "alchimie": "Alchimie", "the-fine-allies": "The Fine Allies", "noon-coverband": "NooN Coverband"}, "s": {"none": "Aucun spectacle choisi : nous vous conseillons", "e_name": "Indiquez votre nom.", "e_contact": "Indiquez un téléphone ou un email pour qu'on puisse vous répondre.", "e_email": "Cette adresse email semble incomplète (exemple : nom@domaine.fr).", "e_phone": "Ce numéro semble trop court.", "sending": "Envoi…", "send": "Envoyer ma demande", "fail_net": "Nous n'avons pas pu confirmer l'envoi : votre demande n'est peut-être pas partie. Vous pouvez réessayer sans risque de doublon, ou nous appeler au", "fail_or": "ou écrire à", "thanks": "Merci", "saved": "Votre demande est enregistrée.", "ref": "Référence", "next": "Nous revenons vers vous rapidement ; le devis détaillé suit après vérification de la disponibilité et de vos besoins.", "phone_back": "Nous vous rappellerons si vous avez laissé un numéro.", "rush": "Pressé ?", "fields_missing": "Corrigez les champs signalés."}, "lang": "fr"};
+(function () {
+  var C = window.__DEVIS, S = C.s, ART = C.artists;
+  var $ = function (id) { return document.getElementById(id); };
+  var form = $('devis-form'), msg = $('formMsg'), btn = $('btnSend');
+  var selName = $('selName'), selEdit = $('selEdit'), selField = $('selField'), artiste = $('artiste'), subj = $('subject'), subjField = $('subjField');
+  var FIELDS = ['name', 'phone', 'email', 'date-event', 'place', 'message', 'organisme', 'type-evt', 'jauge', 'budget', 'tech', 'artiste', 'subject'];
+  var sending = false, started = false;
+  var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch (e) {}
+  var store = { get: function (k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }, del: function (k) { try { sessionStorage.removeItem(k); } catch (e) {} } };
+
+  // ---- Origine de la demande (page d'où vient le visiteur) et préremplissage ----
   var from = '', params = new URLSearchParams(location.search);
-  try { var r = document.referrer ? new URL(document.referrer) : null; if (r && /soundlightprod\./.test(r.hostname)) from = r.pathname.replace(/^\/+|\.html$|\/$/g, ''); } catch(e){}
+  try { var r = document.referrer ? new URL(document.referrer) : null; if (r && /soundlightprod\./.test(r.hostname)) from = r.pathname.replace(/^\/(en|es|it)\//, '/').replace(/^\/+|\.html$|\/$/g, ''); } catch (e) {}
   if (params.get('artiste')) from = params.get('artiste');
-  var nice = function(slug){ return slug.replace(/^the-best-/, '').split('-').map(function(w){ return w.length > 2 && ['and','the','des','les','aux'].indexOf(w) < 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w; }).join(' '); };
-  var subj = document.getElementById('subject'), mess = document.getElementById('message');
-  var techPages = ['son-lumiere', 'diffusion'], djPages = ['dj', 'dj-animation'], neutral = ['', 'index', 'contact', 'artistes', 'agenda', 'galerie', 'tributes', 'cabaret', 'groupes-de-reprises', 'pop-francaise', 'jazz-soul-funk', 'mentions-legales'];
-  if (techPages.indexOf(from) >= 0) subj.value = 'Devis Prestation technique';
-  else if (djPages.indexOf(from) >= 0) subj.value = 'DJ / animation';
-  else if (from && neutral.indexOf(from) < 0 && /^[a-z0-9-]+$/.test(from)) { subj.value = "Programmation d'artistes"; mess.value = 'Bonjour, je suis intéressé(e) par ' + (params.get('nom') || nice(from)) + '. '; }
-  function track(action){
-    if (noTrack) return;
-    var data = JSON.stringify({ action: action, page: from || 'contact', session_id: sid });
-    try { if (navigator.sendBeacon && navigator.sendBeacon('/api/contact-event', new Blob([data], { type: 'application/json' }))) return; } catch(e){}
-    fetch('/api/contact-event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data, keepalive: true }).catch(function(){});
+  var techPages = ['son-lumiere', 'diffusion'], djPages = ['dj', 'dj-animation'];
+
+  function setSelection(slug, label) {
+    if (slug && !ART[slug] && /^[a-z0-9-]+$/.test(slug) && label) { // fiche non listée : on garde le nom reçu
+      var o = document.createElement('option'); o.value = slug; o.textContent = label.slice(0, 80); artiste.appendChild(o);
+    }
+    artiste.value = slug && artiste.querySelector('option[value="' + slug + '"]') ? slug : '';
+    refreshSel();
   }
-  document.addEventListener('click', function(e){ var a = e.target.closest && e.target.closest('a[data-contact]'); if (a) track(a.getAttribute('data-contact')); });
-  var started = false;
-  form.addEventListener('input', function(){ if (!started){ started = true; track('formulaire'); } });
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    var v = function(id){ return document.getElementById(id).value.trim(); };
-    var d = { nom: v('name'), telephone: v('phone'), email: v('email'), sujet: subj.value, date_event: v('date-event'), lieu: v('place'), message: v('message'), site_web: v('site_web'), page: from || 'contact', session_id: sid };
-    msg.className = 'form-msg err';
-    if (!d.nom) { msg.textContent = 'Indiquez votre nom.'; document.getElementById('name').focus(); return; }
-    if (!d.telephone && !d.email) { msg.textContent = 'Indiquez un téléphone ou un email pour qu’on puisse vous répondre.'; document.getElementById('phone').focus(); return; }
-    btn.disabled = true; btn.textContent = 'Envoi…'; msg.textContent = '';
-    fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) })
-      .then(function(r){ return r.json().catch(function(){ return { ok: false }; }); })
-      .then(function(j){
-        if (!j.ok) throw new Error(j.error || '');
-        var box = document.createElement('div'); box.className = 'merci';
-        var h = document.createElement('h3'); h.textContent = 'Merci ' + d.nom + ' !';
-        var p1 = document.createElement('p'); p1.textContent = 'Votre demande est bien partie. On vous répond sous 24 h' + (d.telephone ? ', souvent par téléphone' : '') + '.';
-        var p2 = document.createElement('p'); p2.style.marginTop = '14px'; p2.innerHTML = 'Pressé ? <a href="tel:+33631949653" data-contact="appel" style="color:var(--amber)">06 31 94 96 53</a>';
-        box.append(h, p1, p2); form.replaceChildren(box);
-      })
-      .catch(function(err){
-        btn.disabled = false; btn.textContent = 'Envoyer ma demande';
-        var t = err && err.message && !/fetch|network/i.test(err.message) ? err.message + ' ' : 'L’envoi n’a pas fonctionné. ';
-        msg.textContent = t;
-        msg.insertAdjacentHTML('beforeend', 'Appelez-nous au <a href="tel:+33631949653" data-contact="appel" style="color:inherit">06 31 94 96 53</a> ou écrivez à <a href="mailto:contact@soundlightprod.fr" data-contact="mail" style="color:inherit">contact@soundlightprod.fr</a>.');
-      });
+  function refreshSel() {
+    var v = artiste.value;
+    var o = v ? artiste.querySelector('option[value="' + v + '"]') : null;
+    selName.textContent = o ? o.textContent : S.none;
+    subjField.hidden = !!v;
+    if (v) subj.value = "Programmation d'artistes";
+  }
+  selEdit.addEventListener('click', function () {
+    var open = selField.hidden; selField.hidden = !open; selEdit.setAttribute('aria-expanded', String(open));
+    if (open) artiste.focus();
   });
+  artiste.addEventListener('change', refreshSel);
+
+  // ---- Conservation des saisies (rechargement, retour arrière) ----
+  var DRAFT = 'slp_devis_draft';
+  function saveDraft() { var o = {}; FIELDS.forEach(function (id) { o[id] = $(id).value; }); store.set(DRAFT, JSON.stringify(o)); }
+  try {
+    var d = JSON.parse(store.get(DRAFT) || 'null');
+    if (d) FIELDS.forEach(function (id) { if (d[id] != null && id !== 'artiste') $(id).value = d[id]; });
+    if (d && (d.organisme || d.jauge || d.budget || d['type-evt'] || d.tech)) $('more').open = true;
+  } catch (e) {}
+  if (params.get('artiste')) setSelection(params.get('artiste'), params.get('nom') || '');
+  else { var dd = null; try { dd = JSON.parse(store.get(DRAFT) || 'null'); } catch (e) {} setSelection(dd && dd.artiste || '', ''); }
+  if (!artiste.value) {
+    if (techPages.indexOf(from) >= 0) subj.value = 'Devis Prestation technique';
+    else if (djPages.indexOf(from) >= 0) subj.value = 'DJ / animation';
+  }
+  form.addEventListener('input', function (e) {
+    if (e.target && e.target.id) clearErr(e.target.id);
+    saveDraft();
+    if (!started) { started = true; if (window.slpTrack) window.slpTrack('formulaire', from || 'contact'); }
+  });
+
+  // ---- Erreurs accessibles par champ ----
+  function showErr(errId, text, inputs) {
+    var el = $(errId); el.textContent = text; el.hidden = false;
+    inputs.forEach(function (id) { $(id).setAttribute('aria-invalid', 'true'); });
+  }
+  function clearErr(id) {
+    var map = { name: ['name-err', ['name']], phone: ['contact-err', ['phone', 'email']], email: ['contact-err', ['phone', 'email']] };
+    var m = map[id]; if (!m) return;
+    $(m[0]).hidden = true; $(m[0]).textContent = ''; m[1].forEach(function (i) { $(i).removeAttribute('aria-invalid'); });
+  }
+  function validate() {
+    ['name', 'phone', 'email'].forEach(clearErr);
+    var first = null, n = $('name').value.trim(), p = $('phone').value.trim(), e = $('email').value.trim();
+    if (!n) { showErr('name-err', S.e_name, ['name']); first = first || $('name'); }
+    if (!p && !e) { showErr('contact-err', S.e_contact, ['phone', 'email']); first = first || $('phone'); }
+    else if (e && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(e)) { showErr('contact-err', S.e_email, ['email']); first = first || $('email'); }
+    else if (p && p.replace(/\D/g, '').length < 6) { showErr('contact-err', S.e_phone, ['phone']); first = first || $('phone'); }
+    return first;
+  }
+
+  // ---- Clé anti-doublon : une même saisie reprise garde la même clé ----
+  function uuid() { try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) {} var a = new Uint8Array(16), s = ''; try { crypto.getRandomValues(a); } catch (e) { for (var i = 0; i < 16; i++) a[i] = Math.floor(Math.random() * 256); } for (var j = 0; j < 16; j++) s += (a[j] < 16 ? '0' : '') + a[j].toString(16); return s; }
+  function hash(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return String(h); }
+  function keyFor(payload) {
+    var h = hash(JSON.stringify(payload)), k = null;
+    try { k = JSON.parse(store.get('slp_devis_cle') || 'null'); } catch (e) {}
+    if (!k || k.h !== h) { k = { k: uuid(), h: h }; store.set('slp_devis_cle', JSON.stringify(k)); }
+    return k.k;
+  }
+
+  function failNet() {
+    msg.className = 'form-msg err'; msg.textContent = S.fail_net + ' ';
+    var a = document.createElement('a'); a.href = 'tel:+33631949653'; a.setAttribute('data-contact', 'appel'); a.textContent = '06 31 94 96 53';
+    var b = document.createElement('a'); b.href = 'mailto:contact@soundlightprod.fr'; b.setAttribute('data-contact', 'mail'); b.textContent = 'contact@soundlightprod.fr';
+    msg.append(a, ' ' + S.fail_or + ' ', b, '.');
+  }
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    if (sending) return; // double clic
+    msg.textContent = ''; msg.className = 'form-msg';
+    var bad = validate();
+    if (bad) { msg.className = 'form-msg err'; msg.textContent = S.fields_missing; bad.focus(); return; }
+    var v = function (id) { return $(id).value.trim(); };
+    var nomArt = artiste.value ? (artiste.querySelector('option[value="' + artiste.value + '"]') || {}).textContent : '';
+    var d = { nom: v('name'), telephone: v('phone'), email: v('email'), sujet: subj.value, date_event: v('date-event'), lieu: v('place'), message: v('message'),
+      artiste: artiste.value, artiste_nom: nomArt || '', organisme: v('organisme'), type_evenement: v('type-evt'), jauge: v('jauge'), budget: v('budget'), technique: v('tech'),
+      site_web: v('site_web'), page: from || 'contact', session_id: sid, lang: C.lang };
+    d.cle = keyFor(Object.assign({}, d, { session_id: '' }));
+    sending = true; btn.disabled = true; btn.textContent = S.sending;
+    var ctl = ('AbortController' in window) ? new AbortController() : null, to = setTimeout(function () { if (ctl) ctl.abort(); }, 15000);
+    fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d), signal: ctl ? ctl.signal : undefined })
+      .then(function (r) { return r.json().catch(function () { return { ok: false, _s: r.status }; }); })
+      .then(function (j) {
+        if (!j.ok) {
+          if (j.champ === 'email' || j.champ === 'telephone') { showErr('contact-err', j.error || S.e_email, [j.champ === 'email' ? 'email' : 'phone']); $(j.champ === 'email' ? 'email' : 'phone').focus(); msg.className = 'form-msg err'; msg.textContent = S.fields_missing; return; }
+          if (j.champ === 'nom') { showErr('name-err', j.error || S.e_name, ['name']); $('name').focus(); return; }
+          if (j.error && j._s !== 500) { msg.className = 'form-msg err'; msg.textContent = j.error; return; }
+          failNet(); return;
+        }
+        store.del(DRAFT); store.del('slp_devis_cle');
+        var box = document.createElement('div'); box.className = 'merci'; box.tabIndex = -1;
+        var h = document.createElement('h3'); h.textContent = S.thanks + ' ' + d.nom + ' !';
+        var p0 = document.createElement('p'); p0.textContent = S.saved;
+        box.append(h, p0);
+        if (j.reference) { var rf = document.createElement('p'); var sp = document.createElement('span'); sp.className = 'ref'; sp.textContent = S.ref + ' ' + j.reference; rf.append(sp); box.append(rf); }
+        var p1 = document.createElement('p'); p1.textContent = S.next + (d.telephone ? ' ' + S.phone_back : '');
+        var p2 = document.createElement('p'); p2.style.marginTop = '14px'; p2.append(S.rush + ' ');
+        var a = document.createElement('a'); a.href = 'tel:+33631949653'; a.setAttribute('data-contact', 'appel'); a.style.color = 'var(--amber)'; a.textContent = '06 31 94 96 53'; p2.append(a);
+        box.append(p1, p2); form.replaceChildren(box); box.focus();
+      })
+      .catch(function () { failNet(); })
+      .then(function () { clearTimeout(to); sending = false; if (document.body.contains(btn)) { btn.disabled = false; btn.textContent = btn.getAttribute('data-label'); } });
+  });
+  btn.setAttribute('data-label', btn.textContent);
 })();
+
 </script>
 
 <script>

@@ -249,7 +249,7 @@
       <div class="bio-text">
         <p>Panache est une revue de cabaret haut de gamme, pensée pour se déplacer partout en France. Sur un format modulable de 4 à 8 artistes, elle enchaîne des tableaux dynamiques, colorés et innovants, portés par du chant en live.</p>
         <p>Plumes et strass composent l'univers visuel du spectacle, dans le plus pur esprit des revues parisiennes de music-hall.</p>
-        <p>Diffusée par SLP, la revue s'adapte à la durée et au format de votre événement — d'un showcase de 30 minutes à une grande soirée de 1h30 — et se déplace avec sa propre équipe technique son et lumière.</p>
+        <p>Diffusée par SLP, la revue s'adapte à la durée et au format de votre événement — d'un showcase de 30 minutes à une grande soirée de 1h30.</p>
       </div>
     </div>
   </div>
@@ -266,7 +266,6 @@
       <div class="member-card"><div class="name">30 min à 1h30</div><div class="role">Durée adaptable</div></div>
       <div class="member-card"><div class="name">Chant en live</div><div class="role">Tableaux dynamiques et colorés</div></div>
       <div class="member-card"><div class="name">Plumes & strass</div><div class="role">Esprit revue parisienne</div></div>
-      <div class="member-card"><div class="name">Technique incluse</div><div class="role">Équipe son & lumière dédiée</div></div>
     </div>
   </div>
 </section>
@@ -330,7 +329,6 @@
       <div class="info-item"><span class="mark">→</span><p>Revue itinérante</p></div>
       <div class="info-item"><span class="mark">→</span><p>4 à 8 artistes</p></div>
       <div class="info-item"><span class="mark">→</span><p>30 min à 1h30</p></div>
-      <div class="info-item"><span class="mark">→</span><p>Équipe son & lumière incluse</p></div>
     </div>
   </div>
 </section>
@@ -468,17 +466,6 @@
     if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
     window.addEventListener('scroll', upd, { passive:true }); upd();
   }
-  var skip = false; try { skip = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch(e){}
-  document.addEventListener('click', function(e){
-    var a = e.target.closest && e.target.closest('a[href]'); if (!a || skip) return;
-    var h = a.getAttribute('href') || '';
-    var action = /^tel:/.test(h) ? 'appel' : /wa\.me/.test(h) ? 'whatsapp' : /^mailto:/.test(h) ? 'mail' : /^contact\?/.test(h) ? 'devis' : null;
-    if (!action) return;
-    var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch(e){}
-    var data = JSON.stringify({ action: action, page: slug, session_id: sid });
-    try { if (navigator.sendBeacon && navigator.sendBeacon('/api/contact-event', new Blob([data], { type:'application/json' }))) return; } catch(e){}
-    fetch('/api/contact-event', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:data, keepalive:true }).catch(function(){});
-  });
 })();
 </script>
 <!-- cta-contact:end -->

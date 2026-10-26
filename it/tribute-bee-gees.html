@@ -309,7 +309,6 @@
       <div class="info-item"><span class="mark">→</span><p>Le tre voci dei fratelli Gibb, con tastiere, sintetizzatori, batteria, percussioni e cori</p></div>
       <div class="info-item"><span class="mark">→</span><p>Tre formule: 2 h, 1 h o 45 min</p></div>
       <div class="info-item"><span class="mark">→</span><p>100 % dal vivo, fedele al sound dei Bee Gees</p></div>
-      <div class="info-item"><span class="mark">→</span><p>Audio e luci a cura di SLP secondo la formula scelta</p></div>
     </div>
   </div>
 </section>
@@ -318,7 +317,7 @@
   <div class="wrap tight">
     <span class="label">Volete ingaggiarli?</span>
     <h2>Prenotate<br>Tribute Bee Gees</h2>
-    <p>Uno spettacolo selezionato e approvato da SLP. Vi consigliamo, vi affianchiamo e coordiniamo tutta la logistica del vostro evento. Preventivo in 24 ore.</p>
+    <p>Uno spettacolo selezionato e approvato da SLP. Vi consigliamo, vi affianchiamo e coordiniamo tutta la logistica del vostro evento. Primo riscontro rapido; preventivo dettagliato dopo la verifica di date ed esigenze.</p>
     <div class="cta-row">
       <a href="contact?artiste=tribute-bee-gees&amp;nom=Tribute%20Bee%20Gees" class="btn btn-primary">Chiedi un preventivo</a>
       <a href="tel:+33631949653" class="btn btn-ghost"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>+33 6 31 94 96 53</a>
@@ -447,17 +446,6 @@
     if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
     window.addEventListener('scroll', upd, { passive:true }); upd();
   }
-  var skip = false; try { skip = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch(e){}
-  document.addEventListener('click', function(e){
-    var a = e.target.closest && e.target.closest('a[href]'); if (!a || skip) return;
-    var h = a.getAttribute('href') || '';
-    var action = /^tel:/.test(h) ? 'appel' : /wa\.me/.test(h) ? 'whatsapp' : /^mailto:/.test(h) ? 'mail' : /^contact\?/.test(h) ? 'devis' : null;
-    if (!action) return;
-    var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch(e){}
-    var data = JSON.stringify({ action: action, page: slug, session_id: sid });
-    try { if (navigator.sendBeacon && navigator.sendBeacon('/api/contact-event', new Blob([data], { type:'application/json' }))) return; } catch(e){}
-    fetch('/api/contact-event', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:data, keepalive:true }).catch(function(){});
-  });
 })();
 </script>
 <!-- cta-contact:end -->

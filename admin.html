@@ -1333,11 +1333,11 @@
     c.demandes.forEach((d) => {
       const it = mtEl('div', 'it');
       const quand = new Date(d.cree_le.replace(' ', 'T') + 'Z').toLocaleString('fr-FR', { timeZone:'Europe/Paris', weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
-      const l1 = mtEl('div'); l1.append(mtEl('b', null, d.nom || '—'), document.createTextNode(' · ' + (d.sujet || 'Contact')));
+      const l1 = mtEl('div'); l1.append(mtEl('b', null, d.nom || '—'), document.createTextNode(' · ' + (d.artiste_nom || d.sujet || 'Contact') + (d.reference ? ' · ' + d.reference : '')));
       const contact = mtEl('div', 'p');
       if (d.telephone){ const a = mtEl('a', null, d.telephone); a.href = 'tel:' + d.telephone.replace(/[^+0-9]/g, ''); a.style.color = 'var(--amber)'; contact.append(a, document.createTextNode('  ')); }
       if (d.email){ const a = mtEl('a', null, d.email); a.href = 'mailto:' + d.email; a.style.color = 'var(--amber)'; contact.appendChild(a); }
-      const l2 = mtEl('div', 'm', [quand, d.date_event && ('date : ' + d.date_event), d.lieu, d.page_origine && ('venu de ' + d.page_origine), d.device, d.mail_envoye ? 'mail reçu ✓' : '⚠️ mail non parti' + (d.mail_erreur ? ' (' + d.mail_erreur + ')' : '')].filter(Boolean).join(' · '));
+      const l2 = mtEl('div', 'm', [quand, d.date_event && ('date : ' + d.date_event), d.lieu, d.page_origine && ('venu de ' + d.page_origine), d.device, d.mail_envoye ? 'mail reçu ✓' : '⚠️ mail non parti' + (d.mail_tentatives ? ' après ' + d.mail_tentatives + ' essai(s), repris automatiquement' : '') + (d.mail_erreur ? ' (' + d.mail_erreur + ')' : '')].filter(Boolean).join(' · '));
       it.append(l1, contact, l2);
       if (d.message) it.appendChild(mtEl('div', 'p', d.message));
       box.appendChild(it);

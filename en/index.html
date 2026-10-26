@@ -458,7 +458,7 @@
     </div>
 </section>
 
-<section class="eng"><div class="wrap tight"><div class="eng-grid"><div class="eng-card"><span class="big">100%</span><h3>Selected and approved</h3><p>Every show is chosen and approved by SLP before it joins our catalogue, backed by 10+ years on the ground.</p></div><div class="eng-card"><span class="big">0</span><h3>Playback</h3><p>Professional artists who really play, live.</p></div><div class="eng-card"><span class="big">1</span><h3>Single contact</h3><p>One member of our team advises you, supports you and coordinates everything from start to finish: contracts, hotels, travel, schedule.</p></div><div class="eng-card"><span class="big">A→Z</span><h3>Turnkey</h3><p>A single show or a complete line-up, logistics, hospitality and, if needed, sound and lighting: nothing left for you to manage.</p></div></div></div></section>
+<section class="eng"><div class="wrap tight"><div class="eng-grid"><div class="eng-card"><span class="big">100%</span><h3>Selected and approved</h3><p>Every show is chosen and approved by SLP before it joins our catalogue, backed by 10+ years on the ground.</p></div><div class="eng-card"><span class="big">0</span><h3>Playback</h3><p>Professional artists who really play, live.</p></div><div class="eng-card"><span class="big">1</span><h3>Single contact</h3><p>One member of our team advises you, supports you and coordinates everything from start to finish: contracts, hotels, travel, schedule.</p></div><div class="eng-card"><span class="big">A→Z</span><h3>Turnkey</h3><p>A single show or a complete line-up, logistics and hospitality: nothing left for you to manage. The quote spells out what is included and what remains your responsibility.</p></div></div></div></section>
 
 <script>
 (function(){
@@ -513,7 +513,7 @@
       </article>
       <article class="met rev">
         <div class="met-pic"><img src="/homepage-crowd-lights.png" alt="" loading="lazy"></div>
-        <div class="met-body"><span class="kicker">Extra service</span><h3>Sound and lighting, as an option</h3><p>If you wish, we install and run the sound and lighting you need, sized for your venue, indoors or outdoors. Our technicians stay on site from set-up to load-out.</p><ul><li>Venue survey and equipment sizing</li><li>Front-of-house and monitor sound, stage lighting</li><li>Sound and lighting technician throughout the event</li></ul>
+        <div class="met-body"><span class="kicker">Extra service</span><h3>Sound and lighting, as a separate service</h3><p>If you wish, we install and run the sound and lighting you need, sized for your venue, indoors or outdoors. Our technicians stay on site from set-up to load-out.</p><ul><li>Venue survey and equipment sizing</li><li>Front-of-house and monitor sound, stage lighting</li><li>Sound and lighting technician throughout the event</li></ul>
           <div class="btns"><a href="son-lumiere" class="btn btn-primary">Technical services →</a><a href="contact" class="btn btn-ghost">Request a quote →</a></div></div>
       </article>
     </div>
@@ -523,7 +523,7 @@
 <section>
   <div class="wrap">
     <div class="section-head"><span class="label">Who we work with</span><h2>We work for you</h2></div>
-    <div class="publics"><div class="pub"><div class="glow"></div><h3>Town halls &amp; festival committees</h3><p>Organising your town's festivities? We offer shows that bring every generation together, with technical services included and all the paperwork handled.</p><div class="chips"><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Music day</span></div></div><div class="pub"><div class="glow"></div><h3>Companies &amp; works councils</h3><p>Gala, annual party, seminar or opening: a tailor-made show to impress your guests and enhance your event.</p><div class="chips"><span>Galas</span><span>Corporate parties</span><span>Seminars</span><span>Openings</span></div></div><div class="pub"><div class="glow"></div><h3>Private clients &amp; associations</h3><p>Wedding, birthday, private party or one-off event: we adapt the package to your venue, your guests and your budget.</p><div class="chips"><span>Weddings</span><span>Private parties</span><span>Birthdays</span><span>One-off events</span></div></div></div>
+    <div class="publics"><div class="pub"><div class="glow"></div><h3>Town halls &amp; festival committees</h3><p>Organising your town's festivities? We offer shows that bring every generation together, with all the paperwork handled.</p><div class="chips"><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Music day</span></div></div><div class="pub"><div class="glow"></div><h3>Companies &amp; works councils</h3><p>Gala, annual party, seminar or opening: a tailor-made show to impress your guests and enhance your event.</p><div class="chips"><span>Galas</span><span>Corporate parties</span><span>Seminars</span><span>Openings</span></div></div><div class="pub"><div class="glow"></div><h3>Private clients &amp; associations</h3><p>Wedding, birthday, private party or one-off event: we adapt the package to your venue, your guests and your budget.</p><div class="chips"><span>Weddings</span><span>Private parties</span><span>Birthdays</span><span>One-off events</span></div></div></div>
   </div>
 </section>
 
@@ -604,17 +604,6 @@
     if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
     window.addEventListener('scroll', upd, { passive:true }); upd();
   }
-  var skip = false; try { skip = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch(e){}
-  document.addEventListener('click', function(e){
-    var a = e.target.closest && e.target.closest('a[href]'); if (!a || skip) return;
-    var h = a.getAttribute('href') || '';
-    var action = /^tel:/.test(h) ? 'appel' : /wa\.me/.test(h) ? 'whatsapp' : /^mailto:/.test(h) ? 'mail' : /^contact\?/.test(h) ? 'devis' : null;
-    if (!action) return;
-    var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch(e){}
-    var data = JSON.stringify({ action: action, page: slug, session_id: sid });
-    try { if (navigator.sendBeacon && navigator.sendBeacon('/api/contact-event', new Blob([data], { type:'application/json' }))) return; } catch(e){}
-    fetch('/api/contact-event', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:data, keepalive:true }).catch(function(){});
-  });
 })();
 </script>
 <!-- cta-contact:end -->

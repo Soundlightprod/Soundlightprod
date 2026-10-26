@@ -268,7 +268,7 @@
     <div class="cats2">
       <a href="tributes" class="cat2 big">
         <img src="/kool-photo-1.jpg" alt="" loading="lazy" style="object-position:center 35%;">
-        <span class="count">8 tributes</span>
+        <span class="count">9 tributes</span>
         <div class="body"><div><h3>Tributes</h3><p>Legendary artists brought back to life on stage, 100% live.</p><div class="names">ABBA · Calogero · Matmatah · Kool &amp; the Gang · Bee Gees · Phil Collins · Céline Dion · Balavoine · Barry White</div></div><span class="go" aria-hidden="true">→</span></div>
       </a>
       <a href="cabaret" class="cat2 big">
@@ -394,17 +394,6 @@
     if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
     window.addEventListener('scroll', upd, { passive:true }); upd();
   }
-  var skip = false; try { skip = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch(e){}
-  document.addEventListener('click', function(e){
-    var a = e.target.closest && e.target.closest('a[href]'); if (!a || skip) return;
-    var h = a.getAttribute('href') || '';
-    var action = /^tel:/.test(h) ? 'appel' : /wa\.me/.test(h) ? 'whatsapp' : /^mailto:/.test(h) ? 'mail' : /^contact\?/.test(h) ? 'devis' : null;
-    if (!action) return;
-    var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch(e){}
-    var data = JSON.stringify({ action: action, page: slug, session_id: sid });
-    try { if (navigator.sendBeacon && navigator.sendBeacon('/api/contact-event', new Blob([data], { type:'application/json' }))) return; } catch(e){}
-    fetch('/api/contact-event', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:data, keepalive:true }).catch(function(){});
-  });
 })();
 </script>
 <!-- cta-contact:end -->

@@ -440,17 +440,6 @@
     if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
     window.addEventListener('scroll', upd, { passive:true }); upd();
   }
-  var skip = false; try { skip = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch(e){}
-  document.addEventListener('click', function(e){
-    var a = e.target.closest && e.target.closest('a[href]'); if (!a || skip) return;
-    var h = a.getAttribute('href') || '';
-    var action = /^tel:/.test(h) ? 'appel' : /wa\.me/.test(h) ? 'whatsapp' : /^mailto:/.test(h) ? 'mail' : /^contact\?/.test(h) ? 'devis' : null;
-    if (!action) return;
-    var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch(e){}
-    var data = JSON.stringify({ action: action, page: slug, session_id: sid });
-    try { if (navigator.sendBeacon && navigator.sendBeacon('/api/contact-event', new Blob([data], { type:'application/json' }))) return; } catch(e){}
-    fetch('/api/contact-event', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:data, keepalive:true }).catch(function(){});
-  });
 })();
 </script>
 <!-- cta-contact:end -->

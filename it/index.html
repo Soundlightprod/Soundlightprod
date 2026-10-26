@@ -458,7 +458,7 @@
     </div>
 </section>
 
-<section class="eng"><div class="wrap tight"><div class="eng-grid"><div class="eng-card"><span class="big">100%</span><h3>Selezionati e approvati</h3><p>Ogni spettacolo è scelto e approvato da SLP prima di entrare nel nostro catalogo, forti di oltre 10 anni sul campo.</p></div><div class="eng-card"><span class="big">0</span><h3>Playback</h3><p>Artisti professionisti che suonano davvero, dal vivo.</p></div><div class="eng-card"><span class="big">1</span><h3>Unico referente</h3><p>Un solo membro del nostro team vi consiglia, vi affianca e coordina tutto dall'inizio alla fine: contratti, hotel, trasferte, programma.</p></div><div class="eng-card"><span class="big">A→Z</span><h3>Chiavi in mano</h3><p>Uno spettacolo o un cartellone completo, logistica, accoglienza e, se necessario, audio e luci: non dovete gestire nulla.</p></div></div></div></section>
+<section class="eng"><div class="wrap tight"><div class="eng-grid"><div class="eng-card"><span class="big">100%</span><h3>Selezionati e approvati</h3><p>Ogni spettacolo è scelto e approvato da SLP prima di entrare nel nostro catalogo, forti di oltre 10 anni sul campo.</p></div><div class="eng-card"><span class="big">0</span><h3>Playback</h3><p>Artisti professionisti che suonano davvero, dal vivo.</p></div><div class="eng-card"><span class="big">1</span><h3>Unico referente</h3><p>Un solo membro del nostro team vi consiglia, vi affianca e coordina tutto dall'inizio alla fine: contratti, hotel, trasferte, programma.</p></div><div class="eng-card"><span class="big">A→Z</span><h3>Chiavi in mano</h3><p>Uno spettacolo o un cartellone completo, logistica e accoglienza: non dovete gestire nulla. Il preventivo precisa cosa è incluso e cosa resta a vostro carico.</p></div></div></div></section>
 
 <script>
 (function(){
@@ -523,7 +523,7 @@
 <section>
   <div class="wrap">
     <div class="section-head"><span class="label">Per chi?</span><h2>Lavoriamo per voi</h2></div>
-    <div class="publics"><div class="pub"><div class="glow"></div><h3>Comuni e pro loco</h3><p>Organizzate le feste del vostro comune? Vi proponiamo spettacoli che uniscono tutte le generazioni, con la tecnica inclusa e tutte le pratiche gestite.</p><div class="chips"><span>Feste</span><span>Mercati gastronomici</span><span>Stagione culturale</span><span>Festa della musica</span></div></div><div class="pub"><div class="glow"></div><h3>Aziende e CRAL</h3><p>Gala, festa annuale, seminario o inaugurazione: uno spettacolo su misura per stupire i vostri ospiti.</p><div class="chips"><span>Gala</span><span>Feste aziendali</span><span>Seminari</span><span>Inaugurazioni</span></div></div><div class="pub"><div class="glow"></div><h3>Privati e associazioni</h3><p>Matrimonio, compleanno, festa privata o evento occasionale: adattiamo la formula al vostro spazio, ai vostri ospiti e al vostro budget.</p><div class="chips"><span>Matrimoni</span><span>Feste private</span><span>Compleanni</span><span>Eventi occasionali</span></div></div></div>
+    <div class="publics"><div class="pub"><div class="glow"></div><h3>Comuni e pro loco</h3><p>Organizzate le feste del vostro comune? Vi proponiamo spettacoli che uniscono tutte le generazioni, con tutte le pratiche gestite.</p><div class="chips"><span>Feste</span><span>Mercati gastronomici</span><span>Stagione culturale</span><span>Festa della musica</span></div></div><div class="pub"><div class="glow"></div><h3>Aziende e CRAL</h3><p>Gala, festa annuale, seminario o inaugurazione: uno spettacolo su misura per stupire i vostri ospiti.</p><div class="chips"><span>Gala</span><span>Feste aziendali</span><span>Seminari</span><span>Inaugurazioni</span></div></div><div class="pub"><div class="glow"></div><h3>Privati e associazioni</h3><p>Matrimonio, compleanno, festa privata o evento occasionale: adattiamo la formula al vostro spazio, ai vostri ospiti e al vostro budget.</p><div class="chips"><span>Matrimoni</span><span>Feste private</span><span>Compleanni</span><span>Eventi occasionali</span></div></div></div>
   </div>
 </section>
 
@@ -604,17 +604,6 @@
     if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
     window.addEventListener('scroll', upd, { passive:true }); upd();
   }
-  var skip = false; try { skip = !!(localStorage.getItem('slp_notrack') || localStorage.getItem('slp_admin_token')); } catch(e){}
-  document.addEventListener('click', function(e){
-    var a = e.target.closest && e.target.closest('a[href]'); if (!a || skip) return;
-    var h = a.getAttribute('href') || '';
-    var action = /^tel:/.test(h) ? 'appel' : /wa\.me/.test(h) ? 'whatsapp' : /^mailto:/.test(h) ? 'mail' : /^contact\?/.test(h) ? 'devis' : null;
-    if (!action) return;
-    var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch(e){}
-    var data = JSON.stringify({ action: action, page: slug, session_id: sid });
-    try { if (navigator.sendBeacon && navigator.sendBeacon('/api/contact-event', new Blob([data], { type:'application/json' }))) return; } catch(e){}
-    fetch('/api/contact-event', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:data, keepalive:true }).catch(function(){});
-  });
 })();
 </script>
 <!-- cta-contact:end -->
