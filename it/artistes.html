@@ -228,6 +228,16 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.com/it/artistes">
+<style id="annuaire-css">
+.annuaire{padding-top:0}.annuaire .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px;padding:0;list-style:none}
+.annuaire .chip{min-height:44px;padding:0 18px;border-radius:100px;border:1px solid var(--line,rgba(255,255,255,.2));background:transparent;color:inherit;font:600 .92rem 'Instrument Sans',sans-serif;cursor:pointer}
+.annuaire .chip[aria-pressed=true]{background:#f7f5f0;color:#0c0a14;border-color:#f7f5f0}
+.annuaire .chip:focus-visible,.annuaire .names-list a:focus-visible{outline:3px solid #fbc608;outline-offset:3px}
+.annuaire .names-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:10px;margin:0;padding:0;list-style:none}
+.annuaire .names-list a{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;padding:10px 16px;border-radius:14px;border:1px solid var(--line,rgba(255,255,255,.18));text-decoration:none;color:inherit;font-weight:600}
+.annuaire .names-list a small{opacity:.7;font-weight:500;font-size:.78rem}.annuaire .names-list a:hover{border-color:#fbc608}
+.annuaire [hidden]{display:none!important}
+</style>
 </head>
 <body>
 
@@ -295,6 +305,7 @@
   </div>
 </section>
 
+<section class="annuaire" id="annuaire"><div class="wrap"><div class="section-head"><span class="label">Accesso diretto</span><h2>Trova un artista</h2></div><ul class="chips" aria-label="Filtra per categoria"><li><button type="button" class="chip" data-g="all" aria-pressed="true">Tutti</button></li><li><button type="button" class="chip" data-g="tributes" aria-pressed="false">Tribute</button></li><li><button type="button" class="chip" data-g="cabaret" aria-pressed="false">Spettacoli di cabaret</button></li><li><button type="button" class="chip" data-g="cache-candy" aria-pressed="false">Cache Candy</button></li><li><button type="button" class="chip" data-g="groupes-de-reprises" aria-pressed="false">Cover band</button></li><li><button type="button" class="chip" data-g="dj" aria-pressed="false">DJ</button></li></ul><ul class="names-list"><li data-g="tributes"><a href="tribute-abba">Tribute ABBA<small>Tribute</small></a></li><li data-g="tributes"><a href="tribute-balavoine">Tribute Balavoine<small>Tribute</small></a></li><li data-g="tributes"><a href="tribute-barry-white">Tribute Barry White<small>Tribute</small></a></li><li data-g="tributes"><a href="tribute-bee-gees">Tribute Bee Gees<small>Tribute</small></a></li><li data-g="tributes"><a href="tribute-calogero">Tribute Calogero<small>Tribute</small></a></li><li data-g="tributes"><a href="tribute-celine-dion">Tribute Céline Dion<small>Tribute</small></a></li><li data-g="tributes"><a href="tribute-kool-and-the-gang">Tribute Kool &amp;amp; the Gang<small>Tribute</small></a></li><li data-g="tributes"><a href="tribute-matmatah">Tribute Matmatah<small>Tribute</small></a></li><li data-g="tributes"><a href="tribute-phil-collins">Tribute Phil Collins<small>Tribute</small></a></li><li data-g="cabaret"><a href="panache">Panache<small>Spettacoli di cabaret</small></a></li><li data-g="cabaret"><a href="bim-bam-boom">Bim Bam Boom<small>Spettacoli di cabaret</small></a></li><li data-g="cache-candy"><a href="cache-candy">Cache Candy<small>Cache Candy</small></a></li><li data-g="groupes-de-reprises"><a href="alchimie">Alchimie<small>Cover band</small></a></li><li data-g="groupes-de-reprises"><a href="noon-coverband">NooN Coverband<small>Cover band</small></a></li><li data-g="groupes-de-reprises"><a href="the-fine-allies">The Fine Allies<small>Cover band</small></a></li><li data-g="dj"><a href="dj">DJ<small>DJ</small></a></li></ul></div></section>
 <section class="cta-band">
   <div class="wrap">
     <span class="label">Volete ingaggiare un artista?</span>
@@ -397,6 +408,9 @@
 })();
 </script>
 <!-- cta-contact:end -->
+<script id="annuaire-js">(function(){var r=document.getElementById('annuaire');if(!r)return;var b=r.querySelectorAll('.chip'),l=r.querySelectorAll('.names-list li');
+b.forEach(function(x){x.addEventListener('click',function(){b.forEach(function(y){y.setAttribute('aria-pressed',y===x?'true':'false')});var g=x.getAttribute('data-g');
+l.forEach(function(li){li.hidden=!(g==='all'||li.getAttribute('data-g')===g)});});});})();</script>
 </body>
 <script>
 (function(){
