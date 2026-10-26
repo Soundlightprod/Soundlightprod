@@ -77,6 +77,21 @@ def specs(p):
     return [s for s in parts if s]
 
 
+def spec_table(sp):
+    """Caractéristiques en tableau : « Libellé : valeur » en deux colonnes, les autres lignes en liste simple.
+    Aucune valeur n'est déduite ni reformulée, on ne fait que mettre en forme le texte de la fiche."""
+    lab, other = [], []
+    for s in sp:
+        m = re.match(r'^([^:|]{2,32}?)\s*:\s*(\S.*)$', s)
+        (lab if m else other).append(m.groups() if m else s)
+    out = ''
+    if lab:
+        out += '<table class="pp-table"><tbody>' + ''.join(f'<tr><th scope="row">{esc(k)}</th><td>{esc(v)}</td></tr>' for k, v in lab) + '</tbody></table>'
+    if other:
+        out += ('<table class="pp-table"><tbody>' + ''.join(f'<tr><td>{esc(s)}</td></tr>' for s in other) + '</tbody></table>')
+    return f'<div class="pp-table-wrap">{out}</div>'
+
+
 CAT_KW = {
     'son': ['matériel de sonorisation', 'sono', 'enceinte active', 'système son', 'sono DJ', 'sonorisation concert', 'acheter matériel son'],
     'lumiere': ['éclairage scénique', 'projecteur LED', 'matériel lumière', 'jeu de lumière', 'lumière DJ', 'éclairage soirée', 'acheter éclairage scène'],
@@ -241,6 +256,10 @@ PAGE_CSS = """<style>
   .pp-specs{list-style:none; padding:0; margin:0; border-top:1px solid var(--line);}
   .pp-specs li{padding:10px 0; border-bottom:1px solid var(--line); font-size:.93rem; color:var(--paper);}
   .pp-intro{color:var(--muted); margin-bottom:22px;}
+  .pp-table-wrap{overflow-x:auto; margin-bottom:6px;}
+  .pp-table{width:100%; border-collapse:collapse; font-size:.93rem; margin-bottom:14px;}
+  .pp-table th, .pp-table td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--paper);}
+  .pp-table th{width:36%; font-weight:600; color:var(--muted); background:var(--ink-2);}
   .pp-more{margin-top:70px;}
   .pp-more-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
   @media (max-width:860px){ .pp-more-grid{grid-template-columns:repeat(2,1fr);} }
@@ -358,7 +377,7 @@ def page(p, products, tpl):
     title = f"{p['name']} — " + (f"{_tl}, " if _tl else '') + f"{CAT_FULL.get(p['category'], 'Matériel')} | Boutique SLP"
     desc = summary(p)[:300]
     sp = specs(p)
-    spec_html = ''.join(f'<li>{esc(s)}</li>' for s in sp) if len(sp) > 1 else ''
+    spec_html = spec_table(sp) if len(sp) > 1 else ''
     intro = f'<p class="pp-intro">{esc(sp[0])}</p>' if len(sp) == 1 else ''
     stock = ('<span class="pp-stock">En stock — expédition en France</span>' if in_stock(p)
              else '<span class="pp-stock out">Bientôt de retour en stock</span>')
@@ -427,7 +446,7 @@ def page(p, products, tpl):
       {wa}
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       {intro}
-      {f'<h2>Caractéristiques techniques</h2><ul class="pp-specs">{spec_html}</ul>' if spec_html else ''}
+      {f'<h2>Caractéristiques techniques</h2>{spec_html}' if spec_html else ''}
       {need_block(p, products)}
       {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact.html" style="color:var(--paper)">contactez-nous</a>.</p>'}
     </div>
