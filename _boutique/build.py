@@ -230,7 +230,7 @@ PAGE_CSS = """<style>
 .pp-play{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;padding-left:4px}
 .pp-video-btn:hover .pp-play{background:#e11d48}
 .pp-video iframe{width:100%;height:100%;border:0}
-  .pp{max-width:1220px; margin:0 auto; padding:40px 24px 80px;}
+  .pp{max-width:none; margin:0 auto; padding:40px clamp(24px,3.5vw,72px) 80px;}
   .pp-crumb{font-family:'DM Mono',monospace; font-size:.78rem; letter-spacing:.06em; color:var(--muted); margin-bottom:26px;}
   .pp-crumb a{color:var(--muted); text-decoration:none;} .pp-crumb a:hover{color:var(--paper);}
   .pp-grid{display:grid; grid-template-columns:1.05fr 1fr; gap:48px; align-items:start;}

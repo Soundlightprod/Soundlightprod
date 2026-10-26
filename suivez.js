@@ -42,7 +42,7 @@
   }
   var css = '' +
     '#slp-suivez{border-top:1px solid rgba(255,255,255,.1);padding:44px 24px;background:linear-gradient(180deg,rgba(140,50,144,.14),rgba(12,10,20,0))}' +
-    '#slp-suivez .sv-in{max-width:1220px;margin:0 auto;display:flex;flex-wrap:wrap;gap:22px 40px;align-items:center;justify-content:space-between}' +
+    '#slp-suivez .sv-in{max-width:none;margin:0 auto;display:flex;flex-wrap:wrap;gap:22px 40px;align-items:center;justify-content:space-between}' +
     '#slp-suivez .sv-txt{flex:1 1 360px;min-width:0}' +
     '#slp-suivez .sv-k{font-family:"DM Mono",monospace;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:#fc8024;margin-bottom:8px}' +
     '#slp-suivez h2{font-family:"League Spartan",sans-serif;font-weight:800;font-size:clamp(1.3rem,2.6vw,1.8rem);line-height:1.1;color:#f7f5f0;margin:0 0 8px;text-wrap:balance}' +

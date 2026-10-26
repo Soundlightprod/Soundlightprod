@@ -38,7 +38,7 @@
   .on-store .nav-site{display:none}
   .shop-top a.only-store{color:#3259be; text-decoration:none; font-weight:700}
   header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
-  .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .nav-wrap{max-width:none; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px clamp(24px,3.5vw,72px);}
   .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
   .brand img{height:58px; width:58px; display:block; border-radius:50%;}
   nav ul{list-style:none; display:flex; gap:22px; flex-wrap:wrap;}
@@ -56,7 +56,7 @@
   .page-hero p{color:var(--muted); font-size:1.1rem; max-width:600px;}
 
   section{position:relative; z-index:2;}
-  .wrap{max-width:1220px; margin:0 auto; padding:20px 24px 90px;}
+  .wrap{max-width:none; margin:0 auto; padding:20px clamp(24px,3.5vw,72px) 90px;}
 
   .filters{display:flex; gap:10px; margin-bottom:32px; flex-wrap:wrap;}
   .filter-btn{font-family:'DM Mono', monospace; font-size:0.78rem; padding:9px 18px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s ease;}
@@ -122,7 +122,7 @@
   .pd-specs li::before{content:'—'; position:absolute; left:0; color:var(--amber);}
 
   footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
-  .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-wrap{max-width:none; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
   .footer-brand{max-width:320px; display:flex; gap:12px;}
   .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
   .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
@@ -130,7 +130,7 @@
   .footer-col h4{font-family:'DM Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
   .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px;}
   .footer-col a:hover{color:var(--paper);}
-  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center;}
+  .legal{max-width:none; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center;}
 
   /* Menu mobile (burger) */
   .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
@@ -236,10 +236,10 @@
   .shop-light .pd-img{border-right:1px solid var(--line);}
 
   .shop-top{background:#e8eaf0; color:var(--navy); font-size:.78rem; font-weight:600;}
-  .shop-top-in{max-width:1220px; margin:0 auto; padding:8px 24px; display:flex; gap:26px; justify-content:center; flex-wrap:wrap;}
+  .shop-top-in{max-width:none; margin:0 auto; padding:8px clamp(24px,3.5vw,72px); display:flex; gap:26px; justify-content:center; flex-wrap:wrap;}
   .shop-top span::before{content:'✓'; color:#3259be; margin-right:7px; font-weight:800;}
   .shop-bar{background:#fff; border-bottom:1px solid var(--line);}
-  .shop-bar-in{max-width:1220px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:22px;}
+  .shop-bar-in{max-width:none; margin:0 auto; padding:14px clamp(24px,3.5vw,72px); display:flex; align-items:center; gap:22px;}
   .shop-name{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.35rem; color:var(--navy); text-decoration:none; letter-spacing:-.02em; white-space:nowrap;}
   .shop-name i{font-style:normal; color:#8c3290;}
   .shop-search{flex:1; display:flex; border:1.5px solid rgba(20,33,61,.2); border-radius:100px; overflow:hidden; background:#fff;}
@@ -249,7 +249,7 @@
   .shop-cartlink b{font-size:1.3rem; font-weight:400;}
   .shop-cartlink .n{position:absolute; top:-6px; right:-2px; background:#ff0953; color:#fff; border-radius:50%; min-width:19px; height:19px; font-size:.68rem; display:none; align-items:center; justify-content:center; padding:0 4px;}
   .shop-nav{background:var(--navy);}
-  .shop-nav-in{max-width:1220px; margin:0 auto; padding:0 24px; display:flex; gap:4px; flex-wrap:wrap;}
+  .shop-nav-in{max-width:none; margin:0 auto; padding:0 clamp(24px,3.5vw,72px); display:flex; gap:4px; flex-wrap:wrap;}
   .shop-nav a.top{display:block; padding:15px 18px; color:#fff; text-decoration:none; font-weight:700; font-size:.88rem; white-space:nowrap;}
   .shop-nav a.top:hover, .shop-nav .dd:hover > a.top{background:rgba(255,255,255,.12);}
   .shop-nav .dd{position:relative;}
@@ -297,7 +297,7 @@
   .badge-new{position:absolute; top:8px; left:8px; background:#ff0953; color:#fff; font-size:.66rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:4px 9px; border-radius:100px; z-index:3;}
   .grid-sm .card-img{position:relative;}
   .grid-sm .card .price{color:var(--navy);}
-  .shop-wrap{max-width:1220px; margin:0 auto; padding:30px 24px 70px;}
+  .shop-wrap{max-width:none; margin:0 auto; padding:30px clamp(24px,3.5vw,72px) 70px;}
   .shop-wrap .sec-title{color:var(--navy);}
   .shop-wrap .crumb, .shop-wrap .cat-head .cnt{color:var(--muted);}
   .shop-light .subchips button{color:var(--navy); box-shadow:inset 0 0 0 1.5px rgba(20,33,61,.25); background:#fff;}

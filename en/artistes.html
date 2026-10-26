@@ -22,7 +22,7 @@
   h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
 
   header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
-  .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .nav-wrap{max-width:none; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px clamp(24px,3.5vw,72px);}
   .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
   .brand img{height:58px; width:58px; display:block; border-radius:50%;}
   .brand-text{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; color:var(--paper);}
@@ -38,7 +38,7 @@
   .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-10vw; right:-10vw;}
   .page-hero-inner{position:relative; z-index:2; max-width:1000px;}
   /* Frise néon des silhouettes de tous les artistes */
-  .hero-frieze{position:relative; z-index:2; max-width:1220px; margin:26px auto 0; height:clamp(80px,12vw,150px); overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%); mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);}
+  .hero-frieze{position:relative; z-index:2; max-width:none; margin:26px auto 0; height:clamp(80px,12vw,150px); overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%); mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);}
   .hero-frieze img{height:100%; width:auto; display:block; margin:0 auto; filter:drop-shadow(0 0 8px rgba(251,198,8,.35));}
   @media (max-width:760px){ .hero-frieze{height:auto;} .hero-frieze img{width:100%; height:auto;} }
   .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
@@ -49,7 +49,7 @@
   .page-hero p{color:var(--muted); font-size:0.95rem; max-width:none;}
 
   section{position:relative; z-index:2;}
-  .wrap{max-width:1220px; margin:0 auto; padding:10px 24px 60px;}
+  .wrap{max-width:none; margin:0 auto; padding:10px clamp(24px,3.5vw,72px) 60px;}
 
   .artists{display:flex; flex-direction:column; gap:20px;}
   .category-label{display:flex; align-items:center; gap:18px; margin:32px 0 2px;}
@@ -142,7 +142,7 @@
   .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
 
   footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
-  .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-wrap{max-width:none; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
   .footer-brand{max-width:320px; display:flex; gap:12px;}
   .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
   .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
@@ -159,7 +159,7 @@
   }
   .social-icon svg{width:18px; height:18px;}
   .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
-  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
+  .legal{max-width:none; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
 
   /* Menu mobile (burger) */
   .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}

@@ -25,7 +25,7 @@
   h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
 
   header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
-  .nav-wrap{max-width:1220px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .nav-wrap{max-width:none; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px clamp(24px,3.5vw,72px);}
   .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
   .brand img{height:58px; width:58px; display:block; border-radius:50%;}
   nav ul{list-style:none; display:flex; gap:26px; flex-wrap:wrap;}
@@ -57,7 +57,7 @@
   .tag{font-family:'DM Mono', monospace; font-size:0.72rem; color:var(--paper); box-shadow:inset 0 0 0 1px var(--line); padding:7px 14px; border-radius:20px;}
 
   section{position:relative; z-index:2;}
-  .wrap{max-width:1220px; margin:0 auto; padding:80px 24px;}
+  .wrap{max-width:none; margin:0 auto; padding:80px clamp(24px,3.5vw,72px);}
   .wrap.tight{padding-top:40px; padding-bottom:40px;}
   .wrap.narrow{max-width:900px;}
   .section-head{max-width:680px; margin-bottom:40px;}
@@ -107,7 +107,7 @@
   .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
 
   footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
-  .footer-wrap{max-width:1220px; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-wrap{max-width:none; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
   .footer-brand{max-width:320px; display:flex; gap:12px;}
   .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
   .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
@@ -124,7 +124,7 @@
   }
   .social-icon svg{width:18px; height:18px;}
   .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
-  .legal{max-width:1220px; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
+  .legal{max-width:none; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
 
   .actus-list{display:flex; flex-direction:column; gap:14px;}
   .actu-item{position:relative; background:linear-gradient(120deg, var(--ink-2), rgba(255,255,255,.02)); border:1px solid var(--line); border-radius:18px; padding:0; display:flex; align-items:stretch; overflow:hidden; min-height:128px;}
@@ -193,7 +193,7 @@
 /* Fiche spectacle v2  */
 .fiche-hero{position:relative; padding:96px 24px 26px;}
 .fiche-hero-inner>*{min-width:0;}
-.fiche-hero-inner{max-width:1220px; margin:0 auto; display:grid; grid-template-columns:1.05fr .95fr; grid-template-areas:"text photo" "resume photo"; column-gap:44px; row-gap:18px; align-items:start;}
+.fiche-hero-inner{max-width:none; margin:0 auto; display:grid; grid-template-columns:1.05fr .95fr; grid-template-areas:"text photo" "resume photo"; column-gap:44px; row-gap:18px; align-items:start;}
 .fiche-text{grid-area:text;} .fiche-photo{grid-area:photo; margin:0; border-radius:20px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,.45); aspect-ratio:3/2; background:var(--ink-2); align-self:center;}
 .fiche-photo img{display:block; width:100%; height:100%; object-fit:cover;}
 .fiche-resume{grid-area:resume;}
