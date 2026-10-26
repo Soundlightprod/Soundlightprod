@@ -233,6 +233,9 @@
   .publics.two{grid-template-columns:repeat(2,1fr);} @media (max-width:900px){ .publics.two{grid-template-columns:1fr;} }
   .tightsec .wrap{padding-top:30px !important; padding-bottom:30px !important;}
   .tightsec .section-head{margin-bottom:28px !important;}
+.tech-mini{display:flex; align-items:center; justify-content:space-between; gap:24px; padding:22px 26px; border:1px solid var(--line); border-radius:18px; background:var(--ink-2);}
+.tech-mini h3{font-family:'League Spartan',sans-serif; font-size:1.3rem; margin:4px 0 6px;} .tech-mini p{color:var(--muted); max-width:62ch; margin:0;} .tech-mini .kicker{font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold);}
+@media (max-width:700px){ .tech-mini{flex-direction:column; align-items:stretch;} .tech-mini .btn{width:100%; justify-content:center;} }
 </style>
 
 
@@ -350,10 +353,10 @@ html{scroll-padding-top:96px;}
       <ul>
         <li><a href="./" class="current">Accueil</a></li>
         <li><a href="artistes">Nos artistes et spectacles</a></li>
-        <li><a href="son-lumiere">Prestation technique</a></li>
         <li><a href="agenda">Agenda</a></li>
         <li><a href="galerie">Galerie</a></li>
         <li><a href="https://soundlightprod.store">Boutique</a></li>
+        <li><a href="son-lumiere">Son &amp; lumière</a></li>
         <li><a href="contact" class="nav-cta">Contact</a></li>
       </ul>
     </nav>
@@ -420,18 +423,6 @@ html{scroll-padding-top:96px;}
   </div>
 </section>
 
-<section id="spectacle" class="technique">
-  <div class="wrap">
-    <div class="metiers2">
-      <article class="met rev" id="technique">
-        <div class="met-pic"><img src="homepage-crowd-lights.png" srcset="images/homepage-crowd-lights-480.webp 480w" sizes="(max-width:700px) 100vw, 1100px" alt="" loading="lazy"></div>
-        <div class="met-body"><span class="kicker">Prestation technique</span><h3>Son et lumière, en prestation distincte</h3><p>Si vous le souhaitez, nous installons et pilotons le son et la lumière nécessaires, dimensionnés pour votre lieu, en salle comme en plein air. Nos techniciens restent présents du montage au démontage.</p><ul><li>Étude du lieu et dimensionnement du matériel</li><li>Sonorisation façade et retours, éclairage scénique</li><li>Technicien son et lumière pendant tout l'événement</li></ul>
-          <div class="btns"><a href="son-lumiere" class="btn btn-primary">La prestation technique →</a><a href="contact" class="btn btn-ghost" data-contact="devis">Demander un devis →</a></div></div>
-      </article>
-    </div>
-  </div>
-</section>
-
 <section class="faq-home" id="faq">
   <div class="wrap">
     <div class="section-head"><span class="label">Questions d&rsquo;organisateurs</span><h2>Avant de demander un devis</h2></div>
@@ -441,6 +432,15 @@ html{scroll-padding-top:96px;}
       <details><summary>Que comprend la proposition ?</summary><p>Le devis est gratuit et sans engagement. Il précise ce qui est inclus et ce qui est facturé à part (technique, voyages, hôtels, restauration), pour que vous sachiez exactement ce que vous commandez.</p></details>
       <details><summary>Intervenez-vous près de chez nous ?</summary><p>Oui, nous travaillons partout en France et en Europe, avec mairies, comités des fêtes, entreprises, associations et particuliers.</p></details>
     </div>
+  </div>
+</section>
+
+<section id="spectacle" class="technique">
+  <div class="wrap">
+    <article class="tech-mini" id="technique">
+      <div><span class="kicker">Son &amp; lumière</span><h3>Besoin du son et de la lumière ?</h3><p>Si vous le souhaitez, nous installons et pilotons le son et la lumière nécessaires, dimensionnés pour votre lieu, en salle comme en plein air.</p></div>
+      <div class="btns"><a href="son-lumiere" class="btn btn-ghost">Voir le son &amp; lumière →</a></div>
+    </article>
   </div>
 </section>
 
@@ -474,7 +474,7 @@ html{scroll-padding-top:96px;}
       <h4>Navigation</h4>
       <a href="./">Accueil</a>
       <a href="artistes">Nos artistes et spectacles</a>
-      <a href="son-lumiere">Prestation technique</a>
+      <a href="son-lumiere">Son &amp; lumière</a>
       <a href="#how">Notre façon de travailler</a>
       <a href="agenda">Agenda</a>
       <a href="galerie">Galerie</a>
