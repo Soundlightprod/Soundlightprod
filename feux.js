@@ -36,7 +36,9 @@
   setTimeout(place, 1500);
 
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var target = null, cur = 238, t0 = performance.now();
+  var A0 = function () { var m = window.matchMedia && matchMedia('(max-width:960px)').matches;
+    var v = parseFloat(hero.getAttribute(m && hero.hasAttribute('data-angle-m') ? 'data-angle-m' : 'data-angle')); return isNaN(v) ? 238 : v; };
+  var target = null, cur = A0(), t0 = performance.now();
   hero.addEventListener('pointermove', function (e) {
     var hr = hero.getBoundingClientRect();
     var a = Math.atan2(e.clientY - hr.top - c.y, e.clientX - hr.left - c.x) * 180 / Math.PI + 90;
@@ -44,7 +46,7 @@
   });
   hero.addEventListener('pointerleave', function () { target = null; });
   function tick(now) {
-    var goal = target !== null ? target : (reduce ? 238 : 238 + 9 * Math.sin((now - t0) / 1150));
+    var goal = target !== null ? target : (reduce ? A0() : A0() + 9 * Math.sin((now - t0) / 1150));
     var d = ((goal - cur + 540) % 360) - 180;
     cur += d * 0.12;
     hero.style.setProperty('--fa', cur.toFixed(2) + 'deg');
