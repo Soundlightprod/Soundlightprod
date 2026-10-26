@@ -227,6 +227,23 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.com/es/tributes">
+<style id="tributes-compact">
+/* Page Tributes : cartes plus compactes (3 par ligne sur grand écran) */
+.artists{grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:18px !important;}
+.artists>.artist:only-child,.artists>.artist:last-child:nth-child(odd){grid-column:auto !important; flex-direction:column !important;}
+.artists>.artist:only-child .artist-media,.artists>.artist:last-child:nth-child(odd) .artist-media{flex:none !important; min-height:0 !important; aspect-ratio:16/9 !important;}
+.artists>.artist:last-child:nth-child(odd) .artist-media::after{background:linear-gradient(180deg, rgba(12,10,20,0) 45%, rgba(12,10,20,.75) 85%, rgba(23,20,42,1) 100%) !important;}
+.artists>.artist:last-child:nth-child(odd) .artist-body{padding:16px 18px 20px !important;}
+.artist-media{aspect-ratio:16/9 !important;}
+.artist-body{padding:16px 18px 20px !important;}
+.artist-body h3{font-size:clamp(1.2rem,1.7vw,1.5rem) !important; margin-bottom:6px !important;}
+.artist-body p{font-size:.92rem !important; line-height:1.45 !important;}
+.artist-body .discover-row{padding-top:14px !important;}
+.artist-media .lg{left:14px !important; bottom:12px !important; max-height:46px !important;}
+.artist-media .pill{top:12px !important; left:12px !important; padding:5px 11px !important; font-size:.66rem !important;}
+@media (max-width:1000px){ .artists{grid-template-columns:repeat(2,minmax(0,1fr)) !important;} }
+@media (max-width:620px){ .artists{grid-template-columns:minmax(0,1fr) !important; gap:14px !important;} .artist-media{aspect-ratio:2/1 !important;} }
+</style>
 </head>
 <body>
 
