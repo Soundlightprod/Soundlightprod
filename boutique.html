@@ -583,12 +583,26 @@
       tile('t-con', '#consommables', 'Consommables', '/poudre-etincelles.png', '') +
       tile('t-new', '#nouveautes', 'Nouveautés', pic(lum, /sunstrip/i), '');
     { const el = document.getElementById('catTiles'); el.style.setProperty('--n', el.children.length); }
-    document.getElementById('featured').innerHTML = newest().slice(0,5).map(p => cardHTML(p, true)).join('');
+    document.getElementById('featured').innerHTML = newest().slice(0,10).map(p => cardHTML(p, true)).join('');
     { const packs = products.filter(p => p.image && packInfo(p));
       document.getElementById('packsBlock').hidden = !packs.length;
       document.getElementById('featuredPacks').innerHTML = packs.map(packHTML).join(''); }
-    document.getElementById('featuredLum').innerHTML = lum.filter(p => p.image).slice(0,6).map(p => cardHTML(p, nw.has(p.id))).join('');
+    document.getElementById('featuredLum').innerHTML = lum.filter(p => p.image).slice(0,12).map(p => cardHTML(p, nw.has(p.id))).join('');
+    fillRows();
   }
+
+  // Rangées d'accueil toujours complètes : on n'affiche que des lignes entières (2 lignes au plus), quelle que soit la largeur
+  function fillRows(){
+    ['featured', 'featuredLum', 'featuredPacks'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || !el.children.length) return;
+      const kids = [...el.children]; kids.forEach(k => { k.hidden = false; });
+      const cols = getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length || 1;
+      const keep = Math.min(Math.floor(kids.length / cols), 2) * cols;
+      if (keep >= cols) kids.forEach((k, i) => { k.hidden = i >= keep; });
+    });
+  }
+  { let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(fillRows, 120); }); }
 
   // vue liste : un rayon, un sous-rayon, les nouveautés, tout, ou une recherche
   function renderList(opts){
