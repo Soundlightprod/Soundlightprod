@@ -261,9 +261,9 @@
 .hero-v2 .cta-row{opacity:1; animation:none; gap:12px; margin-bottom:18px;}
 .hero-v2 .cta-row .btn{min-height:52px; padding:0 26px !important; font-size:1rem; justify-content:center;}
 @media (min-width:961px){
-  .hero-v2 .feux-dot{left:auto; right:max(14px,calc((100% - 1220px)/2 + 8px)); top:92px;}
-  .hero-v2 .hero-inner{align-items:end;}
-  .hero-v2 .hero-photo{width:60%; justify-self:end; margin-bottom:0;}
+  .hero-v2 .hero-inner{align-items:end; grid-template-columns:minmax(0,640px) minmax(0,340px); justify-content:start; gap:48px;}
+  .hero-v2 .hero-photo{width:100%; margin-bottom:0;}
+  .hero-v2 .feux-dot{left:min(calc(max(0px,(100% - 1220px)/2) + 24px + 640px + 48px + 340px + 22px),calc(100% - 72px)); top:92px;}
 }
 @media (max-width:960px){ .hero-v2 .feux-dot{left:-6px; top:22px;} }
 .reassure{list-style:none; display:flex; flex-wrap:wrap; gap:6px 18px; color:var(--muted); font-size:.9rem; margin:0; padding:0;}
