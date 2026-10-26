@@ -186,8 +186,8 @@
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
-      <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>
-      <a href="tel:+33631949653">+33 6 31 94 96 53</a>
+      <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653" data-contact="appel">+33 6 31 94 96 53</a>
     </div>
     <div class="footer-col">
       <h4>Follow us</h4>
@@ -232,7 +232,7 @@
         const hasPage = !!ARTIST_PAGES[e.artist_slug];
         const page = ARTIST_PAGES[e.artist_slug] || null;
         const label = e.guest_name || ARTIST_LABELS[e.artist_slug] || e.artist_slug;
-        const photo = e.photo_url ? `<img src="${e.photo_url}" alt="">` : '';
+        const photo = e.photo_url ? `<img src="${e.photo_url}" alt="" loading="lazy" decoding="async">` : '';
         const meta = [
           e.event_time ? `🕐 ${escapeHtml(e.event_time)}` : '',
           [e.venue_name, e.venue_city].filter(Boolean).length ? `📍 ${escapeHtml([e.venue_name, e.venue_city].filter(Boolean).join(', '))}` : '',

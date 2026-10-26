@@ -368,13 +368,13 @@
       <div class="hero-row">
         <a class="hero-ban" href="/produits/machine-etincelles-800w">
           <div class="tx"><span class="tag">Nouveau</span><h2>Machines à étincelles 800W</h2><p>4 hauteurs réglables jusqu'à 3,5&nbsp;m, télécommande incluse. Dès 199,99&nbsp;€.</p><span class="pill">Découvrir</span></div>
-          <div class="im"><img src="/machine-etincelles-800w.png" alt="Machine à étincelles 800W"></div>
+          <div class="im"><img src="/machine-etincelles-800w.png" srcset="/images/machine-etincelles-800w-462.webp 462w" sizes="(max-width:700px) 100vw, 1100px" alt="Machine à étincelles 800W" loading="lazy" decoding="async"></div>
         </a>
         <div class="hero-side">
           <h3>Pourquoi SLP ?</h3>
           <ul><li>Matériel testé par nos techniciens</li><li>Garantie 2 ans</li><li>Livraison partout en France</li><li>Conseils de professionnels du spectacle</li></ul>
-          <a href="/contact.html">Une question ? Contactez-nous</a>
-          <a href="https://wa.me/33631949653?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20la%20boutique%20SLP" target="_blank" rel="noopener">ou écrivez-nous sur WhatsApp</a>
+          <a href="/contact.html" data-contact="devis">Une question ? Contactez-nous</a>
+          <a href="https://wa.me/33631949653?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20la%20boutique%20SLP" target="_blank" rel="noopener" data-contact="whatsapp">ou écrivez-nous sur WhatsApp</a>
         </div>
       </div>
       <div class="tiles4" id="catTiles"></div>
@@ -548,8 +548,8 @@
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
-      <a href="mailto:contact@soundlightprod.fr">contact@soundlightprod.fr</a>
-      <a href="tel:+33631949653">06 31 94 96 53</a>
+      <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
     </div>
   </div>
   <p class="legal">SLP · Sound Light Prod · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 — © 2026 · <a href="mentions-legales" style="color:inherit;">Mentions légales</a> · <a href="cgv-boutique" style="color:inherit;">CGV Boutique</a></p>
@@ -812,7 +812,7 @@
   function openProductDetail(id){
     const p = products.find(x => x.id === id);
     if (!p) return;
-    document.getElementById('pdImg').innerHTML = p.image ? `<img src="${p.image}" alt="${p.name}">` : '';
+    document.getElementById('pdImg').innerHTML = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async">` : '';
     document.getElementById('pdCat').textContent = { son:'Son', lumiere:'Lumière', effets:'Effets', consommables:'Consommables' }[p.category] || p.category;
     document.getElementById('pdName').textContent = p.name;
     const specs = (p.description || '').split('|').map(s => s.trim()).filter(Boolean);
