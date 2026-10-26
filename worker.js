@@ -16,6 +16,15 @@
 
 // Pays vers lesquels Stripe autorise la saisie d'une adresse de livraison.
 // Ajoute/retire des codes ISO 2 lettres selon où tu livres.
+// Livraison (sur le total des marchandises TTC) : 6,99 € sous 20 €, 14,99 € de 20 € à 99,99 €, offerte dès 100 €.
+const FREE_SHIPPING_FROM_CENTS = 10000;
+const SMALL_ORDER_BELOW_CENTS = 2000;
+const SHIPPING_FEE_CENTS = 1499;
+const SMALL_ORDER_FEE_CENTS = 699;
+function shippingFor(totalCents) {
+  if (totalCents >= FREE_SHIPPING_FROM_CENTS) return 0;
+  return totalCents < SMALL_ORDER_BELOW_CENTS ? SMALL_ORDER_FEE_CENTS : SHIPPING_FEE_CENTS;
+}
 const SHIPPING_COUNTRIES = ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT"];
 
 // Sites frères (Book My Band, CS Animations, boutique) : ils envoient leurs visites à /api/track-visit.
@@ -780,6 +789,7 @@ export default {
           total_cents += p.price_cents * qty;
         }
         if (!line_items.length) return json({ error: "Aucun article valide" }, 400, origin);
+        const shipping_cents = shippingFor(total_cents);
 
         // Retour de paiement : sur le domaine d'où vient le client (.fr ou .store), sinon SITE_ORIGIN
         const reqOrigin = request.headers.get("Origin") || "";
@@ -790,6 +800,13 @@ export default {
           line_items,
           customer_email,
           shipping_address_collection: { allowed_countries: SHIPPING_COUNTRIES },
+          shipping_options: [{
+            shipping_rate_data: {
+              type: "fixed_amount",
+              fixed_amount: { amount: shipping_cents, currency: "eur" },
+              display_name: shipping_cents ? "Livraison standard" : "Livraison offerte",
+            },
+          }],
           success_url: `${returnBase}/boutique-merci.html?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${returnBase}/boutique.html`,
         });
@@ -797,7 +814,7 @@ export default {
         await env.DB.prepare(
           `INSERT INTO orders (stripe_session_id, customer_name, customer_email, customer_phone, items_json, total_cents, status)
            VALUES (?, ?, ?, ?, ?, ?, 'pending')`
-        ).bind(session.id, customer_name || "", customer_email, customer_phone || "", JSON.stringify(orderItems), total_cents).run();
+        ).bind(session.id, customer_name || "", customer_email, customer_phone || "", JSON.stringify(orderItems), total_cents + shipping_cents).run();
 
         return json({ url: session.url }, 200, origin);
       }

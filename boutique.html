@@ -339,7 +339,7 @@
 
 <div class="shop-light">
 <!-- shopbar:start -->
-<div class="shop-top"><div class="shop-top-in"><span>Livraison partout en France</span><span>Garantie 2 ans</span><span>Paiement sécurisé</span><span>Conseils d'experts : 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</span><a class="only-store" href="https://soundlightprod.fr/">Prestations &amp; spectacles SLP ↗</a></div></div>
+<div class="shop-top"><div class="shop-top-in"><span>Livraison partout en France · offerte dès 100 €</span><span>Garantie 2 ans</span><span>Paiement sécurisé</span><span>Conseils d'experts : 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</span><a class="only-store" href="https://soundlightprod.fr/">Prestations &amp; spectacles SLP ↗</a></div></div>
 <div class="shop-bar"><div class="shop-bar-in">
   <a class="shop-name" href="/boutique.html"><img class="only-store" src="/slp-sigle.png" alt="">Boutique <i>SLP</i></a>
   <form class="shop-search" action="/boutique.html" method="get" role="search"><input type="search" name="q" placeholder="Rechercher un produit (par, lyre, strobe, étincelles…)" aria-label="Rechercher"><button type="submit" aria-label="Rechercher">🔍</button></form>
@@ -423,7 +423,9 @@
     <p class="cart-empty">Votre panier est vide.</p>
   </div>
   <div class="cart-foot" id="cartFoot" style="display:none;">
+    <div class="cart-ship" id="cartShip" style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:6px;"><span>Livraison</span><span id="cartShipAmt">—</span></div>
     <div class="cart-total"><span>Total</span><span id="cartTotal">0,00 €</span></div>
+    <p id="cartShipNote" style="font-size:.75rem;color:var(--muted);margin:4px 0 12px;"></p>
     <div class="cart-form">
       <input type="text" id="custName" placeholder="Nom et prénom *" required>
       <input type="email" id="custEmail" placeholder="Email *" required>
@@ -738,6 +740,10 @@
     });
     if (sugg.length) itemsEl.innerHTML += '<div class="cart-sugg">' + sugg.map(s =>
       `<div class="need-box"><b>N'oubliez pas le consommable de votre machine</b>${needRows(s.acc)}</div>`).join('') + '</div>';
+    const ship = total >= 10000 ? 0 : (total < 2000 ? 699 : 1499), grand = total + ship;
+    document.getElementById('cartShipAmt').textContent = ship ? money(ship) : 'Offerte';
+    document.getElementById('cartShipNote').textContent = total >= 10000 ? 'Livraison offerte dès 100 € : c’est le cas pour votre commande.' : 'Livraison offerte dès 100 € d’achat (encore ' + money(10000 - total) + ').';
+    total = grand;
     totalEl.innerHTML = money(total) + '<small class="ht" style="display:block;text-align:right;font-weight:400;font-size:.7rem;opacity:.7">soit ' + moneyHT(total) + '</small>';
   }
 
