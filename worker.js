@@ -374,7 +374,7 @@ const INTL_LANGS = ["en", "es", "it"];
 const STORE_MODE = "main";
 const STORE_SITE = "https://soundlightprod.store";
 // Pages HTML servies sur le .store (le reste du site redirige vers le .fr)
-const STORE_PAGES = /^\/(boutique|boutique-merci|cgv-boutique|mentions-legales)(\.html)?$/;
+const STORE_PAGES = /^\/(boutique|boutique-merci|cgv-boutique|contact-boutique|mentions-legales)(\.html)?$/;
 
 function redirect(to, status = 301) {
   return new Response(null, { status, headers: { Location: to, "Cache-Control": status === 302 ? "no-store" : "public, max-age=3600" } });
@@ -579,7 +579,7 @@ async function meteoData(env) {
        WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') GROUP BY action`),
     safe(`SELECT page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
        WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') AND action IN ('devis', 'appel', 'whatsapp', 'mail', 'chat', 'envoi') GROUP BY page ORDER BY n DESC LIMIT 8`),
-    (async () => { try { return await q("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur, reference, artiste_nom, mail_tentatives FROM contact_requests ORDER BY id DESC LIMIT 10"); } catch (e) { return safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests ORDER BY id DESC LIMIT 10"); } })(),
+    (async () => { try { return await q("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur, reference, artiste_nom, mail_tentatives, produit_ref, commande_num FROM contact_requests ORDER BY id DESC LIMIT 10"); } catch (e) { return safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests ORDER BY id DESC LIMIT 10"); } })(),
     safe(`SELECT video_id, page, COUNT(DISTINCT CASE WHEN event = 'play' THEN session_id END) AS lectures,
          COUNT(DISTINCT CASE WHEN event IN ('75', 'fin') THEN session_id END) AS jusqu_au_bout
        FROM video_events WHERE is_bot = 0 AND ${notTest("created_at")} AND created_at >= datetime('now', '-7 days') GROUP BY video_id, page ORDER BY lectures DESC`),
@@ -611,7 +611,9 @@ async function cachedAdminJson(url, ttlSec, origin, compute) {
 // (mail_envoye = 0, mail_erreur) et est repris automatiquement (cron quotidien, passage d'une nouvelle demande,
 // ou POST /api/admin/contact-retry). Une clé d'idempotence (cle) fournie par le navigateur garantit qu'une même
 // soumission reprise (coupure, double clic) ne crée qu'une seule demande.
-const CONTACT_COLS = [["cle", "TEXT"], ["reference", "TEXT"], ["artiste", "TEXT"], ["artiste_nom", "TEXT"], ["organisme", "TEXT"], ["type_evenement", "TEXT"], ["jauge", "TEXT"], ["budget", "TEXT"], ["technique", "TEXT"], ["lang", "TEXT"], ["mail_tentatives", "INTEGER DEFAULT 0"], ["mail_derniere", "TEXT"]];
+// Motifs proposés par le formulaire de contact de la boutique (/contact-boutique)
+const STORE_MOTIFS = ["Conseil avant achat", "Suivi de commande", "SAV / garantie", "Retour / rétractation", "Disponibilité d'un produit"];
+const CONTACT_COLS = [["cle", "TEXT"], ["reference", "TEXT"], ["artiste", "TEXT"], ["artiste_nom", "TEXT"], ["organisme", "TEXT"], ["type_evenement", "TEXT"], ["jauge", "TEXT"], ["budget", "TEXT"], ["technique", "TEXT"], ["lang", "TEXT"], ["mail_tentatives", "INTEGER DEFAULT 0"], ["mail_derniere", "TEXT"], ["produit_ref", "TEXT"], ["commande_num", "TEXT"]];
 let contactSchemaReady = false;
 async function ensureContactSchema(env) {
   if (contactSchemaReady) return;
@@ -639,8 +641,8 @@ async function notifyContactMail(env, r) {
       headers: { "Authorization": `Bearer ${resendKey}`, "Content-Type": "application/json", "Idempotency-Key": `contact-request-${r.id}` },
       body: JSON.stringify({
         from: "Site SLP <contact@soundlightprod.fr>", to: [env.CONTACT_TO || "contact@soundlightprod.fr"], ...(r.email ? { reply_to: r.email } : {}),
-        subject: `Nouvelle demande ${r.reference || "#" + r.id} : ${r.artiste_nom || r.sujet || "Contact"} — ${r.nom}`,
-        html: `<p>Nouvelle demande reçue depuis le site (${esc(r.reference || "n°" + r.id)}).</p><table>${ligne("Spectacle", r.artiste_nom)}${ligne("Nom", r.nom)}${ligne("Téléphone", r.telephone)}${ligne("Email", r.email)}${ligne("Organisme / commune", r.organisme)}${ligne("Sujet", r.sujet)}${ligne("Type d'événement", r.type_evenement)}${ligne("Date", r.date_event)}${ligne("Lieu", r.lieu)}${ligne("Jauge", r.jauge)}${ligne("Budget", r.budget)}${ligne("Besoin son et lumière", r.technique)}${ligne("Venu de", r.page_origine)}${ligne("Ville (approx.)", r.city)}</table><p style="white-space:pre-wrap;border-left:3px solid #ffb238;padding-left:10px">${esc(r.message)}</p><p style="color:#666">Répondre à ce mail écrit directement au client${r.email ? "" : " (pas d'email : rappelez-le au téléphone)"}.</p>`,
+        subject: `Nouvelle demande ${r.reference || "#" + r.id} : ${r.artiste_nom || r.sujet || "Contact"}${r.produit_ref ? " [" + r.produit_ref + "]" : ""} — ${r.nom}`,
+        html: `<p>Nouvelle demande reçue depuis le site (${esc(r.reference || "n°" + r.id)}).</p><table>${ligne("Boutique", r.produit_ref || r.commande_num ? "oui" : "")}${ligne("Produit (référence)", r.produit_ref)}${ligne("N° de commande", r.commande_num)}${ligne("Spectacle", r.artiste_nom)}${ligne("Nom", r.nom)}${ligne("Téléphone", r.telephone)}${ligne("Email", r.email)}${ligne("Organisme / commune", r.organisme)}${ligne("Sujet", r.sujet)}${ligne("Type d'événement", r.type_evenement)}${ligne("Date", r.date_event)}${ligne("Lieu", r.lieu)}${ligne("Jauge", r.jauge)}${ligne("Budget", r.budget)}${ligne("Besoin son et lumière", r.technique)}${ligne("Venu de", r.page_origine)}${ligne("Ville (approx.)", r.city)}</table><p style="white-space:pre-wrap;border-left:3px solid #ffb238;padding-left:10px">${esc(r.message)}</p><p style="color:#666">Répondre à ce mail écrit directement au client${r.email ? "" : " (pas d'email : rappelez-le au téléphone)"}.</p>`,
       }),
     });
     if (res.ok) ok = 1; else err = `${res.status} ${(await res.text()).slice(0, 200)}`;
@@ -655,7 +657,7 @@ async function notifyContactMail(env, r) {
 async function retryFailedContactMails(env, { minAgeMin = 2, limit = 10 } = {}) {
   await ensureContactSchema(env);
   const { results } = await env.DB.prepare(
-    "SELECT id, reference, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, artiste_nom, organisme, type_evenement, jauge, budget, technique FROM contact_requests WHERE COALESCE(mail_envoye, 0) = 0 AND COALESCE(mail_tentatives, 0) < 8 AND cree_le >= datetime('now', '-7 days') AND cree_le <= datetime('now', ?) ORDER BY id LIMIT ?"
+    "SELECT id, reference, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, artiste_nom, organisme, type_evenement, jauge, budget, technique, produit_ref, commande_num FROM contact_requests WHERE COALESCE(mail_envoye, 0) = 0 AND COALESCE(mail_tentatives, 0) < 8 AND cree_le >= datetime('now', '-7 days') AND cree_le <= datetime('now', ?) ORDER BY id LIMIT ?"
   ).bind(`-${Math.max(0, minAgeMin | 0)} minutes`, limit).all();
   let envoyes = 0;
   for (const r of results || []) if (await notifyContactMail(env, r)) envoyes++;
@@ -1419,10 +1421,16 @@ export default {
         const d = { nom: t(body.nom, 120), email: t(body.email, 160), telephone: t(body.telephone, 40), sujet: t(body.sujet, 120),
           date_event: t(body.date_event, 80), lieu: t(body.lieu, 120), message: t(body.message, 4000), page: t(body.page, 200), sid: t(body.session_id, 60),
           artiste: /^[a-z0-9-]{0,60}$/.test(t(body.artiste, 60)) ? t(body.artiste, 60) : "", artiste_nom: t(body.artiste_nom, 80), organisme: t(body.organisme, 120),
-          type_evenement: t(body.type_evenement, 80), jauge: t(body.jauge, 40), budget: t(body.budget, 60), technique: t(body.technique, 80),
+          type_evenement: t(body.type_evenement, 80), jauge: t(body.jauge, 40), budget: t(body.budget, 60), technique: t(body.technique, 80), produit_ref: t(body.produit_ref, 80), commande_num: t(body.commande_num, 40),
           lang: ["fr", "en", "es", "it"].includes(t(body.lang, 2)) ? t(body.lang, 2) : "fr" };
         const cle = /^[A-Za-z0-9._-]{8,100}$/.test(String(body.cle || "")) ? String(body.cle) : null;
         if (!d.nom) return json({ ok: false, champ: "nom", error: "Indiquez votre nom." }, 400, origin);
+        // Boutique (.store) : motif dans une liste fermée, email obligatoire (réponse par écrit), message présent
+        if (siteFromRequest(request, body) === "store") {
+          if (!STORE_MOTIFS.includes(d.sujet)) return json({ ok: false, champ: "sujet", error: "Choisissez le motif de votre demande." }, 400, origin);
+          if (!d.email) return json({ ok: false, champ: "email", error: "Indiquez votre email pour que nous puissions vous répondre." }, 400, origin);
+          if (d.message.length < 10) return json({ ok: false, champ: "message", error: "Précisez votre demande en quelques mots." }, 400, origin);
+        }
         if (!d.email && !d.telephone) return json({ ok: false, champ: "email", error: "Indiquez un email ou un téléphone." }, 400, origin);
         if (d.email && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(d.email)) return json({ ok: false, champ: "email", error: "L'adresse email semble incomplète." }, 400, origin);
         if (d.telephone && d.telephone.replace(/\D/g, "").length < 6) return json({ ok: false, champ: "telephone", error: "Ce numéro semble trop court." }, 400, origin);
@@ -1442,9 +1450,9 @@ export default {
         let id;
         try {
           const ins = await env.DB.prepare(
-            "INSERT INTO contact_requests (site, nom, email, telephone, sujet, date_event, lieu, message, page_origine, session_id, city, network, device, ip_hash, cle, artiste, artiste_nom, organisme, type_evenement, jauge, budget, technique, lang) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO contact_requests (site, nom, email, telephone, sujet, date_event, lieu, message, page_origine, session_id, city, network, device, ip_hash, cle, artiste, artiste_nom, organisme, type_evenement, jauge, budget, technique, lang, produit_ref, commande_num) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
           ).bind(site, d.nom, d.email || null, d.telephone || null, d.sujet || null, d.date_event || null, d.lieu || null, d.message || null, d.page || null, d.sid || null, cf.city || null, vp.network, vp.device, ipHash,
-            cle, d.artiste || null, d.artiste_nom || null, d.organisme || null, d.type_evenement || null, d.jauge || null, d.budget || null, d.technique || null, d.lang).run();
+            cle, d.artiste || null, d.artiste_nom || null, d.organisme || null, d.type_evenement || null, d.jauge || null, d.budget || null, d.technique || null, d.lang, d.produit_ref || null, d.commande_num || null).run();
           id = ins.meta && ins.meta.last_row_id;
         } catch (e) {
           // Deux envois simultanés de la même soumission (double clic) : le second tombe sur la clé unique.
@@ -1458,7 +1466,7 @@ export default {
         try { await env.DB.prepare("UPDATE contact_requests SET reference = ? WHERE id = ?").bind(reference, id).run(); } catch (e) { console.error("contact: référence non enregistrée", id, e && e.message); }
         // Tâches secondaires : leur échec ne change jamais la réponse (la demande est déjà enregistrée).
         const secondaire = (async () => {
-          try { await notifyContactMail(env, { id, reference, nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, page_origine: d.page, city: cf.city, artiste_nom: d.artiste_nom, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget, technique: d.technique }); } catch (e) { console.error("contact: notification", e && e.message); }
+          try { await notifyContactMail(env, { id, reference, nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, page_origine: d.page, city: cf.city, artiste_nom: d.artiste_nom, produit_ref: d.produit_ref, commande_num: d.commande_num, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget, technique: d.technique }); } catch (e) { console.error("contact: notification", e && e.message); }
           await recordContactEvent(env, site, d, cf, vp);
           try { await retryFailedContactMails(env, { minAgeMin: 2, limit: 3 }); } catch (e) { console.error("contact: reprise", e && e.message); }
         })();

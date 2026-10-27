@@ -69,12 +69,19 @@ def esc(s):
     return html.escape(str(s or ''), quote=True)
 
 
+try:
+    TO_CONFIRM = json.loads((pathlib.Path(__file__).parent / 'fiches_a_confirmer.json').read_text(encoding='utf-8'))
+except Exception:
+    TO_CONFIRM = {}
+
+
 def specs(p):
     d = (p.get('description') or '').strip()
     if d.lower() in EMPTY:
         return []
     parts = [s.strip() for s in d.split('|')] if '|' in d else [d]
-    return [s for s in parts if s]
+    masked = TO_CONFIRM.get(p.get('slug'), {}).get('retirer_lignes', [])
+    return [s for s in parts if s and not any(s.startswith(m) for m in masked)]
 
 
 def spec_table(sp):
@@ -199,6 +206,23 @@ def fr_price_ht(p):
     return f"{p['price_cents'] / 120:.2f}".replace('.', ',') + ' € HT'
 
 
+def photo_note(p):
+    # Poudres : la photo montre deux variantes ; chaque référence = un sachet de 200 g de la variante indiquée.
+    if p['slug'].startswith('poudre-machine-etincelles'):
+        return '<p class="pp-photo-note">Photo d\'illustration : elle présente les deux variantes (Indoor et Outdoor). Chaque référence correspond à un seul sachet de 200 g, de la variante indiquée dans le titre.</p>'
+    return ''
+
+
+def delivery_days(slug):
+    # Délai estimé affiché (livraison.json : défaut + exceptions par produit) ; jamais présenté comme un engagement.
+    try:
+        cfg = json.loads((ROOT / 'livraison.json').read_text(encoding='utf-8'))
+    except Exception:
+        cfg = {}
+    v = (cfg.get('par_produit') or {}).get(slug)
+    return int(v) if isinstance(v, (int, float)) and v > 0 else int(cfg.get('delai_estime_jours') or 10)
+
+
 def in_stock(p):
     return int(p.get('stock_qty') or 0) > 0
 
@@ -246,6 +270,8 @@ PAGE_CSS = """<style>
   .pp-ttc{color:var(--muted); font-size:.85rem;}
   .pp-stock{display:inline-flex; align-items:center; gap:8px; font-size:.9rem; margin:16px 0 24px;}
   .pp-stock::before{content:''; width:9px; height:9px; border-radius:50%; background:#3ddc84; box-shadow:0 0 8px #3ddc84;}
+  .pp-photo-note{font-size:.82rem; color:var(--muted); margin:8px 2px 0;}
+  .pp-eta{font-size:.92rem; color:var(--paper); margin:-8px 0 22px;}
   .pp-stock.out::before{background:#ff5a5a; box-shadow:0 0 8px #ff5a5a;}
   .pp-actions{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:28px;}
   .pp-trust{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:30px;}
@@ -379,10 +405,12 @@ def page(p, products, tpl):
     sp = specs(p)
     spec_html = spec_table(sp) if len(sp) > 1 else ''
     intro = f'<p class="pp-intro">{esc(sp[0])}</p>' if len(sp) == 1 else ''
-    stock = ('<span class="pp-stock">En stock — expédition en France</span>' if in_stock(p)
+    days = delivery_days(p['slug'])
+    eta = (f'<p class="pp-eta"><b>Livraison estimée : environ {days} jour{"s" if days > 1 else ""} après la commande.</b></p>' if in_stock(p) else '')
+    stock = ('<span class="pp-stock">En stock</span>' if in_stock(p)
              else '<span class="pp-stock out">Bientôt de retour en stock</span>')
     buy = (f'<a class="btn btn-primary" href="/boutique.html?ajouter={esc(p["slug"])}">Ajouter au panier</a>' if in_stock(p)
-           else f'<a class="btn btn-primary" href="/contact.html">Être prévenu du retour</a>')
+           else f'<a class="btn btn-primary" href="/contact-boutique?motif=disponibilite&amp;produit={esc(p["slug"])}">Être prévenu du retour</a>')
     same = [q for q in products if q['category'] == p['category'] and q['slug'] != p['slug']]
     others = (same + [q for q in products if q['category'] != p['category']])[:4]
     more = ''.join(
@@ -435,20 +463,21 @@ def page(p, products, tpl):
 <main class="pp">
   <nav class="pp-crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a> / <a href="/boutique.html">Boutique</a> / <a href="/boutique.html#{esc(p['category'])}">{esc(cat)}</a> / {esc(p['name'])}</nav>
   <div class="pp-grid">
-    <div><div class="pp-img">{img}</div>{thumbs}{video_block(p)}</div>
+    <div><div class="pp-img">{img}</div>{thumbs}{photo_note(p)}{video_block(p)}</div>
     <div>
       <span class="label">{esc(CAT_FULL.get(p['category'], cat))}</span>
       <h1>{esc(p['name'])}</h1>
       <div class="pp-price">{fr_price(p)}</div>
       <div class="pp-ttc">Prix TTC · soit {fr_price_ht(p)} · Réf. SLP-{p['id']}</div>
       {stock}
+      {eta}
       <div class="pp-actions">{buy}<a class="btn btn-ghost" href="/boutique.html">Toute la boutique</a></div>
       {wa}
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       {intro}
       {f'<h2>Caractéristiques techniques</h2>{spec_html}' if spec_html else ''}
       {need_block(p, products)}
-      {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact.html" style="color:var(--paper)">contactez-nous</a>.</p>'}
+      {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact-boutique?motif=conseil&amp;produit={esc(p["slug"])}" style="color:var(--paper)">contactez-nous</a>.</p>'}
     </div>
   </div>
   <section class="pp-more">
@@ -511,9 +540,6 @@ def update_boutique(products):
              + ''.join(groups) + '</div>\n    </details>\n  </div>\n</section>\n'
              '<script type="application/ld+json">' + json.dumps(store, ensure_ascii=False) + '</script>\n'
              '<script type="application/ld+json">' + json.dumps(itemlist, ensure_ascii=False) + '</script>\n<!-- refs:end -->')
-    # Rayon Sonorisation masqué tant qu'il n'a aucun produit (le lien du menu reçoit l'attribut hidden)
-    has_son = any(p['category'] == 'son' for p in products)
-    s = re.sub(r'<a class="top" href="/boutique\.html#son"[^>]*>', '<a class="top" href="/boutique.html#son"' + ('' if has_son else ' hidden') + '>', s, count=1)
     if '<!-- refs:start' in s:
         s = re.sub(r'<!-- refs:start.*?<!-- refs:end -->', lambda _: block, s, flags=re.S)
     else:
@@ -531,7 +557,8 @@ def update_sitemap(products):
     urls = (f"\n  <url><loc>{SITE}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>" + ''.join(
         f"\n  <url><loc>{SITE}/produits/{p['slug']}</loc><changefreq>weekly</changefreq><priority>0.7</priority>"
         + (f"<image:image><image:loc>{SITE}{esc(p['image'])}</image:loc></image:image>" if p.get('image') else '') + '</url>'
-        for p in products))
+        for p in products)
+        + f"\n  <url><loc>{SITE}/contact-boutique</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>")
     (ROOT / 'sitemap-store.xml').write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
         'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + urls + '\n</urlset>\n', encoding='utf-8')

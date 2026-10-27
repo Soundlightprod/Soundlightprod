@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script src="https://soundlightprod.fr/consent.js" data-legal="https://soundlightprod.fr/mentions-legales"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact boutique et SAV — SLP Store</title>
+<meta name="description" content="Une question sur votre matériel ou votre commande ? Conseil avant achat, suivi de commande, SAV, garantie, rétractation : écrivez à l'équipe SLP.">
+<link rel="canonical" href="https://soundlightprod.store/contact-boutique">
+<meta name="robots" content="index, follow">
+<link rel="stylesheet" href="/charte.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#ffffff">
+<style>
+  :root{ --ink:#14213d; --muted:#5b6377; --line:#dfe3ec; --paper:#ffffff; --soft:#f3f5fa; --amber:#e8590c; --err:#b42318; --ok:#1d7a46; }
+  *{box-sizing:border-box;}
+  html{color-scheme:light;}
+  body{margin:0; background:#fff; color:var(--ink); font-family:'Instrument Sans',system-ui,sans-serif; line-height:1.6;}
+  .top{border-bottom:1px solid var(--line); padding:14px max(16px, env(safe-area-inset-left));}
+  .top a{display:inline-flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:700;}
+  .top img{height:38px; width:auto;}
+  .wrap{max-width:720px; margin:0 auto; padding:36px max(16px, env(safe-area-inset-left)) 80px;}
+  .back{color:var(--amber); text-decoration:none; font-size:.9rem; font-weight:600;}
+  h1{font-family:'League Spartan',sans-serif; font-size:clamp(1.6rem,4.5vw,2.2rem); line-height:1.15; margin:14px 0 10px; text-wrap:balance;}
+  .intro{color:var(--muted); font-size:1.02rem; margin:0 0 26px;}
+  form{display:grid; gap:18px;}
+  .row{display:grid; gap:18px; grid-template-columns:1fr 1fr;}
+  @media (max-width:560px){ .row{grid-template-columns:1fr;} }
+  label{display:block; font-weight:600; font-size:.92rem; margin-bottom:6px;}
+  label .opt{font-weight:400; color:var(--muted);}
+  input, select, textarea{width:100%; font:inherit; font-size:1rem; color:var(--ink); background:#fff; border:1px solid #b9c0d0; border-radius:10px; padding:12px 14px; min-height:46px;}
+  textarea{min-height:140px; resize:vertical;}
+  input:focus, select:focus, textarea:focus{outline:3px solid rgba(232,89,12,.35); outline-offset:1px; border-color:var(--amber);}
+  [aria-invalid="true"]{border-color:var(--err);}
+  .err{color:var(--err); font-size:.85rem; margin-top:5px; min-height:1.1em;}
+  .hint{color:var(--muted); font-size:.85rem; margin-top:5px;}
+  .hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+  button{font:inherit; font-weight:700; font-size:1rem; background:var(--ink); color:#fff; border:0; border-radius:100px; padding:14px 28px; min-height:48px; cursor:pointer;}
+  button[disabled]{opacity:.6; cursor:wait;}
+  .status{border-radius:12px; padding:14px 16px; font-size:.95rem; display:none;}
+  .status.show{display:block;}
+  .status.ok{background:#e9f6ee; color:#14532d; border:1px solid #bfe3cd;}
+  .status.ko{background:#fdecea; color:#7a1c13; border:1px solid #f3c2bd;}
+  .direct{margin-top:34px; padding:18px 20px; background:var(--soft); border-radius:14px; font-size:.95rem;}
+  .direct a{color:var(--ink); font-weight:600;}
+  .legal{color:var(--muted); font-size:.82rem;}
+  .legal a{color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="top"><a href="/" aria-label="SLP Store — retour à la boutique"><img src="/slp-sigle.png" alt="SLP Sound Light Prod"><span>Boutique SLP</span></a></div>
+<main class="wrap">
+  <a class="back" href="/">← Retour à la boutique</a>
+  <h1>Une question sur votre matériel ou votre commande ?</h1>
+  <p class="intro">L’équipe SLP vous accompagne pour choisir votre matériel, suivre votre commande ou contacter le SAV.</p>
+
+  <form id="f" novalidate>
+    <div class="row">
+      <div><label for="nom">Nom et prénom</label><input id="nom" name="nom" type="text" autocomplete="name" required maxlength="120" aria-describedby="e-nom"><div class="err" id="e-nom" role="alert"></div></div>
+      <div><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="160" aria-describedby="e-email"><div class="err" id="e-email" role="alert"></div></div>
+    </div>
+    <div class="row">
+      <div><label for="telephone">Téléphone <span class="opt">(facultatif)</span></label><input id="telephone" name="telephone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" aria-describedby="e-telephone"><div class="err" id="e-telephone" role="alert"></div></div>
+      <div><label for="sujet">Motif de votre demande</label>
+        <select id="sujet" name="sujet" required aria-describedby="e-sujet">
+          <option value="">Choisir un motif</option>
+          <option value="Conseil avant achat">Conseil avant achat</option>
+          <option value="Suivi de commande">Suivi de commande</option>
+          <option value="SAV / garantie">SAV / garantie</option>
+          <option value="Retour / rétractation">Retour / rétractation</option>
+          <option value="Disponibilité d'un produit">Disponibilité d’un produit</option>
+        </select><div class="err" id="e-sujet" role="alert"></div></div>
+    </div>
+    <div class="row">
+      <div><label for="produit_ref">Référence ou nom du produit <span class="opt">(facultatif)</span></label><input id="produit_ref" name="produit_ref" type="text" maxlength="80" autocomplete="off"></div>
+      <div><label for="commande_num">Numéro de commande <span class="opt">(facultatif)</span></label><input id="commande_num" name="commande_num" type="text" maxlength="40" autocomplete="off" aria-describedby="h-cmd"><div class="hint" id="h-cmd">Indiqué dans votre email de confirmation.</div></div>
+    </div>
+    <div><label for="message">Votre message</label><textarea id="message" name="message" required maxlength="4000" aria-describedby="e-message"></textarea><div class="err" id="e-message" role="alert"></div></div>
+    <div class="hp" aria-hidden="true"><label for="site_web">Ne pas remplir</label><input id="site_web" name="site_web" type="text" tabindex="-1" autocomplete="off"></div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+    <div><button type="submit" id="go">Envoyer ma demande</button></div>
+    <p class="legal">Vos données servent uniquement à répondre à votre demande. Aucune inscription à une newsletter. Voir les <a href="https://soundlightprod.fr/mentions-legales">mentions légales</a>.</p>
+  </form>
+
+  <div class="direct">
+    Vous préférez nous joindre directement ? Écrivez à <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a> ou appelez le <a href="tel:+33631949653" data-contact="appel">06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</a>.
+  </div>
+</main>
+<script>
+(function(){
+  var f = document.getElementById('f'), go = document.getElementById('go'), st = document.getElementById('status');
+  var q = new URLSearchParams(location.search);
+  var MOTIFS = { disponibilite:"Disponibilité d'un produit", conseil:'Conseil avant achat', suivi:'Suivi de commande', sav:'SAV / garantie', retour:'Retour / rétractation' };
+  // Préremplissage depuis une fiche produit (?produit=…) ou le bouton de retour en stock (?motif=disponibilite)
+  if (q.get('produit')) f.produit_ref.value = q.get('produit').slice(0, 80);
+  if (q.get('commande')) f.commande_num.value = q.get('commande').slice(0, 40);
+  var m = MOTIFS[(q.get('motif') || '').toLowerCase()];
+  if (m) f.sujet.value = m;
+  // Clé d'idempotence : un double clic ou une reprise ne crée qu'une seule demande
+  var cle = 'bq-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+  var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch (e) {}
+  var sending = false;
+
+  function setErr(champ, msg){
+    var e = document.getElementById('e-' + champ), el = f.elements[champ];
+    if (e) e.textContent = msg || '';
+    if (el) { if (msg) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid'); }
+  }
+  function clearErrs(){ ['nom','email','telephone','sujet','message'].forEach(function(c){ setErr(c, ''); }); }
+  function show(kind, text){ st.className = 'status show ' + kind; st.textContent = text; }
+
+  function validate(){
+    clearErrs(); var first = null, ok = true;
+    function bad(c, msg){ setErr(c, msg); ok = false; if (!first) first = f.elements[c]; }
+    if (!f.nom.value.trim()) bad('nom', 'Indiquez votre nom.');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(f.email.value.trim())) bad('email', 'Indiquez une adresse email valide.');
+    if (f.telephone.value.trim() && f.telephone.value.replace(/\D/g, '').length < 6) bad('telephone', 'Ce numéro semble trop court.');
+    if (!f.sujet.value) bad('sujet', 'Choisissez le motif de votre demande.');
+    if (f.message.value.trim().length < 10) bad('message', 'Précisez votre demande en quelques mots.');
+    if (first) first.focus();
+    return ok;
+  }
+
+  f.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    if (sending) return;
+    if (!validate()) return;
+    sending = true; go.disabled = true; st.className = 'status';
+    fetch('/api/contact', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nom: f.nom.value.trim(), email: f.email.value.trim(), telephone: f.telephone.value.trim(), sujet: f.sujet.value,
+        produit_ref: f.produit_ref.value.trim(), commande_num: f.commande_num.value.trim(), message: f.message.value.trim(),
+        site_web: f.site_web.value, cle: cle, session_id: sid, page: '/contact-boutique', site: 'store', lang: 'fr'
+      })
+    }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { st: r.status, d: d }; }); })
+      .then(function(x){
+        if (x.d && x.d.ok) {
+          show('ok', 'Merci, votre demande est bien enregistrée' + (x.d.reference ? ' (référence ' + x.d.reference + ')' : '') + '. Nous vous répondons par email.');
+          f.reset(); cle = 'bq-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+        } else {
+          if (x.d && x.d.champ) setErr(x.d.champ, x.d.error || '');
+          show('ko', (x.d && x.d.error) || 'Votre demande n’a pas pu être envoyée. Réessayez, ou écrivez-nous à contact@soundlightprod.fr.');
+        }
+      })
+      .catch(function(){ show('ko', 'Connexion impossible. Réessayez dans un instant, ou écrivez-nous à contact@soundlightprod.fr.'); })
+      .then(function(){ sending = false; go.disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>

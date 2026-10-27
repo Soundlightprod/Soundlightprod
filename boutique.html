@@ -99,8 +99,19 @@
   .cart-empty{color:var(--muted); text-align:center; padding:40px 0; font-size:0.9rem;}
   .cart-foot{padding:20px 24px; border-top:1px solid var(--line);}
   .cart-ship{font-size:.88rem; color:var(--muted); margin-bottom:12px;} .cart-ship div{display:flex; justify-content:space-between; padding:2px 0;} .cart-ship .hint{display:block; color:#1d7a46; font-weight:600; padding-top:4px;}
+  .cart-eta{font-size:.84rem; color:var(--muted); margin:-4px 0 12px; line-height:1.4;} .cart-eta b{color:var(--navy);}
+  .eta-line{font-size:.85rem; color:var(--muted); margin:6px 0 0;}
   .cart-total{display:flex; justify-content:space-between; margin-bottom:16px; font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.1rem;}
   .cart-form input, .cart-form textarea{width:100%; margin-bottom:10px; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; font-size:0.88rem;}
+  .cart-form label{display:block; font-size:.8rem; font-weight:600; margin:0 0 4px; color:var(--muted);} .cart-form label .opt{font-weight:400;}
+  /* Mobile : panneau à la hauteur visible (clavier ouvert), pied défilant pour garder total, délai et paiement accessibles */
+  .cart-panel{height:100vh; height:100dvh;}
+  .cart-foot{max-height:64vh; max-height:64dvh; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;}
+  @media (max-width:520px){
+    .cart-head{padding:14px 16px;} .cart-items{padding:8px 16px; min-height:70px;} .cart-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));}
+    .cart-item .qty-ctrl button{width:36px; height:36px; font-size:1.05rem;} .cart-close{min-width:44px; min-height:44px;}
+    .cart-form input{padding:10px 12px; font-size:1rem; margin-bottom:8px;} .cart-total{margin-bottom:10px;}
+  }
   .cart-msg{font-size:0.82rem; margin-top:10px;}
   .cart-msg.error{color:var(--pink);}
   .cart-msg.ok{color:#fbc608;}
@@ -202,7 +213,7 @@
   .subchips button i{font-style:normal; opacity:.55; margin-left:5px;}
   .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
   .grid-sm{display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:16px;}
-  @media (max-width:520px){ .grid-sm{grid-template-columns:repeat(2,1fr); gap:10px;} }
+  @media (max-width:520px){ .grid-sm{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;} .grid-sm .card{min-width:0;} .grid-sm .card .price-row{flex-wrap:wrap;} }
   .grid-sm .card{padding:10px; gap:8px; border-radius:14px;}
   .grid-sm .card-img{aspect-ratio:1/1; max-height:190px; width:100%;}
   .grid-sm .card-img img{padding:6%;}
@@ -277,7 +288,8 @@
   .hero-ban .pill{display:inline-block; background:#fff; color:#14213d; font-weight:700; padding:12px 24px; border-radius:100px; font-size:.92rem;}
   .hero-ban .im{height:100%; display:flex; align-items:center; justify-content:center; padding:18px;}
   .hero-ban .im img{max-height:290px; max-width:100%; object-fit:cover; -webkit-mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent); -webkit-mask-composite:source-in; mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent); mask-composite:intersect;}
-  @media (max-width:600px){ .hero-ban{grid-template-columns:1fr;} .hero-ban .tx{padding:26px 22px 8px;} .hero-ban .im img{max-height:200px;} }
+  @media (max-width:600px){ .hero-ban{grid-template-columns:1fr; min-height:0;} .hero-ban .tx{padding:18px 18px 4px;} .hero-ban .tag{margin-bottom:8px;} .hero-ban h2{font-size:1.45rem; margin-bottom:6px;} .hero-ban p{font-size:.9rem; margin-bottom:12px;} .hero-ban .pill{padding:10px 20px;} .hero-ban .im{padding:6px 18px 14px;} .hero-ban .im img{max-height:150px;}
+    .hero-row{gap:12px; margin-bottom:14px;} .hero-side{padding:16px 18px; gap:6px;} .hero-side h3{font-size:1.15rem; margin-bottom:0;} .hero-side ul{gap:6px; margin:2px 0 4px;} .hero-side li{font-size:.86rem;} .hero-side a{padding:10px; font-size:.86rem;} }
   .hero-side{border-radius:18px; background:linear-gradient(160deg,#fc8024,#e8590c); color:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;}
   .hero-side h3{color:#fff; font-size:1.5rem; margin-bottom:4px;}
   .hero-side ul{list-style:none; display:flex; flex-direction:column; gap:11px; margin:6px 0 10px;}
@@ -333,7 +345,7 @@
         <li><a href="galerie">Galerie</a></li>
         <li><a href="https://soundlightprod.store" class="current">Boutique</a></li>
         <li><a href="son-lumiere">Son &amp; lumière</a></li>
-        <li><a href="contact" class="nav-cta">Contact</a></li>
+        <li><a href="contact-boutique" class="nav-cta">Contact</a></li>
       </ul>
     </nav>
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
@@ -374,7 +386,7 @@
         <div class="hero-side">
           <h3>Pourquoi SLP ?</h3>
           <ul><li>Matériel testé par nos techniciens</li><li>Garantie 2 ans</li><li>Livraison partout en France</li><li>Conseils de professionnels du spectacle</li></ul>
-          <a href="/contact.html" data-contact="devis">Une question ? Contactez-nous</a>
+          <a href="/contact-boutique" data-contact="devis">Une question ? Contactez-nous</a>
           <a href="https://wa.me/33631949653?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20la%20boutique%20SLP" target="_blank" rel="noopener" data-contact="whatsapp">ou écrivez-nous sur WhatsApp</a>
         </div>
       </div>
@@ -401,7 +413,7 @@
       <div class="cat-head">
         <h1><span id="catTitle"></span><span class="cnt" id="catCount"></span></h1>
         <select class="sort" id="sortSel" aria-label="Trier">
-          <option value="def">Trier : sélection</option>
+          <option value="def" id="sortDef">Trier : sélection</option>
           <option value="asc">Prix croissant</option>
           <option value="desc">Prix décroissant</option>
           <option value="name">Nom A → Z</option>
@@ -423,18 +435,22 @@
 <div class="cart-panel" id="cartPanel">
   <div class="cart-head">
     <h3>Votre panier</h3>
-    <button class="cart-close" id="cartClose">&times;</button>
+    <button class="cart-close" id="cartClose" aria-label="Fermer le panier">&times;</button>
   </div>
   <div class="cart-items" id="cartItems">
     <p class="cart-empty">Votre panier est vide.</p>
   </div>
   <div class="cart-foot" id="cartFoot" style="display:none;">
     <div class="cart-ship" id="cartShip"></div>
+    <p class="cart-eta" id="cartEta"></p>
     <div class="cart-total"><span>Total</span><span id="cartTotal">0,00 €</span></div>
     <div class="cart-form">
-      <input type="text" id="custName" placeholder="Nom et prénom *" required>
-      <input type="email" id="custEmail" placeholder="Email *" required>
-      <input type="tel" id="custPhone" placeholder="Téléphone">
+      <label for="custName">Nom et prénom <span aria-hidden="true">*</span></label>
+      <input type="text" id="custName" autocomplete="name" required>
+      <label for="custEmail">Email <span aria-hidden="true">*</span></label>
+      <input type="email" id="custEmail" autocomplete="email" inputmode="email" required>
+      <label for="custPhone">Téléphone <span class="opt">(facultatif)</span></label>
+      <input type="tel" id="custPhone" autocomplete="tel" inputmode="tel">
     </div>
     <label style="display:flex; align-items:flex-start; gap:8px; font-size:0.8rem; color:var(--muted); margin-bottom:14px; cursor:pointer;">
       <input type="checkbox" id="acceptCgv" style="margin-top:3px;">
@@ -460,6 +476,7 @@
         <span class="price" id="pdPrice"></span>
         <button class="btn btn-primary" id="pdAddBtn">Ajouter</button>
       </div>
+      <p class="eta-line" id="pdEta"></p>
     </div>
   </div>
 </div>
@@ -494,7 +511,7 @@
       <a href="son-lumiere">Son &amp; lumière</a>
       <a href="agenda">Agenda</a>
       <a href="galerie">Galerie</a>
-      <a href="contact">Contact</a>
+      <a href="contact-boutique">Contact</a>
       <a href="https://soundlightprod.store">Boutique</a>
     </div>
     <div class="footer-col">
@@ -533,6 +550,27 @@
     ['Projecteurs & floods', /./, 'floods']
   ];
   const subOf = p => SUBS.find(s => s[1].test(p.name)) || SUBS[SUBS.length-1];
+  // Recherche par pertinence : nom et référence (fiche, SLP-n) avant la description ; accents normalisés, plusieurs mots (tous requis).
+  // À score égal, l'ordre du catalogue est conservé (tri stable).
+  function searchRank(words){
+    const scored = [];
+    products.forEach((p, i) => {
+      const name = plain(p.name), ref = plain(p.slug + ' slp-' + p.id), desc = plain(p.description), cat = plain((CATS[p.category] || {}).name);
+      let score = 0, all = true;
+      for (const w of words){
+        if (name.includes(w)) score += 10 + (name.split(/[^a-z0-9]+/).includes(w) ? 2 : 0);
+        else if (ref.includes(w)) score += 8;
+        else if (cat.includes(w)) score += 3;
+        else if (desc.includes(w)) score += 1;
+        else { all = false; break; }
+      }
+      if (!all) return;
+      if (words.length > 1 && name.includes(words.join(' '))) score += 6;
+      if (ref === plain(words.join('-')) || ref.split(' ').includes(words.join('-'))) score += 20;
+      scored.push({ p, score, i });
+    });
+    return scored.sort((a, b) => (b.score - a.score) || (a.i - b.i)).map(x => x.p);
+  }
   const plain = t => (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
   // les plus récents d'abord ; les lots (-x2, -x4) restent derrière leur produit unitaire
   const famOf = p => p.slug.replace(/-x[0-9]+$/, '');
@@ -621,6 +659,7 @@
       if (curSub) list = base.filter(p => subOf(p)[2] === curSub);
     } else { subsEl.innerHTML = ''; subsEl.hidden = true; }
     const sort = document.getElementById('sortSel').value;
+    document.getElementById('sortDef').textContent = opts.ranked ? 'Trier : pertinence' : 'Trier : sélection';
     list = list.slice();
     if (sort === 'asc') list.sort((a,b) => a.price_cents - b.price_cents);
     else if (sort === 'desc') list.sort((a,b) => b.price_cents - a.price_cents);
@@ -650,8 +689,8 @@
     window.scrollTo({top:0});
     if (q && !h){
       const words = plain(q).split(/\s+/).filter(Boolean);
-      const hit = products.filter(p => { const t = plain(p.name + ' ' + (p.description||'')); return words.every(w => t.includes(w)); });
-      renderList({ title: 'Résultats pour « ' + q + ' »', base: hit, empty: 'Aucun produit ne correspond à cette recherche.' });
+      const hit = searchRank(words);
+      renderList({ title: 'Résultats pour « ' + q + ' »', ranked: true, base: hit, empty: 'Aucun produit ne correspond à cette recherche.' });
     }
     else if (c === 'tous') renderList({ title:'Tout le catalogue', base: products });
     else if (c === 'nouveautes') renderList({ title:'Nouveautés', base: newest().slice(0,12) });
@@ -663,6 +702,7 @@
     try {
       const res = await fetch(`${API_BASE}/api/products`);
       products = await res.json();
+      try { const lr = await fetch('/livraison.json', { cache: 'no-cache' }); if (lr.ok) { const l = await lr.json(); if (Number.isFinite(l.delai_estime_jours) && l.delai_estime_jours > 0) LIV = Object.assign(LIV, l); } } catch (e) {}
       loaded = true;
       route();
       const q = new URLSearchParams(location.search);
@@ -724,6 +764,18 @@
   }
 
   // Frais de livraison (TTC) : 6,99 € jusqu'à 20 €, 14,99 € de 20 € à 99,99 €, offerts dès 100 € — identique côté serveur (slp-api)
+  // Délai de livraison : estimé (valeur par produit dans /livraison.json, défaut 10 jours) ; panier mixte = produit le plus long.
+  // Un délai maximal ENGAGEANT n'est affiché que s'il est renseigné (delai_max_engage_jours) : jamais déduit de l'estimation.
+  let LIV = { delai_estime_jours: 10, delai_max_engage_jours: null, par_produit: {} };
+  function etaDaysFor(slug){ const v = LIV.par_produit && LIV.par_produit[slug]; return Number.isFinite(v) && v > 0 ? v : LIV.delai_estime_jours; }
+  function etaText(days){ return 'Livraison estimée : environ ' + days + ' jour' + (days > 1 ? 's' : '') + ' après la commande.'; }
+  function etaHTML(slugs){
+    const days = Math.max(...slugs.map(etaDaysFor));
+    const mixed = new Set(slugs.map(etaDaysFor)).size > 1;
+    const max = LIV.delai_max_engage_jours;
+    return '<b>' + etaText(days) + '</b>' + (mixed ? ' Délai du produit le plus long de votre panier.' : '') +
+      (Number.isFinite(max) && max > 0 ? '<br>Livraison au plus tard sous ' + max + ' jours : engagement SLP, repris dans votre confirmation de commande.' : '');
+  }
   function shipCents(sub){ return sub <= 2000 ? 699 : (sub < 10000 ? 1499 : 0); }
 
   function renderCart(){
@@ -750,9 +802,9 @@
         <div class="cart-item">
           <span>${c.name}</span>
           <div class="qty-ctrl">
-            <button onclick="changeQty(${c.product_id}, -1)">−</button>
+            <button onclick="changeQty(${c.product_id}, -1)" aria-label="Retirer une unité de ${c.name.replace(/"/g, '&quot;')}">−</button>
             <span>${c.qty}</span>
-            <button onclick="changeQty(${c.product_id}, 1)">+</button>
+            <button onclick="changeQty(${c.product_id}, 1)" aria-label="Ajouter une unité de ${c.name.replace(/"/g, '&quot;')}">+</button>
           </div>
           <span>${money(c.price_cents * c.qty)}</span>
         </div>
@@ -774,6 +826,7 @@
       '<div><span>Livraison en France</span><span>' + (ship ? money(ship) : 'Offerte') + '</span></div>' +
       (ship ? '<span class="hint">Plus que ' + money(10000 - total) + ' pour la livraison offerte</span>' : '');
     total = grand;
+    document.getElementById('cartEta').innerHTML = etaHTML(cart.map(c => { const p = products.find(x => x.id === c.product_id); return p ? p.slug : ''; }));
     totalEl.innerHTML = money(total) + '<small class="ht" style="display:block;text-align:right;font-weight:400;font-size:.7rem;opacity:.7">soit ' + moneyHT(total) + '</small>';
   }
 
@@ -794,13 +847,16 @@
     document.getElementById('pdImg').innerHTML = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async">` : '';
     document.getElementById('pdCat').textContent = { son:'Son', lumiere:'Lumière', effets:'Effets', consommables:'Consommables' }[p.category] || p.category;
     document.getElementById('pdName').textContent = p.name;
-    const specs = (p.description || '').split('|').map(s => s.trim()).filter(Boolean);
+    // Lignes non confirmées (contradiction avec le titre) : masquées tant que le modèle exact n'est pas confirmé
+    const HIDE_SPECS = { 'battery-3w-animated-laser-light': ['Laser RVB 300mW-5W'] };
+    const specs = (p.description || '').split('|').map(s => s.trim()).filter(s => s && !(HIDE_SPECS[p.slug] || []).some(h => s.startsWith(h)));
     document.getElementById('pdSpecs').innerHTML = specs.length
       ? specs.map(s => `<li>${s}</li>`).join('')
       : '<li>Caractéristiques à venir.</li>';
     { const acc = accFor(p);
       document.getElementById('pdNeed').innerHTML = acc.length
         ? `<div class="need-box"><b>À prévoir avec cette machine (vendu séparément)</b>${needRows(acc)}</div>` : ''; }
+    document.getElementById('pdEta').textContent = etaText(etaDaysFor(p.slug));
     document.getElementById('pdPrice').innerHTML = money(p.price_cents) + '<small class="ht">' + moneyHT(p.price_cents) + '</small>';
     document.getElementById('pdAddBtn').onclick = () => { addToCart(p.id); closeProductDetail(); };
     document.getElementById('productModal').classList.add('open');

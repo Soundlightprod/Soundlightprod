@@ -1,0 +1,9 @@
+{
+  "_aide": "Lignes de description NON confirmées (contradiction ou donnée d'une autre variante fournisseur) : le générateur les retire des fiches tant que le propriétaire n'a pas fourni le modèle exact. Rien n'est remplacé par une valeur déduite.",
+  "battery-3w-animated-laser-light": {
+    "retirer_lignes": [
+      "Laser RVB 300mW-5W"
+    ],
+    "raison": "Titre « 3W » contre description « 300mW-5W » : puissance, classe laser et autonomie à confirmer avec le modèle exact."
+  }
+}
