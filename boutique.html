@@ -766,7 +766,7 @@
   // Frais de livraison (TTC) : 6,99 € jusqu'à 20 €, 14,99 € de 20 € à 99,99 €, offerts dès 100 € — identique côté serveur (slp-api)
   // Délai de livraison : estimé (valeur par produit dans /livraison.json, défaut 10 jours) ; panier mixte = produit le plus long.
   // Un délai maximal ENGAGEANT n'est affiché que s'il est renseigné (delai_max_engage_jours) : jamais déduit de l'estimation.
-  let LIV = { delai_estime_jours: 10, delai_max_engage_jours: null, par_produit: {} };
+  let LIV = { delai_estime_jours: 10, delai_max_engage_jours: null, delai_max_unite: 'jours', par_produit: {} };
   function etaDaysFor(slug){ const v = LIV.par_produit && LIV.par_produit[slug]; return Number.isFinite(v) && v > 0 ? v : LIV.delai_estime_jours; }
   function etaText(days){ return 'Livraison estimée : environ ' + days + ' jour' + (days > 1 ? 's' : '') + ' après la commande.'; }
   function etaHTML(slugs){
@@ -774,7 +774,7 @@
     const mixed = new Set(slugs.map(etaDaysFor)).size > 1;
     const max = LIV.delai_max_engage_jours;
     return '<b>' + etaText(days) + '</b>' + (mixed ? ' Délai du produit le plus long de votre panier.' : '') +
-      (Number.isFinite(max) && max > 0 ? '<br>Livraison au plus tard sous ' + max + ' jours : engagement SLP, repris dans votre confirmation de commande.' : '');
+      (Number.isFinite(max) && max > 0 ? '<br>Livraison au plus tard sous ' + max + ' ' + (LIV.delai_max_unite || 'jours') + ' : engagement SLP, repris dans votre confirmation de commande.' : '');
   }
   function shipCents(sub){ return sub <= 2000 ? 699 : (sub < 10000 ? 1499 : 0); }
 
