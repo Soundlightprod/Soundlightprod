@@ -99,6 +99,8 @@
   .cart-empty{color:var(--muted); text-align:center; padding:40px 0; font-size:0.9rem;}
   .cart-foot{padding:20px 24px; border-top:1px solid var(--line);}
   .cart-ship{font-size:.88rem; color:var(--muted); margin-bottom:12px;} .cart-ship div{display:flex; justify-content:space-between; padding:2px 0;} .cart-ship .hint{display:block; color:#1d7a46; font-weight:600; padding-top:4px;}
+  .cart-eta{font-size:.84rem; color:var(--muted); margin:-4px 0 12px; line-height:1.4;} .cart-eta b{color:var(--navy);}
+  .eta-line{font-size:.85rem; color:var(--muted); margin:6px 0 0;}
   .cart-total{display:flex; justify-content:space-between; margin-bottom:16px; font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.1rem;}
   .cart-form input, .cart-form textarea{width:100%; margin-bottom:10px; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; font-size:0.88rem;}
   .cart-msg{font-size:0.82rem; margin-top:10px;}
@@ -430,6 +432,7 @@
   </div>
   <div class="cart-foot" id="cartFoot" style="display:none;">
     <div class="cart-ship" id="cartShip"></div>
+    <p class="cart-eta" id="cartEta"></p>
     <div class="cart-total"><span>Total</span><span id="cartTotal">0,00 €</span></div>
     <div class="cart-form">
       <input type="text" id="custName" placeholder="Nom et prénom *" required>
@@ -460,6 +463,7 @@
         <span class="price" id="pdPrice"></span>
         <button class="btn btn-primary" id="pdAddBtn">Ajouter</button>
       </div>
+      <p class="eta-line" id="pdEta"></p>
     </div>
   </div>
 </div>
@@ -663,6 +667,7 @@
     try {
       const res = await fetch(`${API_BASE}/api/products`);
       products = await res.json();
+      try { const lr = await fetch('/livraison.json', { cache: 'no-cache' }); if (lr.ok) { const l = await lr.json(); if (Number.isFinite(l.delai_estime_jours) && l.delai_estime_jours > 0) LIV = Object.assign(LIV, l); } } catch (e) {}
       loaded = true;
       route();
       const q = new URLSearchParams(location.search);
@@ -724,6 +729,18 @@
   }
 
   // Frais de livraison (TTC) : 6,99 € jusqu'à 20 €, 14,99 € de 20 € à 99,99 €, offerts dès 100 € — identique côté serveur (slp-api)
+  // Délai de livraison : estimé (valeur par produit dans /livraison.json, défaut 10 jours) ; panier mixte = produit le plus long.
+  // Un délai maximal ENGAGEANT n'est affiché que s'il est renseigné (delai_max_engage_jours) : jamais déduit de l'estimation.
+  let LIV = { delai_estime_jours: 10, delai_max_engage_jours: null, par_produit: {} };
+  function etaDaysFor(slug){ const v = LIV.par_produit && LIV.par_produit[slug]; return Number.isFinite(v) && v > 0 ? v : LIV.delai_estime_jours; }
+  function etaText(days){ return 'Livraison estimée : environ ' + days + ' jour' + (days > 1 ? 's' : '') + ' après la commande.'; }
+  function etaHTML(slugs){
+    const days = Math.max(...slugs.map(etaDaysFor));
+    const mixed = new Set(slugs.map(etaDaysFor)).size > 1;
+    const max = LIV.delai_max_engage_jours;
+    return '<b>' + etaText(days) + '</b>' + (mixed ? ' Délai du produit le plus long de votre panier.' : '') +
+      (Number.isFinite(max) && max > 0 ? '<br>Livraison au plus tard sous ' + max + ' jours : engagement SLP, repris dans votre confirmation de commande.' : '');
+  }
   function shipCents(sub){ return sub <= 2000 ? 699 : (sub < 10000 ? 1499 : 0); }
 
   function renderCart(){
@@ -774,6 +791,7 @@
       '<div><span>Livraison en France</span><span>' + (ship ? money(ship) : 'Offerte') + '</span></div>' +
       (ship ? '<span class="hint">Plus que ' + money(10000 - total) + ' pour la livraison offerte</span>' : '');
     total = grand;
+    document.getElementById('cartEta').innerHTML = etaHTML(cart.map(c => { const p = products.find(x => x.id === c.product_id); return p ? p.slug : ''; }));
     totalEl.innerHTML = money(total) + '<small class="ht" style="display:block;text-align:right;font-weight:400;font-size:.7rem;opacity:.7">soit ' + moneyHT(total) + '</small>';
   }
 
@@ -801,6 +819,7 @@
     { const acc = accFor(p);
       document.getElementById('pdNeed').innerHTML = acc.length
         ? `<div class="need-box"><b>À prévoir avec cette machine (vendu séparément)</b>${needRows(acc)}</div>` : ''; }
+    document.getElementById('pdEta').textContent = etaText(etaDaysFor(p.slug));
     document.getElementById('pdPrice').innerHTML = money(p.price_cents) + '<small class="ht">' + moneyHT(p.price_cents) + '</small>';
     document.getElementById('pdAddBtn').onclick = () => { addToCart(p.id); closeProductDetail(); };
     document.getElementById('productModal').classList.add('open');

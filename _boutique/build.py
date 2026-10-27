@@ -199,6 +199,16 @@ def fr_price_ht(p):
     return f"{p['price_cents'] / 120:.2f}".replace('.', ',') + ' € HT'
 
 
+def delivery_days(slug):
+    # Délai estimé affiché (livraison.json : défaut + exceptions par produit) ; jamais présenté comme un engagement.
+    try:
+        cfg = json.loads((ROOT / 'livraison.json').read_text(encoding='utf-8'))
+    except Exception:
+        cfg = {}
+    v = (cfg.get('par_produit') or {}).get(slug)
+    return int(v) if isinstance(v, (int, float)) and v > 0 else int(cfg.get('delai_estime_jours') or 10)
+
+
 def in_stock(p):
     return int(p.get('stock_qty') or 0) > 0
 
@@ -246,6 +256,7 @@ PAGE_CSS = """<style>
   .pp-ttc{color:var(--muted); font-size:.85rem;}
   .pp-stock{display:inline-flex; align-items:center; gap:8px; font-size:.9rem; margin:16px 0 24px;}
   .pp-stock::before{content:''; width:9px; height:9px; border-radius:50%; background:#3ddc84; box-shadow:0 0 8px #3ddc84;}
+  .pp-eta{font-size:.92rem; color:var(--paper); margin:-8px 0 22px;}
   .pp-stock.out::before{background:#ff5a5a; box-shadow:0 0 8px #ff5a5a;}
   .pp-actions{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:28px;}
   .pp-trust{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:30px;}
@@ -379,7 +390,9 @@ def page(p, products, tpl):
     sp = specs(p)
     spec_html = spec_table(sp) if len(sp) > 1 else ''
     intro = f'<p class="pp-intro">{esc(sp[0])}</p>' if len(sp) == 1 else ''
-    stock = ('<span class="pp-stock">En stock — expédition en France</span>' if in_stock(p)
+    days = delivery_days(p['slug'])
+    eta = (f'<p class="pp-eta"><b>Livraison estimée : environ {days} jour{"s" if days > 1 else ""} après la commande.</b></p>' if in_stock(p) else '')
+    stock = ('<span class="pp-stock">En stock</span>' if in_stock(p)
              else '<span class="pp-stock out">Bientôt de retour en stock</span>')
     buy = (f'<a class="btn btn-primary" href="/boutique.html?ajouter={esc(p["slug"])}">Ajouter au panier</a>' if in_stock(p)
            else f'<a class="btn btn-primary" href="/contact-boutique?motif=disponibilite&amp;produit={esc(p["slug"])}">Être prévenu du retour</a>')
@@ -442,6 +455,7 @@ def page(p, products, tpl):
       <div class="pp-price">{fr_price(p)}</div>
       <div class="pp-ttc">Prix TTC · soit {fr_price_ht(p)} · Réf. SLP-{p['id']}</div>
       {stock}
+      {eta}
       <div class="pp-actions">{buy}<a class="btn btn-ghost" href="/boutique.html">Toute la boutique</a></div>
       {wa}
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
