@@ -1,6 +1,7 @@
 {
   "delai_estime_jours": 10,
-  "delai_max_engage_jours": null,
+  "delai_max_engage_jours": 15,
+  "delai_max_unite": "jours ouvrés",
   "par_produit": {},
-  "_aide": "delai_estime_jours : délai estimé affiché (environ N jours après la commande), confirmé par le propriétaire. par_produit : exceptions {slug: jours}. delai_max_engage_jours : délai maximal ENGAGEANT validé par SLP — laissé à null tant qu'il n'est pas fourni (rien n'est affiché comme engagement)."
+  "_aide": "delai_estime_jours : délai estimé affiché (environ N jours après la commande), confirmé par le propriétaire. par_produit : exceptions {slug: jours}. delai_max_engage_jours : délai maximal ENGAGEANT validé par SLP — validé par SLP : 15 jours ouvrés. delai_max_unite : libellé affiché après le nombre. Mettre null pour retirer l'engagement."
 }

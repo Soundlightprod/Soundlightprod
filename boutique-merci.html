@@ -26,7 +26,7 @@
   <p id="eta" style="color:var(--paper);font-weight:600;"></p>
     <a href="./">← Retour à l'accueil</a>
   </div>
-<script>fetch("/livraison.json",{cache:"no-cache"}).then(function(r){return r.json();}).then(function(l){var d=l&&l.delai_estime_jours;if(d>0){document.getElementById("eta").textContent="Livraison estimée : environ "+d+" jour"+(d>1?"s":"")+" après la commande."+(l.delai_max_engage_jours>0?" Engagement SLP : au plus tard sous "+l.delai_max_engage_jours+" jours.":"");}}).catch(function(){});</script>
+<script>fetch("/livraison.json",{cache:"no-cache"}).then(function(r){return r.json();}).then(function(l){var d=l&&l.delai_estime_jours;if(d>0){document.getElementById("eta").textContent="Livraison estimée : environ "+d+" jour"+(d>1?"s":"")+" après la commande."+(l.delai_max_engage_jours>0?" Engagement SLP : au plus tard sous "+l.delai_max_engage_jours+" "+(l.delai_max_unite||"jours")+".":"");}}).catch(function(){});</script>
 </body>
 <script>
 (function(){
