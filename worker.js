@@ -451,6 +451,19 @@ function routeDomain(request, url) {
     return redirect(`${url.origin}${renamedMatch[1]}${RENAMED[renamedMatch[2]]}${url.search}`);
   }
 
+  // .fr : anciennes adresses en .html → adresse propre (301), pour ne garder qu'une URL par page dans Google.
+  // Exclus : admin, agenda de groupe, vérification Google, pages boutique (gérées plus haut / sur le .store).
+  if (
+    host.endsWith("soundlightprod.fr") && !isApi && path.endsWith(".html") &&
+    !/^\/(admin|mon-agenda)\.html$/.test(path) &&
+    !/^\/google[0-9a-f]{16}\.html$/.test(path) &&
+    !STORE_PAGES.test(path) &&
+    !INTL_LANGS.some((l) => path.startsWith(`/${l}/`))
+  ) {
+    const clean = path === "/index.html" ? "/" : path.replace(/\.html$/, "");
+    return redirect(`${url.origin}${clean}${url.search}`);
+  }
+
   const isCom = host.endsWith("soundlightprod.com");
   const langPrefix = INTL_LANGS.find((l) => path === `/${l}` || path.startsWith(`/${l}/`));
 
