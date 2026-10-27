@@ -382,7 +382,7 @@ def page(p, products, tpl):
     stock = ('<span class="pp-stock">En stock — expédition en France</span>' if in_stock(p)
              else '<span class="pp-stock out">Bientôt de retour en stock</span>')
     buy = (f'<a class="btn btn-primary" href="/boutique.html?ajouter={esc(p["slug"])}">Ajouter au panier</a>' if in_stock(p)
-           else f'<a class="btn btn-primary" href="/contact.html">Être prévenu du retour</a>')
+           else f'<a class="btn btn-primary" href="/contact-boutique?motif=disponibilite&amp;produit={esc(p["slug"])}">Être prévenu du retour</a>')
     same = [q for q in products if q['category'] == p['category'] and q['slug'] != p['slug']]
     others = (same + [q for q in products if q['category'] != p['category']])[:4]
     more = ''.join(
@@ -448,7 +448,7 @@ def page(p, products, tpl):
       {intro}
       {f'<h2>Caractéristiques techniques</h2>{spec_html}' if spec_html else ''}
       {need_block(p, products)}
-      {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact.html" style="color:var(--paper)">contactez-nous</a>.</p>'}
+      {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact-boutique?motif=conseil&amp;produit={esc(p["slug"])}" style="color:var(--paper)">contactez-nous</a>.</p>'}
     </div>
   </div>
   <section class="pp-more">
@@ -511,9 +511,6 @@ def update_boutique(products):
              + ''.join(groups) + '</div>\n    </details>\n  </div>\n</section>\n'
              '<script type="application/ld+json">' + json.dumps(store, ensure_ascii=False) + '</script>\n'
              '<script type="application/ld+json">' + json.dumps(itemlist, ensure_ascii=False) + '</script>\n<!-- refs:end -->')
-    # Rayon Sonorisation masqué tant qu'il n'a aucun produit (le lien du menu reçoit l'attribut hidden)
-    has_son = any(p['category'] == 'son' for p in products)
-    s = re.sub(r'<a class="top" href="/boutique\.html#son"[^>]*>', '<a class="top" href="/boutique.html#son"' + ('' if has_son else ' hidden') + '>', s, count=1)
     if '<!-- refs:start' in s:
         s = re.sub(r'<!-- refs:start.*?<!-- refs:end -->', lambda _: block, s, flags=re.S)
     else:
@@ -531,7 +528,8 @@ def update_sitemap(products):
     urls = (f"\n  <url><loc>{SITE}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>" + ''.join(
         f"\n  <url><loc>{SITE}/produits/{p['slug']}</loc><changefreq>weekly</changefreq><priority>0.7</priority>"
         + (f"<image:image><image:loc>{SITE}{esc(p['image'])}</image:loc></image:image>" if p.get('image') else '') + '</url>'
-        for p in products))
+        for p in products)
+        + f"\n  <url><loc>{SITE}/contact-boutique</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>")
     (ROOT / 'sitemap-store.xml').write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
         'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + urls + '\n</urlset>\n', encoding='utf-8')
