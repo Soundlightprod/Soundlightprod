@@ -69,12 +69,19 @@ def esc(s):
     return html.escape(str(s or ''), quote=True)
 
 
+try:
+    TO_CONFIRM = json.loads((pathlib.Path(__file__).parent / 'fiches_a_confirmer.json').read_text(encoding='utf-8'))
+except Exception:
+    TO_CONFIRM = {}
+
+
 def specs(p):
     d = (p.get('description') or '').strip()
     if d.lower() in EMPTY:
         return []
     parts = [s.strip() for s in d.split('|')] if '|' in d else [d]
-    return [s for s in parts if s]
+    masked = TO_CONFIRM.get(p.get('slug'), {}).get('retirer_lignes', [])
+    return [s for s in parts if s and not any(s.startswith(m) for m in masked)]
 
 
 def spec_table(sp):
@@ -199,6 +206,13 @@ def fr_price_ht(p):
     return f"{p['price_cents'] / 120:.2f}".replace('.', ',') + ' € HT'
 
 
+def photo_note(p):
+    # Poudres : la photo montre deux variantes ; chaque référence = un sachet de 200 g de la variante indiquée.
+    if p['slug'].startswith('poudre-machine-etincelles'):
+        return '<p class="pp-photo-note">Photo d\'illustration : elle présente les deux variantes (Indoor et Outdoor). Chaque référence correspond à un seul sachet de 200 g, de la variante indiquée dans le titre.</p>'
+    return ''
+
+
 def delivery_days(slug):
     # Délai estimé affiché (livraison.json : défaut + exceptions par produit) ; jamais présenté comme un engagement.
     try:
@@ -256,6 +270,7 @@ PAGE_CSS = """<style>
   .pp-ttc{color:var(--muted); font-size:.85rem;}
   .pp-stock{display:inline-flex; align-items:center; gap:8px; font-size:.9rem; margin:16px 0 24px;}
   .pp-stock::before{content:''; width:9px; height:9px; border-radius:50%; background:#3ddc84; box-shadow:0 0 8px #3ddc84;}
+  .pp-photo-note{font-size:.82rem; color:var(--muted); margin:8px 2px 0;}
   .pp-eta{font-size:.92rem; color:var(--paper); margin:-8px 0 22px;}
   .pp-stock.out::before{background:#ff5a5a; box-shadow:0 0 8px #ff5a5a;}
   .pp-actions{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:28px;}
@@ -448,7 +463,7 @@ def page(p, products, tpl):
 <main class="pp">
   <nav class="pp-crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a> / <a href="/boutique.html">Boutique</a> / <a href="/boutique.html#{esc(p['category'])}">{esc(cat)}</a> / {esc(p['name'])}</nav>
   <div class="pp-grid">
-    <div><div class="pp-img">{img}</div>{thumbs}{video_block(p)}</div>
+    <div><div class="pp-img">{img}</div>{thumbs}{photo_note(p)}{video_block(p)}</div>
     <div>
       <span class="label">{esc(CAT_FULL.get(p['category'], cat))}</span>
       <h1>{esc(p['name'])}</h1>

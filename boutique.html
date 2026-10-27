@@ -812,7 +812,9 @@
     document.getElementById('pdImg').innerHTML = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async">` : '';
     document.getElementById('pdCat').textContent = { son:'Son', lumiere:'Lumière', effets:'Effets', consommables:'Consommables' }[p.category] || p.category;
     document.getElementById('pdName').textContent = p.name;
-    const specs = (p.description || '').split('|').map(s => s.trim()).filter(Boolean);
+    // Lignes non confirmées (contradiction avec le titre) : masquées tant que le modèle exact n'est pas confirmé
+    const HIDE_SPECS = { 'battery-3w-animated-laser-light': ['Laser RVB 300mW-5W'] };
+    const specs = (p.description || '').split('|').map(s => s.trim()).filter(s => s && !(HIDE_SPECS[p.slug] || []).some(h => s.startsWith(h)));
     document.getElementById('pdSpecs').innerHTML = specs.length
       ? specs.map(s => `<li>${s}</li>`).join('')
       : '<li>Caractéristiques à venir.</li>';
