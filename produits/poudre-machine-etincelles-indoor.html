@@ -105,8 +105,19 @@
   .cart-empty{color:var(--muted); text-align:center; padding:40px 0; font-size:0.9rem;}
   .cart-foot{padding:20px 24px; border-top:1px solid var(--line);}
   .cart-ship{font-size:.88rem; color:var(--muted); margin-bottom:12px;} .cart-ship div{display:flex; justify-content:space-between; padding:2px 0;} .cart-ship .hint{display:block; color:#1d7a46; font-weight:600; padding-top:4px;}
+  .cart-eta{font-size:.84rem; color:var(--muted); margin:-4px 0 12px; line-height:1.4;} .cart-eta b{color:var(--navy);}
+  .eta-line{font-size:.85rem; color:var(--muted); margin:6px 0 0;}
   .cart-total{display:flex; justify-content:space-between; margin-bottom:16px; font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.1rem;}
   .cart-form input, .cart-form textarea{width:100%; margin-bottom:10px; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; font-size:0.88rem;}
+  .cart-form label{display:block; font-size:.8rem; font-weight:600; margin:0 0 4px; color:var(--muted);} .cart-form label .opt{font-weight:400;}
+  /* Mobile : panneau à la hauteur visible (clavier ouvert), pied défilant pour garder total, délai et paiement accessibles */
+  .cart-panel{height:100vh; height:100dvh;}
+  .cart-foot{max-height:64vh; max-height:64dvh; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;}
+  @media (max-width:520px){
+    .cart-head{padding:14px 16px;} .cart-items{padding:8px 16px; min-height:70px;} .cart-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));}
+    .cart-item .qty-ctrl button{width:36px; height:36px; font-size:1.05rem;} .cart-close{min-width:44px; min-height:44px;}
+    .cart-form input{padding:10px 12px; font-size:1rem; margin-bottom:8px;} .cart-total{margin-bottom:10px;}
+  }
   .cart-msg{font-size:0.82rem; margin-top:10px;}
   .cart-msg.error{color:var(--pink);}
   .cart-msg.ok{color:#fbc608;}
@@ -208,7 +219,7 @@
   .subchips button i{font-style:normal; opacity:.55; margin-left:5px;}
   .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
   .grid-sm{display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:16px;}
-  @media (max-width:520px){ .grid-sm{grid-template-columns:repeat(2,1fr); gap:10px;} }
+  @media (max-width:520px){ .grid-sm{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;} .grid-sm .card{min-width:0;} .grid-sm .card .price-row{flex-wrap:wrap;} }
   .grid-sm .card{padding:10px; gap:8px; border-radius:14px;}
   .grid-sm .card-img{aspect-ratio:1/1; max-height:190px; width:100%;}
   .grid-sm .card-img img{padding:6%;}
@@ -283,7 +294,8 @@
   .hero-ban .pill{display:inline-block; background:#fff; color:#14213d; font-weight:700; padding:12px 24px; border-radius:100px; font-size:.92rem;}
   .hero-ban .im{height:100%; display:flex; align-items:center; justify-content:center; padding:18px;}
   .hero-ban .im img{max-height:290px; max-width:100%; object-fit:cover; -webkit-mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent); -webkit-mask-composite:source-in; mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent); mask-composite:intersect;}
-  @media (max-width:600px){ .hero-ban{grid-template-columns:1fr;} .hero-ban .tx{padding:26px 22px 8px;} .hero-ban .im img{max-height:200px;} }
+  @media (max-width:600px){ .hero-ban{grid-template-columns:1fr; min-height:0;} .hero-ban .tx{padding:18px 18px 4px;} .hero-ban .tag{margin-bottom:8px;} .hero-ban h2{font-size:1.45rem; margin-bottom:6px;} .hero-ban p{font-size:.9rem; margin-bottom:12px;} .hero-ban .pill{padding:10px 20px;} .hero-ban .im{padding:6px 18px 14px;} .hero-ban .im img{max-height:150px;}
+    .hero-row{gap:12px; margin-bottom:14px;} .hero-side{padding:16px 18px; gap:6px;} .hero-side h3{font-size:1.15rem; margin-bottom:0;} .hero-side ul{gap:6px; margin:2px 0 4px;} .hero-side li{font-size:.86rem;} .hero-side a{padding:10px; font-size:.86rem;} }
   .hero-side{border-radius:18px; background:linear-gradient(160deg,#fc8024,#e8590c); color:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;}
   .hero-side h3{color:#fff; font-size:1.5rem; margin-bottom:4px;}
   .hero-side ul{list-style:none; display:flex; flex-direction:column; gap:11px; margin:6px 0 10px;}
