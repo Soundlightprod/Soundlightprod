@@ -213,7 +213,7 @@
   .subchips button i{font-style:normal; opacity:.55; margin-left:5px;}
   .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
   .grid-sm{display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:16px;}
-  @media (max-width:520px){ .grid-sm{grid-template-columns:repeat(2,1fr); gap:10px;} }
+  @media (max-width:520px){ .grid-sm{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;} .grid-sm .card{min-width:0;} .grid-sm .card .price-row{flex-wrap:wrap;} }
   .grid-sm .card{padding:10px; gap:8px; border-radius:14px;}
   .grid-sm .card-img{aspect-ratio:1/1; max-height:190px; width:100%;}
   .grid-sm .card-img img{padding:6%;}
