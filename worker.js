@@ -810,7 +810,8 @@ async function leadsData(env) {
       lieu: d.lieu, message: d.message, artiste_nom: d.artiste_nom || null, derniere: d.cree_le, premiere: d.cree_le });
   });
   all.sort((a, b) => b.score - a.score || String(b.derniere).localeCompare(String(a.derniere)));
-  return { leads: all.filter((l) => !hide.has(l.cle)).slice(0, 80), masques: all.filter((l) => hide.has(l.cle)).slice(0, 80) };
+  const chauds = all.filter((l) => l.heat === "chaud"); // on ne garde que les contacts chauds
+  return { leads: chauds.filter((l) => !hide.has(l.cle)).slice(0, 80), masques: chauds.filter((l) => hide.has(l.cle)).slice(0, 80) };
 }
 
 // Cache de 2 min pour les gros rapports admin (rapport météo, statistiques de visites) : un même écran rechargé

@@ -309,8 +309,8 @@
   .mt-site .db-chip{align-self:start; font-size:.72rem; padding:3px 9px; border-radius:20px; background:rgba(255,255,255,.07); color:var(--muted); white-space:nowrap;}
   .mt-site .db-chip.mt-up{background:rgba(110,231,160,.14);} .mt-site .db-chip.mt-down{background:rgba(255,77,125,.14);}
   .mt-site .mt-more{display:flex; justify-content:space-between;}
-  #dbSiteSeg button, #dbDaysSeg button, #ldSeg button{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:7px 14px; font-size:.82rem; cursor:pointer; font-family:'Manrope',sans-serif; display:inline-flex; align-items:center; gap:7px;}
-  #dbSiteSeg button.active, #ldSeg button.active{background:var(--paper,#f5f2ec); color:var(--ink); border-color:transparent; font-weight:700;}
+  #dbSiteSeg button, #dbDaysSeg button{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:7px 14px; font-size:.82rem; cursor:pointer; font-family:'Manrope',sans-serif; display:inline-flex; align-items:center; gap:7px;}
+  #dbSiteSeg button.active{background:var(--paper,#f5f2ec); color:var(--ink); border-color:transparent; font-weight:700;}
   #dbDaysSeg button.active{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
   #dbSiteSeg button i{display:inline-block; width:9px; height:9px; border-radius:50%;}
   .db-row{display:grid; grid-template-columns:1fr auto; gap:4px 10px; padding:7px 0; border-top:1px solid var(--line); font-size:.88rem;}
@@ -977,17 +977,12 @@
     <div class="mt-head">
       <div>
         <h2 style="margin:0;">Contacts à suivre</h2>
-        <p class="vz-sub">Les visiteurs de SLP et Book My Band des 30 derniers jours, classés par intérêt : pages vues, retours, page Contact, clic sur Appeler / WhatsApp / mail, venue d'un mailing, et les demandes reçues. « Supprimer » retire le contact de cette liste (tu peux le rétablir) ; les statistiques ne changent pas.</p>
+        <p class="vz-sub">Seuls les contacts chauds de SLP et Book My Band (30 derniers jours) : demandes reçues, clic sur Appeler / WhatsApp / mail, ou visiteurs très engagés (retours, page Contact, venue d'un mailing). « Supprimer » retire le contact de cette liste (tu peux le rétablir) ; les statistiques ne changent pas.</p>
       </div>
       <button class="btn-outline" onclick="loadLeads()">↻ Actualiser</button>
     </div>
     <div class="vz-bar">
-      <div class="vz-seg" id="ldSeg">
-        <button class="active" data-f="tous" onclick="ldFilter('tous')">Tous <span id="ldN-tous"></span></button>
-        <button data-f="chaud" onclick="ldFilter('chaud')">🔥 Chauds <span id="ldN-chaud"></span></button>
-        <button data-f="tiede" onclick="ldFilter('tiede')">🟡 Tièdes <span id="ldN-tiede"></span></button>
-        <button data-f="froid" onclick="ldFilter('froid')">⚪ Froids <span id="ldN-froid"></span></button>
-      </div>
+      <span class="vz-note" id="ldCount" style="font-size:.95rem;"></span>
       <label class="vz-toggle"><input type="checkbox" id="ldMasked" onchange="ldToggleMasked()"><span></span> Voir les supprimés (<b id="ldMaskedN">0</b>)</label>
     </div>
     <div id="ldList"><p class="empty">Chargement…</p></div>
@@ -1352,7 +1347,7 @@
   }
 
   // ===== Contacts à suivre =====
-  let ldData = { leads:[], masques:[] }, ldF = 'tous', ldShowMasked = false;
+  let ldData = { leads:[], masques:[] }, ldShowMasked = false;
   const LD_ACT = { envoi:'📨 Formulaire envoyé', appel:'📞 Appel', whatsapp:'💬 WhatsApp', mail:'✉️ Mail', devis:'📝 Devis ouvert', chat:'💬 Chat', suivre:'🔔 Suivi' };
   const LD_HEAT = { chaud:['🔥 Chaud', '#ff4d7d'], tiede:['🟡 Tiède', '#ffb238'], froid:['⚪ Froid', '#9a93a6'] };
   const ldAgo = (t) => { if (!t) return ''; const m = Math.max(0, Math.round((Date.now() - new Date(t.replace(' ', 'T') + 'Z').getTime()) / 60000)); return m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`; };
@@ -1370,7 +1365,6 @@
       ldRender();
     } catch (e){ console.error('Contacts :', e); const b = document.getElementById('ldList'); b.prepend(mtEl('p', 'empty', 'Action impossible : ' + e.message)); }
   }
-  function ldFilter(f){ ldF = f; document.querySelectorAll('#ldSeg button').forEach((b) => b.classList.toggle('active', b.dataset.f === f)); ldRender(); }
   function ldToggleMasked(){ ldShowMasked = document.getElementById('ldMasked').checked; ldRender(); }
 
   function ldCard(l, masked){
@@ -1412,13 +1406,12 @@
 
   function ldRender(){
     const box = document.getElementById('ldList'); box.replaceChildren();
-    const L = ldData.leads, count = (h) => L.filter((x) => x.heat === h).length;
-    document.getElementById('ldN-tous').textContent = '(' + L.length + ')';
-    ['chaud', 'tiede', 'froid'].forEach((h) => { document.getElementById('ldN-' + h).textContent = '(' + count(h) + ')'; });
+    const L = ldData.leads;
     document.getElementById('ldMaskedN').textContent = ldData.masques.length;
-    const nChaud = count('chaud'); const bd = document.getElementById('ldBadge'); if (bd) bd.textContent = nChaud ? '(' + nChaud + ')' : '';
-    const list = ldShowMasked ? ldData.masques : L.filter((x) => ldF === 'tous' || x.heat === ldF);
-    if (!list.length){ box.appendChild(mtEl('p', 'empty', ldShowMasked ? 'Aucun contact supprimé.' : 'Aucun contact à suivre pour l’instant.')); return; }
+    document.getElementById('ldCount').textContent = '🔥 ' + L.length + ' contact' + (L.length > 1 ? 's' : '') + ' chaud' + (L.length > 1 ? 's' : '');
+    const bd = document.getElementById('ldBadge'); if (bd) bd.textContent = L.length ? '(' + L.length + ')' : '';
+    const list = ldShowMasked ? ldData.masques : L;
+    if (!list.length){ box.appendChild(mtEl('p', 'empty', ldShowMasked ? 'Aucun contact supprimé.' : 'Aucun contact chaud pour l’instant.')); return; }
     list.forEach((l) => box.appendChild(ldCard(l, ldShowMasked)));
   }
 
