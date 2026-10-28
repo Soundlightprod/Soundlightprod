@@ -301,6 +301,26 @@
   .mt-fig b{display:block; font-family:'Space Grotesk',sans-serif; font-size:1.6rem; font-variant-numeric:tabular-nums;}
   .mt-fig span{color:var(--muted); font-size:.75rem;}
   .mt-up{color:#6ee7a0;} .mt-down{color:var(--pink);} .mt-flat{color:var(--muted);}
+  /* ===== Tableau de bord ===== */
+  .db-ch{position:relative; height:250px;} .db-ch.s{height:210px;}
+  .mt-site .db-spark{grid-column:1/-1; height:40px; margin-top:6px;}
+  .mt-site .db-spark svg{width:100%; height:100%; grid-row:auto; display:block;}
+  .mt-site.on{border-color:var(--amber);}
+  .mt-site .db-chip{align-self:start; font-size:.72rem; padding:3px 9px; border-radius:20px; background:rgba(255,255,255,.07); color:var(--muted); white-space:nowrap;}
+  .mt-site .db-chip.mt-up{background:rgba(110,231,160,.14);} .mt-site .db-chip.mt-down{background:rgba(255,77,125,.14);}
+  .mt-site .mt-more{display:flex; justify-content:space-between;}
+  #dbSiteSeg button, #dbDaysSeg button{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:7px 14px; font-size:.82rem; cursor:pointer; font-family:'Manrope',sans-serif; display:inline-flex; align-items:center; gap:7px;}
+  #dbSiteSeg button.active{background:var(--paper,#f5f2ec); color:var(--ink); border-color:transparent; font-weight:700;}
+  #dbDaysSeg button.active{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
+  #dbSiteSeg button i{display:inline-block; width:9px; height:9px; border-radius:50%;}
+  .db-row{display:grid; grid-template-columns:1fr auto; gap:4px 10px; padding:7px 0; border-top:1px solid var(--line); font-size:.88rem;}
+  .db-row:first-of-type{border-top:0;} .db-row .n{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;} .db-row .v{font-weight:700; color:var(--blue); font-variant-numeric:tabular-nums;}
+  .db-row .bar{grid-column:1/-1; height:4px; border-radius:2px; background:rgba(255,255,255,.07); overflow:hidden;} .db-row .bar i{display:block; height:100%; background:linear-gradient(90deg,#2f9bff,#8b5cf6);}
+  .db-tbl th{font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); text-align:right; font-weight:600; padding:8px 8px;} .db-tbl th:first-child,.db-tbl td:first-child{text-align:left;}
+  .db-tbl td{white-space:nowrap; padding:9px 8px; text-align:right; font-variant-numeric:tabular-nums; border-top:1px solid var(--line);}
+  .db-tbl td .m{display:block; height:3px; border-radius:2px; margin-top:4px; background:linear-gradient(90deg,#ffb238,#ff4d7d);}
+  .db-tbl td.hot{color:var(--pink);} .db-tbl td:first-child{white-space:normal; text-transform:capitalize;}
+
   .mt-delta{font-size:.75rem; display:block;}
   .mt-g{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
   .mt-bar{display:flex; height:10px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,.08); margin:10px 0 6px;}
@@ -414,7 +434,7 @@
     <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">6. 🕰 Historique</button>
     <button class="tab-btn" id="tabBtn-access" onclick="switchTab('access')">7. 🔑 Accès groupes</button>
     <button class="tab-btn" id="tabBtn-orders" onclick="switchTab('orders')">8. 📦 Suivi des commandes</button>
-    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 🌤 Météo & visites</button>
+    <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 📊 Stats & visites</button>
     <button class="tab-btn" id="tabBtn-devices" onclick="switchTab('devices')">10. 📱 Mes appareils</button>
     <button class="tab-btn" id="tabBtn-chat" onclick="switchTab('chat')">11. 💬 Chat <span id="chatBadge" style="display:none;background:#FF0953;color:#fff;border-radius:10px;padding:0 7px;font-size:.75rem;margin-left:4px;"></span></button>
     <button class="tab-btn" id="tabBtn-supernova" onclick="switchTab('supernova')">12. 🌠 Supernova</button>
@@ -838,11 +858,11 @@
     </div>
   </div>
 
-  <!-- ============ ONGLET 9 : MÉTÉO & VISITES ============ -->
+  <!-- ============ ONGLET 9 : STATS & VISITES ============ -->
 
   <div class="tab-content" id="tab-visits">
     <div class="vp-nav">
-      <button class="vp-btn active" id="vpBtn-today" onclick="switchVisitsPane('today')">☀️ Aujourd'hui</button>
+      <button class="vp-btn active" id="vpBtn-today" onclick="switchVisitsPane('today')">📊 Tableau de bord</button>
       <button class="vp-btn" id="vpBtn-visits" onclick="switchVisitsPane('visits')">📈 Visites des sites</button>
       <button class="vp-btn" id="vpBtn-search" onclick="switchVisitsPane('search')">🔍 Google &amp; mails</button>
       <button class="vp-btn" id="vpBtn-social" onclick="switchVisitsPane('social')">📣 Réseaux &amp; YouTube</button>
@@ -850,19 +870,81 @@
     <div class="vp-pane active" id="vp-today">
     <div class="mt-head">
       <div>
-        <h2 id="mtTitre" style="margin:0;">Météo du jour</h2>
-        <p class="vz-sub" id="mtSousTitre">Le rapport du jour, la météo des sites, Google, les mails Brevo et YouTube. Rapports vers 7h50, 13h50, 19h50 et 22h50.</p>
+        <h2 style="margin:0;">Tableau de bord</h2>
+        <p class="vz-sub">Visiteurs, pages, provenance et performance de tes sites, sans robots ni tes propres passages. Rapports vers 7h50, 13h50, 19h50 et 22h50.</p>
       </div>
       <button class="btn-outline" onclick="loadMeteo()">↻ Actualiser</button>
     </div>
-    <div class="vz-card"><ul class="mt-notes" id="mtResume"><li>Chargement…</li></ul></div>
-    <div class="vz-card" id="mtVisuelWrap" style="display:none; padding:0; overflow:hidden;">
-      <div class="vz-card-h" style="padding:12px 14px 0;"><h3>Rapport visuel</h3><button class="btn-outline" type="button" onclick="mtOuvrirVisuel()">⤢ Ouvrir en grand (zoomable)</button></div>
-      <iframe id="mtVisuel" title="Rapport visuel" sandbox="allow-same-origin" style="width:100%; border:0; display:block; min-height:400px;"></iframe>
-    </div>
-    <details class="vz-more" id="mtFullWrap" style="display:none;"><summary>Lire le rapport complet</summary><div class="vz-card"><p class="mt-full" id="mtFull"></p></div></details>
+
     <div class="mt-sky" id="mtSky"></div>
     <p class="vz-note" id="mtTests" style="display:none; margin:0 0 10px;"></p>
+
+    <div class="vz-bar">
+      <div class="vz-seg" id="dbSiteSeg">
+        <button class="active" data-s="" onclick="dbSetSite('')">Tous</button>
+        <button data-s="slp" onclick="dbSetSite('slp')"><i style="background:#ffb238"></i>SLP</button>
+        <button data-s="bmb" onclick="dbSetSite('bmb')"><i style="background:#ff2d6f"></i>Book My Band</button>
+        <button data-s="csa" onclick="dbSetSite('csa')"><i style="background:#38bdf8"></i>CS Animations</button>
+        <button data-s="store" onclick="dbSetSite('store')"><i style="background:#a3e635"></i>Boutique</button>
+      </div>
+      <div class="vz-seg" id="dbDaysSeg">
+        <button data-d="7" onclick="dbSetDays(7)">7 jours</button>
+        <button class="active" data-d="14" onclick="dbSetDays(14)">14 jours</button>
+        <button data-d="30" onclick="dbSetDays(30)">30 jours</button>
+        <button data-d="90" onclick="dbSetDays(90)">90 jours</button>
+      </div>
+    </div>
+
+    <div class="vz-kpis">
+      <div class="vz-kpi"><span class="k">Visiteurs</span><b id="dbK1">—</b><span class="d" id="dbD1"></span></div>
+      <div class="vz-kpi"><span class="k">Pages vues</span><b id="dbK2">—</b><span class="d" id="dbD2"></span></div>
+      <div class="vz-kpi"><span class="k">Pages par visite</span><b id="dbK3">—</b><span class="d" id="dbD3"></span></div>
+      <div class="vz-kpi"><span class="k">Taux de rebond</span><b id="dbK4">—</b><span class="d" id="dbD4"></span></div>
+    </div>
+
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Vue d'ensemble</h3><span class="vz-note" id="dbRange">visiteurs (barres) et pages vues (courbe), jour par jour</span></div>
+      <div class="db-ch"><canvas id="dbOverview"></canvas></div>
+    </div>
+
+    <div class="vz-grid2">
+      <div class="vz-card"><div class="vz-card-h"><h3>Pages d'entrée</h3><span class="vz-note">où ils arrivent</span></div><div class="db-ch s"><canvas id="dbEntrees"></canvas></div></div>
+      <div class="vz-card"><div class="vz-card-h"><h3>Pages de sortie</h3><span class="vz-note">où ils repartent</span></div><div class="db-ch s"><canvas id="dbSorties"></canvas></div></div>
+    </div>
+
+    <div class="vz-grid2">
+      <div class="vz-card"><div class="vz-card-h"><h3>Pages par visite</h3><span class="vz-note">profondeur de lecture</span></div><div class="db-ch s"><canvas id="dbDepth"></canvas></div></div>
+      <div class="vz-card"><div class="vz-card-h"><h3>Taux de rebond</h3><span class="vz-note">visites d'une seule page</span></div><div class="db-ch s"><canvas id="dbBounce"></canvas></div></div>
+    </div>
+
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Heures de la journée</h3><span class="vz-note">visiteurs par heure (heure de Paris)</span></div>
+      <div class="db-ch s"><canvas id="dbHours"></canvas></div>
+    </div>
+
+    <div class="vz-grid3">
+      <div class="vz-card"><h3>Appareils</h3><div class="db-ch s"><canvas id="dbDevices"></canvas></div></div>
+      <div class="vz-card"><h3>D'où ils arrivent</h3><div id="dbRefs"></div></div>
+      <div class="vz-card"><h3>Villes</h3><div id="dbCities"></div></div>
+    </div>
+
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Performance des pages</h3><span class="vz-note">les pages les plus vues sur la période</span></div>
+      <div style="overflow-x:auto;"><table class="vz-bt db-tbl" id="dbPages"><thead><tr><th>Page</th><th>Visiteurs</th><th>Vues</th><th>Entrées</th><th>Rebond</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="vz-grid2">
+      <div class="vz-card">
+        <div class="vz-card-h"><h3 id="mtRapTitre">Le rapport en bref</h3></div>
+        <p class="vz-note" id="mtSousTitre" style="margin:0 0 8px;"></p>
+        <ul class="mt-notes" id="mtResume"><li>Chargement…</li></ul>
+      </div>
+      <div class="vz-card">
+        <div class="vz-card-h"><h3>À faire</h3></div>
+        <ol class="mt-todo" id="mtTodo"></ol>
+      </div>
+    </div>
+
     <div class="vz-card">
       <div class="vz-card-h"><h3>Visiteurs à suivre (SLP &amp; Book My Band)</h3><span class="vz-note">hier et aujourd'hui · 3 pages ou plus · possibles prospects</span></div>
       <div class="mt-who" id="mtProspects"></div>
@@ -872,9 +954,11 @@
       <div class="mt-figs" id="mtContactFigs" style="margin:0 0 12px;"></div>
       <div class="mt-who" id="mtContactList"></div>
     </div>
-
-    <h2>À faire</h2>
-    <ol class="mt-todo" id="mtTodo"></ol>
+    <div class="vz-card" id="mtVisuelWrap" style="display:none; padding:0; overflow:hidden;">
+      <div class="vz-card-h" style="padding:12px 14px 0;"><h3>Rapport visuel</h3><button class="btn-outline" type="button" onclick="mtOuvrirVisuel()">⤢ Ouvrir en grand (zoomable)</button></div>
+      <iframe id="mtVisuel" title="Rapport visuel" sandbox="allow-same-origin" style="width:100%; border:0; display:block; min-height:400px;"></iframe>
+    </div>
+    <details class="vz-more" id="mtFullWrap" style="display:none;"><summary>Lire le rapport complet</summary><div class="vz-card"><p class="mt-full" id="mtFull"></p></div></details>
     </div>
 
     <div class="vp-pane" id="vp-visits">
@@ -1176,7 +1260,7 @@
   }
 
 
-  // ===== Onglet Météo du jour =====
+  // ===== Onglet Stats & visites =====
   const MT_SITES = { slp:{nom:'SLP Sound Light Prod', c:'#ffb238'}, bmb:{nom:'Book My Band', c:'#ff2d6f'}, csa:{nom:'CS Animations', c:'#38bdf8'}, store:{nom:'Boutique .store', c:'#a3e635'} };
   const MT_SUIVIES = ['dj animation','animateur de soirée','dj animateur de soirée','dj animation anniversaire','sonorisation spectacle','sonorisation éclairage','tribute abba','tribute calogero','tribute bee gees','tribute phil collins','tribute kool and the gang','tribute matmatah','tribute balavoine','tribute barry white','tribute céline dion','spectacle cabaret','revue cabaret','groupe de reprises'];
   let mtChart = null;
@@ -1210,25 +1294,168 @@
     ['slp', 'bmb', 'csa', 'store'].forEach((s) => {
       const r = sites.find((x) => x.site === s) || { aujourdhui:0, hier:0, sept_jours:0, sept_jours_avant:0 };
       const ev = r.sept_jours_avant > 0 ? (r.sept_jours - r.sept_jours_avant) / r.sept_jours_avant : null;
-      const kind = ev === null ? (r.sept_jours > 0 ? 'soleil' : 'nuages') : ev >= 0.15 ? 'soleil' : ev > -0.15 ? 'eclaircies' : 'pluie';
-      const label = { soleil:'Grand soleil', eclaircies:'Éclaircies', pluie:'Averses', nuages:'Ciel calme' }[kind];
-      const card = mtEl('div', 'mt-site');
-      card.setAttribute('role', 'button'); card.tabIndex = 0; card.title = 'Voir les stats détaillées de ' + MT_SITES[s].nom;
-      const ouvrir = () => openSiteStats(s);
-      card.addEventListener('click', ouvrir);
-      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); ouvrir(); } });
-      const head = mtEl('div'); head.append(mtEl('h3', null, MT_SITES[s].nom), mtEl('div', 'sky', label));
-      card.append(head, mtIcon(kind));
+      const card = mtEl('div', 'mt-site' + (dbSite === s ? ' on' : '')); card.dataset.site = s;
+      card.setAttribute('role', 'button'); card.tabIndex = 0; card.title = 'Afficher les graphiques de ' + MT_SITES[s].nom;
+      const choisir = () => dbSetSite(dbSite === s ? '' : s);
+      card.addEventListener('click', choisir);
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); choisir(); } });
+      const head = mtEl('div'); head.append(mtEl('h3', null, MT_SITES[s].nom), mtEl('div', 'sky', `hier ${mtFmt(r.hier)} · ${mtFmt(r.pages_aujourdhui || 0)} pages aujourd’hui`));
+      head.querySelector('h3').style.color = MT_SITES[s].c;
+      let chip = null;
+      if (ev !== null){ const cls = ev > 0.02 ? 'mt-up' : ev < -0.02 ? 'mt-down' : 'mt-flat'; chip = mtEl('span', 'db-chip ' + cls, (ev > 0.02 ? '↗ +' : ev < -0.02 ? '↘ ' : '= ') + Math.round(ev * 100) + ' % sur 7 j'); }
+      else chip = mtEl('span', 'db-chip', 'nouveau');
+      card.append(head, chip);
       const figs = mtEl('div', 'mt-figs');
-      const fig = (v, lab, extra) => { const f = mtEl('div', 'mt-fig'); f.append(mtEl('b', null, mtFmt(v)), mtEl('span', null, lab)); if (extra) f.appendChild(extra); figs.appendChild(f); };
-      fig(r.aujourdhui, "aujourd'hui", mtEl('span', 'mt-delta mt-flat', `${mtFmt(r.pages_aujourdhui || 0)} pages`));
-      const dh = r.avant_hier === undefined ? null : r.hier - r.avant_hier;
-      fig(r.hier, 'hier', mtEl('span', 'mt-delta ' + (dh > 0 ? 'mt-up' : dh < 0 ? 'mt-down' : 'mt-flat'), `${mtFmt(r.pages_hier || 0)} pages · veille ${mtFmt(r.avant_hier)}`));
-      let d = null;
-      if (ev !== null){ const cls = ev > 0.02 ? 'mt-up' : ev < -0.02 ? 'mt-down' : 'mt-flat'; d = mtEl('span', 'mt-delta ' + cls, (ev > 0.02 ? '↗ +' : ev < -0.02 ? '↘ ' : '= ') + Math.round(ev * 100) + ' % vs sem. d’avant'); }
-      fig(r.sept_jours, '7 derniers jours', d);
-      card.appendChild(figs); card.appendChild(mtEl('div', 'mt-more', 'Voir les stats →')); box.appendChild(card);
+      const fig = (v, lab) => { const f = mtEl('div', 'mt-fig'); f.append(mtEl('b', null, mtFmt(v)), mtEl('span', null, lab)); figs.appendChild(f); };
+      fig(r.aujourdhui, "visiteurs aujourd'hui"); fig(r.sept_jours, '7 derniers jours');
+      card.appendChild(figs);
+      const sp = mtEl('div', 'db-spark'); sp.id = 'dbSpark-' + s; card.appendChild(sp);
+      const more = mtEl('div', 'mt-more'); more.append(mtEl('span', null, dbSite === s ? '● graphiques affichés' : 'Voir ses graphiques'));
+      const det = mtEl('a', null, 'Détails →'); det.href = '#'; det.style.color = 'var(--amber)';
+      det.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); openSiteStats(s); });
+      more.appendChild(det); card.appendChild(more);
+      box.appendChild(card);
     });
+    try { dbFillSparks(); } catch (e) {}
+  }
+
+  // ===== Tableau de bord : graphiques =====
+  const DB_PAL = ['#ffb238', '#ff2d6f', '#38bdf8', '#a3e635', '#8b5cf6', '#2f9bff', '#fb923c', '#6ee7a0', '#9a93a6'];
+  let dbSite = '', dbDays = 14, dbLast = null, dbSeq = 0; const dbCharts = {};
+  const dbAx = { ticks:{ color:'#9a93a6', font:{ size:11 }, maxRotation:0, autoSkip:true }, grid:{ color:'rgba(255,255,255,.06)' } };
+  function dbMake(id, cfg){
+    const c = document.getElementById(id); if (!c || typeof Chart === 'undefined') return;
+    if (dbCharts[id]) dbCharts[id].destroy();
+    cfg.options = Object.assign({ responsive:true, maintainAspectRatio:false, animation:{ duration:450 } }, cfg.options || {});
+    dbCharts[id] = new Chart(c, cfg);
+  }
+  const dbLegend = { labels:{ color:'#cfc9d8', boxWidth:10, boxHeight:10, font:{ size:11 } } };
+  const dbPageName = (p) => (!p || p === 'index') ? 'Accueil' : String(p).replace(/-/g, ' ');
+  function dbDayList(n){ const out = []; for (let i = n - 1; i >= 0; i--){ const d = new Date(); d.setDate(d.getDate() - i); out.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`); } return out; }
+  const dbLab = (j) => new Date(j + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+
+  function dbSetSite(sv){
+    dbSite = sv;
+    document.querySelectorAll('#dbSiteSeg button').forEach((b) => b.classList.toggle('active', b.dataset.s === sv));
+    document.querySelectorAll('#mtSky .mt-site').forEach((c) => c.classList.toggle('on', c.dataset.site === sv));
+    loadDashboard();
+  }
+  function dbSetDays(n){
+    dbDays = n;
+    document.querySelectorAll('#dbDaysSeg button').forEach((b) => b.classList.toggle('active', Number(b.dataset.d) === n));
+    loadDashboard();
+  }
+
+  function dbDelta(el, cur, prev, opts){
+    opts = opts || {}; el.className = 'd';
+    if (prev === null || prev === undefined || cur === null || cur === undefined){ el.textContent = ''; return; }
+    if (opts.points){ const diff = Math.round((cur - prev) * 100); el.textContent = (diff > 0 ? '▲ +' : diff < 0 ? '▼ ' : '= ') + diff + ' pts vs période précédente'; el.className = 'd ' + (diff === 0 ? '' : (diff > 0) === !!opts.inverse ? 'down' : 'up'); return; }
+    if (!prev){ el.textContent = cur ? 'nouveau (aucune visite avant)' : ''; return; }
+    const pct = Math.round((cur - prev) * 100 / prev);
+    el.textContent = `${pct >= 0 ? '▲ +' : '▼ '}${pct} % vs période précédente (${mtFmt(prev)})`;
+    el.className = 'd ' + (pct > 0 ? 'up' : pct < 0 ? 'down' : '');
+  }
+
+  function dbRows(boxId, list, labelFn){
+    const box = document.getElementById(boxId); box.replaceChildren();
+    if (!list || !list.length){ box.appendChild(mtEl('p', 'empty', 'Rien sur cette période.')); return; }
+    const max = Math.max(...list.map((x) => x.total));
+    list.forEach((x) => {
+      const r = mtEl('div', 'db-row'); r.append(mtEl('div', 'n', labelFn ? labelFn(x.label) : x.label), mtEl('div', 'v', mtFmt(x.total)));
+      const b = mtEl('div', 'bar'), f = mtEl('i'); f.style.width = Math.max(3, 100 * x.total / max) + '%'; b.appendChild(f); r.appendChild(b); box.appendChild(r);
+    });
+  }
+
+  function dbDonut(id, list, labelFn, cutout){
+    const l = (list || []).filter((x) => x.total > 0);
+    dbMake(id, { type:'doughnut', data:{ labels:l.map((x) => labelFn ? labelFn(x.label) : x.label), datasets:[{ data:l.map((x) => x.total), backgroundColor:DB_PAL, borderColor:'#17151e', borderWidth:2 }] },
+      options:{ cutout:cutout || '62%', plugins:{ legend:Object.assign({ position:'right' }, dbLegend) } } });
+  }
+
+  function dbSparkSvg(vals, color){
+    const w = 120, h = 38, n = vals.length, max = Math.max(1, ...vals);
+    const x = (i) => n > 1 ? i * (w - 2) / (n - 1) + 1 : w / 2, y = (v) => h - 3 - (v / max) * (h - 8);
+    const pts = vals.map((v, i) => x(i).toFixed(1) + ',' + y(v).toFixed(1));
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="M${pts.join(' L')} L${x(n - 1).toFixed(1)},${h} L${x(0).toFixed(1)},${h} Z" fill="${color}" fill-opacity=".16"/><polyline points="${pts.join(' ')}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`;
+  }
+  function dbFillSparks(){
+    if (!dbLast) return;
+    const days = dbDayList(dbLast.days);
+    ['slp', 'bmb', 'csa', 'store'].forEach((s) => {
+      const el = document.getElementById('dbSpark-' + s); if (!el) return;
+      const m = {}; (dbLast.bysite || []).filter((r) => r.site === s).forEach((r) => { m[r.jour] = r.visiteurs; });
+      el.innerHTML = dbSparkSvg(days.map((d) => m[d] || 0), MT_SITES[s].c);
+    });
+  }
+
+  function dbRender(d){
+    dbLast = d;
+    const days = dbDayList(d.days), by = {}; (d.daily || []).forEach((r) => { by[r.jour] = r; });
+    const vis = days.map((j) => (by[j] ? by[j].visiteurs : 0)), pg = days.map((j) => (by[j] ? by[j].pages : 0));
+    const col = d.site ? MT_SITES[d.site].c : '#2f9bff';
+    document.getElementById('dbRange').textContent = `${dbLab(days[0])} → ${dbLab(days[days.length - 1])} · ${d.site ? MT_SITES[d.site].nom : 'tous les sites'}`;
+
+    // sessions / rebonds : période courante et précédente
+    const dbg = d.meta ? d.meta.debut : days[0];
+    let sc = 0, rc = 0, sp = 0, rp = 0; const sd = {};
+    (d.sess || []).forEach((r) => { sd[r.jour] = r; if (r.jour >= dbg){ sc += r.sessions; rc += r.rebonds; } else { sp += r.sessions; rp += r.rebonds; } });
+    const tot = d.tot || { visiteurs:0, pages:0 }, prev = d.prev || { visiteurs:0, pages:0 };
+    const ppv = tot.visiteurs ? tot.pages / tot.visiteurs : null, ppvP = prev.visiteurs ? prev.pages / prev.visiteurs : null;
+    const reb = sc ? rc / sc : null, rebP = sp ? rp / sp : null;
+    document.getElementById('dbK1').textContent = mtFmt(tot.visiteurs); dbDelta(document.getElementById('dbD1'), tot.visiteurs, prev.visiteurs);
+    document.getElementById('dbK2').textContent = mtFmt(tot.pages); dbDelta(document.getElementById('dbD2'), tot.pages, prev.pages);
+    document.getElementById('dbK3').textContent = ppv === null ? '—' : ppv.toLocaleString('fr-FR', { maximumFractionDigits:1 });
+    dbDelta(document.getElementById('dbD3'), ppv, ppvP, { points:false }); if (ppv !== null && ppvP) { const e = document.getElementById('dbD3'); const dd = ppv - ppvP; e.textContent = (dd >= 0 ? '▲ +' : '▼ ') + dd.toLocaleString('fr-FR', { maximumFractionDigits:1 }) + ' vs période précédente'; e.className = 'd ' + (dd > 0 ? 'up' : dd < 0 ? 'down' : ''); }
+    document.getElementById('dbK4').textContent = mtPct(reb); dbDelta(document.getElementById('dbD4'), reb, rebP, { points:true, inverse:true });
+
+    dbMake('dbOverview', { data:{ labels:days.map(dbLab), datasets:[
+      { type:'bar', label:'Visiteurs', data:vis, backgroundColor:col, borderRadius:4, order:2, maxBarThickness:34 },
+      { type:'line', label:'Pages vues', data:pg, borderColor:'#ffb238', backgroundColor:'#ffb238', tension:.35, pointRadius:3, pointHoverRadius:5, borderWidth:2, order:1 } ] },
+      options:{ interaction:{ mode:'index', intersect:false }, plugins:{ legend:Object.assign({ position:'bottom' }, dbLegend) }, scales:{ x:dbAx, y:Object.assign({}, dbAx, { beginAtZero:true, ticks:Object.assign({}, dbAx.ticks, { precision:0 }) }) } } });
+
+    dbDonut('dbEntrees', d.entrees, dbPageName); dbDonut('dbSorties', d.sorties, dbPageName);
+
+    const ppvDay = days.map((j) => (by[j] && by[j].visiteurs ? +(by[j].pages / by[j].visiteurs).toFixed(2) : null));
+    dbMake('dbDepth', { type:'line', data:{ labels:days.map(dbLab), datasets:[{ label:'Pages par visite', data:ppvDay, borderColor:'#38bdf8', backgroundColor:'rgba(56,189,248,.22)', fill:true, tension:.35, pointRadius:2, spanGaps:true, borderWidth:2 }] },
+      options:{ plugins:{ legend:{ display:false } }, scales:{ x:dbAx, y:Object.assign({}, dbAx, { beginAtZero:true }) } } });
+    const rebDay = days.map((j) => (sd[j] && sd[j].sessions ? Math.round(100 * sd[j].rebonds / sd[j].sessions) : null));
+    dbMake('dbBounce', { type:'line', data:{ labels:days.map(dbLab), datasets:[{ label:'Rebond (%)', data:rebDay, borderColor:'#ff4d7d', backgroundColor:'#ff4d7d', tension:.3, pointRadius:3, spanGaps:true, borderWidth:2 }] },
+      options:{ plugins:{ legend:{ display:false } }, scales:{ x:dbAx, y:Object.assign({}, dbAx, { min:0, max:100, ticks:Object.assign({}, dbAx.ticks, { callback:(v) => v + ' %' }) }) } } });
+
+    const hm = {}; (d.hours || []).forEach((r) => { hm[r.h] = r.n; });
+    const hv = Array.from({ length:24 }, (_, h) => hm[h] || 0), hmax = Math.max(...hv);
+    dbMake('dbHours', { type:'bar', data:{ labels:hv.map((_, h) => h + ' h'), datasets:[{ label:'Visiteurs', data:hv, backgroundColor:hv.map((v) => (v && v === hmax ? '#ffb238' : '#8b5cf6')), borderRadius:3 }] },
+      options:{ plugins:{ legend:{ display:false } }, scales:{ x:Object.assign({}, dbAx, { ticks:Object.assign({}, dbAx.ticks, { autoSkip:false, maxRotation:0, font:{ size:10 }, callback(v){ return v % 3 === 0 ? this.getLabelForValue(v) : ''; } }) }), y:Object.assign({}, dbAx, { beginAtZero:true, ticks:Object.assign({}, dbAx.ticks, { precision:0 }) }) } } });
+
+    dbDonut('dbDevices', d.devices, null, '58%');
+    dbRows('dbRefs', d.referrers, (l) => (typeof refLabel === 'function' ? refLabel(l) : l));
+    dbRows('dbCities', d.cities);
+
+    const tb = document.querySelector('#dbPages tbody'); tb.replaceChildren();
+    const rows = d.pages || [];
+    if (!rows.length){ const tr = mtEl('tr'); const td = mtEl('td', 'empty', 'Aucune page vue sur cette période.'); td.colSpan = 5; tr.appendChild(td); tb.appendChild(tr); }
+    const vmax = Math.max(1, ...rows.map((r) => r.vues));
+    rows.forEach((r) => {
+      const tr = mtEl('tr');
+      const nm = mtEl('td', null, dbPageName(r.page)); tr.appendChild(nm);
+      const tdv = mtEl('td', null, mtFmt(r.vues)); const m = mtEl('i', 'm'); m.style.display = 'block'; m.style.width = Math.max(4, 100 * r.vues / vmax) + '%'; m.style.marginLeft = 'auto'; tdv.appendChild(m);
+      const rb = r.entrees ? r.rebonds / r.entrees : null;
+      tr.append(mtEl('td', null, mtFmt(r.visiteurs)), tdv, mtEl('td', null, mtFmt(r.entrees)), mtEl('td', rb !== null && rb >= 0.7 && r.entrees >= 5 ? 'hot' : null, mtPct(rb)));
+      // l'ordre des colonnes : Page | Visiteurs | Vues | Entrées | Rebond
+      tb.appendChild(tr);
+    });
+    dbFillSparks();
+  }
+
+  async function loadDashboard(){
+    const my = ++dbSeq;
+    try {
+      const res = await fetch(`/api/admin/dashboard?days=${dbDays}${dbSite ? '&site=' + dbSite : ''}`, { headers:{ Authorization:`Bearer ${token}` } });
+      if (!res.ok) throw new Error('Erreur ' + res.status);
+      const d = await res.json();
+      if (my !== dbSeq) return;
+      dbRender(d);
+    } catch (e) { console.error('Tableau de bord :', e); document.getElementById('dbRange').textContent = 'Impossible de charger les graphiques : ' + e.message; }
   }
 
   function mtRenderGoogle(g){
@@ -1437,6 +1664,7 @@
   }
 
   async function loadMeteo(){
+    loadDashboard();
     try {
       const res = await fetch('/api/admin/meteo', { headers:{ Authorization:`Bearer ${token}` } });
       if (!res.ok){ let m = ''; try { m = (await res.json()).error || ''; } catch(_){} throw new Error(res.status === 401 ? 'Accès refusé : reconnecte-toi à l’admin.' : 'Erreur ' + res.status + (m ? ' (' + m + ')' : '')); }
@@ -1444,7 +1672,7 @@
       const rap = d.rapport;
       const resume = rap ? JSON.parse(rap.resume_json || '[]') : [];
       const actions = rap ? JSON.parse(rap.actions_json || '[]') : [];
-      document.getElementById('mtTitre').textContent = rap && rap.titre ? rap.titre : 'Météo du jour';
+      { const rt = document.getElementById('mtRapTitre'); if (rt) rt.textContent = rap && rap.titre ? rap.titre : 'Le rapport en bref'; }
       if (rap && rap.cree_le){
         const ecrit = new Date(rap.cree_le.replace(' ', 'T') + 'Z');
         const h = new Date().getHours();
@@ -1459,7 +1687,7 @@
       mtAfficherVisuel(rap && rap.html ? rap.html : '');
       document.getElementById('mtFull').textContent = full;
       // chaque bloc s'affiche même si un autre plante
-      const essai = (f) => { try { f(); } catch (err) { console.error('Météo :', err); } };
+      const essai = (f) => { try { f(); } catch (err) { console.error('Stats :', err); } };
       const titres = {}; ((d.youtube && d.youtube.videos) || []).forEach((v) => { titres[v.video_id] = v.titre; });
       essai(() => mtRenderSites(d.sites || []));
       essai(() => mtRenderProspects(d.prospects || [], d.sites || []));
@@ -1468,7 +1696,7 @@
       essai(() => mtRenderBrevo(d.brevo || [], d.mails || [], d.liens || [], titres));
       essai(() => mtRenderYoutube(d.youtube, d.liens || []));
     } catch (e) {
-      document.getElementById('mtResume').replaceChildren(mtEl('li', null, 'Impossible de charger la météo : ' + e.message));
+      document.getElementById('mtResume').replaceChildren(mtEl('li', null, 'Impossible de charger les stats : ' + e.message));
     }
   }
 
