@@ -88,7 +88,7 @@ async function supernovaAdmin(request, env, url, origin) {
   }
 
   if (p === "/users" && m === "GET") {
-    const { results } = await db.prepare("SELECT id, username, display_name, role, active, must_change, created_at FROM users ORDER BY id").all();
+    const { results } = await db.prepare("SELECT id, username, display_name, role, active, must_change, created_at, CASE WHEN must_change = 1 THEN temp_password END AS temp_password FROM users ORDER BY id").all();
     return json({ users: results }, 200, origin);
   }
 
@@ -104,7 +104,7 @@ async function supernovaAdmin(request, env, url, origin) {
     if (password.length < 10) return json({ error: "Mot de passe : 10 caractères minimum" }, 400, origin);
     const { hash, salt } = await snHashPassword(password);
     try {
-      await db.prepare("INSERT INTO users (username, display_name, role, pass_hash, pass_salt, must_change) VALUES (?, ?, ?, ?, ?, 1)").bind(username, display, role, hash, salt).run();
+      await db.prepare("INSERT INTO users (username, display_name, role, pass_hash, pass_salt, must_change, temp_password) VALUES (?, ?, ?, ?, ?, 1, ?)").bind(username, display, role, hash, salt, password).run();
     } catch (e) {
       if (String(e).includes("UNIQUE")) return json({ error: "Cet identifiant existe déjà" }, 409, origin);
       throw e;
@@ -132,7 +132,7 @@ async function supernovaAdmin(request, env, url, origin) {
       password = typeof b.password === "string" && b.password ? b.password : snGeneratePassword();
       if (password.length < 10) return json({ error: "Mot de passe : 10 caractères minimum" }, 400, origin);
       const { hash, salt } = await snHashPassword(password);
-      await db.prepare("UPDATE users SET pass_hash = ?, pass_salt = ?, must_change = 1 WHERE id = ?").bind(hash, salt, id).run();
+      await db.prepare("UPDATE users SET pass_hash = ?, pass_salt = ?, must_change = 1, temp_password = ? WHERE id = ?").bind(hash, salt, password, id).run();
       await db.prepare("DELETE FROM sessions WHERE user_id = ?").bind(id).run();
     }
     await db.prepare("DELETE FROM login_attempts WHERE key LIKE ?").bind(`u|%|${target.username.toLowerCase()}`).run();

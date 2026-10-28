@@ -1524,7 +1524,7 @@
       snUsers = d.users;
       list.innerHTML = snUsers.map(u => `<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:10px 0; border-bottom:1px solid var(--line);">
         <div style="flex:1; min-width:180px;"><strong>${snEsc(u.display_name)}</strong> <span style="color:var(--muted);">@${snEsc(u.username)}</span><br>
-          <span style="color:var(--muted); font-size:.8rem;">${u.role === 'admin' ? 'Administrateur' : 'Membre'}${u.active ? '' : ' · désactivé'}${u.must_change ? ' · mot de passe provisoire' : ''}</span></div>
+          <span style="color:var(--muted); font-size:.8rem;">${u.role === 'admin' ? 'Administrateur' : 'Membre'}${u.active ? '' : ' · désactivé'}${u.must_change ? ' · mot de passe provisoire' : ''}</span>${u.temp_password ? `<br><span style="color:var(--muted);">Mot de passe : <code style="font-family:'JetBrains Mono',monospace; color:var(--paper); user-select:all;">${snEsc(u.temp_password)}</code> <button class="btn-outline" style="padding:2px 10px; font-size:.75rem;" onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent).then(()=>showToast('Copié'))">Copier</button></span>` : ''}</div>
         <div style="display:flex; gap:6px; flex-wrap:wrap;">
           <button class="btn-outline" onclick="snAct('rename',${u.id})">Renommer</button>
           <button class="btn-outline" onclick="snAct('reset',${u.id})">Nouveau mot de passe</button>
