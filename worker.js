@@ -720,26 +720,27 @@ async function meteoData(env) {
 }
 
 // Tableau de bord des stats : tout ce qu'il faut pour les graphiques, en une seule requête (admin).
-// GET /api/admin/dashboard?site=slp|bmb|csa|store (vide = tous)&days=7|14|30|90
+// GET /api/admin/dashboard?site=slp|bmb|csa|store (vide = tous)&days=1|7|14|30|90 (1 = aujourd'hui)
 async function dashboardData(env, siteParam, daysParam) {
   const site = ["slp", "bmb", "csa", "store"].includes(siteParam) ? siteParam : "";
-  const days = [7, 14, 30, 90].includes(Number(daysParam)) ? Number(daysParam) : 14;
+  const days = [1, 7, 14, 30, 90].includes(Number(daysParam)) ? Number(daysParam) : 1;
   const q = async (sql) => { try { return (await env.DB.prepare(sql).all()).results || []; } catch (e) { return []; } };
   const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
   const start = `date(${today}, '-${days - 1} day')`;
   const pStart = `date(${today}, '-${2 * days - 1} day')`;
   const pEnd = `date(${today}, '-${days} day')`;
-  const vWith = (extra) => `v AS (SELECT session_id, site, artist_slug AS page, visited_at, device, referrer, city, country, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, CAST(strftime('%H', datetime(visited_at, ${PARIS_OFFSET("visited_at")})) AS INTEGER) AS h FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")}${extra} AND visited_at >= datetime('now', '-${2 * days + 2} days'))`;
+  const vWith = (extra) => `v AS (SELECT session_id, site, artist_slug AS page, visited_at, device, referrer, city, country, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, CAST(strftime('%H', datetime(visited_at, ${PARIS_OFFSET("visited_at")})) AS INTEGER) AS h FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")}${extra} AND visited_at >= datetime('now', '-${Math.max(2 * days + 2, 16)} days'))`;
   const vS = vWith(site ? ` AND site = '${site}'` : "");
   const vAll = vWith("");
   const cur = `jour >= ${start}`;
-  const [meta, daily, tot, prev, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite] = await Promise.all([
-    q(`SELECT ${start} AS debut, ${pStart} AS prec_debut, ${pEnd} AS prec_fin, ${today} AS aujourdhui`),
+  const jCmp = `jour IN (date(${today}, '-1 day'), date(${today}, '-7 day'))`;
+  const [meta, daily, tot, prev, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp] = await Promise.all([
+    q(`SELECT ${start} AS debut, ${pStart} AS prec_debut, ${pEnd} AS prec_fin, ${today} AS aujourdhui, date(${today}, '-1 day') AS j1, date(${today}, '-7 day') AS j7`),
     q(`WITH ${vS} SELECT jour, COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE ${cur} GROUP BY jour ORDER BY jour`),
     q(`WITH ${vS} SELECT COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE ${cur}`),
     q(`WITH ${vS} SELECT COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE jour BETWEEN ${pStart} AND ${pEnd}`),
     q(`WITH ${vS}, s AS (SELECT session_id, MIN(jour) AS jour, COUNT(*) AS n FROM v WHERE jour >= ${pStart} GROUP BY session_id) SELECT jour, COUNT(*) AS sessions, SUM(CASE WHEN n = 1 THEN 1 ELSE 0 END) AS rebonds FROM s GROUP BY jour ORDER BY jour`),
-    q(`WITH ${vS} SELECT h, COUNT(DISTINCT session_id) AS n FROM v WHERE ${cur} GROUP BY h ORDER BY h`),
+    q(`WITH ${vS} SELECT h, COUNT(DISTINCT session_id) AS n, COUNT(*) AS pages FROM v WHERE ${cur} GROUP BY h ORDER BY h`),
     q(`WITH ${vS}, w AS (SELECT * FROM v WHERE ${cur}), s AS (SELECT session_id, COUNT(*) AS n FROM w GROUP BY session_id), f AS (SELECT session_id, page, ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY visited_at) AS rn FROM w)
        SELECT COALESCE(w.page, '') AS page, COUNT(DISTINCT w.session_id) AS visiteurs, COUNT(*) AS vues,
          (SELECT COUNT(*) FROM f WHERE COALESCE(f.page, '') = COALESCE(w.page, '') AND f.rn = 1) AS entrees,
@@ -751,9 +752,11 @@ async function dashboardData(env, siteParam, daysParam) {
     q(`WITH ${vS} SELECT COALESCE(referrer, 'Accès direct / inconnu') AS label, COUNT(DISTINCT session_id) AS total FROM v WHERE ${cur} GROUP BY label ORDER BY total DESC LIMIT 8`),
     q(`WITH ${vS} SELECT city AS label, COUNT(DISTINCT session_id) AS total FROM v WHERE ${cur} AND city IS NOT NULL GROUP BY city ORDER BY total DESC LIMIT 8`),
     q(`WITH ${vS} SELECT country AS label, COUNT(DISTINCT session_id) AS total FROM v WHERE ${cur} AND country IS NOT NULL GROUP BY country ORDER BY total DESC LIMIT 6`),
-    q(`WITH ${vAll} SELECT site, jour, COUNT(DISTINCT session_id) AS visiteurs FROM v WHERE ${cur} GROUP BY site, jour`),
+    q(`WITH ${vAll} SELECT site, jour, COUNT(DISTINCT session_id) AS visiteurs FROM v WHERE jour >= date(${today}, '-${Math.max(days, 14) - 1} day') GROUP BY site, jour`),
+    q(`WITH ${vS}, s AS (SELECT session_id, MIN(jour) AS jour, COUNT(*) AS n FROM v WHERE ${jCmp} GROUP BY session_id) SELECT jour, COUNT(*) AS visiteurs, SUM(n) AS pages, SUM(CASE WHEN n = 1 THEN 1 ELSE 0 END) AS rebonds FROM s GROUP BY jour`),
+    q(`WITH ${vS} SELECT jour, h, COUNT(DISTINCT session_id) AS n, COUNT(*) AS pages FROM v WHERE ${jCmp} GROUP BY jour, h`),
   ]);
-  return { site, days, meta: meta[0] || null, daily, tot: tot[0] || null, prev: prev[0] || null, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite };
+  return { site, days, meta: meta[0] || null, daily, tot: tot[0] || null, prev: prev[0] || null, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp };
 }
 
 // Cache de 2 min pour les gros rapports admin (rapport météo, statistiques de visites) : un même écran rechargé

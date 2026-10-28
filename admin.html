@@ -888,8 +888,9 @@
         <button data-s="store" onclick="dbSetSite('store')"><i style="background:#a3e635"></i>Boutique</button>
       </div>
       <div class="vz-seg" id="dbDaysSeg">
+        <button class="active" data-d="1" onclick="dbSetDays(1)">Aujourd'hui</button>
         <button data-d="7" onclick="dbSetDays(7)">7 jours</button>
-        <button class="active" data-d="14" onclick="dbSetDays(14)">14 jours</button>
+        <button data-d="14" onclick="dbSetDays(14)">14 jours</button>
         <button data-d="30" onclick="dbSetDays(30)">30 jours</button>
         <button data-d="90" onclick="dbSetDays(90)">90 jours</button>
       </div>
@@ -912,12 +913,12 @@
       <div class="vz-card"><div class="vz-card-h"><h3>Pages de sortie</h3><span class="vz-note">où ils repartent</span></div><div class="db-ch s"><canvas id="dbSorties"></canvas></div></div>
     </div>
 
-    <div class="vz-grid2">
+    <div class="vz-grid2" id="dbDepthRow">
       <div class="vz-card"><div class="vz-card-h"><h3>Pages par visite</h3><span class="vz-note">profondeur de lecture</span></div><div class="db-ch s"><canvas id="dbDepth"></canvas></div></div>
       <div class="vz-card"><div class="vz-card-h"><h3>Taux de rebond</h3><span class="vz-note">visites d'une seule page</span></div><div class="db-ch s"><canvas id="dbBounce"></canvas></div></div>
     </div>
 
-    <div class="vz-card">
+    <div class="vz-card" id="dbHoursCard">
       <div class="vz-card-h"><h3>Heures de la journée</h3><span class="vz-note">visiteurs par heure (heure de Paris)</span></div>
       <div class="db-ch s"><canvas id="dbHours"></canvas></div>
     </div>
@@ -1321,7 +1322,7 @@
 
   // ===== Tableau de bord : graphiques =====
   const DB_PAL = ['#ffb238', '#ff2d6f', '#38bdf8', '#a3e635', '#8b5cf6', '#2f9bff', '#fb923c', '#6ee7a0', '#9a93a6'];
-  let dbSite = '', dbDays = 14, dbLast = null, dbSeq = 0; const dbCharts = {};
+  let dbSite = '', dbDays = 1, dbLast = null, dbSeq = 0; const dbCharts = {};
   const dbAx = { ticks:{ color:'#9a93a6', font:{ size:11 }, maxRotation:0, autoSkip:true }, grid:{ color:'rgba(255,255,255,.06)' } };
   function dbMake(id, cfg){
     const c = document.getElementById(id); if (!c || typeof Chart === 'undefined') return;
@@ -1346,14 +1347,32 @@
     loadDashboard();
   }
 
+  const dbPrev = () => (dbDays === 1 ? 'hier' : 'période précédente');
   function dbDelta(el, cur, prev, opts){
     opts = opts || {}; el.className = 'd';
     if (prev === null || prev === undefined || cur === null || cur === undefined){ el.textContent = ''; return; }
-    if (opts.points){ const diff = Math.round((cur - prev) * 100); el.textContent = (diff > 0 ? '▲ +' : diff < 0 ? '▼ ' : '= ') + diff + ' pts vs période précédente'; el.className = 'd ' + (diff === 0 ? '' : (diff > 0) === !!opts.inverse ? 'down' : 'up'); return; }
+    if (opts.points){ const diff = Math.round((cur - prev) * 100); el.textContent = (diff > 0 ? '▲ +' : diff < 0 ? '▼ ' : '= ') + diff + ' pts vs ' + dbPrev(); el.className = 'd ' + (diff === 0 ? '' : (diff > 0) === !!opts.inverse ? 'down' : 'up'); return; }
     if (!prev){ el.textContent = cur ? 'nouveau (aucune visite avant)' : ''; return; }
     const pct = Math.round((cur - prev) * 100 / prev);
-    el.textContent = `${pct >= 0 ? '▲ +' : '▼ '}${pct} % vs période précédente (${mtFmt(prev)})`;
+    el.textContent = `${pct >= 0 ? '▲ +' : '▼ '}${pct} % vs ${dbPrev()} (${mtFmt(prev)})`;
     el.className = 'd ' + (pct > 0 ? 'up' : pct < 0 ? 'down' : '');
+  }
+
+  const dbJ7Label = (d) => (d.meta && d.meta.j7 ? new Date(d.meta.j7 + 'T12:00:00').toLocaleDateString('fr-FR', { weekday:'long' }) + ' dernier' : 'J-7');
+  // Une ligne par comparaison (hier, même jour la semaine dernière…), colorée selon que c'est mieux ou moins bien
+  function dbCmp(el, cur, comps, opts){
+    opts = opts || {}; el.className = 'd'; el.replaceChildren();
+    comps.forEach((c) => {
+      const line = mtEl('span'); line.style.display = 'block';
+      let t, color = '';
+      if (cur === null || cur === undefined || c.prev === null || c.prev === undefined) t = '—';
+      else if (opts.points){ const diff = Math.round((cur - c.prev) * 100); t = (diff > 0 ? '▲ +' : diff < 0 ? '▼ ' : '= ') + diff + ' pts'; color = diff === 0 ? '' : ((diff > 0) === !!opts.inverse ? '#f87171' : '#4ade80'); }
+      else if (opts.dec){ const dd = cur - c.prev; t = (dd > 0 ? '▲ +' : dd < 0 ? '▼ ' : '= ') + dd.toLocaleString('fr-FR', { maximumFractionDigits:1 }); color = dd > 0 ? '#4ade80' : dd < 0 ? '#f87171' : ''; }
+      else if (!c.prev) t = cur ? 'nouveau (0 avant)' : '= 0';
+      else { const pct = Math.round((cur - c.prev) * 100 / c.prev); t = (pct > 0 ? '▲ +' : pct < 0 ? '▼ ' : '= ') + pct + ' % (' + mtFmt(c.prev) + ')'; color = pct > 0 ? '#4ade80' : pct < 0 ? '#f87171' : ''; }
+      line.textContent = c.label + ' : ' + t; if (color) line.style.color = color;
+      el.appendChild(line);
+    });
   }
 
   function dbRows(boxId, list, labelFn){
@@ -1380,7 +1399,7 @@
   }
   function dbFillSparks(){
     if (!dbLast) return;
-    const days = dbDayList(dbLast.days);
+    const days = dbDayList(Math.max(14, dbLast.days));
     ['slp', 'bmb', 'csa', 'store'].forEach((s) => {
       const el = document.getElementById('dbSpark-' + s); if (!el) return;
       const m = {}; (dbLast.bysite || []).filter((r) => r.site === s).forEach((r) => { m[r.jour] = r.visiteurs; });
@@ -1393,24 +1412,47 @@
     const days = dbDayList(d.days), by = {}; (d.daily || []).forEach((r) => { by[r.jour] = r; });
     const vis = days.map((j) => (by[j] ? by[j].visiteurs : 0)), pg = days.map((j) => (by[j] ? by[j].pages : 0));
     const col = d.site ? MT_SITES[d.site].c : '#2f9bff';
-    document.getElementById('dbRange').textContent = `${dbLab(days[0])} → ${dbLab(days[days.length - 1])} · ${d.site ? MT_SITES[d.site].nom : 'tous les sites'}`;
+    const today1 = d.days === 1, siteNom = d.site ? MT_SITES[d.site].nom : 'tous les sites';
+    document.getElementById('dbRange').textContent = today1 ? `aujourd’hui heure par heure, comparé à hier et à ${dbJ7Label(d)} · ${siteNom}` : `${dbLab(days[0])} → ${dbLab(days[days.length - 1])} · ${siteNom}`;
+    document.getElementById('dbDepthRow').style.display = today1 ? 'none' : '';
+    document.getElementById('dbHoursCard').style.display = today1 ? 'none' : '';
 
     // sessions / rebonds : période courante et précédente
     const dbg = d.meta ? d.meta.debut : days[0];
     let sc = 0, rc = 0, sp = 0, rp = 0; const sd = {};
     (d.sess || []).forEach((r) => { sd[r.jour] = r; if (r.jour >= dbg){ sc += r.sessions; rc += r.rebonds; } else { sp += r.sessions; rp += r.rebonds; } });
     const tot = d.tot || { visiteurs:0, pages:0 }, prev = d.prev || { visiteurs:0, pages:0 };
-    const ppv = tot.visiteurs ? tot.pages / tot.visiteurs : null, ppvP = prev.visiteurs ? prev.pages / prev.visiteurs : null;
-    const reb = sc ? rc / sc : null, rebP = sp ? rp / sp : null;
-    document.getElementById('dbK1').textContent = mtFmt(tot.visiteurs); dbDelta(document.getElementById('dbD1'), tot.visiteurs, prev.visiteurs);
-    document.getElementById('dbK2').textContent = mtFmt(tot.pages); dbDelta(document.getElementById('dbD2'), tot.pages, prev.pages);
+    const ppv = tot.visiteurs ? tot.pages / tot.visiteurs : null;
+    const reb = sc ? rc / sc : null;
+    // « Aujourd'hui » se compare à hier ET au même jour de la semaine dernière ; les autres périodes, à la période précédente
+    let comps;
+    if (d.days === 1) {
+      const cm = {}; (d.cmp || []).forEach((r) => { cm[r.jour] = r; });
+      const mk = (label, j) => { const r = j && cm[j]; return { label, v:r ? r.visiteurs : 0, p:r ? r.pages : 0, ppv:r && r.visiteurs ? r.pages / r.visiteurs : null, reb:r && r.visiteurs ? r.rebonds / r.visiteurs : null }; };
+      comps = [mk('hier', d.meta && d.meta.j1), mk(dbJ7Label(d), d.meta && d.meta.j7)];
+    } else comps = [{ label:'période précédente', v:prev.visiteurs, p:prev.pages, ppv:prev.visiteurs ? prev.pages / prev.visiteurs : null, reb:sp ? rp / sp : null }];
+    document.getElementById('dbK1').textContent = mtFmt(tot.visiteurs);
+    document.getElementById('dbK2').textContent = mtFmt(tot.pages);
     document.getElementById('dbK3').textContent = ppv === null ? '—' : ppv.toLocaleString('fr-FR', { maximumFractionDigits:1 });
-    dbDelta(document.getElementById('dbD3'), ppv, ppvP, { points:false }); if (ppv !== null && ppvP) { const e = document.getElementById('dbD3'); const dd = ppv - ppvP; e.textContent = (dd >= 0 ? '▲ +' : '▼ ') + dd.toLocaleString('fr-FR', { maximumFractionDigits:1 }) + ' vs période précédente'; e.className = 'd ' + (dd > 0 ? 'up' : dd < 0 ? 'down' : ''); }
-    document.getElementById('dbK4').textContent = mtPct(reb); dbDelta(document.getElementById('dbD4'), reb, rebP, { points:true, inverse:true });
+    document.getElementById('dbK4').textContent = mtPct(reb);
+    dbCmp(document.getElementById('dbD1'), tot.visiteurs, comps.map((c) => ({ label:c.label, prev:c.v })));
+    dbCmp(document.getElementById('dbD2'), tot.pages, comps.map((c) => ({ label:c.label, prev:c.p })));
+    dbCmp(document.getElementById('dbD3'), ppv, comps.map((c) => ({ label:c.label, prev:c.ppv })), { dec:true });
+    dbCmp(document.getElementById('dbD4'), reb, comps.map((c) => ({ label:c.label, prev:c.reb })), { points:true, inverse:true });
 
-    dbMake('dbOverview', { data:{ labels:days.map(dbLab), datasets:[
-      { type:'bar', label:'Visiteurs', data:vis, backgroundColor:col, borderRadius:4, order:2, maxBarThickness:34 },
-      { type:'line', label:'Pages vues', data:pg, borderColor:'#ffb238', backgroundColor:'#ffb238', tension:.35, pointRadius:3, pointHoverRadius:5, borderWidth:2, order:1 } ] },
+    const hmap = {}; (d.hours || []).forEach((r) => { hmap[r.h] = r; });
+    const hLab = Array.from({ length:24 }, (_, h) => h + ' h');
+    const ovLabels = today1 ? hLab : days.map(dbLab);
+    const ovVis = today1 ? hLab.map((_, h) => (hmap[h] ? hmap[h].n : 0)) : vis;
+    const ovPg = today1 ? hLab.map((_, h) => (hmap[h] ? hmap[h].pages : 0)) : pg;
+    const hcm = (j) => hLab.map((_, h) => { const r = (d.hcmp || []).find((x) => x.jour === j && x.h === h); return r ? r.n : 0; });
+    const dsMain = today1
+      ? [ { type:'bar', label:'Aujourd’hui', data:ovVis, backgroundColor:col, borderRadius:4, order:3, maxBarThickness:30 },
+          { type:'line', label:'Hier', data:hcm(d.meta && d.meta.j1), borderColor:'#a78bfa', backgroundColor:'#a78bfa', borderDash:[6, 4], pointRadius:0, pointHoverRadius:4, tension:0, borderWidth:2, order:2 },
+          { type:'line', label:dbJ7Label(d), data:hcm(d.meta && d.meta.j7), borderColor:'#ff4d7d', backgroundColor:'#ff4d7d', borderDash:[6, 4], pointRadius:0, pointHoverRadius:4, tension:0, borderWidth:2, order:1 } ]
+      : [ { type:'bar', label:'Visiteurs', data:ovVis, backgroundColor:col, borderRadius:4, order:2, maxBarThickness:34 },
+          { type:'line', label:'Pages vues', data:ovPg, borderColor:'#ffb238', backgroundColor:'#ffb238', tension:.35, pointRadius:3, pointHoverRadius:5, borderWidth:2, order:1 } ];
+    dbMake('dbOverview', { data:{ labels:ovLabels, datasets:dsMain },
       options:{ interaction:{ mode:'index', intersect:false }, plugins:{ legend:Object.assign({ position:'bottom' }, dbLegend) }, scales:{ x:dbAx, y:Object.assign({}, dbAx, { beginAtZero:true, ticks:Object.assign({}, dbAx.ticks, { precision:0 }) }) } } });
 
     dbDonut('dbEntrees', d.entrees, dbPageName); dbDonut('dbSorties', d.sorties, dbPageName);
