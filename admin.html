@@ -310,6 +310,13 @@
   .mt-site .db-chip.mt-up{background:rgba(110,231,160,.14);} .mt-site .db-chip.mt-down{background:rgba(255,77,125,.14);}
   .mt-site .mt-more{display:flex; justify-content:space-between;}
   #dbSiteSeg button, #dbDaysSeg button{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:7px 14px; font-size:.82rem; cursor:pointer; font-family:'Manrope',sans-serif; display:inline-flex; align-items:center; gap:7px;}
+  .db-log{max-height:460px; overflow-y:auto; margin:0 -4px; padding:0 4px;}
+  .db-log .dj{position:sticky; top:0; background:var(--ink-2,#1a1a24); padding:6px 0; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:1px solid var(--line);}
+  .db-log .it{display:grid; grid-template-columns:auto 1fr; gap:2px 12px; padding:9px 0; border-bottom:1px solid var(--line); cursor:pointer;}
+  .db-log .it .t{font-variant-numeric:tabular-nums; font-weight:700; color:var(--amber);}
+  .db-log .it .p{text-transform:capitalize;}
+  .db-log .it .w{grid-column:2; font-size:.8rem; color:var(--muted);}
+  .db-log .it .w i{font-style:normal; background:var(--ink,#111); border:1px solid var(--line); border-radius:6px; padding:0 5px; margin-left:4px; font-size:.7rem;}
   .db-off{display:none !important;}
   #dbSiteSeg button.active{background:var(--paper,#f5f2ec); color:var(--ink); border-color:transparent; font-weight:700;}
   #dbDaysSeg button.active{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
@@ -919,6 +926,11 @@
       <div class="vz-card-h"><h3>Vue d'ensemble</h3><span class="vz-note" id="dbRange">visiteurs (barres) et pages vues (courbe), jour par jour</span></div>
       <div class="db-ch"><canvas id="dbOverview"></canvas></div>
       <p id="dbOvInfo" style="margin:10px 0 0; min-height:1.5em; font-size:.92rem; color:var(--paper);"></p>
+    </div>
+
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Pages vues, par qui et à quelle heure</h3><span class="vz-note" id="dbVuesNote"></span></div>
+      <div class="db-log" id="dbVues"></div>
     </div>
 
     <div class="vz-grid2">
@@ -1595,6 +1607,27 @@
     dbDonut('dbDevices', d.devices, null, '58%');
     dbRows('dbRefs', d.referrers, (l) => (typeof refLabel === 'function' ? refLabel(l) : l));
     dbRows('dbCities', d.cities);
+
+
+    // journal des pages vues : heure (Paris), page, et qui (ville, appareil, réseau, provenance)
+    const lg = document.getElementById('dbVues'); lg.replaceChildren();
+    const vues = d.vues || [];
+    document.getElementById('dbVuesNote').textContent = vues.length ? `${vues.length >= 300 ? '300 dernières' : vues.length} pages vues · clique pour voir le parcours` : '';
+    if (!vues.length) lg.appendChild(mtEl('p', 'empty', 'Aucune page vue sur cette période.'));
+    let dernierJour = '';
+    vues.forEach((r) => {
+      const dt = new Date(r.visited_at.replace(' ', 'T') + 'Z');
+      const jour = dt.toLocaleDateString('fr-FR', { timeZone:'Europe/Paris', weekday:'long', day:'numeric', month:'long' });
+      if (jour !== dernierJour){ dernierJour = jour; lg.appendChild(mtEl('div', 'dj', jour)); }
+      const it = mtEl('div', 'it');
+      const who = [r.city || 'Ville inconnue', r.device, r.network, r.referrer ? (typeof refLabel === 'function' ? refLabel(r.referrer) : r.referrer) : 'accès direct'].filter(Boolean).join(' · ');
+      const w = mtEl('div', 'w', who + (d.site ? '' : ' · ' + ((MT_SITES[r.site] || {}).nom || r.site) + ' · '));
+      if (!d.site) w.lastChild.textContent = who + ' · ' + ((MT_SITES[r.site] || {}).nom || r.site);
+      if (r.session_id){ const sid = mtEl('i', null, '#' + String(r.session_id).slice(-4)); w.appendChild(sid); }
+      it.append(mtEl('span', 't', dt.toLocaleTimeString('fr-FR', { timeZone:'Europe/Paris', hour:'2-digit', minute:'2-digit' })), mtEl('span', 'p', dbPageName(r.page)), w);
+      if (r.session_id) it.addEventListener('click', () => showJourney(r.session_id));
+      lg.appendChild(it);
+    });
 
     const tb = document.querySelector('#dbPages tbody'); tb.replaceChildren();
     const rows = d.pages || [];
