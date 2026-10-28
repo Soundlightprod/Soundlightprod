@@ -48,6 +48,20 @@ function json(data, status = 200, origin) {
 // ============ Espace privé Supernova (gestion des membres depuis l'admin SLP) ============
 // Binding D1 : SUPERNOVA_DB (base supernova-db). Variable optionnelle : SUPERNOVA_URL.
 const SN_URL_DEFAULT = "https://supernova.raspy-silence-d4c7.workers.dev";
+const SN_URL_CUSTOM = "https://supernova.soundlightprod.fr"; // préféré dès qu'il répond : même site que l'admin, donc affichable dans un onglet
+let snBaseCache = { at: 0, base: null };
+async function snBase(env) {
+  if (env.SUPERNOVA_URL) return env.SUPERNOVA_URL.replace(/\/$/, "");
+  const now = Date.now();
+  if (snBaseCache.base && now - snBaseCache.at < 60000) return snBaseCache.base;
+  let base = SN_URL_DEFAULT;
+  try {
+    const r = await fetch(SN_URL_CUSTOM + "/robots.txt", { signal: AbortSignal.timeout(3000) });
+    if (r.ok && (await r.text()).includes("Disallow")) base = SN_URL_CUSTOM;
+  } catch (e) {}
+  snBaseCache = { at: now, base };
+  return base;
+}
 const SN_ENC = new TextEncoder();
 const snB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
 const snHex = (buf) => [...new Uint8Array(buf)].map((x) => x.toString(16).padStart(2, "0")).join("");
@@ -83,8 +97,9 @@ async function supernovaAdmin(request, env, url, origin) {
     const token = snHex(crypto.getRandomValues(new Uint8Array(32)));
     const th = snHex(await crypto.subtle.digest("SHA-256", SN_ENC.encode(token)));
     await db.prepare("INSERT INTO sso_tokens (token_hash, user_id, expires_at) VALUES (?, ?, ?)").bind(th, admin.id, Date.now() + 120000).run();
-    const base = (env.SUPERNOVA_URL || SN_URL_DEFAULT).replace(/\/$/, "");
-    return json({ url: `${base}/sso?t=${token}` }, 200, origin);
+    const base = await snBase(env);
+    const embed = new URL(base).hostname.endsWith(".soundlightprod.fr");
+    return json({ url: `${base}/sso?t=${token}`, embed }, 200, origin);
   }
 
   if (p === "/users" && m === "GET") {
