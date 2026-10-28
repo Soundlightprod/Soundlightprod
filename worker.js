@@ -561,6 +561,7 @@ function routeDomain(request, url) {
   if (STORE_MODE === "main" && host.endsWith("soundlightprod.fr") && !isApi) {
     if (/^\/boutique(\.html)?$/.test(path)) return redirect(`${STORE_SITE}/${url.search}`);
     if (path.startsWith("/produits/")) return redirect(`${STORE_SITE}${path.replace(/\.html$/, "")}${url.search}`);
+    if (/^\/cgv-boutique(\.html)?$/.test(path)) return redirect(`${STORE_SITE}/cgv-boutique${url.search}`);
   }
 
   // Ancienne fiche DJ provisoire remplacée par la fiche DJ Animation
