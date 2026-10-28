@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /stats.html
 Disallow: /mon-agenda.html
 Disallow: /api/
 
