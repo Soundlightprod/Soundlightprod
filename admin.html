@@ -916,6 +916,7 @@
     <div class="vz-card">
       <div class="vz-card-h"><h3>Vue d'ensemble</h3><span class="vz-note" id="dbRange">visiteurs (barres) et pages vues (courbe), jour par jour</span></div>
       <div class="db-ch"><canvas id="dbOverview"></canvas></div>
+      <p id="dbOvInfo" style="margin:10px 0 0; min-height:1.5em; font-size:.92rem; color:var(--paper);"></p>
     </div>
 
     <div class="vz-grid2">
@@ -1444,6 +1445,13 @@
   function dbDayList(n){ const out = []; for (let i = n - 1; i >= 0; i--){ const d = new Date(); d.setDate(d.getDate() - i); out.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`); } return out; }
   const dbLab = (j) => new Date(j + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
 
+  let dbOv = null;
+  // le détail du graphique s'affiche dans une ligne fixe sous le graphique (pas de bulle qui masque les courbes sur mobile)
+  function dbOvInfo(i){
+    const el = document.getElementById('dbOvInfo'); if (!el || !dbOv) return;
+    const parts = dbOv.series.map((x) => x.name + ' ' + (x.data[i] === null || x.data[i] === undefined ? '—' : mtFmt(x.data[i])));
+    el.textContent = dbOv.labels[i] + ' · ' + parts.join(' · ') + (dbOv.today ? ' (visiteurs cumulés)' : '');
+  }
   function dbSetSite(sv){
     dbSite = sv;
     document.querySelectorAll('#dbSiteSeg button').forEach((b) => b.classList.toggle('active', b.dataset.s === sv));
@@ -1522,7 +1530,7 @@
     const vis = days.map((j) => (by[j] ? by[j].visiteurs : 0)), pg = days.map((j) => (by[j] ? by[j].pages : 0));
     const col = d.site ? MT_SITES[d.site].c : '#2f9bff';
     const today1 = d.days === 1, siteNom = d.site ? MT_SITES[d.site].nom : 'tous les sites';
-    document.getElementById('dbRange').textContent = today1 ? `aujourd’hui heure par heure, comparé à hier et à ${dbJ7Label(d)} · ${siteNom}` : `${dbLab(days[0])} → ${dbLab(days[days.length - 1])} · ${siteNom}`;
+    document.getElementById('dbRange').textContent = today1 ? `visiteurs cumulés heure par heure, comparés à hier et à ${dbJ7Label(d)} · ${siteNom}` : `${dbLab(days[0])} → ${dbLab(days[days.length - 1])} · ${siteNom}`;
     document.getElementById('dbDepthRow').style.display = today1 ? 'none' : '';
     document.getElementById('dbHoursCard').style.display = today1 ? 'none' : '';
 
@@ -1549,20 +1557,31 @@
     dbCmp(document.getElementById('dbD3'), ppv, comps.map((c) => ({ label:c.label, prev:c.ppv })), { dec:true });
     dbCmp(document.getElementById('dbD4'), reb, comps.map((c) => ({ label:c.label, prev:c.reb })), { points:true, inverse:true });
 
-    const hmap = {}; (d.hours || []).forEach((r) => { hmap[r.h] = r; });
     const hLab = Array.from({ length:24 }, (_, h) => h + ' h');
-    const ovLabels = today1 ? hLab : days.map(dbLab);
-    const ovVis = today1 ? hLab.map((_, h) => (hmap[h] ? hmap[h].n : 0)) : vis;
-    const ovPg = today1 ? hLab.map((_, h) => (hmap[h] ? hmap[h].pages : 0)) : pg;
-    const hcm = (j) => hLab.map((_, h) => { const r = (d.hcmp || []).find((x) => x.jour === j && x.h === h); return r ? r.n : 0; });
-    const dsMain = today1
-      ? [ { type:'bar', label:'Aujourd’hui', data:ovVis, backgroundColor:col, borderRadius:4, order:3, maxBarThickness:30 },
-          { type:'line', label:'Hier', data:hcm(d.meta && d.meta.j1), borderColor:'#a78bfa', backgroundColor:'#a78bfa', borderDash:[6, 4], pointRadius:0, pointHoverRadius:4, tension:0, borderWidth:2, order:2 },
-          { type:'line', label:dbJ7Label(d), data:hcm(d.meta && d.meta.j7), borderColor:'#ff4d7d', backgroundColor:'#ff4d7d', borderDash:[6, 4], pointRadius:0, pointHoverRadius:4, tension:0, borderWidth:2, order:1 } ]
-      : [ { type:'bar', label:'Visiteurs', data:ovVis, backgroundColor:col, borderRadius:4, order:2, maxBarThickness:34 },
-          { type:'line', label:'Pages vues', data:ovPg, borderColor:'#ffb238', backgroundColor:'#ffb238', tension:.35, pointRadius:3, pointHoverRadius:5, borderWidth:2, order:1 } ];
+    const nowH = parseInt(new Intl.DateTimeFormat('fr-FR', { timeZone:'Europe/Paris', hour:'2-digit', hourCycle:'h23' }).format(new Date()), 10);
+    let ovLabels, series;
+    if (today1){
+      // visiteurs cumulés heure par heure : on voit tout de suite si la journée avance plus vite ou moins vite qu'hier et que la semaine dernière
+      const byJ = {}; (d.hcmp || []).forEach((r) => { (byJ[r.jour] = byJ[r.jour] || {})[r.h] = r.n; });
+      const cum = (j, cut) => { let t = 0; return hLab.map((_, h) => { t += (byJ[j] && byJ[j][h]) || 0; return cut !== undefined && h > cut ? null : t; }); };
+      ovLabels = hLab;
+      series = [ { name:'Aujourd’hui', data:cum(d.meta && d.meta.aujourdhui, nowH), color:col, main:true },
+                 { name:'Hier', data:cum(d.meta && d.meta.j1), color:'#a78bfa' },
+                 { name:dbJ7Label(d), data:cum(d.meta && d.meta.j7), color:'#ff4d7d' } ];
+    } else {
+      ovLabels = days.map(dbLab);
+      series = [ { name:'Visiteurs', data:vis, color:col, bar:true }, { name:'Pages vues', data:pg, color:'#ffb238' } ];
+    }
+    dbOv = { labels:ovLabels, series, today:today1 };
+    const dsMain = series.map((x) => x.bar
+      ? { type:'bar', label:x.name, data:x.data, backgroundColor:x.color, borderRadius:4, order:2, maxBarThickness:34 }
+      : { type:'line', label:x.name, data:x.data, borderColor:x.color, backgroundColor:x.main ? x.color + '2e' : x.color, fill:!!x.main, borderWidth:x.main ? 3 : 2, borderDash:today1 && !x.main ? [6, 4] : [], pointRadius:0, pointHoverRadius:5, tension:.3, cubicInterpolationMode:'monotone', spanGaps:false, order:1 });
+    const ovX = Object.assign({}, dbAx, { ticks:Object.assign({}, dbAx.ticks, today1 ? { autoSkip:false, callback(v){ return v % 3 === 0 ? this.getLabelForValue(v) : ''; } } : {}) });
     dbMake('dbOverview', { data:{ labels:ovLabels, datasets:dsMain },
-      options:{ interaction:{ mode:'index', intersect:false }, plugins:{ legend:Object.assign({ position:'bottom' }, dbLegend) }, scales:{ x:dbAx, y:Object.assign({}, dbAx, { beginAtZero:true, ticks:Object.assign({}, dbAx.ticks, { precision:0 }) }) } } });
+      options:{ interaction:{ mode:'index', intersect:false }, onHover:(e, els) => { if (els && els.length) dbOvInfo(els[0].index); },
+        plugins:{ legend:Object.assign({ position:'bottom' }, dbLegend), tooltip:{ enabled:false } },
+        scales:{ x:ovX, y:Object.assign({}, dbAx, { beginAtZero:true, ticks:Object.assign({}, dbAx.ticks, { precision:0 }) }) } } });
+    dbOvInfo(today1 ? Math.min(nowH, 23) : ovLabels.length - 1);
 
     dbDonut('dbEntrees', d.entrees, dbPageName); dbDonut('dbSorties', d.sorties, dbPageName);
 
