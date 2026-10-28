@@ -309,8 +309,8 @@
   .mt-site .db-chip{align-self:start; font-size:.72rem; padding:3px 9px; border-radius:20px; background:rgba(255,255,255,.07); color:var(--muted); white-space:nowrap;}
   .mt-site .db-chip.mt-up{background:rgba(110,231,160,.14);} .mt-site .db-chip.mt-down{background:rgba(255,77,125,.14);}
   .mt-site .mt-more{display:flex; justify-content:space-between;}
-  #dbSiteSeg button, #dbDaysSeg button{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:7px 14px; font-size:.82rem; cursor:pointer; font-family:'Manrope',sans-serif; display:inline-flex; align-items:center; gap:7px;}
-  #dbSiteSeg button.active{background:var(--paper,#f5f2ec); color:var(--ink); border-color:transparent; font-weight:700;}
+  #dbSiteSeg button, #dbDaysSeg button, #ldSeg button{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:7px 14px; font-size:.82rem; cursor:pointer; font-family:'Manrope',sans-serif; display:inline-flex; align-items:center; gap:7px;}
+  #dbSiteSeg button.active, #ldSeg button.active{background:var(--paper,#f5f2ec); color:var(--ink); border-color:transparent; font-weight:700;}
   #dbDaysSeg button.active{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
   #dbSiteSeg button i{display:inline-block; width:9px; height:9px; border-radius:50%;}
   .db-row{display:grid; grid-template-columns:1fr auto; gap:4px 10px; padding:7px 0; border-top:1px solid var(--line); font-size:.88rem;}
@@ -319,6 +319,15 @@
   .db-tbl th{font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); text-align:right; font-weight:600; padding:8px 8px;} .db-tbl th:first-child,.db-tbl td:first-child{text-align:left;}
   .db-tbl td{white-space:nowrap; padding:9px 8px; text-align:right; font-variant-numeric:tabular-nums; border-top:1px solid var(--line);}
   .db-tbl td .m{display:block; height:3px; border-radius:2px; margin-top:4px; background:linear-gradient(90deg,#ffb238,#ff4d7d);}
+  /* ===== Contacts à suivre ===== */
+  .ld-card{background:var(--ink-2); border:1px solid var(--line); border-left:4px solid var(--muted); border-radius:14px; padding:14px 16px; margin-bottom:10px; display:grid; gap:6px;}
+  .ld-top{display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap;}
+  .ld-top b{font-size:1.02rem;} .ld-when{color:var(--muted); font-size:.78rem;}
+  .ld-heat{font-size:.72rem; padding:3px 10px; border-radius:20px; font-weight:700; margin-right:8px; white-space:nowrap;}
+  .ld-sub{color:var(--muted); font-size:.82rem;} .ld-msg{font-size:.88rem; line-height:1.45; background:rgba(255,255,255,.04); border-radius:10px; padding:8px 10px;}
+  .ld-chips{display:flex; flex-wrap:wrap; gap:6px;} .ld-chip{font-size:.72rem; padding:3px 9px; border-radius:20px; background:rgba(47,155,255,.14); color:var(--blue);} .ld-chip.act{background:rgba(255,77,125,.16); color:var(--pink); font-weight:700;} .ld-chip.pg{background:rgba(255,255,255,.07); color:var(--muted);}
+  .ld-act{display:flex; gap:8px; flex-wrap:wrap; margin-top:2px;} .ld-card.off{opacity:.65;}
+  .ld-card a{color:var(--amber);}
   .db-tbl td.hot{color:var(--pink);} .db-tbl td:first-child{white-space:normal; text-transform:capitalize;}
 
   .mt-delta{font-size:.75rem; display:block;}
@@ -863,6 +872,7 @@
   <div class="tab-content" id="tab-visits">
     <div class="vp-nav">
       <button class="vp-btn active" id="vpBtn-today" onclick="switchVisitsPane('today')">📊 Tableau de bord</button>
+      <button class="vp-btn" id="vpBtn-leads" onclick="switchVisitsPane('leads')">🔥 Contacts à suivre <span id="ldBadge"></span></button>
       <button class="vp-btn" id="vpBtn-visits" onclick="switchVisitsPane('visits')">📈 Visites des sites</button>
       <button class="vp-btn" id="vpBtn-search" onclick="switchVisitsPane('search')">🔍 Google &amp; mails</button>
       <button class="vp-btn" id="vpBtn-social" onclick="switchVisitsPane('social')">📣 Réseaux &amp; YouTube</button>
@@ -960,6 +970,26 @@
       <iframe id="mtVisuel" title="Rapport visuel" sandbox="allow-same-origin" style="width:100%; border:0; display:block; min-height:400px;"></iframe>
     </div>
     <details class="vz-more" id="mtFullWrap" style="display:none;"><summary>Lire le rapport complet</summary><div class="vz-card"><p class="mt-full" id="mtFull"></p></div></details>
+    </div>
+
+    <div class="vp-pane" id="vp-leads">
+    <div class="mt-head">
+      <div>
+        <h2 style="margin:0;">Contacts à suivre</h2>
+        <p class="vz-sub">Les visiteurs de SLP et Book My Band des 30 derniers jours, classés par intérêt : pages vues, retours, page Contact, clic sur Appeler / WhatsApp / mail, venue d'un mailing, et les demandes reçues. « Supprimer » retire le contact de cette liste (tu peux le rétablir) ; les statistiques ne changent pas.</p>
+      </div>
+      <button class="btn-outline" onclick="loadLeads()">↻ Actualiser</button>
+    </div>
+    <div class="vz-bar">
+      <div class="vz-seg" id="ldSeg">
+        <button class="active" data-f="tous" onclick="ldFilter('tous')">Tous <span id="ldN-tous"></span></button>
+        <button data-f="chaud" onclick="ldFilter('chaud')">🔥 Chauds <span id="ldN-chaud"></span></button>
+        <button data-f="tiede" onclick="ldFilter('tiede')">🟡 Tièdes <span id="ldN-tiede"></span></button>
+        <button data-f="froid" onclick="ldFilter('froid')">⚪ Froids <span id="ldN-froid"></span></button>
+      </div>
+      <label class="vz-toggle"><input type="checkbox" id="ldMasked" onchange="ldToggleMasked()"><span></span> Voir les supprimés (<b id="ldMaskedN">0</b>)</label>
+    </div>
+    <div id="ldList"><p class="empty">Chargement…</p></div>
     </div>
 
     <div class="vp-pane" id="vp-visits">
@@ -1318,6 +1348,85 @@
       box.appendChild(card);
     });
     try { dbFillSparks(); } catch (e) {}
+  }
+
+  // ===== Contacts à suivre =====
+  let ldData = { leads:[], masques:[] }, ldF = 'tous', ldShowMasked = false;
+  const LD_ACT = { envoi:'📨 Formulaire envoyé', appel:'📞 Appel', whatsapp:'💬 WhatsApp', mail:'✉️ Mail', devis:'📝 Devis ouvert', chat:'💬 Chat', suivre:'🔔 Suivi' };
+  const LD_HEAT = { chaud:['🔥 Chaud', '#ff4d7d'], tiede:['🟡 Tiède', '#ffb238'], froid:['⚪ Froid', '#9a93a6'] };
+  const ldAgo = (t) => { if (!t) return ''; const m = Math.max(0, Math.round((Date.now() - new Date(t.replace(' ', 'T') + 'Z').getTime()) / 60000)); return m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`; };
+
+  async function ldPost(action, cle){
+    const res = await fetch('/api/admin/leads/' + action, { method:'POST', headers:{ Authorization:`Bearer ${token}`, 'Content-Type':'application/json' }, body:JSON.stringify({ cle }) });
+    if (!res.ok) throw new Error('Erreur ' + res.status);
+  }
+  async function ldMove(l, masquer){
+    try {
+      await ldPost(masquer ? 'masquer' : 'retablir', l.cle);
+      const from = masquer ? ldData.leads : ldData.masques, to = masquer ? ldData.masques : ldData.leads;
+      const i = from.findIndex((x) => x.cle === l.cle); if (i >= 0) from.splice(i, 1);
+      to.push(l); to.sort((a, b) => b.score - a.score || String(b.derniere).localeCompare(String(a.derniere)));
+      ldRender();
+    } catch (e){ console.error('Contacts :', e); const b = document.getElementById('ldList'); b.prepend(mtEl('p', 'empty', 'Action impossible : ' + e.message)); }
+  }
+  function ldFilter(f){ ldF = f; document.querySelectorAll('#ldSeg button').forEach((b) => b.classList.toggle('active', b.dataset.f === f)); ldRender(); }
+  function ldToggleMasked(){ ldShowMasked = document.getElementById('ldMasked').checked; ldRender(); }
+
+  function ldCard(l, masked){
+    const [hl, hc] = LD_HEAT[l.heat] || LD_HEAT.froid;
+    const c = mtEl('div', 'ld-card' + (masked ? ' off' : '')); c.style.borderLeftColor = hc;
+    const top = mtEl('div', 'ld-top'), left = mtEl('div');
+    const pill = mtEl('span', 'ld-heat', hl + ' · ' + l.score); pill.style.background = hc + '26'; pill.style.color = hc; left.appendChild(pill);
+    if (l.type === 'demande') left.appendChild(mtEl('b', null, (l.nom || 'Demande reçue') + (l.artiste_nom ? ' · ' + l.artiste_nom : '')));
+    else left.appendChild(mtEl('b', null, (l.ville || 'Lieu inconnu') + (l.pays && l.pays !== 'FR' ? ' (' + l.pays + ')' : '') + (l.region && l.pays === 'FR' ? ' · ' + l.region : '')));
+    top.append(left, mtEl('span', 'ld-when', ldAgo(l.derniere)));
+    c.appendChild(top);
+    if (l.type === 'demande'){
+      const contact = mtEl('div', 'ld-sub');
+      if (l.telephone){ const a = mtEl('a', null, l.telephone); a.href = 'tel:' + String(l.telephone).replace(/[^+0-9]/g, ''); contact.appendChild(a); }
+      if (l.email){ if (l.telephone) contact.appendChild(document.createTextNode(' · ')); const a = mtEl('a', null, l.email); a.href = 'mailto:' + l.email; contact.appendChild(a); }
+      c.appendChild(contact);
+      const infos = [l.sujet, l.date_event && ('date : ' + l.date_event), l.lieu].filter(Boolean).join(' · ');
+      if (infos) c.appendChild(mtEl('div', 'ld-sub', infos));
+      if (l.message) c.appendChild(mtEl('div', 'ld-msg', l.message));
+      c.appendChild(mtEl('div', 'ld-chips')).appendChild(mtEl('span', 'ld-chip act', '📨 Demande reçue'));
+    } else {
+      const src = (r) => (typeof refLabel === 'function' ? refLabel(r) : r);
+      const sites = (l.sites || '').split(',').filter(Boolean).map((x) => (MT_SITES[x] ? MT_SITES[x].nom : x)).join(' + ');
+      c.appendChild(mtEl('div', 'ld-sub', [l.appareil, l.reseau, l.provenance ? 'via ' + src(l.provenance) : 'accès direct', sites].filter(Boolean).join(' · ')));
+      c.appendChild(mtEl('div', 'ld-sub', `${l.pages} page(s) vue(s) · ${l.sessions} visite(s)` + (l.sessions > 1 ? ' · 🔁 il est revenu' : '') + (l.via_mail ? ' · 📧 venu d’un mailing' : '')));
+      const chips = mtEl('div', 'ld-chips');
+      (l.actions || []).forEach((a) => chips.appendChild(mtEl('span', 'ld-chip act', LD_ACT[a] || a)));
+      if (l.vu_contact) chips.appendChild(mtEl('span', 'ld-chip', 'a vu la page Contact'));
+      if (l.rapide) chips.appendChild(mtEl('span', 'ld-chip pg', '⚠ navigation très rapide : robot probable'));
+      (l.pages_vues || []).forEach((p) => chips.appendChild(mtEl('span', 'ld-chip pg', dbPageName(p))));
+      c.appendChild(chips);
+    }
+    const act = mtEl('div', 'ld-act');
+    if (l.type === 'visite' && l.session_id){ const b = mtEl('button', 'btn-yes', 'Voir le parcours'); b.type = 'button'; b.addEventListener('click', () => showJourney(l.session_id)); act.appendChild(b); }
+    const d = mtEl('button', 'btn-outline', masked ? '↩ Rétablir' : '🗑 Supprimer'); d.type = 'button'; d.addEventListener('click', () => ldMove(l, !masked)); act.appendChild(d);
+    c.appendChild(act);
+    return c;
+  }
+
+  function ldRender(){
+    const box = document.getElementById('ldList'); box.replaceChildren();
+    const L = ldData.leads, count = (h) => L.filter((x) => x.heat === h).length;
+    document.getElementById('ldN-tous').textContent = '(' + L.length + ')';
+    ['chaud', 'tiede', 'froid'].forEach((h) => { document.getElementById('ldN-' + h).textContent = '(' + count(h) + ')'; });
+    document.getElementById('ldMaskedN').textContent = ldData.masques.length;
+    const nChaud = count('chaud'); const bd = document.getElementById('ldBadge'); if (bd) bd.textContent = nChaud ? '(' + nChaud + ')' : '';
+    const list = ldShowMasked ? ldData.masques : L.filter((x) => ldF === 'tous' || x.heat === ldF);
+    if (!list.length){ box.appendChild(mtEl('p', 'empty', ldShowMasked ? 'Aucun contact supprimé.' : 'Aucun contact à suivre pour l’instant.')); return; }
+    list.forEach((l) => box.appendChild(ldCard(l, ldShowMasked)));
+  }
+
+  async function loadLeads(){
+    try {
+      const res = await fetch('/api/admin/leads', { headers:{ Authorization:`Bearer ${token}` } });
+      if (!res.ok) throw new Error('Erreur ' + res.status);
+      ldData = await res.json(); ldRender();
+    } catch (e){ console.error('Contacts :', e); const b = document.getElementById('ldList'); if (b) b.replaceChildren(mtEl('p', 'empty', 'Impossible de charger les contacts : ' + e.message)); }
   }
 
   // ===== Tableau de bord : graphiques =====
@@ -1706,7 +1815,7 @@
   }
 
   async function loadMeteo(){
-    loadDashboard();
+    loadDashboard(); loadLeads();
     try {
       const res = await fetch('/api/admin/meteo', { headers:{ Authorization:`Bearer ${token}` } });
       if (!res.ok){ let m = ''; try { m = (await res.json()).error || ''; } catch(_){} throw new Error(res.status === 401 ? 'Accès refusé : reconnecte-toi à l’admin.' : 'Erreur ' + res.status + (m ? ' (' + m + ')' : '')); }

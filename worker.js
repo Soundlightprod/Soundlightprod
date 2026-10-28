@@ -759,6 +759,60 @@ async function dashboardData(env, siteParam, daysParam) {
   return { site, days, meta: meta[0] || null, daily, tot: tot[0] || null, prev: prev[0] || null, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp };
 }
 
+// Contacts à suivre : visiteurs « chauds » repérés dans les visites + demandes reçues, classés par intérêt (admin).
+// « Supprimer » = retirer de la liste (table leads_masques) ; les statistiques et les demandes elles-mêmes ne changent pas.
+let leadsTableReady = false;
+async function ensureLeadsTable(env) {
+  if (leadsTableReady) return;
+  await env.DB.prepare("CREATE TABLE IF NOT EXISTS leads_masques (cle TEXT PRIMARY KEY, masque_le TEXT DEFAULT (datetime('now')))").run();
+  leadsTableReady = true;
+}
+async function leadsData(env) {
+  await ensureLeadsTable(env);
+  const q = async (sql) => { try { return (await env.DB.prepare(sql).all()).results || []; } catch (e) { return []; } };
+  const demandesSql = (cols) => `SELECT ${cols} FROM contact_requests WHERE cree_le >= datetime('now', '-60 days') ORDER BY id DESC LIMIT 60`;
+  const [sessions, events, hidden, demandes] = await Promise.all([
+    q(`SELECT COALESCE(visitor_id, session_id) AS cle, COUNT(DISTINCT session_id) AS sessions, COUNT(*) AS pages, COUNT(DISTINCT artist_slug) AS pages_distinctes,
+         MIN(visited_at) AS premiere, MAX(visited_at) AS derniere, GROUP_CONCAT(DISTINCT session_id) AS session_ids, GROUP_CONCAT(DISTINCT site) AS sites,
+         MAX(city) AS ville, MAX(region) AS region, MAX(country) AS pays, MAX(network) AS reseau, MAX(device) AS appareil, MAX(referrer) AS provenance,
+         MAX(CASE WHEN artist_slug = 'contact' THEN 1 ELSE 0 END) AS vu_contact, MAX(CASE WHEN ${MAIL_REF} THEN 1 ELSE 0 END) AS via_mail,
+         GROUP_CONCAT(DISTINCT artist_slug) AS pages_vues
+       FROM page_visits
+       WHERE is_bot = 0 AND ${notTest("visited_at")} AND session_id IS NOT NULL AND site IN ('slp', 'bmb') AND visited_at >= datetime('now', '-30 days')
+       GROUP BY cle HAVING pages >= 2 OR vu_contact = 1 OR sessions >= 2
+       ORDER BY derniere DESC LIMIT 400`),
+    q(`SELECT session_id, action FROM contact_events WHERE is_bot = 0 AND session_id IS NOT NULL AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-30 days')`),
+    q("SELECT cle FROM leads_masques"),
+    (async () => {
+      try { return (await env.DB.prepare(demandesSql("id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, artiste_nom")).all()).results || []; }
+      catch (e) { return q(demandesSql("id, cree_le, nom, email, telephone, sujet, date_event, lieu, message")); }
+    })(),
+  ]);
+  const hide = new Set(hidden.map((h) => h.cle));
+  const evBy = {};
+  events.forEach((e) => { (evBy[e.session_id] = evBy[e.session_id] || []).push(e.action); });
+  const W = { envoi: 14, appel: 14, whatsapp: 14, mail: 14, devis: 8, chat: 8, suivre: 2 };
+  const recent = (t) => t && Date.now() - new Date(t.replace(" ", "T") + "Z").getTime() < 48 * 3600 * 1000;
+  const all = [];
+  sessions.forEach((s) => {
+    const ids = (s.session_ids || "").split(",").filter(Boolean);
+    const actions = [...new Set(ids.flatMap((id) => evBy[id] || []))];
+    const duree = (new Date(s.derniere.replace(" ", "T") + "Z") - new Date(s.premiere.replace(" ", "T") + "Z")) / 1000;
+    const rapide = s.sessions === 1 && s.pages >= 4 && duree < s.pages * 5; // moins de 5 s par page : probablement un robot
+    let score = Math.min(s.pages, 10) + (s.pages_distinctes >= 4 ? 2 : 0) + (s.sessions >= 2 ? 4 + Math.min(s.sessions - 2, 3) * 2 : 0)
+      + (s.vu_contact ? 5 : 0) + (s.via_mail ? 3 : 0) + actions.reduce((a, x) => a + (W[x] || 0), 0) + (recent(s.derniere) ? 3 : 0) - (rapide ? 12 : 0);
+    all.push({ type: "visite", cle: s.cle, score, rapide, heat: score >= 16 ? "chaud" : score >= 9 ? "tiede" : "froid", ville: s.ville, region: s.region, pays: s.pays, reseau: s.reseau,
+      appareil: s.appareil, provenance: s.provenance, sites: s.sites, pages: s.pages, sessions: s.sessions, premiere: s.premiere, derniere: s.derniere,
+      session_id: ids[ids.length - 1] || null, actions, via_mail: !!s.via_mail, vu_contact: !!s.vu_contact, pages_vues: (s.pages_vues || "").split(",").filter(Boolean).slice(0, 12) });
+  });
+  demandes.forEach((d) => {
+    all.push({ type: "demande", cle: "demande:" + d.id, score: 30, heat: "chaud", nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event,
+      lieu: d.lieu, message: d.message, artiste_nom: d.artiste_nom || null, derniere: d.cree_le, premiere: d.cree_le });
+  });
+  all.sort((a, b) => b.score - a.score || String(b.derniere).localeCompare(String(a.derniere)));
+  return { leads: all.filter((l) => !hide.has(l.cle)).slice(0, 80), masques: all.filter((l) => hide.has(l.cle)).slice(0, 80) };
+}
+
 // Cache de 2 min pour les gros rapports admin (rapport météo, statistiques de visites) : un même écran rechargé
 // ou plusieurs appareils ouverts ne relancent plus les mêmes lectures D1 (quota gratuit : 5 M de lignes lues/jour).
 // Ajouter &fresh=1 à l'URL pour forcer un recalcul. Le contrôle d'accès admin est fait AVANT d'appeler cette fonction.
@@ -2025,6 +2079,22 @@ export default {
       if (url.pathname === "/api/admin/social-stats/refresh" && request.method === "POST") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         return json(await collectMetaStats(env), 200, origin);
+      }
+
+      // GET /api/admin/leads — contacts à suivre ; POST /api/admin/leads/masquer|retablir {cle}
+      if (url.pathname === "/api/admin/leads" && request.method === "GET") {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        return json(await leadsData(env), 200, origin);
+      }
+      if ((url.pathname === "/api/admin/leads/masquer" || url.pathname === "/api/admin/leads/retablir") && request.method === "POST") {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        const body = await request.json().catch(() => ({}));
+        const cle = typeof body.cle === "string" ? body.cle.slice(0, 120) : "";
+        if (!cle) return json({ error: "Contact manquant" }, 400, origin);
+        await ensureLeadsTable(env);
+        if (url.pathname.endsWith("/masquer")) await env.DB.prepare("INSERT OR IGNORE INTO leads_masques (cle) VALUES (?)").bind(cle).run();
+        else await env.DB.prepare("DELETE FROM leads_masques WHERE cle = ?").bind(cle).run();
+        return json({ ok: true }, 200, origin);
       }
 
       // GET /api/admin/dashboard — graphiques du tableau de bord des stats (admin)
