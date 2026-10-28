@@ -1745,7 +1745,7 @@ export default {
 
         const ARTIST_LABELS = {
           "alchimie": "Alchimie", "cache-candy": "Cache Candy", "the-fine-allies": "The Fine Allies",
-          "noon-coverband": "NooN Coverband", "panache": "Panache", "voice-of-freedom": "Voice of Freedom",
+          "noon-coverband": "NooN Coverband", "panache": "Panache", "supernova": "Supernova", "voice-of-freedom": "Voice of Freedom",
           "presta-technique": "Prestation technique",
         };
         const foldLine = (line) => {
