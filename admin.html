@@ -310,6 +310,7 @@
   .mt-site .db-chip.mt-up{background:rgba(110,231,160,.14);} .mt-site .db-chip.mt-down{background:rgba(255,77,125,.14);}
   .mt-site .mt-more{display:flex; justify-content:space-between;}
   #dbSiteSeg button, #dbDaysSeg button{background:var(--ink-2); border:1px solid var(--line); color:var(--muted); border-radius:100px; padding:7px 14px; font-size:.82rem; cursor:pointer; font-family:'Manrope',sans-serif; display:inline-flex; align-items:center; gap:7px;}
+  .db-off{display:none !important;}
   #dbSiteSeg button.active{background:var(--paper,#f5f2ec); color:var(--ink); border-color:transparent; font-weight:700;}
   #dbDaysSeg button.active{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
   #dbSiteSeg button i{display:inline-block; width:9px; height:9px; border-radius:50%;}
@@ -886,10 +887,7 @@
       <button class="btn-outline" onclick="loadMeteo()">↻ Actualiser</button>
     </div>
 
-    <div class="mt-sky" id="mtSky"></div>
-    <p class="vz-note" id="mtTests" style="display:none; margin:0 0 10px;"></p>
-
-    <div class="vz-bar">
+    <div class="vz-bar" style="margin-top:4px;">
       <div class="vz-seg" id="dbSiteSeg">
         <button data-s="" onclick="dbSetSite('')">Tous</button>
         <button class="active" data-s="slp" onclick="dbSetSite('slp')"><i style="background:#ffb238"></i>SLP</button>
@@ -897,6 +895,10 @@
         <button data-s="csa" onclick="dbSetSite('csa')"><i style="background:#38bdf8"></i>CS Animations</button>
         <button data-s="store" onclick="dbSetSite('store')"><i style="background:#a3e635"></i>Boutique</button>
       </div>
+    </div>
+    <p class="vz-note" id="mtTests" style="display:none; margin:0 0 10px;"></p>
+
+    <div class="vz-bar">
       <div class="vz-seg" id="dbDaysSeg">
         <button class="active" data-d="1" onclick="dbSetDays(1)">Aujourd'hui</button>
         <button data-d="7" onclick="dbSetDays(7)">7 jours</button>
@@ -945,7 +947,7 @@
       <div style="overflow-x:auto;"><table class="vz-bt db-tbl" id="dbPages"><thead><tr><th>Page</th><th>Visiteurs</th><th>Vues</th><th>Entrées</th><th>Rebond</th></tr></thead><tbody></tbody></table></div>
     </div>
 
-    <div class="vz-grid2">
+    <div class="vz-grid2" id="mtRapRow">
       <div class="vz-card">
         <div class="vz-card-h"><h3 id="mtRapTitre">Le rapport en bref</h3></div>
         <p class="vz-note" id="mtSousTitre" style="margin:0 0 8px;"></p>
@@ -958,7 +960,7 @@
     </div>
 
     <div class="vz-card">
-      <div class="vz-card-h"><h3>Visiteurs à suivre (SLP &amp; Book My Band)</h3><span class="vz-note">hier et aujourd'hui · 3 pages ou plus · possibles prospects</span></div>
+      <div class="vz-card-h"><h3>Visiteurs à suivre</h3><span class="vz-note">hier et aujourd'hui · 3 pages ou plus · possibles prospects</span></div>
       <div class="mt-who" id="mtProspects"></div>
     </div>
     <div class="vz-card">
@@ -1448,7 +1450,7 @@
   function dbSetSite(sv){
     dbSite = sv;
     document.querySelectorAll('#dbSiteSeg button').forEach((b) => b.classList.toggle('active', b.dataset.s === sv));
-    document.querySelectorAll('#mtSky .mt-site').forEach((c) => c.classList.toggle('on', c.dataset.site === sv));
+    mtRenderBySite();
     loadDashboard();
   }
   function dbSetDays(n){
@@ -1720,13 +1722,13 @@
   }
 
   function mtRenderProspects(list, sites){
-    list = (list || []).filter((p) => (p.sites || '').split(',').map((x) => x.trim()).some((x) => x === 'slp' || x === 'bmb')); // visiteurs passés par SLP ou Book My Band
+    list = (list || []).filter((p) => (p.sites || '').split(',').map((x) => x.trim()).some((x) => dbSite === '' ? (x === 'slp' || x === 'bmb') : x === dbSite)); // visiteurs passés par le site choisi (tous = SLP ou Book My Band)
     const tests = (sites || []).reduce((a, r) => a + (r.tests || 0), 0);
     const tn = document.getElementById('mtTests');
     tn.style.display = tests ? '' : 'none';
     tn.textContent = tests ? `${tests} visite(s) de test depuis ton PC (Pessac, Free) retirée(s) des chiffres depuis hier.` : '';
     const box = document.getElementById('mtProspects'); box.replaceChildren();
-    if (!list || !list.length){ box.appendChild(mtEl('p', 'empty', 'Personne n’a vu 3 pages ou plus sur SLP ou Book My Band depuis hier.')); return; }
+    if (!list || !list.length){ box.appendChild(mtEl('p', 'empty', 'Personne n’a vu 3 pages ou plus ' + (dbSite === '' ? 'sur SLP ou Book My Band' : 'sur ce site') + ' depuis hier.')); return; }
     const src = (r) => !r ? 'accès direct' : /google/.test(r) ? 'Google' : /^emailing-sendinblue|sendibm|em\.soundlightprod/.test(r) ? 'mail Brevo' : /facebook/.test(r) ? 'Facebook' : /instagram/.test(r) ? 'Instagram' : r;
     list.forEach((p) => {
       const it = mtEl('div', 'it');
@@ -1826,6 +1828,21 @@
     window.open(url, '_blank');
   }
 
+  let mtData = null;
+  // Prospects, contacts et rapport suivent le site choisi en haut du tableau de bord
+  function mtRenderBySite(){
+    if (!mtData) return;
+    ['mtRapRow', 'mtVisuelWrap', 'mtFullWrap'].forEach((id) => { const el = document.getElementById(id); if (el) el.classList.toggle('db-off', dbSite !== ''); });
+    const ok = (s) => dbSite === '' || s === dbSite;
+    const d = mtData, c = d.contact || {};
+    try { mtRenderProspects(d.prospects || [], d.sites || []); } catch (err) { console.error('Stats :', err); }
+    const pages = {}; (c.pages || []).filter((r) => ok(r.site)).forEach((r) => { pages[r.page] = (pages[r.page] || 0) + r.n; });
+    const clics = {}; (c.clics || []).filter((r) => ok(r.site)).forEach((r) => { clics[r.action] = clics[r.action] || { action: r.action, n: 0, n24: 0 }; clics[r.action].n += r.n; clics[r.action].n24 += r.n24 || 0; });
+    const menu = {}; (c.menu || []).filter((r) => ok(r.site)).forEach((r) => { menu[r.page] = (menu[r.page] || 0) + r.n; });
+    const top = (o) => Object.entries(o).map(([page, n]) => ({ page, n })).sort((x, y) => y.n - x.n);
+    try { mtRenderContact({ clics: Object.values(clics), pages: top(pages).slice(0, 8), menu: top(menu), demandes: (c.demandes || []).filter((r) => ok(r.site || 'slp')) }); } catch (err) { console.error('Stats :', err); }
+  }
+
   async function loadMeteo(){
     loadDashboard(); loadLeads();
     try {
@@ -1852,9 +1869,7 @@
       // chaque bloc s'affiche même si un autre plante
       const essai = (f) => { try { f(); } catch (err) { console.error('Stats :', err); } };
       const titres = {}; ((d.youtube && d.youtube.videos) || []).forEach((v) => { titres[v.video_id] = v.titre; });
-      essai(() => mtRenderSites(d.sites || []));
-      essai(() => mtRenderProspects(d.prospects || [], d.sites || []));
-      essai(() => mtRenderContact(d.contact));
+      mtData = d; essai(() => mtRenderBySite());
       essai(() => mtRenderGoogle(d.google));
       essai(() => mtRenderBrevo(d.brevo || [], d.mails || [], d.liens || [], titres));
       essai(() => mtRenderYoutube(d.youtube, d.liens || []));

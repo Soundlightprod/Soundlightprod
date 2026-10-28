@@ -704,17 +704,17 @@ async function meteoData(env) {
     safe("SELECT fait_le, ok, message FROM yt_releves ORDER BY fait_le DESC LIMIT 1"),
     safe("SELECT video_id, titre, origine FROM yt_videos"),
     safe("SELECT video_id, jour, vues FROM yt_stats WHERE jour >= date('now', '-9 days') ORDER BY jour"),
-    safe(`SELECT action, COUNT(DISTINCT COALESCE(session_id, id)) AS n, SUM(cree_le >= datetime('now', '-1 day')) AS n24 FROM contact_events
-       WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') GROUP BY action`),
-    safe(`SELECT page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
-       WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') AND action IN ('devis', 'appel', 'whatsapp', 'mail', 'chat', 'envoi') GROUP BY page ORDER BY n DESC LIMIT 8`),
-    (async () => { try { return await q("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur, reference, artiste_nom, mail_tentatives, produit_ref, commande_num FROM contact_requests WHERE cree_le >= datetime('now', '-7 days') ORDER BY id DESC LIMIT 10"); } catch (e) { return safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests WHERE cree_le >= datetime('now', '-7 days') ORDER BY id DESC LIMIT 10"); } })(),
+    safe(`SELECT site, action, COUNT(DISTINCT COALESCE(session_id, id)) AS n, SUM(cree_le >= datetime('now', '-1 day')) AS n24 FROM contact_events
+       WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') GROUP BY site, action`),
+    safe(`SELECT site, page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
+       WHERE is_bot = 0 AND ${notTest("cree_le")} AND cree_le >= datetime('now', '-7 days') AND action IN ('devis', 'appel', 'whatsapp', 'mail', 'chat', 'envoi') GROUP BY site, page ORDER BY n DESC LIMIT 40`),
+    (async () => { try { return await q("SELECT id, site, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur, reference, artiste_nom, mail_tentatives, produit_ref, commande_num FROM contact_requests WHERE cree_le >= datetime('now', '-7 days') ORDER BY id DESC LIMIT 10"); } catch (e) { return safe("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, page_origine, city, device, mail_envoye, mail_erreur FROM contact_requests WHERE cree_le >= datetime('now', '-7 days') ORDER BY id DESC LIMIT 10"); } })(),
     safe(`SELECT video_id, page, COUNT(DISTINCT CASE WHEN event = 'play' THEN session_id END) AS lectures,
          COUNT(DISTINCT CASE WHEN event IN ('75', 'fin') THEN session_id END) AS jusqu_au_bout
        FROM video_events WHERE is_bot = 0 AND ${notTest("created_at")} AND created_at >= datetime('now', '-7 days') GROUP BY video_id, page ORDER BY lectures DESC`),
   ]);
-  const chatMenu = await safe(`SELECT page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
-       WHERE is_bot = 0 AND ${notTest("cree_le")} AND action = 'chat_menu' AND cree_le >= datetime('now', '-7 days') GROUP BY page ORDER BY n DESC`);
+  const chatMenu = await safe(`SELECT site, page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
+       WHERE is_bot = 0 AND ${notTest("cree_le")} AND action = 'chat_menu' AND cree_le >= datetime('now', '-7 days') GROUP BY site, page ORDER BY n DESC`);
   return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, pages: contactPages, demandes: contactDemandes, menu: chatMenu }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
     youtube: { releve: ytReleve[0] || null, videos: ytVideos, stats: ytStats, site: videoSite } };
 }
