@@ -5,7 +5,8 @@
   "main": "worker.js",
   "keep_vars": true,
   "d1_databases": [
-    { "binding": "DB", "database_name": "slp-db", "database_id": "c34e8fe6-a869-40cb-961b-778d03fca13b" }
+    { "binding": "DB", "database_name": "slp-db", "database_id": "c34e8fe6-a869-40cb-961b-778d03fca13b" },
+    { "binding": "SUPERNOVA_DB", "database_name": "supernova-db", "database_id": "095af135-021d-4c3a-8cae-d55ddf61d2f5" }
   ],
   "triggers": { "crons": ["30 5 * * *"] },
   "assets": {

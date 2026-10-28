@@ -44,6 +44,119 @@ function json(data, status = 200, origin) {
   });
 }
 
+
+// ============ Espace privé Supernova (gestion des membres depuis l'admin SLP) ============
+// Binding D1 : SUPERNOVA_DB (base supernova-db). Variable optionnelle : SUPERNOVA_URL.
+const SN_URL_DEFAULT = "https://supernova.raspy-silence-d4c7.workers.dev";
+const SN_ENC = new TextEncoder();
+const snB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const snHex = (buf) => [...new Uint8Array(buf)].map((x) => x.toString(16).padStart(2, "0")).join("");
+async function snPbkdf2(password, salt) {
+  const key = await crypto.subtle.importKey("raw", SN_ENC.encode(password), "PBKDF2", false, ["deriveBits"]);
+  return crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt, iterations: 100000 }, key, 256);
+}
+async function snHashPassword(password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  return { hash: snB64(await snPbkdf2(password, salt)), salt: snB64(salt) };
+}
+function snGeneratePassword() {
+  const a = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  return [...crypto.getRandomValues(new Uint8Array(14))].map((x) => a[x % a.length]).join("");
+}
+function snStr(v, max) {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t && t.length <= max ? t : null;
+}
+
+async function supernovaAdmin(request, env, url, origin) {
+  if (!env.SUPERNOVA_DB) return json({ error: "Base Supernova non reliée" }, 500, origin);
+  const db = env.SUPERNOVA_DB;
+  const m = request.method;
+  const p = url.pathname.replace("/api/admin/supernova", "");
+  let match;
+
+  // Ouverture directe de Supernova (jeton à usage unique, valable 2 minutes)
+  if (p === "/sso" && m === "POST") {
+    const admin = await db.prepare("SELECT id FROM users WHERE role = 'admin' AND active = 1 ORDER BY id LIMIT 1").first();
+    if (!admin) return json({ error: "Aucun administrateur Supernova actif" }, 404, origin);
+    const token = snHex(crypto.getRandomValues(new Uint8Array(32)));
+    const th = snHex(await crypto.subtle.digest("SHA-256", SN_ENC.encode(token)));
+    await db.prepare("INSERT INTO sso_tokens (token_hash, user_id, expires_at) VALUES (?, ?, ?)").bind(th, admin.id, Date.now() + 120000).run();
+    const base = (env.SUPERNOVA_URL || SN_URL_DEFAULT).replace(/\/$/, "");
+    return json({ url: `${base}/sso?t=${token}` }, 200, origin);
+  }
+
+  if (p === "/users" && m === "GET") {
+    const { results } = await db.prepare("SELECT id, username, display_name, role, active, must_change, created_at FROM users ORDER BY id").all();
+    return json({ users: results }, 200, origin);
+  }
+
+  if (p === "/users" && m === "POST") {
+    const b = await request.json().catch(() => ({}));
+    const username = snStr(b.username, 30);
+    const display = snStr(b.display_name, 40);
+    const role = b.role === "admin" ? "admin" : "member";
+    if (!username || !/^[A-Za-z0-9._-]{2,30}$/.test(username)) return json({ error: "Identifiant : 2 à 30 caractères (lettres, chiffres, . _ -)" }, 400, origin);
+    if (!display) return json({ error: "Nom affiché requis" }, 400, origin);
+    let password = typeof b.password === "string" ? b.password : "";
+    if (!password) password = snGeneratePassword();
+    if (password.length < 10) return json({ error: "Mot de passe : 10 caractères minimum" }, 400, origin);
+    const { hash, salt } = await snHashPassword(password);
+    try {
+      await db.prepare("INSERT INTO users (username, display_name, role, pass_hash, pass_salt, must_change) VALUES (?, ?, ?, ?, ?, 1)").bind(username, display, role, hash, salt).run();
+    } catch (e) {
+      if (String(e).includes("UNIQUE")) return json({ error: "Cet identifiant existe déjà" }, 409, origin);
+      throw e;
+    }
+    return json({ ok: true, password }, 200, origin);
+  }
+
+  if ((match = p.match(/^\/users\/(\d+)$/)) && m === "PATCH") {
+    const id = Number(match[1]);
+    const target = await db.prepare("SELECT id, username FROM users WHERE id = ?").bind(id).first();
+    if (!target) return json({ error: "Introuvable" }, 404, origin);
+    const b = await request.json().catch(() => ({}));
+    if (b.display_name !== undefined) {
+      const d = snStr(b.display_name, 40);
+      if (!d) return json({ error: "Nom invalide" }, 400, origin);
+      await db.prepare("UPDATE users SET display_name = ? WHERE id = ?").bind(d, id).run();
+    }
+    if (b.role !== undefined) await db.prepare("UPDATE users SET role = ? WHERE id = ?").bind(b.role === "admin" ? "admin" : "member", id).run();
+    if (b.active !== undefined) {
+      await db.prepare("UPDATE users SET active = ? WHERE id = ?").bind(b.active ? 1 : 0, id).run();
+      if (!b.active) await db.prepare("DELETE FROM sessions WHERE user_id = ?").bind(id).run();
+    }
+    let password = null;
+    if (b.reset_password) {
+      password = typeof b.password === "string" && b.password ? b.password : snGeneratePassword();
+      if (password.length < 10) return json({ error: "Mot de passe : 10 caractères minimum" }, 400, origin);
+      const { hash, salt } = await snHashPassword(password);
+      await db.prepare("UPDATE users SET pass_hash = ?, pass_salt = ?, must_change = 1 WHERE id = ?").bind(hash, salt, id).run();
+      await db.prepare("DELETE FROM sessions WHERE user_id = ?").bind(id).run();
+    }
+    await db.prepare("DELETE FROM login_attempts WHERE key LIKE ?").bind(`u|%|${target.username.toLowerCase()}`).run();
+    return json({ ok: true, password }, 200, origin);
+  }
+
+  if ((match = p.match(/^\/users\/(\d+)\/logout$/)) && m === "POST") {
+    await db.prepare("DELETE FROM sessions WHERE user_id = ?").bind(Number(match[1])).run();
+    return json({ ok: true }, 200, origin);
+  }
+
+  if ((match = p.match(/^\/users\/(\d+)$/)) && m === "DELETE") {
+    const id = Number(match[1]);
+    const admins = await db.prepare("SELECT COUNT(*) AS n FROM users WHERE role = 'admin' AND active = 1 AND id != ?").bind(id).first();
+    if (!admins || admins.n < 1) return json({ error: "Il doit rester au moins un administrateur actif" }, 400, origin);
+    await db.prepare("DELETE FROM sessions WHERE user_id = ?").bind(id).run();
+    await db.prepare("UPDATE tasks SET assignee_id = NULL WHERE assignee_id = ?").bind(id).run();
+    await db.prepare("DELETE FROM users WHERE id = ?").bind(id).run();
+    return json({ ok: true }, 200, origin);
+  }
+
+  return json({ error: "Introuvable" }, 404, origin);
+}
+
 let chatTablesReady = false;
 async function ensureChatTables(env) {
   if (chatTablesReady) return;
@@ -1779,6 +1892,12 @@ export default {
       }
 
       // ============ ADMIN ============
+
+      // ============ SUPERNOVA (membres + accès direct) ============
+      if (url.pathname.startsWith("/api/admin/supernova/")) {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        return await supernovaAdmin(request, env, url, origin);
+      }
 
       // POST /api/admin/login — vérifie le mot de passe
       if (url.pathname === "/api/admin/login" && request.method === "POST") {

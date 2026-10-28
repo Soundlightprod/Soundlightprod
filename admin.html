@@ -417,6 +417,7 @@
     <button class="tab-btn" id="tabBtn-visits" onclick="switchTab('visits')">9. 🌤 Météo & visites</button>
     <button class="tab-btn" id="tabBtn-devices" onclick="switchTab('devices')">10. 📱 Mes appareils</button>
     <button class="tab-btn" id="tabBtn-chat" onclick="switchTab('chat')">11. 💬 Chat <span id="chatBadge" style="display:none;background:#FF0953;color:#fff;border-radius:10px;padding:0 7px;font-size:.75rem;margin-left:4px;"></span></button>
+    <button class="tab-btn" id="tabBtn-supernova" onclick="switchTab('supernova')">12. 🌠 Supernova</button>
   </div>
 
   <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
@@ -1039,6 +1040,30 @@
     </div>
   </div>
 
+  <!-- ============ ONGLET 12 : SUPERNOVA (espace privé des musiciens) ============ -->
+  <div class="tab-content" id="tab-supernova">
+    <h2>Supernova</h2>
+    <p class="vz-sub">Espace privé des musiciens du projet : chat, vidéos, tâches. Tu y entres d'ici directement, sans te réidentifier ; les autres membres se connectent avec leur identifiant.</p>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Accès</h3></div>
+      <button class="btn" id="snOpenBtn" onclick="snOpen()">Ouvrir l'espace Supernova ↗</button>
+    </div>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Ajouter un membre</h3></div>
+      <div class="form-row" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+        <div class="field-group"><label>Nom affiché</label><input type="text" id="snNewName" maxlength="40" autocomplete="off"></div>
+        <div class="field-group"><label>Identifiant de connexion</label><input type="text" id="snNewUser" maxlength="30" autocomplete="off" autocapitalize="none"></div>
+        <div class="field-group"><label>Rôle</label><select id="snNewRole"><option value="member">Membre</option><option value="admin">Administrateur</option></select></div>
+        <button class="btn" onclick="snCreate()">Créer le membre</button>
+      </div>
+      <div id="snSecret" style="margin-top:14px;"></div>
+    </div>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Membres</h3><button class="btn-outline" onclick="snLoad()">Actualiser</button></div>
+      <div id="snList" style="font-size:.9rem;">Chargement…</div>
+    </div>
+  </div>
+
   <!-- ============ ONGLET 11 : CHAT EN DIRECT ============ -->
   <div class="tab-content" id="tab-chat">
     <h2>Chat en direct</h2>
@@ -1452,6 +1477,7 @@
       if (slot && form && form.parentElement !== slot) slot.appendChild(form);
     }
     if (name === 'groupview') renderGroupView();
+    if (name === 'supernova') snLoad();
     if (name === 'chat') { chatLoadSettings(); chatStartPolling(); try { history.replaceState(null,'','#chat'); } catch(e){} }
     if (name === 'visits'){ refreshStats(); try { const v = localStorage.getItem('slp_vpane'); if (v) switchVisitsPane(v); } catch(e){} }
     if (name === 'access'){
@@ -1459,6 +1485,90 @@
     }
   }
 
+
+  // ---------- Supernova (espace privé des musiciens) ----------
+  const snEsc = x => String(x == null ? '' : x).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  async function snApi(path, method, body){
+    const r = await fetch('/api/admin/supernova' + path, {
+      method: method || 'GET',
+      headers: Object.assign({ Authorization: `Bearer ${token}` }, body ? { 'Content-Type': 'application/json' } : {}),
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || 'Erreur');
+    return d;
+  }
+  async function snOpen(){
+    const w = window.open('', '_blank');
+    try {
+      const d = await snApi('/sso', 'POST');
+      if (w) w.location.href = d.url; else location.href = d.url;
+    } catch(e){ if (w) w.close(); showToast(e.message); }
+  }
+  function snShowSecret(title, username, password){
+    const box = document.getElementById('snSecret');
+    box.innerHTML = `<div style="border:1px dashed var(--amber); border-radius:12px; padding:14px;">
+      <strong>${snEsc(title)}</strong><br>
+      <span style="color:var(--muted);">Identifiant : ${snEsc(username)}</span>
+      <div id="snPw" style="font-family:'JetBrains Mono',monospace; font-size:1.2rem; margin:10px 0; user-select:all;">${snEsc(password)}</div>
+      <button class="btn-outline" onclick="navigator.clipboard.writeText(document.getElementById('snPw').textContent).then(()=>showToast('Copié'))">Copier</button>
+      <p style="color:var(--muted); margin:10px 0 0;">Affiché une seule fois. Le membre choisira son propre mot de passe à sa première connexion.</p>
+    </div>`;
+    box.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+  let snUsers = [];
+  async function snLoad(){
+    const list = document.getElementById('snList');
+    try {
+      const d = await snApi('/users');
+      snUsers = d.users;
+      list.innerHTML = snUsers.map(u => `<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:10px 0; border-bottom:1px solid var(--line);">
+        <div style="flex:1; min-width:180px;"><strong>${snEsc(u.display_name)}</strong> <span style="color:var(--muted);">@${snEsc(u.username)}</span><br>
+          <span style="color:var(--muted); font-size:.8rem;">${u.role === 'admin' ? 'Administrateur' : 'Membre'}${u.active ? '' : ' · désactivé'}${u.must_change ? ' · mot de passe provisoire' : ''}</span></div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="btn-outline" onclick="snAct('rename',${u.id})">Renommer</button>
+          <button class="btn-outline" onclick="snAct('reset',${u.id})">Nouveau mot de passe</button>
+          <button class="btn-outline" onclick="snAct('logout',${u.id})">Déconnecter</button>
+          <button class="btn-outline" onclick="snAct('role',${u.id})">${u.role === 'admin' ? 'Retirer admin' : 'Passer admin'}</button>
+          <button class="btn-outline" onclick="snAct('toggle',${u.id})">${u.active ? 'Désactiver' : 'Réactiver'}</button>
+          <button class="btn-outline" onclick="snAct('del',${u.id})">Supprimer</button>
+        </div></div>`).join('') || '<em>Aucun membre.</em>';
+    } catch(e){ list.textContent = e.message; }
+  }
+  async function snCreate(){
+    const name = document.getElementById('snNewName').value.trim();
+    const user = document.getElementById('snNewUser').value.trim();
+    const role = document.getElementById('snNewRole').value;
+    try {
+      const d = await snApi('/users', 'POST', { display_name: name, username: user, role });
+      snShowSecret('Membre créé', user, d.password);
+      document.getElementById('snNewName').value = ''; document.getElementById('snNewUser').value = '';
+      snLoad();
+    } catch(e){ showToast(e.message); }
+  }
+  async function snAct(action, id){
+    const u = snUsers.find(x => x.id === id); if (!u) return;
+    try {
+      if (action === 'rename'){
+        const n = prompt('Nouveau nom affiché', u.display_name); if (!n) return;
+        await snApi('/users/' + id, 'PATCH', { display_name: n });
+      } else if (action === 'reset'){
+        if (!confirm(`Générer un nouveau mot de passe provisoire pour ${u.display_name} ? Ses sessions en cours seront fermées.`)) return;
+        const d = await snApi('/users/' + id, 'PATCH', { reset_password: true });
+        snShowSecret('Mot de passe provisoire', u.username, d.password);
+      } else if (action === 'logout'){
+        await snApi('/users/' + id + '/logout', 'POST'); showToast('Sessions fermées');
+      } else if (action === 'role'){
+        await snApi('/users/' + id, 'PATCH', { role: u.role === 'admin' ? 'member' : 'admin' });
+      } else if (action === 'toggle'){
+        await snApi('/users/' + id, 'PATCH', { active: !u.active });
+      } else if (action === 'del'){
+        if (!confirm(`Supprimer ${u.display_name} ? Ses messages et liens restent visibles sous « Ancien membre ».`)) return;
+        await snApi('/users/' + id, 'DELETE');
+      }
+      snLoad();
+    } catch(e){ showToast(e.message); }
+  }
 
   // ---------- Chat en direct ----------
   let chatCur = 0, chatTimer = null, chatLastCount = 0;
