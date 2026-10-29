@@ -1036,7 +1036,7 @@
     </div>
 
     <div class="vz-kpis">
-      <div class="vz-kpi"><span class="k">Visites</span><b id="kpiVisits">0</b><span class="d" id="kpiDelta"></span></div>
+      <div class="vz-kpi"><span class="k">Pages vues</span><b id="kpiVisits">0</b><span class="d" id="kpiDelta"></span></div>
       <div class="vz-kpi"><span class="k">Visiteurs uniques</span><b id="kpiUnique">0</b><span class="d" id="kpiUniqueSub"></span></div>
       <div class="vz-kpi"><span class="k">Page la plus vue</span><b id="kpiTopPage" class="sm">—</b><span class="d" id="kpiTopPageSub"></span></div>
       <div class="vz-kpi"><span class="k">Sur mobile</span><b id="kpiMobile">—</b><span class="d" id="kpiMobileSub"></span></div>
@@ -1068,7 +1068,7 @@
     <div class="vz-card">
       <div class="vz-card-h"><h3>Langues, domaines et lieux</h3><span class="vz-note">quelle version du site (FR / EN / ES / IT), sur .fr ou .com, et d'où viennent les visiteurs</span></div>
       <div id="langStrip" class="vz-note" style="margin:0 0 10px;"></div>
-      <table class="vz-bt" id="breakdownLangPlaceTable"><thead><tr><th>Langue · domaine</th><th>Lieu</th><th>Visites</th></tr></thead><tbody></tbody></table>
+      <table class="vz-bt" id="breakdownLangPlaceTable"><thead><tr><th>Langue · domaine</th><th>Lieu</th><th>Pages vues</th></tr></thead><tbody></tbody></table>
     </div>
 
     <div class="vz-card">
@@ -3475,7 +3475,7 @@
     try {
       const res = await fetch(`/api/admin/visits-breakdown?period=${currentVisitsPeriod}${siteQ()}`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
-      document.getElementById('periodTotalLabel').textContent = `${data.total || 0} visite(s) sur la période`;
+      document.getElementById('periodTotalLabel').textContent = `${data.total || 0} page(s) vue(s) sur la période`;
       loadSocialStats();
       document.getElementById('kpiVisits').textContent = data.total || 0;
       const renderList = (sel, list, dim) => {
