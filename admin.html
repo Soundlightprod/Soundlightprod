@@ -879,17 +879,45 @@
 
   <div class="tab-content" id="tab-visits">
     <div class="vp-nav">
-      <button class="vp-btn active" id="vpBtn-today" onclick="switchVisitsPane('today')">📊 Tableau de bord</button>
+      <button class="vp-btn active" id="vpBtn-rapport" onclick="switchVisitsPane('rapport')">🌤️ Rapport du jour</button>
+      <button class="vp-btn" id="vpBtn-today" onclick="switchVisitsPane('today')">📊 Tableau de bord</button>
       <button class="vp-btn" id="vpBtn-leads" onclick="switchVisitsPane('leads')">🔥 Contacts à suivre <span id="ldBadge"></span></button>
       <button class="vp-btn" id="vpBtn-visits" onclick="switchVisitsPane('visits')">📈 Visites des sites</button>
       <button class="vp-btn" id="vpBtn-search" onclick="switchVisitsPane('search')">🔍 Google &amp; mails</button>
       <button class="vp-btn" id="vpBtn-social" onclick="switchVisitsPane('social')">📣 Réseaux &amp; YouTube</button>
     </div>
-    <div class="vp-pane active" id="vp-today">
+    <div class="vp-pane active" id="vp-rapport">
+    <div class="mt-head">
+      <div>
+        <h2 style="margin:0;">Rapport du jour</h2>
+        <p class="vz-sub">Le dernier rapport écrit par Claude (vers 8h, 14h, 17h, 20h et 23h), tous sites ensemble.</p>
+      </div>
+      <button class="btn-outline" onclick="loadMeteo()">↻ Actualiser</button>
+    </div>
+    <div class="vz-card" id="mtVisuelWrap" style="display:none; padding:0; overflow:hidden;">
+      <div class="vz-card-h" style="padding:12px 14px 0;"><h3>Rapport visuel</h3><button class="btn-outline" type="button" onclick="mtOuvrirVisuel()">⤢ Ouvrir en grand (zoomable)</button></div>
+      <iframe id="mtVisuel" title="Rapport visuel" sandbox="allow-same-origin" style="width:100%; border:0; display:block; min-height:400px;"></iframe>
+    </div>
+    <details class="vz-more" id="mtFullWrap" style="display:none;"><summary>Lire le rapport complet</summary><div class="vz-card"><p class="mt-full" id="mtFull"></p></div></details>
+    <div class="vz-grid2" id="mtRapRow">
+      <div class="vz-card">
+        <div class="vz-card-h"><h3 id="mtRapTitre">Le rapport en bref</h3></div>
+        <p class="vz-note" id="mtSousTitre" style="margin:0 0 8px;"></p>
+        <ul class="mt-notes" id="mtResume"><li>Chargement…</li></ul>
+      </div>
+      <div class="vz-card">
+        <div class="vz-card-h"><h3>À faire</h3></div>
+        <ol class="mt-todo" id="mtTodo"></ol>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="vp-pane" id="vp-today">
     <div class="mt-head">
       <div>
         <h2 style="margin:0;">Tableau de bord</h2>
-        <p class="vz-sub">Visiteurs, pages, provenance et performance de tes sites, sans robots ni tes propres passages. Rapports vers 7h50, 13h50, 19h50 et 22h50.</p>
+        <p class="vz-sub">Visiteurs, pages, provenance et performance de tes sites, sans robots ni tes propres passages. Le rapport de Claude est dans le sous-onglet « Rapport du jour ».</p>
       </div>
       <button class="btn-outline" onclick="loadMeteo()">↻ Actualiser</button>
     </div>
@@ -964,18 +992,6 @@
       <div style="overflow-x:auto;"><table class="vz-bt db-tbl" id="dbPages"><thead><tr><th>Page</th><th>Visiteurs</th><th>Vues</th><th>Entrées</th><th>Rebond</th></tr></thead><tbody></tbody></table></div>
     </div>
 
-    <div class="vz-grid2" id="mtRapRow">
-      <div class="vz-card">
-        <div class="vz-card-h"><h3 id="mtRapTitre">Le rapport en bref</h3></div>
-        <p class="vz-note" id="mtSousTitre" style="margin:0 0 8px;"></p>
-        <ul class="mt-notes" id="mtResume"><li>Chargement…</li></ul>
-      </div>
-      <div class="vz-card">
-        <div class="vz-card-h"><h3>À faire</h3></div>
-        <ol class="mt-todo" id="mtTodo"></ol>
-      </div>
-    </div>
-
     <div class="vz-card">
       <div class="vz-card-h"><h3>Visiteurs à suivre</h3><span class="vz-note">hier et aujourd'hui · 3 pages ou plus · possibles prospects</span></div>
       <div class="mt-who" id="mtProspects"></div>
@@ -985,11 +1001,6 @@
       <div class="mt-figs" id="mtContactFigs" style="margin:0 0 12px;"></div>
       <div class="mt-who" id="mtContactList"></div>
     </div>
-    <div class="vz-card" id="mtVisuelWrap" style="display:none; padding:0; overflow:hidden;">
-      <div class="vz-card-h" style="padding:12px 14px 0;"><h3>Rapport visuel</h3><button class="btn-outline" type="button" onclick="mtOuvrirVisuel()">⤢ Ouvrir en grand (zoomable)</button></div>
-      <iframe id="mtVisuel" title="Rapport visuel" sandbox="allow-same-origin" style="width:100%; border:0; display:block; min-height:400px;"></iframe>
-    </div>
-    <details class="vz-more" id="mtFullWrap" style="display:none;"><summary>Lire le rapport complet</summary><div class="vz-card"><p class="mt-full" id="mtFull"></p></div></details>
     </div>
 
     <div class="vp-pane" id="vp-leads">
@@ -1901,7 +1912,6 @@
   // Prospects, contacts et rapport suivent le site choisi en haut du tableau de bord
   function mtRenderBySite(){
     if (!mtData) return;
-    ['mtRapRow', 'mtVisuelWrap', 'mtFullWrap'].forEach((id) => { const el = document.getElementById(id); if (el) el.classList.toggle('db-off', dbSite !== ''); });
     const ok = (s) => dbSite === '' || s === dbSite;
     const d = mtData, c = d.contact || {};
     try { mtRenderProspects(d.prospects || [], d.sites || []); } catch (err) { console.error('Stats :', err); }
@@ -1926,7 +1936,7 @@
       if (rap && rap.cree_le){
         const ecrit = new Date(rap.cree_le.replace(' ', 'T') + 'Z');
         const h = new Date().getHours();
-        const prochain = h < 8 ? 'vers 7h50' : h < 14 ? 'vers 13h50' : h < 20 ? 'vers 19h50' : h < 23 ? 'vers 22h50' : 'vers 7h50';
+        const prochain = h < 8 ? 'vers 8h' : h < 14 ? 'vers 14h' : h < 17 ? 'vers 17h' : h < 20 ? 'vers 20h' : h < 23 ? 'vers 23h' : 'demain vers 8h';
         document.getElementById('mtSousTitre').textContent = `Rapport écrit le ${ecrit.toLocaleString('fr-FR', { weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' })} · prochain rapport ${prochain}. Les chiffres (visites, Google) se mettent à jour à chaque « Actualiser ».`;
       }
       const ul = document.getElementById('mtResume'); ul.replaceChildren(...(resume.length ? resume.map((t) => mtEl('li', null, t)) : [mtEl('li', null, 'Le premier rapport arrivera vers 7h50.')]));
@@ -2175,6 +2185,7 @@
         if (typeof visitsChartInstance !== 'undefined' && visitsChartInstance) visitsChartInstance.resize();
       }
       if (name === 'search' && typeof mtChart !== 'undefined' && mtChart) mtChart.resize();
+      if (name === 'rapport'){ const fr = document.getElementById('mtVisuel'); try { if (fr && fr.contentDocument) fr.style.height = (fr.contentDocument.documentElement.scrollHeight + 4) + 'px'; } catch(e){} }
     }, 60);
   }
 
