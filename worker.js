@@ -715,7 +715,10 @@ async function meteoData(env) {
   ]);
   const chatMenu = await safe(`SELECT site, page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
        WHERE is_bot = 0 AND ${notTest("cree_le")} AND action = 'chat_menu' AND cree_le >= datetime('now', '-7 days') GROUP BY site, page ORDER BY n DESC`);
-  return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, pages: contactPages, demandes: contactDemandes, menu: chatMenu }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
+  // Galerie photo : page « galerie » = section vue ; page « galerie:<groupe> » = photos du groupe ouvertes
+  const photosRows = await safe(`SELECT site, page, COUNT(DISTINCT COALESCE(session_id, id)) AS n FROM contact_events
+       WHERE is_bot = 0 AND ${notTest("cree_le")} AND action = 'photos' AND cree_le >= datetime('now', '-7 days') GROUP BY site, page ORDER BY n DESC`);
+  return { rapport: rapport[0] || null, sites, prospects, contact: { clics: contactClics, pages: contactPages, demandes: contactDemandes, menu: chatMenu, photos: photosRows }, google: { releve: googleReleve[0] || null, jours: googleJours, requetes, index }, brevo, liens, mails,
     youtube: { releve: ytReleve[0] || null, videos: ytVideos, stats: ytStats, site: videoSite } };
 }
 
@@ -1723,10 +1726,10 @@ export default {
         return json({ ok: true, ...(await retryFailedContactMails(env, { minAgeMin: 0, limit: 50 })) }, 200, origin);
       }
 
-      // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire|devis|suivre|chat, page, session_id } : clics vers le contact (et « Suivez-nous »)
+      // POST /api/contact-event — { action: appel|whatsapp|mail|formulaire|devis|suivre|chat|chat_menu|photos, page, session_id } : clics vers le contact (et « Suivez-nous »)
       if (url.pathname === "/api/contact-event" && request.method === "POST") {
         const body = await request.json().catch(() => ({}));
-        const action = ["appel", "whatsapp", "mail", "formulaire", "devis", "suivre", "chat", "chat_menu"].includes(body.action) ? body.action : null;
+        const action = ["appel", "whatsapp", "mail", "formulaire", "devis", "suivre", "chat", "chat_menu", "photos"].includes(body.action) ? body.action : null;
         if (!action) return json({ ok: false }, 200, origin);
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
         await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
