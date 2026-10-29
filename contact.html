@@ -171,6 +171,8 @@
   .field .err{color:#ff7a99; font-size:.85rem; margin-top:6px;}
   .field [aria-invalid="true"]{border-color:#ff7a99;}
   .field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible,.btn-submit:focus-visible,.linkbtn:focus-visible,.quick a:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  .alt{margin:-4px 0 18px; font-size:.9rem;}
+  .alt .linkbtn{font-size:.9rem;}
   details.more{margin:4px 0 22px; border:1px solid var(--line); border-radius:12px; padding:0 16px;}
   details.more summary{cursor:pointer; padding:14px 0; font-weight:700; color:var(--paper); min-height:44px;}
   details.more[open] summary{border-bottom:1px solid var(--line); margin-bottom:16px;}
@@ -213,7 +215,7 @@
   <div class="page-hero-inner">
     <span class="label">Contact</span>
     <h1>Recevez une proposition adaptée à votre événement</h1>
-    <p>Quelques informations suffisent. Nous revenons vers vous rapidement.</p>
+    <p>Laissez votre numéro : nous vous rappelons pour cerner votre projet.</p>
   </div>
 </section>
 
@@ -221,8 +223,8 @@
   <div class="wrap">
     <div class="contact-grid">
       <div class="contact-form" id="contact-form" tabindex="-1">
-        <h2>Demandez votre devis</h2>
-        <p class="lead">Premier retour rapide ; le devis détaillé suit après vérification de la disponibilité et de vos besoins.</p>
+        <h2>Être rappelé pour votre devis</h2>
+        <p class="lead">Indiquez votre nom et votre numéro. Nous vous rappelons sous 24&nbsp;h et le devis détaillé suit après vérification de la disponibilité.</p>
         <form id="devis-form" novalidate>
           <div class="sel" id="sel">
             <div class="sel-line"><span class="label" id="selLabel">Votre sélection</span><strong id="selName" aria-live="polite"></strong><button type="button" class="linkbtn" id="selEdit" aria-expanded="false" aria-controls="selField">Modifier</button></div>
@@ -240,15 +242,20 @@
               <p class="err" id="name-err" hidden></p>
             </div>
             <div class="field">
-              <label for="phone">Téléphone</label>
+              <label for="phone">Téléphone *</label>
               <input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="06 …" aria-describedby="contact-err">
             </div>
           </div>
-          <div class="field">
-            <label for="email">Email <span class="opt">(ou le téléphone, l'un des deux suffit)</span></label>
-            <input type="email" id="email" autocomplete="email" inputmode="email" aria-describedby="contact-err">
-            <p class="err" id="contact-err" hidden></p>
+          <p class="err" id="contact-err" hidden></p>
+          <div class="field" id="rappelField">
+            <label for="rappel">Quand vous rappeler ?</label>
+            <select id="rappel"><option value="">Dès que possible</option><option value="le matin">Le matin</option><option value="l'après-midi">L'après-midi</option><option value="en fin de journée">En fin de journée</option></select>
           </div>
+          <div class="field" id="emailField" hidden>
+            <label for="email">Email</label>
+            <input type="email" id="email" autocomplete="email" inputmode="email" aria-describedby="contact-err">
+          </div>
+          <p class="alt"><button type="button" class="linkbtn" id="mailToggle" aria-expanded="false" aria-controls="emailField">Je préfère être contacté par email</button></p>
           <div class="row-2">
             <div class="field">
               <label for="date-event">Date <span class="opt">(même approximative)</span></label>
@@ -261,20 +268,10 @@
           </div>
           <div class="field">
             <label for="message">Votre projet <span class="opt">(facultatif)</span></label>
-            <textarea id="message" placeholder="Type d'événement, ambiance souhaitée, contraintes…"></textarea>
+            <textarea id="message" rows="3" placeholder="Type d'événement, ambiance souhaitée, contraintes…"></textarea>
           </div>
-          <details class="more" id="more">
-            <summary>Précisions utiles (facultatif)</summary>
-            <div class="field"><label for="organisme">Commune ou organisme</label><input type="text" id="organisme" autocomplete="organization"></div>
-            <div class="field"><label for="type-evt">Type d'événement</label><select id="type-evt"><option value="">À définir</option><option value="Fête communale / festivités">Fête communale / festivités</option><option value="Marché gourmand / saison culturelle">Marché gourmand / saison culturelle</option><option value="Mariage / soirée privée">Mariage / soirée privée</option><option value="Gala / entreprise">Gala / entreprise</option><option value="Association">Association</option><option value="Autre">Autre</option></select></div>
-            <div class="row-2">
-              <div class="field"><label for="jauge">Nombre de personnes attendu</label><input type="text" id="jauge" inputmode="numeric" placeholder="À définir"></div>
-              <div class="field"><label for="budget">Enveloppe budgétaire</label><input type="text" id="budget" placeholder="À définir"></div>
-            </div>
-            <div class="field"><label for="tech">Son et lumière</label><select id="tech"><option value="">À définir</option><option value="Pas de besoin technique">Pas de besoin technique</option><option value="Besoin de son et lumière (prestation distincte)">Besoin de son et lumière (prestation distincte)</option><option value="Je ne sais pas encore">Je ne sais pas encore</option></select></div>
-          </details>
           <div class="hp" aria-hidden="true"><label for="site_web">Ne pas remplir</label><input type="text" id="site_web" tabindex="-1" autocomplete="off"></div>
-          <button type="submit" class="btn-submit" id="btnSend">Envoyer ma demande</button>
+          <button type="submit" class="btn-submit" id="btnSend">Me faire rappeler</button>
           <p class="form-msg" id="formMsg" role="alert"></p>
           <p class="form-note">Vos coordonnées servent uniquement à vous répondre. <a href="mentions-legales">En savoir plus</a>.</p>
         </form>
@@ -292,12 +289,6 @@
         <div class="trust"><span>Devis gratuit</span><span>Réponse sous 24 h</span><span>Un seul interlocuteur</span></div>
         <div style="height:22px"></div>
         <div class="info-block">
-          <span class="label">Email</span>
-          <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
-        </div><div class="info-block">
-          <span class="label">Téléphone / WhatsApp</span>
-          <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
-        </div><div class="info-block">
           <span class="label">Adresse</span>
           <p>173 rue de Courcelles<br>75017 Paris</p>
         </div><div class="info-block">
@@ -347,13 +338,19 @@
 
 <script>
 // DEVIS-FORM
-window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero": "Tribute Calogero", "tribute-matmatah": "Tribute Matmatah", "tribute-celine-dion": "Tribute Céline Dion", "tribute-kool-and-the-gang": "Tribute Kool & the Gang", "tribute-bee-gees": "Tribute Bee Gees", "tribute-phil-collins": "Tribute Phil Collins", "tribute-balavoine": "Tribute Balavoine", "tribute-barry-white": "Tribute Barry White", "panache": "Panache (cabaret)", "bim-bam-boom": "Bim Bam Boom (cabaret)", "cache-candy": "Cache Candy", "alchimie": "Alchimie", "the-fine-allies": "The Fine Allies", "noon-coverband": "NooN Coverband"}, "s": {"none": "Aucun spectacle choisi : nous vous conseillons", "e_name": "Indiquez votre nom.", "e_contact": "Indiquez un téléphone ou un email pour qu'on puisse vous répondre.", "e_email": "Cette adresse email semble incomplète (exemple : nom@domaine.fr).", "e_phone": "Ce numéro semble trop court.", "sending": "Envoi…", "send": "Envoyer ma demande", "fail_net": "Nous n'avons pas pu confirmer l'envoi : votre demande n'est peut-être pas partie. Vous pouvez réessayer sans risque de doublon, ou nous appeler au", "fail_or": "ou écrire à", "thanks": "Merci", "saved": "Votre demande est enregistrée.", "ref": "Référence", "next": "Nous revenons vers vous rapidement ; le devis détaillé suit après vérification de la disponibilité et de vos besoins.", "phone_back": "Nous vous rappellerons si vous avez laissé un numéro.", "rush": "Pressé ?", "fields_missing": "Corrigez les champs signalés."}, "lang": "fr"};
+window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero": "Tribute Calogero", "tribute-matmatah": "Tribute Matmatah", "tribute-celine-dion": "Tribute Céline Dion", "tribute-kool-and-the-gang": "Tribute Kool & the Gang", "tribute-bee-gees": "Tribute Bee Gees", "tribute-phil-collins": "Tribute Phil Collins", "tribute-balavoine": "Tribute Balavoine", "tribute-barry-white": "Tribute Barry White", "panache": "Panache (cabaret)", "bim-bam-boom": "Bim Bam Boom (cabaret)", "cache-candy": "Cache Candy", "alchimie": "Alchimie", "the-fine-allies": "The Fine Allies", "noon-coverband": "NooN Coverband"}, "s": {"none": "Aucun spectacle choisi : nous vous conseillons", "e_name": "Indiquez votre nom.", "e_contact": "Indiquez un téléphone ou un email pour qu'on puisse vous répondre.", "e_phone_req": "Indiquez votre numéro pour que nous puissions vous rappeler.", "use_mail": "Je préfère être contacté par email", "use_phone": "Je préfère être rappelé par téléphone", "e_email": "Cette adresse email semble incomplète (exemple : nom@domaine.fr).", "e_phone": "Ce numéro semble trop court.", "sending": "Envoi…", "send": "Envoyer ma demande", "fail_net": "Nous n'avons pas pu confirmer l'envoi : votre demande n'est peut-être pas partie. Vous pouvez réessayer sans risque de doublon, ou nous appeler au", "fail_or": "ou écrire à", "thanks": "Merci", "saved": "Votre demande de rappel est enregistrée.", "ref": "Référence", "next": "Nous revenons vers vous sous 24 h ; le devis détaillé suit après vérification de la disponibilité.", "phone_back": "Nous vous rappellerons au numéro indiqué.", "rush": "Pressé ?", "fields_missing": "Corrigez les champs signalés."}, "lang": "fr"};
 (function () {
   var C = window.__DEVIS, S = C.s, ART = C.artists;
   var $ = function (id) { return document.getElementById(id); };
   var form = $('devis-form'), msg = $('formMsg'), btn = $('btnSend');
   var selName = $('selName'), selEdit = $('selEdit'), selField = $('selField'), artiste = $('artiste'), subj = $('subject'), subjField = $('subjField');
-  var FIELDS = ['name', 'phone', 'email', 'date-event', 'place', 'message', 'organisme', 'type-evt', 'jauge', 'budget', 'tech', 'artiste', 'subject'];
+  var FIELDS = ['name', 'phone', 'email', 'rappel', 'date-event', 'place', 'message', 'artiste', 'subject'];
+  var emailField = $('emailField'), rappelField = $('rappelField'), mailToggle = $('mailToggle'), mailMode = false;
+  function setMailMode(on) {
+    mailMode = on; emailField.hidden = !on; rappelField.hidden = on;
+    mailToggle.textContent = on ? S.use_phone : S.use_mail; mailToggle.setAttribute('aria-expanded', String(on));
+  }
+  mailToggle.addEventListener('click', function () { setMailMode(!mailMode); if (mailMode) $('email').focus(); else $('phone').focus(); });
   var sending = false, started = false;
   var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch (e) {}
   var store = { get: function (k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }, del: function (k) { try { sessionStorage.removeItem(k); } catch (e) {} } };
@@ -375,7 +372,7 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
     var v = artiste.value;
     var o = v ? artiste.querySelector('option[value="' + v + '"]') : null;
     selName.textContent = o ? o.textContent : S.none;
-    subjField.hidden = !!v;
+    subjField.hidden = true;
     if (v) subj.value = "Programmation d'artistes";
   }
   selEdit.addEventListener('click', function () {
@@ -390,7 +387,7 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
   try {
     var d = JSON.parse(store.get(DRAFT) || 'null');
     if (d) FIELDS.forEach(function (id) { if (d[id] != null && id !== 'artiste') $(id).value = d[id]; });
-    if (d && (d.organisme || d.jauge || d.budget || d['type-evt'] || d.tech)) $('more').open = true;
+    if (d && d.email && !d.phone) setMailMode(true);
   } catch (e) {}
   if (params.get('artiste')) setSelection(params.get('artiste'), params.get('nom') || '');
   else { var dd = null; try { dd = JSON.parse(store.get(DRAFT) || 'null'); } catch (e) {} setSelection(dd && dd.artiste || '', ''); }
@@ -418,7 +415,7 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
     ['name', 'phone', 'email'].forEach(clearErr);
     var first = null, n = $('name').value.trim(), p = $('phone').value.trim(), e = $('email').value.trim();
     if (!n) { showErr('name-err', S.e_name, ['name']); first = first || $('name'); }
-    if (!p && !e) { showErr('contact-err', S.e_contact, ['phone', 'email']); first = first || $('phone'); }
+    if (!p && !e) { showErr('contact-err', mailMode ? S.e_contact : S.e_phone_req, ['phone', 'email']); first = first || (mailMode ? $('email') : $('phone')); }
     else if (e && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(e)) { showErr('contact-err', S.e_email, ['email']); first = first || $('email'); }
     else if (p && p.replace(/\D/g, '').length < 6) { showErr('contact-err', S.e_phone, ['phone']); first = first || $('phone'); }
     return first;
@@ -448,9 +445,10 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
     var bad = validate();
     if (bad) { msg.className = 'form-msg err'; msg.textContent = S.fields_missing; bad.focus(); return; }
     var v = function (id) { return $(id).value.trim(); };
+    var rq = (!mailMode && v('phone')) ? 'Rappel souhaité : ' + ($('rappel').value || 'dès que possible') + '.' : '';
     var nomArt = artiste.value ? (artiste.querySelector('option[value="' + artiste.value + '"]') || {}).textContent : '';
-    var d = { nom: v('name'), telephone: v('phone'), email: v('email'), sujet: subj.value, date_event: v('date-event'), lieu: v('place'), message: v('message'),
-      artiste: artiste.value, artiste_nom: nomArt || '', organisme: v('organisme'), type_evenement: v('type-evt'), jauge: v('jauge'), budget: v('budget'), technique: v('tech'),
+    var d = { nom: v('name'), telephone: v('phone'), email: v('email'), sujet: subj.value, date_event: v('date-event'), lieu: v('place'), message: rq ? rq + (v('message') ? '\n' + v('message') : '') : v('message'),
+      artiste: artiste.value, artiste_nom: nomArt || '',
       site_web: v('site_web'), page: from || 'contact', session_id: sid, lang: C.lang };
     d.cle = keyFor(Object.assign({}, d, { session_id: '' }));
     sending = true; btn.disabled = true; btn.textContent = S.sending;
