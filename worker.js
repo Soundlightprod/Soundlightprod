@@ -729,12 +729,12 @@ async function dashboardData(env, siteParam, daysParam) {
   const start = `date(${today}, '-${days - 1} day')`;
   const pStart = `date(${today}, '-${2 * days - 1} day')`;
   const pEnd = `date(${today}, '-${days} day')`;
-  const vWith = (extra) => `v AS (SELECT session_id, site, artist_slug AS page, visited_at, device, referrer, city, country, network, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, CAST(strftime('%H', datetime(visited_at, ${PARIS_OFFSET("visited_at")})) AS INTEGER) AS h FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")}${extra} AND visited_at >= datetime('now', '-${Math.max(2 * days + 2, 16)} days'))`;
+  const vWith = (extra) => `v AS (SELECT session_id, site, artist_slug AS page, visited_at, device, referrer, city, country, network, latitude, longitude, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, CAST(strftime('%H', datetime(visited_at, ${PARIS_OFFSET("visited_at")})) AS INTEGER) AS h FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")}${extra} AND visited_at >= datetime('now', '-${Math.max(2 * days + 2, 16)} days'))`;
   const vS = vWith(site ? ` AND site = '${site}'` : "");
   const vAll = vWith("");
   const cur = `jour >= ${start}`;
   const jCmp = `jour IN (${today}, date(${today}, '-1 day'), date(${today}, '-7 day'))`;
-  const [meta, daily, tot, prev, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp, vues] = await Promise.all([
+  const [meta, daily, tot, prev, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp, vues, carte] = await Promise.all([
     q(`SELECT ${start} AS debut, ${pStart} AS prec_debut, ${pEnd} AS prec_fin, ${today} AS aujourdhui, date(${today}, '-1 day') AS j1, date(${today}, '-7 day') AS j7`),
     q(`WITH ${vS} SELECT jour, COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE ${cur} GROUP BY jour ORDER BY jour`),
     q(`WITH ${vS} SELECT COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE ${cur}`),
@@ -757,8 +757,10 @@ async function dashboardData(env, siteParam, daysParam) {
     q(`WITH ${vS}, a AS (SELECT session_id, jour, MIN(h) AS h FROM v WHERE ${jCmp} GROUP BY session_id, jour) SELECT jour, h, COUNT(*) AS n FROM a GROUP BY jour, h`),
     // journal des pages vues : qui (ville, appareil, réseau, provenance) et à quelle heure, les plus récentes d'abord
     q(`WITH ${vS} SELECT session_id, site, page, visited_at, city, country, device, network, referrer FROM v WHERE ${cur} ORDER BY visited_at DESC LIMIT 300`),
+    // carte des connexions : lieux regroupés (arrondi ~1 km), mêmes filtres que le reste du tableau (sans robots ni tests)
+    q(`WITH ${vS} SELECT ROUND(latitude, 2) AS lat, ROUND(longitude, 2) AS lng, MAX(city) AS city, MAX(country) AS country, site, COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE ${cur} AND latitude IS NOT NULL AND longitude IS NOT NULL GROUP BY ROUND(latitude, 2), ROUND(longitude, 2), site ORDER BY visiteurs DESC LIMIT 500`),
   ]);
-  return { site, days, meta: meta[0] || null, daily, tot: tot[0] || null, prev: prev[0] || null, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp, vues };
+  return { site, days, meta: meta[0] || null, daily, tot: tot[0] || null, prev: prev[0] || null, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp, vues, carte };
 }
 
 // Contacts à suivre : visiteurs « chauds » repérés dans les visites + demandes reçues, classés par intérêt (admin).

@@ -922,6 +922,11 @@
       <div class="vz-kpi"><span class="k">Taux de rebond</span><b id="dbK4">—</b><span class="d" id="dbD4"></span></div>
     </div>
 
+    <div class="vz-card" style="padding:0; overflow:hidden;">
+      <div class="vz-card-h" style="padding:14px 16px 0;"><h3>Carte des connexions</h3><span class="vz-note" id="dbMapNote"></span></div>
+      <div id="dbMap" style="height:300px; margin-top:12px;"></div>
+    </div>
+
     <div class="vz-card">
       <div class="vz-card-h"><h3>Vue d'ensemble</h3><span class="vz-note" id="dbRange">visiteurs (barres) et pages vues (courbe), jour par jour</span></div>
       <div class="db-ch"><canvas id="dbOverview"></canvas></div>
@@ -1452,7 +1457,7 @@
   function dbDayList(n){ const out = []; for (let i = n - 1; i >= 0; i--){ const d = new Date(); d.setDate(d.getDate() - i); out.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`); } return out; }
   const dbLab = (j) => new Date(j + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
 
-  let dbOv = null;
+  let dbOv = null, dbMapInst = null;
   // le détail du graphique s'affiche dans une ligne fixe sous le graphique (pas de bulle qui masque les courbes sur mobile)
   function dbOvInfo(i){
     const el = document.getElementById('dbOvInfo'); if (!el || !dbOv) return;
@@ -1608,6 +1613,26 @@
     dbRows('dbRefs', d.referrers, (l) => (typeof refLabel === 'function' ? refLabel(l) : l));
     dbRows('dbCities', d.cities);
 
+
+    // carte des connexions (une bulle par lieu, taille = nombre de visiteurs)
+    try {
+      if (!dbMapInst){
+        dbMapInst = L.map('dbMap', { scrollWheelZoom:false }).setView([46.6, 2.5], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors', maxZoom:18 }).addTo(dbMapInst);
+        dbMapInst.layer = L.layerGroup().addTo(dbMapInst);
+      }
+      dbMapInst.layer.clearLayers();
+      const pts = (d.carte || []).filter((p) => p.lat !== null && p.lng !== null);
+      const ll = [];
+      pts.forEach((p) => {
+        const c = (typeof SITE_COLORS !== 'undefined' && SITE_COLORS[p.site]) || '#2f9bff';
+        const m = L.circleMarker([p.lat, p.lng], { radius: Math.min(22, 6 + 3 * Math.sqrt(p.visiteurs)), color:c, fillColor:c, fillOpacity:.55, weight:1.5 });
+        m.bindPopup(`<strong>${p.city || 'Lieu inconnu'}</strong>${p.country ? ' (' + p.country + ')' : ''}<br>${p.visiteurs} visiteur(s) · ${p.pages} page(s)${d.site ? '' : '<br>' + ((MT_SITES[p.site] || {}).nom || p.site)}`);
+        m.addTo(dbMapInst.layer); ll.push([p.lat, p.lng]);
+      });
+      document.getElementById('dbMapNote').textContent = pts.length ? `${pts.length} lieu(x) · ${siteNom}` : 'aucune connexion localisée sur cette période';
+      setTimeout(() => { dbMapInst.invalidateSize(); if (ll.length > 1) dbMapInst.fitBounds(ll, { padding:[24, 24], maxZoom:9 }); else if (ll.length === 1) dbMapInst.setView(ll[0], 8); else dbMapInst.setView([46.6, 2.5], 5); }, 60);
+    } catch (err) { console.error('Carte :', err); }
 
     // journal des pages vues : heure (Paris), page, et qui (ville, appareil, réseau, provenance)
     const lg = document.getElementById('dbVues'); lg.replaceChildren();
