@@ -1620,6 +1620,11 @@
         dbMapInst = L.map('dbMap', { scrollWheelZoom:false }).setView([46.6, 2.5], 5);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors', maxZoom:18 }).addTo(dbMapInst);
         dbMapInst.layer = L.layerGroup().addTo(dbMapInst);
+        // la carte est créée alors que son cadre peut être masqué ou pas encore à sa taille : on la recale dès que le cadre change de taille
+        if (window.ResizeObserver){
+          let t = null;
+          new ResizeObserver(() => { clearTimeout(t); t = setTimeout(() => { dbMapInst.invalidateSize(); if (dbMapInst.refit) dbMapInst.refit(); }, 80); }).observe(document.getElementById('dbMap'));
+        }
       }
       dbMapInst.layer.clearLayers();
       const pts = (d.carte || []).filter((p) => p.lat !== null && p.lng !== null);
@@ -1631,7 +1636,8 @@
         m.addTo(dbMapInst.layer); ll.push([p.lat, p.lng]);
       });
       document.getElementById('dbMapNote').textContent = pts.length ? `${pts.length} lieu(x) · ${siteNom}` : 'aucune connexion localisée sur cette période';
-      setTimeout(() => { dbMapInst.invalidateSize(); if (ll.length > 1) dbMapInst.fitBounds(ll, { padding:[24, 24], maxZoom:9 }); else if (ll.length === 1) dbMapInst.setView(ll[0], 8); else dbMapInst.setView([46.6, 2.5], 5); }, 60);
+      dbMapInst.refit = () => { if (ll.length > 1) dbMapInst.fitBounds(ll, { padding:[24, 24], maxZoom:9 }); else if (ll.length === 1) dbMapInst.setView(ll[0], 8); else dbMapInst.setView([46.6, 2.5], 5); };
+      setTimeout(() => { dbMapInst.invalidateSize(); dbMapInst.refit(); }, 60);
     } catch (err) { console.error('Carte :', err); }
 
     // journal des pages vues : heure (Paris), page, et qui (ville, appareil, réseau, provenance)
