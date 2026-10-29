@@ -211,7 +211,7 @@
   <div class="page-hero-inner">
     <span class="label">Contact</span>
     <h1>Get a proposal tailored to your event</h1>
-    <p>A few details are enough. We will get back to you quickly.</p>
+    <p>Leave your number: we will call you back within 24 hours.</p>
   </div>
 </section>
 
@@ -219,10 +219,8 @@
   <div class="wrap">
     <div class="contact-grid">
       <div class="contact-form" id="contact-form" tabindex="-1">
-        <h2>Request your quote</h2>
-        <p class="lead">Quick first reply; the detailed quote follows once we have checked availability and your needs.</p>
         <form id="devis-form" novalidate>
-          <div class="sel" id="sel">
+          <div class="sel" id="sel" hidden>
             <div class="sel-line"><span class="label" id="selLabel">Your selection</span><strong id="selName" aria-live="polite"></strong><button type="button" class="linkbtn" id="selEdit" aria-expanded="false" aria-controls="selField">Change</button></div>
             <div class="field" id="selField" hidden><label for="artiste">Show concerned</label>
               <select id="artiste" name="artiste"><option value="">Not chosen yet: advise me</option><option value="tribute-abba">Tribute ABBA</option><option value="tribute-calogero">Tribute Calogero</option><option value="tribute-matmatah">Tribute Matmatah</option><option value="tribute-celine-dion">Tribute Céline Dion</option><option value="tribute-kool-and-the-gang">Tribute Kool &amp; the Gang</option><option value="tribute-bee-gees">Tribute Bee Gees</option><option value="tribute-phil-collins">Tribute Phil Collins</option><option value="tribute-balavoine">Tribute Balavoine</option><option value="tribute-barry-white">Tribute Barry White</option><option value="panache">Panache (cabaret)</option><option value="bim-bam-boom">Bim Bam Boom (cabaret)</option><option value="cache-candy">Cache Candy</option><option value="alchimie">Alchimie</option><option value="the-fine-allies">The Fine Allies</option><option value="noon-coverband">NooN Coverband</option></select></div>
@@ -231,50 +229,24 @@
             <label for="subject">Your request</label>
             <select id="subject"><option value="Programmation d'artistes">An artist / a show</option><option value="Devis Prestation technique">Sound &amp; lighting (technical services)</option><option value="DJ / animation">DJ / party host</option><option value="Autre demande">Other request</option></select>
           </div>
-          <div class="row-2">
-            <div class="field">
-              <label for="name">Name *</label>
-              <input type="text" id="name" autocomplete="name" required aria-describedby="name-err">
-              <p class="err" id="name-err" hidden></p>
-            </div>
-            <div class="field">
-              <label for="phone">Phone</label>
-              <input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="06 …" aria-describedby="contact-err">
-            </div>
+          <div class="field">
+            <label for="name">Name *</label>
+            <input type="text" id="name" autocomplete="name" required aria-describedby="name-err">
+            <p class="err" id="name-err" hidden></p>
           </div>
           <div class="field">
-            <label for="email">Email <span class="opt">(or phone, either one is enough)</span></label>
-            <input type="email" id="email" autocomplete="email" inputmode="email" aria-describedby="contact-err">
+            <label for="contact">Phone or email *</label>
+            <input type="text" id="contact" autocomplete="tel" placeholder="06 … or name@domain.com" aria-describedby="contact-err">
             <p class="err" id="contact-err" hidden></p>
           </div>
-          <div class="row-2">
-            <div class="field">
-              <label for="date-event">Date <span class="opt">(even approximate)</span></label>
-              <input type="text" id="date-event" placeholder="e.g. June 2027">
-            </div>
-            <div class="field">
-              <label for="place">City / venue</label>
-              <input type="text" id="place" placeholder="e.g. Lyon, banquet hall" autocomplete="address-level2">
-            </div>
-          </div>
           <div class="field">
-            <label for="message">Your project <span class="opt">(optional)</span></label>
-            <textarea id="message" placeholder="Type of event, desired atmosphere, constraints…"></textarea>
+            <label for="message">Your event <span class="opt">(date, venue… optional)</span></label>
+            <textarea id="message" rows="2" placeholder="e.g. village fête, June 2027"></textarea>
           </div>
-          <details class="more" id="more">
-            <summary>Useful details (optional)</summary>
-            <div class="field"><label for="organisme">Town or organisation</label><input type="text" id="organisme" autocomplete="organization"></div>
-            <div class="field"><label for="type-evt">Type of event</label><select id="type-evt"><option value="">To be defined</option><option value="Town festivities">Town festivities</option><option value="Food market / cultural season">Food market / cultural season</option><option value="Wedding / private party">Wedding / private party</option><option value="Gala / company event">Gala / company event</option><option value="Association">Association</option><option value="Other">Other</option></select></div>
-            <div class="row-2">
-              <div class="field"><label for="jauge">Expected number of guests</label><input type="text" id="jauge" inputmode="numeric" placeholder="To be defined"></div>
-              <div class="field"><label for="budget">Budget range</label><input type="text" id="budget" placeholder="To be defined"></div>
-            </div>
-            <div class="field"><label for="tech">Sound and lighting</label><select id="tech"><option value="">To be defined</option><option value="No technical need">No technical need</option><option value="Sound and lighting needed (separate service)">Sound and lighting needed (separate service)</option><option value="Not sure yet">Not sure yet</option></select></div>
-          </details>
           <div class="hp" aria-hidden="true"><label for="site_web">Do not fill in</label><input type="text" id="site_web" tabindex="-1" autocomplete="off"></div>
-          <button type="submit" class="btn-submit" id="btnSend">Send my request</button>
+          <button type="submit" class="btn-submit" id="btnSend">Call me back</button>
           <p class="form-msg" id="formMsg" role="alert"></p>
-          <p class="form-note">Your details are only used to reply to you. <a href="mentions-legales">Learn more</a>.</p>
+          <p class="form-note">Free quote, reply within 24 hours. Your details are only used to reply to you. <a href="mentions-legales">Learn more</a>.</p>
         </form>
       </div>
 
@@ -284,24 +256,7 @@
         <a class="q-chat" href="#chat" data-contact="chat"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Talk to the team right now</a>
         <a class="q-call" href="tel:+33631949653" data-contact="appel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Call · +33 6 31 94 96 53</a>
         <a class="q-wa" href="https://wa.me/33631949653?text=Hello%2C%20I%27m%20contacting%20you%20from%20the%20SLP%20website%3A%20" target="_blank" rel="noopener" data-contact="whatsapp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
-        <a class="q-mail" href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
       </div>
-        <p class="q-note">Write to us live: the SLP team replies as soon as they are online.</p>
-        <div class="trust"><span>Free quote</span><span>Quick first reply</span><span>One single contact</span></div>
-        <div style="height:22px"></div>
-        <div class="info-block">
-          <span class="label">Email</span>
-          <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
-        </div><div class="info-block">
-          <span class="label">Phone / WhatsApp</span>
-          <a href="tel:+33631949653" data-contact="appel">+33 6 31 94 96 53</a>
-        </div><div class="info-block">
-          <span class="label">Address</span>
-          <p>173 rue de Courcelles<br>75017 Paris</p>
-        </div><div class="info-block">
-          <span class="label">Area covered</span>
-          <p>France / Europe</p>
-        </div>
       </aside>
     </div>
   </div>
@@ -344,13 +299,14 @@
 
 <script>
 // DEVIS-FORM
-window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero": "Tribute Calogero", "tribute-matmatah": "Tribute Matmatah", "tribute-celine-dion": "Tribute Céline Dion", "tribute-kool-and-the-gang": "Tribute Kool & the Gang", "tribute-bee-gees": "Tribute Bee Gees", "tribute-phil-collins": "Tribute Phil Collins", "tribute-balavoine": "Tribute Balavoine", "tribute-barry-white": "Tribute Barry White", "panache": "Panache (cabaret)", "bim-bam-boom": "Bim Bam Boom (cabaret)", "cache-candy": "Cache Candy", "alchimie": "Alchimie", "the-fine-allies": "The Fine Allies", "noon-coverband": "NooN Coverband"}, "s": {"none": "No show chosen yet: we will advise you", "e_name": "Please enter your name.", "e_contact": "Please enter a phone number or an email so we can reply.", "e_email": "This email address looks incomplete (example: name@domain.com).", "e_phone": "This number looks too short.", "sending": "Sending…", "send": "Send my request", "fail_net": "We could not confirm that your request was sent: it may not have gone through. You can try again without any risk of duplicates, or call us on", "fail_or": "or write to", "thanks": "Thank you", "saved": "Your request has been recorded.", "ref": "Reference", "next": "We will get back to you quickly; the detailed quote follows once we have checked availability and your needs.", "phone_back": "We will call you back if you left a number.", "rush": "In a hurry?", "fields_missing": "Please correct the highlighted fields."}, "lang": "en"};
+window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero": "Tribute Calogero", "tribute-matmatah": "Tribute Matmatah", "tribute-celine-dion": "Tribute Céline Dion", "tribute-kool-and-the-gang": "Tribute Kool & the Gang", "tribute-bee-gees": "Tribute Bee Gees", "tribute-phil-collins": "Tribute Phil Collins", "tribute-balavoine": "Tribute Balavoine", "tribute-barry-white": "Tribute Barry White", "panache": "Panache (cabaret)", "bim-bam-boom": "Bim Bam Boom (cabaret)", "cache-candy": "Cache Candy", "alchimie": "Alchimie", "the-fine-allies": "The Fine Allies", "noon-coverband": "NooN Coverband"}, "s": {"none": "No show chosen yet: we will advise you", "e_name": "Please enter your name.", "e_contact": "Please enter a phone number or an email so we can reply.", "e_email": "This email address looks incomplete (example: name@domain.com).", "e_phone": "This number looks too short.", "sending": "Sending…", "send": "Send my request", "fail_net": "We could not confirm that your request was sent: it may not have gone through. You can try again without any risk of duplicates, or call us on", "fail_or": "or write to", "thanks": "Thank you", "saved": "Your request has been recorded.", "ref": "Reference", "next": "We will call you back within 24 hours; the detailed quote follows once we have checked availability.", "phone_back": "We will call you back if you left a number.", "rush": "In a hurry?", "fields_missing": "Please correct the highlighted fields."}, "lang": "en"};
 (function () {
   var C = window.__DEVIS, S = C.s, ART = C.artists;
   var $ = function (id) { return document.getElementById(id); };
   var form = $('devis-form'), msg = $('formMsg'), btn = $('btnSend');
   var selName = $('selName'), selEdit = $('selEdit'), selField = $('selField'), artiste = $('artiste'), subj = $('subject'), subjField = $('subjField');
-  var FIELDS = ['name', 'phone', 'email', 'date-event', 'place', 'message', 'organisme', 'type-evt', 'jauge', 'budget', 'tech', 'artiste', 'subject'];
+  var FIELDS = ['name', 'contact', 'message', 'artiste', 'subject'];
+  function isMail(c) { return c.indexOf('@') >= 0; }
   var sending = false, started = false;
   var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch (e) {}
   var store = { get: function (k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }, del: function (k) { try { sessionStorage.removeItem(k); } catch (e) {} } };
@@ -372,7 +328,8 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
     var v = artiste.value;
     var o = v ? artiste.querySelector('option[value="' + v + '"]') : null;
     selName.textContent = o ? o.textContent : S.none;
-    subjField.hidden = !!v;
+    $('sel').hidden = !v;
+    subjField.hidden = true;
     if (v) subj.value = "Programmation d'artistes";
   }
   selEdit.addEventListener('click', function () {
@@ -387,7 +344,6 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
   try {
     var d = JSON.parse(store.get(DRAFT) || 'null');
     if (d) FIELDS.forEach(function (id) { if (d[id] != null && id !== 'artiste') $(id).value = d[id]; });
-    if (d && (d.organisme || d.jauge || d.budget || d['type-evt'] || d.tech)) $('more').open = true;
   } catch (e) {}
   if (params.get('artiste')) setSelection(params.get('artiste'), params.get('nom') || '');
   else { var dd = null; try { dd = JSON.parse(store.get(DRAFT) || 'null'); } catch (e) {} setSelection(dd && dd.artiste || '', ''); }
@@ -407,17 +363,17 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
     inputs.forEach(function (id) { $(id).setAttribute('aria-invalid', 'true'); });
   }
   function clearErr(id) {
-    var map = { name: ['name-err', ['name']], phone: ['contact-err', ['phone', 'email']], email: ['contact-err', ['phone', 'email']] };
+    var map = { name: ['name-err', ['name']], contact: ['contact-err', ['contact']] };
     var m = map[id]; if (!m) return;
     $(m[0]).hidden = true; $(m[0]).textContent = ''; m[1].forEach(function (i) { $(i).removeAttribute('aria-invalid'); });
   }
   function validate() {
-    ['name', 'phone', 'email'].forEach(clearErr);
-    var first = null, n = $('name').value.trim(), p = $('phone').value.trim(), e = $('email').value.trim();
+    ['name', 'contact'].forEach(clearErr);
+    var first = null, n = $('name').value.trim(), c = $('contact').value.trim();
     if (!n) { showErr('name-err', S.e_name, ['name']); first = first || $('name'); }
-    if (!p && !e) { showErr('contact-err', S.e_contact, ['phone', 'email']); first = first || $('phone'); }
-    else if (e && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(e)) { showErr('contact-err', S.e_email, ['email']); first = first || $('email'); }
-    else if (p && p.replace(/\D/g, '').length < 6) { showErr('contact-err', S.e_phone, ['phone']); first = first || $('phone'); }
+    if (!c) { showErr('contact-err', S.e_contact, ['contact']); first = first || $('contact'); }
+    else if (isMail(c)) { if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(c)) { showErr('contact-err', S.e_email, ['contact']); first = first || $('contact'); } }
+    else if (c.replace(/\D/g, '').length < 6) { showErr('contact-err', S.e_phone, ['contact']); first = first || $('contact'); }
     return first;
   }
 
@@ -446,8 +402,8 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
     if (bad) { msg.className = 'form-msg err'; msg.textContent = S.fields_missing; bad.focus(); return; }
     var v = function (id) { return $(id).value.trim(); };
     var nomArt = artiste.value ? (artiste.querySelector('option[value="' + artiste.value + '"]') || {}).textContent : '';
-    var d = { nom: v('name'), telephone: v('phone'), email: v('email'), sujet: subj.value, date_event: v('date-event'), lieu: v('place'), message: v('message'),
-      artiste: artiste.value, artiste_nom: nomArt || '', organisme: v('organisme'), type_evenement: v('type-evt'), jauge: v('jauge'), budget: v('budget'), technique: v('tech'),
+    var d = { nom: v('name'), telephone: isMail(v('contact')) ? '' : v('contact'), email: isMail(v('contact')) ? v('contact') : '', sujet: subj.value, date_event: '', lieu: '', message: v('message'),
+      artiste: artiste.value, artiste_nom: nomArt || '',
       site_web: v('site_web'), page: from || 'contact', session_id: sid, lang: C.lang };
     d.cle = keyFor(Object.assign({}, d, { session_id: '' }));
     sending = true; btn.disabled = true; btn.textContent = S.sending;
@@ -456,7 +412,7 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
       .then(function (r) { return r.json().catch(function () { return { ok: false, _s: r.status }; }); })
       .then(function (j) {
         if (!j.ok) {
-          if (j.champ === 'email' || j.champ === 'telephone') { showErr('contact-err', j.error || S.e_email, [j.champ === 'email' ? 'email' : 'phone']); $(j.champ === 'email' ? 'email' : 'phone').focus(); msg.className = 'form-msg err'; msg.textContent = S.fields_missing; return; }
+          if (j.champ === 'email' || j.champ === 'telephone') { showErr('contact-err', j.error || S.e_email, ['contact']); $('contact').focus(); msg.className = 'form-msg err'; msg.textContent = S.fields_missing; return; }
           if (j.champ === 'nom') { showErr('name-err', j.error || S.e_name, ['name']); $('name').focus(); return; }
           if (j.error && j._s !== 500) { msg.className = 'form-msg err'; msg.textContent = j.error; return; }
           failNet(); return;
