@@ -856,8 +856,23 @@ async function ensureContactSchema(env) {
 }
 function contactReference(id) { return `SLP-${new Date().getFullYear()}-${String(id).padStart(5, "0")}`; }
 
+// Numéro saisi par le client → format international (France par défaut) pour les liens tel: et WhatsApp.
+function phoneIntl(raw) {
+  let n = String(raw || "").replace(/[^+0-9]/g, "");
+  if (n.startsWith("00")) n = "+" + n.slice(2);
+  else if (/^0[1-9][0-9]{8}$/.test(n)) n = "+33" + n.slice(1);
+  const digits = n.replace(/\D/g, "");
+  if (digits.length < 7 || digits.length > 15) return null;
+  return n.startsWith("+") ? n : "+" + digits;
+}
+
 async function notifyContactMail(env, r) {
   const esc = (x) => String(x || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const intl = phoneIntl(r.telephone);
+  const bouton = (href, fond, texte) => `<a href="${href}" style="display:inline-block;background:${fond};color:#111;font-weight:bold;text-decoration:none;padding:12px 20px;border-radius:24px;margin:0 8px 8px 0">${texte}</a>`;
+  const actions = intl
+    ? `<p style="margin:14px 0 6px">${bouton("tel:" + intl, "#ff8a1f", "☎ Rappeler " + esc(r.telephone))}${bouton("https://wa.me/" + intl.slice(1) + "?text=" + encodeURIComponent("Bonjour, c'est SLP Sound Light Prod, suite à votre demande sur notre site" + (r.artiste_nom ? " (" + r.artiste_nom + ")" : "") + ". Quand pouvons-nous vous appeler ?"), "#25d366", "WhatsApp")}</p>`
+    : "";
   const ligne = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#666">${k}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>` : "";
   let ok = 0, err = null;
   try {
@@ -869,8 +884,8 @@ async function notifyContactMail(env, r) {
       headers: { "Authorization": `Bearer ${resendKey}`, "Content-Type": "application/json", "Idempotency-Key": `contact-request-${r.id}` },
       body: JSON.stringify({
         from: "Site SLP <contact@soundlightprod.fr>", to: [env.CONTACT_TO || "contact@soundlightprod.fr"], ...(r.email ? { reply_to: r.email } : {}),
-        subject: `Nouvelle demande ${r.reference || "#" + r.id} : ${r.artiste_nom || r.sujet || "Contact"}${r.produit_ref ? " [" + r.produit_ref + "]" : ""} — ${r.nom}`,
-        html: `<p>Nouvelle demande reçue depuis le site (${esc(r.reference || "n°" + r.id)}).</p><table>${ligne("Boutique", r.produit_ref || r.commande_num ? "oui" : "")}${ligne("Produit (référence)", r.produit_ref)}${ligne("N° de commande", r.commande_num)}${ligne("Spectacle", r.artiste_nom)}${ligne("Nom", r.nom)}${ligne("Téléphone", r.telephone)}${ligne("Email", r.email)}${ligne("Organisme / commune", r.organisme)}${ligne("Sujet", r.sujet)}${ligne("Type d'événement", r.type_evenement)}${ligne("Date", r.date_event)}${ligne("Lieu", r.lieu)}${ligne("Jauge", r.jauge)}${ligne("Budget", r.budget)}${ligne("Besoin son et lumière", r.technique)}${ligne("Venu de", r.page_origine)}${ligne("Ville (approx.)", r.city)}</table><p style="white-space:pre-wrap;border-left:3px solid #ffb238;padding-left:10px">${esc(r.message)}</p><p style="color:#666">Répondre à ce mail écrit directement au client${r.email ? "" : " (pas d'email : rappelez-le au téléphone)"}.</p>`,
+        subject: `${intl ? "☎ " : ""}Nouvelle demande ${r.reference || "#" + r.id} : ${r.artiste_nom || r.sujet || "Contact"}${r.produit_ref ? " [" + r.produit_ref + "]" : ""} — ${r.nom}`,
+        html: `<p>Nouvelle demande reçue depuis le site (${esc(r.reference || "n°" + r.id)}).</p>${actions}<table>${ligne("Boutique", r.produit_ref || r.commande_num ? "oui" : "")}${ligne("Produit (référence)", r.produit_ref)}${ligne("N° de commande", r.commande_num)}${ligne("Spectacle", r.artiste_nom)}${ligne("Nom", r.nom)}${ligne("Téléphone", r.telephone)}${ligne("Email", r.email)}${ligne("Organisme / commune", r.organisme)}${ligne("Sujet", r.sujet)}${ligne("Type d'événement", r.type_evenement)}${ligne("Date", r.date_event)}${ligne("Lieu", r.lieu)}${ligne("Jauge", r.jauge)}${ligne("Budget", r.budget)}${ligne("Besoin son et lumière", r.technique)}${ligne("Venu de", r.page_origine)}${ligne("Ville (approx.)", r.city)}</table><p style="white-space:pre-wrap;border-left:3px solid #ffb238;padding-left:10px">${esc(r.message)}</p><p style="color:#666">Répondre à ce mail écrit directement au client${r.email ? "" : " (pas d'email : rappelez-le au téléphone)"}.</p>`,
       }),
     });
     if (res.ok) ok = 1; else err = `${res.status} ${(await res.text()).slice(0, 200)}`;
