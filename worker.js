@@ -2133,7 +2133,10 @@ export default {
       }
 
       if (!url.pathname.startsWith("/api/")) {
-        return withVideoTracking(await env.ASSETS.fetch(request), url);
+        // /clement-Blouin (avec majuscule) sert la même page que /clement-blouin
+        const aliasClement = url.pathname.match(/^(\/(?:en|es|it))?\/clement-blouin\/?$/i);
+        const assetRequest = aliasClement ? new Request(new URL(`${aliasClement[1] || ""}/clement-blouin${url.search}`, url.origin), request) : request;
+        return withVideoTracking(await env.ASSETS.fetch(assetRequest), url);
       }
 
       return json({ error: "Route inconnue" }, 404, origin);
