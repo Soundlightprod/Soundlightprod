@@ -499,6 +499,7 @@
         <option value="tribute-balavoine">Tribute Balavoine</option>
         <option value="tribute-barry-white">Tribute Barry White</option>
         <option value="bim-bam-boom">Bim Bam Boom</option>
+        <option value="clement-blouin">Clément Blouin</option>
         <option value="animation">🎉 Animation</option>
         <option value="presta-technique">🔧 Prestation technique</option>
         <option value="_guest">👤 Invité (pas de fiche sur le site)</option>
@@ -1827,7 +1828,7 @@
     const menuLab = { devis:'Demander un devis', spectacle:'Programmer un spectacle', dj:'DJ / animation', tech:'Son & lumière', tarifs:'Tarifs', zone:'Zone d\'intervention', equipe:'Parler à un membre de SLP', contact:'Appeler / WhatsApp / mail' };
     if (c.menu && c.menu.length) figs.appendChild(mtEl('p', 'vz-note', 'Choix dans le chat (7 jours) : ' + c.menu.map((m) => `${menuLab[String(m.page).replace('chatmenu:', '')] || m.page} (${m.n})`).join(', ')));
     if (c.photos && c.photos.length) {
-      const phLab = { abba:'Tribute ABBA', balavoine:'Tribute Balavoine', 'barry-white':'Tribute Barry White', 'stayin-alive':'Tribute Bee Gees', calo:'Tribute Calogero', 'celine-dion':'Tribute Céline Dion', kool:'Tribute Kool & the Gang', matmatah:'Tribute Matmatah', 'phil-collins':'Tribute Phil Collins', panache:'Panache', 'bim-bam-boom':'Bim Bam Boom', alchimie:'Alchimie', noon:'NooN Coverband', 'cache-candy':'Cache Candy', 'fine-allies':'The Fine Allies' };
+      const phLab = { abba:'Tribute ABBA', balavoine:'Tribute Balavoine', 'barry-white':'Tribute Barry White', 'stayin-alive':'Tribute Bee Gees', calo:'Tribute Calogero', 'celine-dion':'Tribute Céline Dion', kool:'Tribute Kool & the Gang', matmatah:'Tribute Matmatah', 'phil-collins':'Tribute Phil Collins', panache:'Panache', 'bim-bam-boom':'Bim Bam Boom', 'clement-blouin':'Clément Blouin', alchimie:'Alchimie', noon:'NooN Coverband', 'cache-candy':'Cache Candy', 'fine-allies':'The Fine Allies' };
       const vue = c.photos.find((p) => p.page === 'galerie'), grp = c.photos.filter((p) => String(p.page).indexOf('galerie:') === 0);
       figs.appendChild(mtEl('p', 'vz-note', 'Galerie photo (7 jours) : ' + (vue ? vue.n : 0) + ' visiteur(s) l\'ont regardée' + (grp.length ? ' · photos ouvertes par groupe : ' + grp.map((g) => { const k = String(g.page).slice(8); return `${phLab[k] || k} (${g.n})`; }).join(', ') : '')));
     }
@@ -2337,8 +2338,8 @@
     showToast('Commande supprimée');
   }
 
-  const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'supernova':'Supernova', 'voice-of-freedom':'Voice of Freedom', 'the-best-abba-tribute':'Tribute ABBA', 'calo2-0':'Tribute Calogero', 'tribute-matmatah':'Tribute Matmatah', 'tribute-celine-dion':'Tribute Céline Dion', 'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'tribute-bee-gees':'Tribute Bee Gees', 'tribute-phil-collins':'Tribute Phil Collins', 'tribute-balavoine':'Tribute Balavoine', 'tribute-barry-white':'Tribute Barry White', 'bim-bam-boom':'Bim Bam Boom', 'animation':'Animation', 'presta-technique':'Prestation technique' };
-  const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'supernova':'#ff3d81', 'voice-of-freedom':'#cda754', 'the-best-abba-tribute':'#14b8a6', 'calo2-0':'#e2352c', 'tribute-matmatah':'#4fb8ff', 'tribute-celine-dion':'#fbc608', 'tribute-kool-and-the-gang':'#ffb238', 'tribute-bee-gees':'#22c55e', 'tribute-phil-collins':'#a855f7', 'tribute-balavoine':'#94a3b8', 'tribute-barry-white':'#d4a24c', 'bim-bam-boom':'#f472b6', 'animation':'#f97316', 'presta-technique':'#9a93a6' };
+  const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'supernova':'Supernova', 'voice-of-freedom':'Voice of Freedom', 'the-best-abba-tribute':'Tribute ABBA', 'calo2-0':'Tribute Calogero', 'tribute-matmatah':'Tribute Matmatah', 'tribute-celine-dion':'Tribute Céline Dion', 'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'tribute-bee-gees':'Tribute Bee Gees', 'tribute-phil-collins':'Tribute Phil Collins', 'tribute-balavoine':'Tribute Balavoine', 'tribute-barry-white':'Tribute Barry White', 'bim-bam-boom':'Bim Bam Boom', 'clement-blouin':'Clément Blouin', 'animation':'Animation', 'presta-technique':'Prestation technique' };
+  const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'supernova':'#ff3d81', 'voice-of-freedom':'#cda754', 'the-best-abba-tribute':'#14b8a6', 'calo2-0':'#e2352c', 'tribute-matmatah':'#4fb8ff', 'tribute-celine-dion':'#fbc608', 'tribute-kool-and-the-gang':'#ffb238', 'tribute-bee-gees':'#22c55e', 'tribute-phil-collins':'#a855f7', 'tribute-balavoine':'#94a3b8', 'tribute-barry-white':'#d4a24c', 'bim-bam-boom':'#f472b6', 'clement-blouin':'#34d399', 'animation':'#f97316', 'presta-technique':'#9a93a6' };
   const TYPE_ICONS = { concert:'🎤', cabaret:'🎭', dj:'🎧', animation:'🎉', karaoke:'🎙️', indisponible:'🚫', actu:'📣' };
   const ROADMAP_TYPES = ['concert', 'cabaret', 'dj', 'animation', 'karaoke'];
   let agendaDate = new Date();
@@ -3315,14 +3316,14 @@
 
   const PAGE_LABELS = {
     index:'Accueil', agenda:'Agenda', artistes:'Nos artistes', boutique:'Boutique',
-    'boutique-merci':'Boutique — merci', cabaret:'Cabaret', 'cgv-boutique':'CGV Boutique',
+    'boutique-merci':'Boutique — merci', cabaret:'Cabaret', magie:'Magie', 'cgv-boutique':'CGV Boutique',
     contact:'Contact', diffusion:'Notre philosophie de travail', dj:'DJ', galerie:'Galerie',
     'groupes-de-reprises':'Groupes de reprises', 'jazz-soul-funk':'Jazz Soul Funk',
     'mentions-legales':'Mentions légales', 'pop-francaise':'Pop Française', 'son-lumiere':'Prestation technique',
     tributes:'Tributes', artistes:'Nos artistes et spectacles',
     'tribute-abba':'Tribute ABBA', 'tribute-calogero':'Tribute Calogero', 'tribute-bee-gees':'Tribute Bee Gees',
     'tribute-phil-collins':'Tribute Phil Collins', 'tribute-balavoine':'Tribute Balavoine', 'tribute-barry-white':'Tribute Barry White', 'tribute-matmatah':'Tribute Matmatah', 'tribute-celine-dion':'Tribute Céline Dion',
-    'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'bim-bam-boom':'Bim Bam Boom', panache:'Panache', 'cache-candy':'Cache Candy',
+    'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'bim-bam-boom':'Bim Bam Boom', 'clement-blouin':'Clément Blouin', panache:'Panache', 'cache-candy':'Cache Candy',
     alchimie:'Alchimie', 'noon-coverband':'NooN Coverband', 'the-fine-allies':'The Fine Allies', 'dj-animation':'DJ Animation',
     'the-best-abba-tribute':'Tribute ABBA', 'calo-2-0':'Tribute Calogero', 'calo2-0':'Tribute Calogero',
   };
