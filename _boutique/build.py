@@ -327,6 +327,7 @@ PAGE_CSS = """<style>
   .pp-need-i .im{width:54px; height:54px; background:#fff; border-radius:10px; flex:none;} .pp-need-i .im img{width:100%; height:100%; object-fit:contain; padding:4px;}
   .pp-need-i b{font-size:.92rem; line-height:1.25;} .pp-need-i .pr{font-weight:700; white-space:nowrap;}
   .pp-need-i .btn{padding:9px 16px; font-size:.85rem;}
+  .pp-pack-note{display:block; font-weight:600; font-size:.78rem; color:#7be0a0; margin-top:2px;} .pp-pack-was{font-weight:600; opacity:.55; margin-right:4px; font-size:.85rem;}
   .pp-need-links{display:flex; flex-wrap:wrap; gap:8px;} .pp-need-links a{padding:8px 14px; border:1px solid var(--line); border-radius:100px; text-decoration:none; color:var(--paper); font-size:.88rem;}
 </style>"""
 
@@ -412,6 +413,35 @@ def need_block(p, products):
                 '<p>Consommable nécessaire à son fonctionnement, vendu séparément.</p>' + rows + '</section>')
     links = ''.join(f'<a href="/produits/{esc(q["slug"])}">{esc(q["name"])}</a>' for q in items)
     return f'<section class="pp-need"><h2>Compatible avec</h2><div class="pp-need-links">{links}</div></section>'
+
+
+def pack_block(p, products):
+    """Sur la fiche d'un produit unitaire : propose ses lots (slug-x2, slug-x4…) avec prix à l'unité et économie réelle."""
+    if re.search(r'-x[0-9]+$', p['slug']):
+        return ''
+    packs = []
+    for q in products:
+        m = re.fullmatch(re.escape(p['slug']) + r'-x([0-9]+)', q['slug'])
+        if m and in_stock(q):
+            packs.append((int(m.group(1)), q))
+    if not packs:
+        return ''
+    rows = ''
+    for n, q in sorted(packs, key=lambda t: t[0]):
+        unit = round(q['price_cents'] / n)
+        save = p['price_cents'] * n - q['price_cents']
+        was = promo_was(q)
+        note = f"soit {unit / 100:.2f}".replace('.', ',') + ' € l\'unité'
+        if save > 0:
+            note += f" · {save / 100:.2f}".replace('.', ',') + f' € d\'économie par rapport à {n} achetés séparément'
+        old = (f'<s class="pp-pack-was">{was / 100:.2f}'.replace('.', ',') + ' €</s> ') if was else ''
+        rows += (f'<div class="pp-need-i"><a class="nm" href="/produits/{esc(q["slug"])}">'
+                 f'<span class="im"><img src="{esc(q.get("image") or p.get("image") or "")}" alt="" loading="lazy"></span>'
+                 f'<b>Lot de {n}<small class="pp-pack-note">{esc(note)}</small></b></a>'
+                 f'<span class="pr">{old}{fr_price(q)}</span>'
+                 f'<a class="btn btn-primary" href="/boutique.html?ajouter={esc(q["slug"])}">Ajouter</a></div>')
+    return ('<section class="pp-need pp-packs"><h2>Offres en lot</h2>'
+            '<p>Achetez plus, payez moins à l\'unité.</p>' + rows + '</section>')
 
 
 TRACK_JS = """<script>
@@ -504,6 +534,7 @@ def page(p, products, tpl):
       {intro}
       {f'<h2>Caractéristiques techniques</h2>{spec_html}' if spec_html else ''}
       {need_block(p, products)}
+      {pack_block(p, products)}
       {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact-boutique?motif=conseil&amp;produit={esc(p["slug"])}" style="color:var(--paper)">contactez-nous</a>.</p>'}
     </div>
   </div>
