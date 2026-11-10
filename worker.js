@@ -24,7 +24,7 @@ const SHIPPING_COUNTRIES = ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT"];
 const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store"];
 function resolveOrigin(request, env) {
   const requestOrigin = request.headers.get("Origin") || "";
-  try { if (SIBLING_ORIGINS.includes(requestOrigin) && ["/api/track-visit", "/api/contact"].includes(new URL(request.url).pathname)) return requestOrigin; } catch (e) {}
+  try { if (SIBLING_ORIGINS.includes(requestOrigin) && ["/api/track-visit", "/api/contact", "/api/captcha"].includes(new URL(request.url).pathname)) return requestOrigin; } catch (e) {}
   const allowed = (env.ALLOWED_ORIGINS || env.SITE_ORIGIN || "").split(",").map((s) => s.trim());
   return allowed.includes(requestOrigin) ? requestOrigin : (env.SITE_ORIGIN || allowed[0] || "*");
 }
@@ -940,7 +940,29 @@ async function verifyTurnstile(env, token, ip) {
     return !!(j && j.success);
   } catch (e) { console.error("turnstile: vérification impossible", e && e.message); return true; } // panne Cloudflare : on ne bloque pas les vrais clients
 }
-async function antiSpam(request, env, body, texts, kind) {
+// Question de vérification (calcul simple) : défi à usage unique stocké dans D1, valable 15 min.
+let captchaReady = false;
+async function ensureCaptchaTable(env) {
+  if (captchaReady) return;
+  await env.DB.prepare("CREATE TABLE IF NOT EXISTS captcha_challenges (id TEXT PRIMARY KEY, answer INTEGER NOT NULL, ip_hash TEXT, created_at INTEGER NOT NULL, used INTEGER NOT NULL DEFAULT 0)").run();
+  captchaReady = true;
+}
+async function ipHashOf(request) {
+  const ipRaw = request.headers.get("CF-Connecting-IP") || "";
+  return ipRaw ? [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ipRaw + "slp")))].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("") : null;
+}
+async function checkCaptcha(env, body) {
+  await ensureCaptchaTable(env);
+  const id = String((body && body.captcha_id) || "").slice(0, 64), ans = String((body && body.captcha_answer) || "").trim();
+  if (!/^[a-f0-9]{32}$/.test(id) || !/^-?\d{1,3}$/.test(ans)) return false;
+  const row = await env.DB.prepare("SELECT answer, created_at, used FROM captcha_challenges WHERE id = ?").bind(id).first();
+  if (!row || row.used || Date.now() - row.created_at > 15 * 60 * 1000) return false;
+  // Usage unique, même en cas de mauvaise réponse (pas d'essais en rafale sur une même question)
+  const upd = await env.DB.prepare("UPDATE captcha_challenges SET used = 1 WHERE id = ? AND used = 0").bind(id).run();
+  if (!(upd.meta && upd.meta.changes === 1)) return false;
+  return Number(ans) === row.answer;
+}
+async function antiSpam(request, env, body, texts, kind, needCaptcha) {
   const dt = Number(body && body.dt);
   if (!Number.isFinite(dt) || dt < 3000) {
     console.log("antispam: trop rapide ou sans délai", kind, Number.isFinite(dt) ? dt : "absent");
@@ -949,6 +971,10 @@ async function antiSpam(request, env, body, texts, kind) {
   if ((texts || []).some(containsLink)) {
     console.log("antispam: lien refusé", kind);
     return "Les liens ne sont pas acceptés dans ce formulaire : décrivez simplement votre demande, nous vous rappelons rapidement.";
+  }
+  if (needCaptcha && !(await checkCaptcha(env, body))) {
+    console.log("antispam: question de vérification refusée", kind);
+    return "Réponse incorrecte à la question de vérification : une nouvelle question vous est proposée.";
   }
   if (!(await verifyTurnstile(env, body && body.cf_token, request.headers.get("CF-Connecting-IP") || ""))) {
     console.log("antispam: turnstile refusé", kind);
@@ -1705,6 +1731,26 @@ export default {
         }
       }
 
+      // GET /api/captcha — nouvelle question de vérification { ok, id, q } (calcul simple, usage unique)
+      if (url.pathname === "/api/captcha" && request.method === "GET") {
+        await ensureCaptchaTable(env);
+        const now = Date.now(), ih = await ipHashOf(request);
+        await env.DB.prepare("DELETE FROM captcha_challenges WHERE created_at < ?").bind(now - 86400000).run();
+        if (ih) {
+          const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM captcha_challenges WHERE ip_hash = ? AND created_at >= ?").bind(ih, now - 3600000).first();
+          if (r && r.n >= 30) return json({ ok: false, error: "Trop de demandes, réessayez plus tard." }, 429, origin);
+        }
+        const rnd = (n) => crypto.getRandomValues(new Uint32Array(1))[0] % n;
+        const op = ["+", "−", "×"][rnd(3)];
+        let a, b, ans;
+        if (op === "+") { a = 2 + rnd(8); b = 2 + rnd(8); ans = a + b; }
+        else if (op === "−") { a = 8 + rnd(10); b = 2 + rnd(a - 3); ans = a - b; }
+        else { a = 2 + rnd(8); b = 2 + rnd(4); ans = a * b; }
+        const id = [...crypto.getRandomValues(new Uint8Array(16))].map((x) => x.toString(16).padStart(2, "0")).join("");
+        await env.DB.prepare("INSERT INTO captcha_challenges (id, answer, ip_hash, created_at) VALUES (?, ?, ?, ?)").bind(id, ans, ih, now).run();
+        return new Response(JSON.stringify({ ok: true, id, q: `${a} ${op} ${b}` }), { status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "no-store", ...cors(origin) } });
+      }
+
       // POST /api/contact — demande de devis : enregistrée dans D1 (jamais perdue, une seule fois par soumission),
       // puis notification email et statistique en tâche secondaire. Réponse : { ok, reference }.
       if (url.pathname === "/api/contact" && request.method === "POST") {
@@ -1717,9 +1763,15 @@ export default {
           type_evenement: t(body.type_evenement, 80), jauge: t(body.jauge, 40), budget: t(body.budget, 60), technique: t(body.technique, 80), produit_ref: t(body.produit_ref, 80), commande_num: t(body.commande_num, 40),
           lang: ["fr", "en", "es", "it"].includes(t(body.lang, 2)) ? t(body.lang, 2) : "fr" };
         const cle = /^[A-Za-z0-9._-]{8,100}$/.test(String(body.cle || "")) ? String(body.cle) : null;
-        const bloque = await antiSpam(request, env, body, [d.nom, d.sujet, d.date_event, d.lieu, d.message, d.organisme, d.type_evenement, d.jauge, d.budget, d.technique, d.produit_ref, d.commande_num, d.artiste_nom], "contact");
-        if (bloque) return json({ ok: false, error: bloque }, 400, origin);
+        const bloque = await antiSpam(request, env, body, [d.nom, d.sujet, d.date_event, d.lieu, d.message, d.organisme, d.type_evenement, d.jauge, d.budget, d.technique, d.produit_ref, d.commande_num, d.artiste_nom], "contact", !d.page.startsWith("chat:"));
+        if (bloque) return json({ ok: false, champ: "captcha", error: bloque }, 400, origin);
         if (!d.nom) return json({ ok: false, champ: "nom", error: "Indiquez votre nom." }, 400, origin);
+        // Formulaire de contact du site SLP : téléphone, email et commune obligatoires
+        if (body.form === "devis") {
+          if (!d.telephone) return json({ ok: false, champ: "telephone", error: "Indiquez votre numéro de téléphone." }, 400, origin);
+          if (!d.email) return json({ ok: false, champ: "email", error: "Indiquez votre email." }, 400, origin);
+          if (!d.lieu) return json({ ok: false, champ: "commune", error: "Indiquez votre commune." }, 400, origin);
+        }
         // Boutique (.store) : motif dans une liste fermée, email obligatoire (réponse par écrit), message présent
         if (siteFromRequest(request, body) === "store") {
           if (!STORE_MOTIFS.includes(d.sujet)) return json({ ok: false, champ: "sujet", error: "Choisissez le motif de votre demande." }, 400, origin);

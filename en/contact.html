@@ -235,12 +235,22 @@
             <p class="err" id="name-err" hidden></p>
           </div>
           <div class="field">
-            <label for="contact">Phone or email *</label>
-            <input type="text" id="contact" autocomplete="tel" placeholder="06 … or name@domain.com" aria-describedby="contact-err">
-            <p class="err" id="contact-err" hidden></p>
+            <label for="phone">Phone *</label>
+            <input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="+33 6 12 34 56 78" required aria-describedby="phone-err">
+            <p class="err" id="phone-err" hidden></p>
           </div>
           <div class="field">
-            <label for="message">Your event <span class="opt">(date, venue… optional)</span></label>
+            <label for="email">Email *</label>
+            <input type="email" id="email" autocomplete="email" inputmode="email" placeholder="name@domain.com" required aria-describedby="email-err">
+            <p class="err" id="email-err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="commune">Town / city *</label>
+            <input type="text" id="commune" autocomplete="address-level2" placeholder="e.g. Bergerac" required aria-describedby="commune-err">
+            <p class="err" id="commune-err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="message">Your event <span class="opt">(date, details… optional)</span></label>
             <textarea id="message" rows="2" placeholder="e.g. village fête, June 2027"></textarea>
           </div>
           <div class="hp" aria-hidden="true"><label for="site_web">Do not fill in</label><input type="text" id="site_web" tabindex="-1" autocomplete="off"></div>
@@ -299,13 +309,13 @@
 
 <script>
 // DEVIS-FORM
-window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero": "Tribute Calogero", "tribute-matmatah": "Tribute Matmatah", "tribute-celine-dion": "Tribute Céline Dion", "tribute-kool-and-the-gang": "Tribute Kool & the Gang", "tribute-bee-gees": "Tribute Bee Gees", "tribute-phil-collins": "Tribute Phil Collins", "tribute-balavoine": "Tribute Balavoine", "tribute-barry-white": "Tribute Barry White", "panache": "Panache (cabaret)", "bim-bam-boom": "Bim Bam Boom (cabaret)", "cache-candy": "Cache Candy", "alchimie": "Alchimie", "the-fine-allies": "The Fine Allies", "noon-coverband": "NooN Coverband"}, "s": {"none": "No show chosen yet: we will advise you", "e_name": "Please enter your name.", "e_contact": "Please enter a phone number or an email so we can reply.", "e_email": "This email address looks incomplete (example: name@domain.com).", "e_phone": "This number looks too short.", "sending": "Sending…", "send": "Send my request", "fail_net": "We could not confirm that your request was sent: it may not have gone through. You can try again without any risk of duplicates, or call us on", "fail_or": "or write to", "thanks": "Thank you", "saved": "Your request has been recorded.", "ref": "Reference", "next": "We will call you back within 24 hours; the detailed quote follows once we have checked availability.", "phone_back": "We will call you back if you left a number.", "rush": "In a hurry?", "fields_missing": "Please correct the highlighted fields."}, "lang": "en"};
+window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero": "Tribute Calogero", "tribute-matmatah": "Tribute Matmatah", "tribute-celine-dion": "Tribute Céline Dion", "tribute-kool-and-the-gang": "Tribute Kool & the Gang", "tribute-bee-gees": "Tribute Bee Gees", "tribute-phil-collins": "Tribute Phil Collins", "tribute-balavoine": "Tribute Balavoine", "tribute-barry-white": "Tribute Barry White", "panache": "Panache (cabaret)", "bim-bam-boom": "Bim Bam Boom (cabaret)", "cache-candy": "Cache Candy", "alchimie": "Alchimie", "the-fine-allies": "The Fine Allies", "noon-coverband": "NooN Coverband"}, "s": {"none": "No show chosen yet: we will advise you", "e_name": "Please enter your name.", "e_email_req": "Please enter your email.", "e_commune": "Please enter your town or city.", "e_phone_req": "Please enter your phone number so we can call you back.", "e_contact": "Please enter a phone number or an email so we can reply.", "e_email": "This email address looks incomplete (example: name@domain.com).", "e_phone": "This number looks too short.", "sending": "Sending…", "send": "Send my request", "fail_net": "We could not confirm that your request was sent: it may not have gone through. You can try again without any risk of duplicates, or call us on", "fail_or": "or write to", "thanks": "Thank you", "saved": "Your request has been recorded.", "ref": "Reference", "next": "We will call you back within 24 hours; the detailed quote follows once we have checked availability.", "phone_back": "We will call you back if you left a number.", "rush": "In a hurry?", "fields_missing": "Please correct the highlighted fields."}, "lang": "en"};
 (function () {
   var C = window.__DEVIS, S = C.s, ART = C.artists;
   var $ = function (id) { return document.getElementById(id); };
   var form = $('devis-form'), msg = $('formMsg'), btn = $('btnSend');
   var selName = $('selName'), selEdit = $('selEdit'), selField = $('selField'), artiste = $('artiste'), subj = $('subject'), subjField = $('subjField');
-  var FIELDS = ['name', 'contact', 'message', 'artiste', 'subject'];
+  var FIELDS = ['name', 'phone', 'email', 'commune', 'message', 'artiste', 'subject'];
   function isMail(c) { return c.indexOf('@') >= 0; }
   var sending = false, started = false;
   var sid = ''; try { sid = sessionStorage.getItem('slp_visit_sid') || ''; } catch (e) {}
@@ -363,17 +373,19 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
     inputs.forEach(function (id) { $(id).setAttribute('aria-invalid', 'true'); });
   }
   function clearErr(id) {
-    var map = { name: ['name-err', ['name']], contact: ['contact-err', ['contact']] };
+    var map = { name: ['name-err', ['name']], phone: ['phone-err', ['phone']], email: ['email-err', ['email']], commune: ['commune-err', ['commune']] };
     var m = map[id]; if (!m) return;
     $(m[0]).hidden = true; $(m[0]).textContent = ''; m[1].forEach(function (i) { $(i).removeAttribute('aria-invalid'); });
   }
   function validate() {
-    ['name', 'contact'].forEach(clearErr);
-    var first = null, n = $('name').value.trim(), c = $('contact').value.trim();
+    ['name', 'phone', 'email', 'commune'].forEach(clearErr);
+    var first = null, n = $('name').value.trim(), p = $('phone').value.trim(), m = $('email').value.trim(), v = $('commune').value.trim();
     if (!n) { showErr('name-err', S.e_name, ['name']); first = first || $('name'); }
-    if (!c) { showErr('contact-err', S.e_contact, ['contact']); first = first || $('contact'); }
-    else if (isMail(c)) { if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(c)) { showErr('contact-err', S.e_email, ['contact']); first = first || $('contact'); } }
-    else if (c.replace(/\D/g, '').length < 6) { showErr('contact-err', S.e_phone, ['contact']); first = first || $('contact'); }
+    if (!p) { showErr('phone-err', S.e_phone_req, ['phone']); first = first || $('phone'); }
+    else if (p.replace(/\D/g, '').length < 6) { showErr('phone-err', S.e_phone, ['phone']); first = first || $('phone'); }
+    if (!m) { showErr('email-err', S.e_email_req, ['email']); first = first || $('email'); }
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(m)) { showErr('email-err', S.e_email, ['email']); first = first || $('email'); }
+    if (!v) { showErr('commune-err', S.e_commune, ['commune']); first = first || $('commune'); }
     return first;
   }
 
@@ -402,18 +414,22 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
     if (bad) { msg.className = 'form-msg err'; msg.textContent = S.fields_missing; bad.focus(); return; }
     var v = function (id) { return $(id).value.trim(); };
     var nomArt = artiste.value ? (artiste.querySelector('option[value="' + artiste.value + '"]') || {}).textContent : '';
-    var d = { nom: v('name'), telephone: isMail(v('contact')) ? '' : v('contact'), email: isMail(v('contact')) ? v('contact') : '', sujet: subj.value, date_event: '', lieu: '', message: v('message'),
+    var d = { nom: v('name'), telephone: v('phone'), email: v('email'), sujet: subj.value, date_event: '', lieu: v('commune'), message: v('message'),
       artiste: artiste.value, artiste_nom: nomArt || '',
-      site_web: v('site_web'), page: from || 'contact', session_id: sid, lang: C.lang };
+      site_web: v('site_web'), page: from || 'contact', session_id: sid, lang: C.lang, form: 'devis' };
     d.cle = keyFor(Object.assign({}, d, { session_id: '' }));
     d.dt = window.slpAS ? window.slpAS.dt() : Math.round(performance.now()); d.cf_token = window.slpAS ? window.slpAS.token() : '';
+    if (window.slpAS) Object.assign(d, window.slpAS.captcha());
     sending = true; btn.disabled = true; btn.textContent = S.sending;
     var ctl = ('AbortController' in window) ? new AbortController() : null, to = setTimeout(function () { if (ctl) ctl.abort(); }, 15000);
     fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d), signal: ctl ? ctl.signal : undefined })
       .then(function (r) { return r.json().catch(function () { return { ok: false, _s: r.status }; }); })
       .then(function (j) {
         if (!j.ok) {
-          if (j.champ === 'email' || j.champ === 'telephone') { showErr('contact-err', j.error || S.e_email, ['contact']); $('contact').focus(); msg.className = 'form-msg err'; msg.textContent = S.fields_missing; return; }
+          if (window.slpAS) window.slpAS.captchaReset();
+          var emap = { email: ['email-err', 'email'], telephone: ['phone-err', 'phone'], commune: ['commune-err', 'commune'] };
+          if (emap[j.champ]) { showErr(emap[j.champ][0], j.error || S.e_email, [emap[j.champ][1]]); $(emap[j.champ][1]).focus(); msg.className = 'form-msg err'; msg.textContent = S.fields_missing; return; }
+          if (j.champ === 'captcha') { msg.className = 'form-msg err'; msg.textContent = j.error || ''; if (window.slpAS) window.slpAS.captchaFocus(); return; }
           if (j.champ === 'nom') { showErr('name-err', j.error || S.e_name, ['name']); $('name').focus(); return; }
           if (j.error && j._s !== 500) { msg.className = 'form-msg err'; msg.textContent = j.error; return; }
           failNet(); return;
@@ -429,7 +445,7 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
         var a = document.createElement('a'); a.href = 'tel:+33631949653'; a.setAttribute('data-contact', 'appel'); a.style.color = 'var(--amber)'; a.textContent = '06 31 94 96 53'; p2.append(a);
         box.append(p1, p2); form.replaceChildren(box); box.focus();
       })
-      .catch(function () { failNet(); })
+      .catch(function () { failNet(); if (window.slpAS) window.slpAS.captchaReset(); })
       .then(function () { clearTimeout(to); sending = false; if (document.body.contains(btn)) { btn.disabled = false; btn.textContent = btn.getAttribute('data-label'); } });
   });
   btn.setAttribute('data-label', btn.textContent);
