@@ -917,6 +917,45 @@ async function recordContactEvent(env, site, d, cf, vp) {
   } catch (e) { console.error("contact: statistique non enregistrée", e && e.message); }
 }
 
+// --- Anti-spam des formulaires (contact, chat, boutique) ---------------------------------------
+// Couches : champ piège (déjà en place) + délai minimum avant envoi + refus des liens + Turnstile (dès que la clé
+// secrète est configurée). Renvoie le message d'erreur à afficher, ou "" si la soumission est acceptée.
+const OWN_DOMAINS_RE = /\b(?:soundlightprod\.(?:fr|com|store)|bookmyband\.fr|csanimations\.fr)\b/gi;
+const LINK_RE = /(?:[a-z][a-z0-9+.-]{1,10}:\/\/|\bwww\.|\b[a-z0-9-]{3,}\.(?:com|fr|net|org|info|biz|co|io|me)\/|\b[a-z0-9-]{3,}\.(?:online|xyz|top|site|click|link|live|icu|cfd|sbs|buzz|vip|shop|pw|ws|tk|ml|ga|cf|gq|ru|cn)\b)/i;
+function containsLink(text) {
+  const s = String(text || "").replace(/[^\s@]+@[^\s@]+\.[^\s@]+/g, " ").replace(OWN_DOMAINS_RE, " ");
+  return LINK_RE.test(s);
+}
+async function verifyTurnstile(env, token, ip) {
+  let secret = null;
+  try { secret = typeof env.TURNSTILE_SECRET?.get === "function" ? await env.TURNSTILE_SECRET.get() : env.TURNSTILE_SECRET; } catch (e) {}
+  if (!secret) return true; // pas encore configuré : les autres protections restent actives
+  if (!token) return false;
+  try {
+    const form = new FormData();
+    form.append("secret", secret); form.append("response", String(token).slice(0, 2048)); if (ip) form.append("remoteip", ip);
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: form });
+    const j = await res.json();
+    return !!(j && j.success);
+  } catch (e) { console.error("turnstile: vérification impossible", e && e.message); return true; } // panne Cloudflare : on ne bloque pas les vrais clients
+}
+async function antiSpam(request, env, body, texts, kind) {
+  const dt = Number(body && body.dt);
+  if (!Number.isFinite(dt) || dt < 3000) {
+    console.log("antispam: trop rapide ou sans délai", kind, Number.isFinite(dt) ? dt : "absent");
+    return "Envoi trop rapide ou page trop ancienne : rechargez la page puis réessayez, ou appelez-nous au 06 31 94 96 53.";
+  }
+  if ((texts || []).some(containsLink)) {
+    console.log("antispam: lien refusé", kind);
+    return "Les liens ne sont pas acceptés dans ce formulaire : décrivez simplement votre demande, nous vous rappelons rapidement.";
+  }
+  if (!(await verifyTurnstile(env, body && body.cf_token, request.headers.get("CF-Connecting-IP") || ""))) {
+    console.log("antispam: turnstile refusé", kind);
+    return "La vérification anti-robot a échoué : rechargez la page puis réessayez, ou appelez-nous au 06 31 94 96 53.";
+  }
+  return "";
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -1525,6 +1564,13 @@ export default {
           if (t(body.site_web, 50)) return json({ ok: true, token: "x" }, 200, origin); // champ piège (robots)
           const text = t(body.body, 1000);
           if (!text) return json({ ok: false, error: "Message vide." }, 400, origin);
+          // Anti-spam : refus des liens (le délai minimum et Turnstile ne concernent que l'ouverture d'une conversation)
+          if (!t(body.token, 64)) {
+            const bloque = await antiSpam(request, env, body, [text, body.name, body.contact], "chat");
+            if (bloque) return json({ ok: false, error: bloque }, 400, origin);
+          } else if ([text, body.name, body.contact].some(containsLink)) {
+            return json({ ok: false, error: "Les liens ne sont pas acceptés dans le chat : décrivez simplement votre demande." }, 400, origin);
+          }
           const cf = request.cf || {};
           let th = null, token = t(body.token, 64);
           if (token) th = await env.DB.prepare("SELECT * FROM chat_threads WHERE token = ?").bind(token).first();
@@ -1670,6 +1716,8 @@ export default {
           type_evenement: t(body.type_evenement, 80), jauge: t(body.jauge, 40), budget: t(body.budget, 60), technique: t(body.technique, 80), produit_ref: t(body.produit_ref, 80), commande_num: t(body.commande_num, 40),
           lang: ["fr", "en", "es", "it"].includes(t(body.lang, 2)) ? t(body.lang, 2) : "fr" };
         const cle = /^[A-Za-z0-9._-]{8,100}$/.test(String(body.cle || "")) ? String(body.cle) : null;
+        const bloque = await antiSpam(request, env, body, [d.nom, d.sujet, d.date_event, d.lieu, d.message, d.organisme, d.type_evenement, d.jauge, d.budget, d.technique, d.produit_ref, d.commande_num, d.artiste_nom], "contact");
+        if (bloque) return json({ ok: false, error: bloque }, 400, origin);
         if (!d.nom) return json({ ok: false, champ: "nom", error: "Indiquez votre nom." }, 400, origin);
         // Boutique (.store) : motif dans une liste fermée, email obligatoire (réponse par écrit), message présent
         if (siteFromRequest(request, body) === "store") {
@@ -1691,7 +1739,7 @@ export default {
         const ipHash = ipRaw ? [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ipRaw + "slp")))].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("") : null;
         if (ipHash) {
           const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM contact_requests WHERE ip_hash = ? AND cree_le >= datetime('now', '-1 hour')").bind(ipHash).first();
-          if (r && r.n >= 5) return json({ ok: false, error: "Trop d'envois d'un coup : appelez-nous au 06 31 94 96 53." }, 429, origin);
+          if (r && r.n >= 3) return json({ ok: false, error: "Trop d'envois d'un coup : appelez-nous au 06 31 94 96 53." }, 429, origin);
         }
         let id;
         try {

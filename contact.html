@@ -411,6 +411,7 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
       artiste: artiste.value, artiste_nom: nomArt || '',
       site_web: v('site_web'), page: from || 'contact', session_id: sid, lang: C.lang };
     d.cle = keyFor(Object.assign({}, d, { session_id: '' }));
+    d.dt = window.slpAS ? window.slpAS.dt() : Math.round(performance.now()); d.cf_token = window.slpAS ? window.slpAS.token() : '';
     sending = true; btn.disabled = true; btn.textContent = S.sending;
     var ctl = ('AbortController' in window) ? new AbortController() : null, to = setTimeout(function () { if (ctl) ctl.abort(); }, 15000);
     fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d), signal: ctl ? ctl.signal : undefined })
@@ -449,6 +450,7 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
   if(location.hash==='#chat'){var n=0,t=setInterval(function(){if(openChat()||++n>30)clearInterval(t);},200);}
 })();
 </script>
+<script src="/antispam.js" defer></script>
 </body>
 <script>
 (function(){
