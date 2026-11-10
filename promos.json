@@ -1,0 +1,9 @@
+{
+  "nom": "Black Friday",
+  "jusqu_au": "2026-11-30T23:59:59+01:00",
+  "prix_barres": {
+    "barre-led-sunstrip-10x50w": 19999,
+    "barre-led-sunstrip-10x50w-x2": 36999,
+    "barre-led-sunstrip-10x50w-x4": 71999
+  }
+}

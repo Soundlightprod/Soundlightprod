@@ -201,6 +201,31 @@ def fr_price(p):
     return f"{p['price_cents'] / 100:.2f}".replace('.', ',') + ' €'
 
 
+try:
+    PROMO = json.loads((ROOT / 'promos.json').read_text(encoding='utf-8'))
+except Exception:
+    PROMO = None
+
+
+def promo_was(p):
+    """Ancien prix (centimes) à barrer tant que la promo de promos.json est en cours, sinon 0."""
+    if not PROMO:
+        return 0
+    was = PROMO.get('prix_barres', {}).get(p['slug'], 0)
+    end = datetime.datetime.fromisoformat(PROMO['jusqu_au'])
+    now = datetime.datetime.now(datetime.timezone.utc)
+    return was if (was > p['price_cents'] and now <= end) else 0
+
+
+def promo_html(p):
+    was = promo_was(p)
+    if not was:
+        return ''
+    pct = round((1 - p['price_cents'] / was) * 100)
+    return (f'<span class="pp-was">{was / 100:.2f}'.replace('.', ',') + ' €</span>'
+            f'<span class="pp-promo">{esc(PROMO["nom"])} −{pct} %</span>')
+
+
 def fr_price_ht(p):
     # Prix hors taxe (TVA 20 %), affiché en petit sous le prix TTC
     return f"{p['price_cents'] / 120:.2f}".replace('.', ',') + ' € HT'
@@ -267,6 +292,8 @@ PAGE_CSS = """<style>
   .pp-thumbs img{width:100%; height:100%; object-fit:contain; display:block;}
   .pp h1{font-size:clamp(1.9rem,4vw,3rem); margin:10px 0 18px; text-transform:none; line-height:1.02;}
   .pp-price{font-family:'League Spartan',sans-serif; font-weight:900; font-size:2.3rem; margin:6px 0 4px;}
+  .pp-was{display:block; font-family:'Instrument Sans',sans-serif; font-weight:600; font-size:1.05rem; text-decoration:line-through; opacity:.6; line-height:1.2;}
+  .pp-promo{display:inline-block; background:#0c0a14; color:#ffd400; font-family:'Instrument Sans',sans-serif; font-size:.7rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:100px; margin-right:10px; vertical-align:middle;}
   .pp-ttc{color:var(--muted); font-size:.85rem;}
   .pp-stock{display:inline-flex; align-items:center; gap:8px; font-size:.9rem; margin:16px 0 24px;}
   .pp-stock::before{content:''; width:9px; height:9px; border-radius:50%; background:#3ddc84; box-shadow:0 0 8px #3ddc84;}
@@ -467,7 +494,7 @@ def page(p, products, tpl):
     <div>
       <span class="label">{esc(CAT_FULL.get(p['category'], cat))}</span>
       <h1>{esc(p['name'])}</h1>
-      <div class="pp-price">{fr_price(p)}</div>
+      <div class="pp-price">{promo_html(p)}{fr_price(p)}</div>
       <div class="pp-ttc">Prix TTC · soit {fr_price_ht(p)} · Réf. SLP-{p['id']}</div>
       {stock}
       {eta}
