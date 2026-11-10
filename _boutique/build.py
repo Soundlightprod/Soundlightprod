@@ -327,7 +327,18 @@ PAGE_CSS = """<style>
   .pp-need-i .im{width:54px; height:54px; background:#fff; border-radius:10px; flex:none;} .pp-need-i .im img{width:100%; height:100%; object-fit:contain; padding:4px;}
   .pp-need-i b{font-size:.92rem; line-height:1.25;} .pp-need-i .pr{font-weight:700; white-space:nowrap;}
   .pp-need-i .btn{padding:9px 16px; font-size:.85rem;}
-  .pp-pack-note{display:block; font-weight:600; font-size:.78rem; color:#7be0a0; margin-top:2px;} .pp-pack-was{font-weight:600; opacity:.55; margin-right:4px; font-size:.85rem;}
+  .pp-lots{margin:0 0 22px;}
+  .pp-lots h2{font-size:1rem !important; text-transform:uppercase; letter-spacing:.08em; margin:0 0 10px !important;}
+  .pp-lots-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px;}
+  .lot{position:relative; background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:16px 14px 14px; display:flex; flex-direction:column; gap:4px;}
+  .lot-top{border-color:#14213d; box-shadow:0 4px 16px rgba(20,33,61,.12);}
+  .lot-best{position:absolute; top:-10px; left:12px; background:#ff0953; color:#fff; font-size:.64rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:3px 10px; border-radius:100px;}
+  .lot-t{font-weight:800; font-size:1.05rem; color:var(--paper); text-decoration:none;}
+  .lot-p{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;} .lot-p b{font-family:'League Spartan',sans-serif; font-weight:900; font-size:1.7rem; line-height:1.1;}
+  .lot-was{font-size:.9rem; font-weight:600; opacity:.55;}
+  .lot-u{font-size:.85rem; color:var(--muted);}
+  .lot-eco{display:inline-block; align-self:flex-start; background:#e3f5ea; color:#1d7a46; font-weight:700; font-size:.78rem; padding:3px 10px; border-radius:100px; margin:2px 0 6px;}
+  .lot-b{margin-top:auto; text-align:center; padding:10px 14px; font-size:.88rem;}
   .pp-need-links{display:flex; flex-wrap:wrap; gap:8px;} .pp-need-links a{padding:8px 14px; border:1px solid var(--line); border-radius:100px; text-decoration:none; color:var(--paper); font-size:.88rem;}
 </style>"""
 
@@ -416,7 +427,7 @@ def need_block(p, products):
 
 
 def pack_block(p, products):
-    """Sur la fiche d'un produit unitaire : propose ses lots (slug-x2, slug-x4…) avec prix à l'unité et économie réelle."""
+    """Sur la fiche d'un produit unitaire : propose ses lots (slug-x2, slug-x4…) au-dessus du bouton d'achat."""
     if re.search(r'-x[0-9]+$', p['slug']):
         return ''
     packs = []
@@ -426,22 +437,24 @@ def pack_block(p, products):
             packs.append((int(m.group(1)), q))
     if not packs:
         return ''
-    rows = ''
-    for n, q in sorted(packs, key=lambda t: t[0]):
+    packs.sort(key=lambda t: t[0])
+    pct = lambda n, q: (p['price_cents'] * n - q['price_cents']) / (p['price_cents'] * n)
+    best = max(packs, key=lambda t: pct(*t))[0] if len(packs) > 1 else 0
+    tiles = ''
+    for n, q in packs:
         unit = round(q['price_cents'] / n)
         save = p['price_cents'] * n - q['price_cents']
         was = promo_was(q)
-        note = f"soit {unit / 100:.2f}".replace('.', ',') + ' € l\'unité'
-        if save > 0:
-            note += f" · {save / 100:.2f}".replace('.', ',') + f' € d\'économie par rapport à {n} achetés séparément'
-        old = (f'<s class="pp-pack-was">{was / 100:.2f}'.replace('.', ',') + ' €</s> ') if was else ''
-        rows += (f'<div class="pp-need-i"><a class="nm" href="/produits/{esc(q["slug"])}">'
-                 f'<span class="im"><img src="{esc(q.get("image") or p.get("image") or "")}" alt="" loading="lazy"></span>'
-                 f'<b>Lot de {n}<small class="pp-pack-note">{esc(note)}</small></b></a>'
-                 f'<span class="pr">{old}{fr_price(q)}</span>'
-                 f'<a class="btn btn-primary" href="/boutique.html?ajouter={esc(q["slug"])}">Ajouter</a></div>')
-    return ('<section class="pp-need pp-packs"><h2>Offres en lot</h2>'
-            '<p>Achetez plus, payez moins à l\'unité.</p>' + rows + '</section>')
+        old = (f'<s class="lot-was">{was / 100:.2f}'.replace('.', ',') + ' €</s>') if was else ''
+        eco = (f'<span class="lot-eco">−{save / 100:.2f}'.replace('.', ',') + ' € d\'économie</span>') if save > 0 else ''
+        flag = '<span class="lot-best">Meilleure offre</span>' if n == best else ''
+        tiles += (f'<div class="lot{" lot-top" if n == best else ""}">{flag}'
+                  f'<a class="lot-t" href="/produits/{esc(q["slug"])}">Lot de {n}</a>'
+                  f'<div class="lot-p">{old}<b>{fr_price(q)}</b></div>'
+                  f'<div class="lot-u">soit {unit / 100:.2f}'.replace('.', ',') + f' € l\'unité</div>{eco}'
+                  f'<a class="btn btn-primary lot-b" href="/boutique.html?ajouter={esc(q["slug"])}">Ajouter le lot</a></div>')
+    return ('<section class="pp-lots"><h2>Offres en lot</h2>'
+            f'<div class="pp-lots-grid">{tiles}</div></section>')
 
 
 TRACK_JS = """<script>
@@ -528,13 +541,13 @@ def page(p, products, tpl):
       <div class="pp-ttc">Prix TTC · soit {fr_price_ht(p)} · Réf. SLP-{p['id']}</div>
       {stock}
       {eta}
+      {pack_block(p, products)}
       <div class="pp-actions">{buy}<a class="btn btn-ghost" href="/boutique.html">Toute la boutique</a></div>
       {wa}
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       {intro}
       {f'<h2>Caractéristiques techniques</h2>{spec_html}' if spec_html else ''}
       {need_block(p, products)}
-      {pack_block(p, products)}
       {'' if sp else '<p class="pp-intro">Fiche technique détaillée sur demande : <a href="/contact-boutique?motif=conseil&amp;produit={esc(p["slug"])}" style="color:var(--paper)">contactez-nous</a>.</p>'}
     </div>
   </div>
