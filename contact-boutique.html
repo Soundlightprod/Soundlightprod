@@ -129,23 +129,24 @@
     sending = true; go.disabled = true; st.className = 'status';
     fetch('/api/contact', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify(Object.assign({
         nom: f.nom.value.trim(), email: f.email.value.trim(), telephone: f.telephone.value.trim(), sujet: f.sujet.value,
         produit_ref: f.produit_ref.value.trim(), commande_num: f.commande_num.value.trim(), message: f.message.value.trim(),
         site_web: f.site_web.value, cle: cle, session_id: sid, page: '/contact-boutique', site: 'store', lang: 'fr',
         dt: window.slpAS ? window.slpAS.dt() : Math.round(performance.now()), cf_token: window.slpAS ? window.slpAS.token() : ''
-      })
+      }, window.slpAS ? window.slpAS.captcha() : {}))
     }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { st: r.status, d: d }; }); })
       .then(function(x){
         if (x.d && x.d.ok) {
           show('ok', 'Merci, votre demande est bien enregistrée' + (x.d.reference ? ' (référence ' + x.d.reference + ')' : '') + '. Nous vous répondons par email.');
           f.reset(); cle = 'bq-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
         } else {
-          if (x.d && x.d.champ) setErr(x.d.champ, x.d.error || '');
+          if (window.slpAS) window.slpAS.captchaReset();
+          if (x.d && x.d.champ && x.d.champ !== 'captcha') setErr(x.d.champ, x.d.error || '');
           show('ko', (x.d && x.d.error) || 'Votre demande n’a pas pu être envoyée. Réessayez, ou écrivez-nous à contact@soundlightprod.fr.');
         }
       })
-      .catch(function(){ show('ko', 'Connexion impossible. Réessayez dans un instant, ou écrivez-nous à contact@soundlightprod.fr.'); })
+      .catch(function(){ if (window.slpAS) window.slpAS.captchaReset(); show('ko', 'Connexion impossible. Réessayez dans un instant, ou écrivez-nous à contact@soundlightprod.fr.'); })
       .then(function(){ sending = false; go.disabled = false; });
   });
 })();
