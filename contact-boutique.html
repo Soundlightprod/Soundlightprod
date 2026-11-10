@@ -132,7 +132,8 @@
       body: JSON.stringify({
         nom: f.nom.value.trim(), email: f.email.value.trim(), telephone: f.telephone.value.trim(), sujet: f.sujet.value,
         produit_ref: f.produit_ref.value.trim(), commande_num: f.commande_num.value.trim(), message: f.message.value.trim(),
-        site_web: f.site_web.value, cle: cle, session_id: sid, page: '/contact-boutique', site: 'store', lang: 'fr'
+        site_web: f.site_web.value, cle: cle, session_id: sid, page: '/contact-boutique', site: 'store', lang: 'fr',
+        dt: window.slpAS ? window.slpAS.dt() : Math.round(performance.now()), cf_token: window.slpAS ? window.slpAS.token() : ''
       })
     }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { st: r.status, d: d }; }); })
       .then(function(x){
@@ -149,5 +150,6 @@
   });
 })();
 </script>
+<script src="https://soundlightprod.fr/antispam.js" defer></script>
 </body>
 </html>

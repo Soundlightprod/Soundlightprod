@@ -7,6 +7,12 @@
   var path = location.pathname;
   if (/^\/(admin|mon-agenda|boutique|cgv-boutique|produits|galerie-produits|_)/.test(path) || /soundlightprod\.store$/.test(location.hostname)) return;
 
+  // Anti-spam : délai depuis le chargement + jeton Turnstile (antispam.js, chargé ici si la page ne l'a pas déjà)
+  var T0 = Date.now();
+  function asDt() { return window.slpAS ? window.slpAS.dt() : Date.now() - T0; }
+  function asTok() { return window.slpAS ? window.slpAS.token() : ''; }
+  if (!window.slpAS) { try { var asS = document.createElement('script'); asS.src = '/antispam.js'; asS.async = true; document.head.appendChild(asS); } catch (e) {} }
+
   var L = (path.match(/^\/(en|es|it)(\/|$)/) || [, 'fr'])[1];
   var T = {
     fr: {
@@ -240,7 +246,7 @@
     if (d.note) lines.push('Précisions : ' + d.note);
     fetch('/api/contact', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nom: d.name, telephone: d.tel, email: d.email, sujet: t.sujet, date_event: d.date, lieu: d.place, message: lines.join('\n'), site_web: hp.value, page: 'chat:' + from, session_id: sid })
+      body: JSON.stringify({ nom: d.name, telephone: d.tel, email: d.email, sujet: t.sujet, date_event: d.date, lieu: d.place, message: lines.join('\n'), site_web: hp.value, page: 'chat:' + from, session_id: sid, dt: asDt(), cf_token: asTok() })
     }).then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
       .then(function (j) { if (!j.ok) throw new Error(j.error || ''); wait.textContent = t.done; choices([t.again], menu); })
       .catch(function (e) { wait.textContent = t.fail; choices([t.again], menu, [{ label: t.call, href: 'tel:' + PHONE, ev: 'appel' }]); });
@@ -276,7 +282,7 @@
       var em = v.match(/[^@\s]+@[^@\s]+\.[^@\s]+/), ph = v.replace(/[\s.\-()]/g, '').match(/\+?\d{9,15}/);
       var c = em ? em[0] : (ph ? ph[0] : '');
       if (c) hasContact = true;
-      api('/api/chat/send', { token: tok, body: v, contact: c, page: 'chat:' + from, lang: L, site_web: hp.value }).then(function (j) {
+      api('/api/chat/send', { token: tok, body: v, contact: c, page: 'chat:' + from, lang: L, site_web: hp.value, dt: asDt(), cf_token: asTok() }).then(function (j) {
         if (!j.ok) { say(j.error || t.live.err); return; }
         tok = j.token; try { localStorage.setItem('slpc_tok', tok); } catch (e) {}
         if (!firstSent) { firstSent = true; track('formulaire');
