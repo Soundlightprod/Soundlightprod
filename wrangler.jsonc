@@ -19,6 +19,11 @@
       "binding": "RESEND_API_KEY",
       "store_id": "b14e32031b5a4d439208f0f8d4f3f71d",
       "secret_name": "RESEND_API_KEY"
+    },
+    {
+      "binding": "TURNSTILE_SECRET",
+      "store_id": "b14e32031b5a4d439208f0f8d4f3f71d",
+      "secret_name": "TURNSTILE_SECRET"
     }
   ]
 }
