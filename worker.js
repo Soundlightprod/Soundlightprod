@@ -1887,6 +1887,8 @@ export default {
       if (url.pathname === "/api/track-visit" && request.method === "POST") {
         const body = await request.json().catch(() => ({})); const { artist_slug, session_id } = body; const site = siteFromRequest(request, body); const vp = visitProfile(request, body, request.cf || {});
         if (!artist_slug) return json({ ok: false }, 200, origin);
+        // Robots détectés d'emblée (user-agent, réseau…) : on n'enregistre rien (économise lectures et écritures D1).
+        if (vp.isBot) return json({ ok: true }, 200, origin);
         // visitor_id : identifiant aléatoire envoyé par /consent.js uniquement si le visiteur a accepté (colonne page_visits.visitor_id).
         const visitorId = typeof body.visitor_id === "string" && /^[A-Za-z0-9-]{16,64}$/.test(body.visitor_id) ? body.visitor_id : null;
         const cf = request.cf || {};
