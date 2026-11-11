@@ -430,6 +430,7 @@ const ROADMAP_COLUMNS = [
   "hotel_details", "hotel_rooms", "hotel_breakfast",
   "transport_details", "venue_contact_name", "venue_contact_phone",
   "slp_contact_name", "slp_contact_phone", "additional_notes",
+  "ticket_url", "ticket_price",
 ];
 
 function roadmapValuesFromBody(body) {
@@ -441,6 +442,12 @@ function roadmapValuesFromBody(body) {
     if (col === "hotel_breakfast") {
       return val ? 1 : 0;
     }
+    // Lien de billetterie : public et repris dans les données structurées, donc http(s) uniquement.
+    if (col === "ticket_url") {
+      const u = String(val || "").trim();
+      return /^https?:\/\/[^\s]+$/i.test(u) ? u.slice(0, 500) : null;
+    }
+    if (col === "ticket_price") return val ? String(val).trim().slice(0, 40) : null;
     return val || null;
   });
 }
@@ -456,7 +463,7 @@ function withVideoTracking(resp, url) {
     // consent.js doit être chargé AVANT le script de suivi de chaque page (il complète l'envoi de la visite).
     element(el) { el.prepend('<script src="/consent.js"></script>', { html: true }); },
   }).on("body", {
-    element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script><script src="/suivez.js" defer></script><script src="/contact-track.js" defer></script><script src="/a11y.js" defer></script>', { html: true }); },
+    element(el) { el.append('<script src="/yt-track.js" defer></script><script src="/chat.js" defer></script><script src="/suivez.js" defer></script><script src="/contact-track.js" defer></script><script src="/a11y.js" defer></script><script src="/jsonld-events.js" defer></script>', { html: true }); },
   }).transform(resp);
 }
 
@@ -858,6 +865,17 @@ async function ensureContactSchema(env) {
   await env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_contact_requests_mail ON contact_requests(mail_envoye, id)").run();
   contactSchemaReady = true;
 }
+// Billetterie et tarif d'un événement (publics, repris dans les données structurées JSON-LD des pages).
+let eventSchemaReady = false;
+async function ensureEventSchema(env) {
+  if (eventSchemaReady) return;
+  const have = new Set(((await env.DB.prepare("PRAGMA table_info(actualites)").all()).results || []).map((r) => r.name));
+  for (const c of ["ticket_url", "ticket_price"]) {
+    if (have.has(c)) continue;
+    try { await env.DB.prepare(`ALTER TABLE actualites ADD COLUMN ${c} TEXT`).run(); } catch (e) { if (!/duplicate column/i.test(String(e && e.message))) throw e; }
+  }
+  eventSchemaReady = true;
+}
 function contactReference(id) { return `SLP-${new Date().getFullYear()}-${String(id).padStart(5, "0")}`; }
 
 // Numéro saisi par le client → format international (France par défaut) pour les liens tel: et WhatsApp.
@@ -999,6 +1017,8 @@ export default {
 
     const domainRedirect = routeDomain(request, url);
     if (domainRedirect) return domainRedirect;
+
+    if (url.pathname.startsWith("/api/") && env.DB) { try { await ensureEventSchema(env); } catch (e) { /* ne bloque jamais une requête */ } }
 
     // .store : la racine affiche la boutique, /sitemap.xml sert le sitemap de la boutique
     if (STORE_MODE !== "off" && url.hostname.toLowerCase().endsWith("soundlightprod.store") && request.method === "GET") {
@@ -1242,7 +1262,7 @@ export default {
         const today = new Date().toISOString().slice(0, 10);
         const { results } = await env.DB.prepare(
           `SELECT id, artist_slug, type, text, photo_url, requalified, publish_at, event_date, event_end_date, expires_at, created_at,
-                  event_time, venue_name, venue_city
+                  event_time, venue_name, venue_city, ticket_url, ticket_price
            FROM actualites
            WHERE artist_slug = ? AND is_public = 1
            AND (publish_at IS NULL OR publish_at = '' OR publish_at <= ?)
@@ -1260,7 +1280,7 @@ export default {
       if (url.pathname === "/api/agenda-public" && request.method === "GET") {
         const today = new Date().toISOString().slice(0, 10);
         const { results } = await env.DB.prepare(
-          `SELECT id, artist_slug, guest_name, type, text, photo_url, event_date, event_end_date, event_time, venue_name, venue_city
+          `SELECT id, artist_slug, guest_name, type, text, photo_url, event_date, event_end_date, event_time, venue_name, venue_city, ticket_url, ticket_price
            FROM actualites
            WHERE type IN ('concert', 'cabaret', 'dj', 'animation', 'karaoke') AND is_public = 1
            AND artist_slug != 'presta-technique'

@@ -571,6 +571,17 @@
       <p style="color:var(--muted); font-size:0.82rem; margin:10px 0 16px;">Reprend le modèle SLP. Consultable et imprimable par le groupe en cliquant sur la date dans son agenda, et par toi depuis le tableau ci-dessous.</p>
 
       <div class="form-row">
+        <div class="field-group" style="flex:2; min-width:220px;">
+          <label>Billetterie — lien (public, optionnel)</label>
+          <input type="url" id="rmTicketUrl" placeholder="ex: https://billetterie.exemple.fr/concert">
+        </div>
+        <div class="field-group" style="flex:1; min-width:160px;">
+          <label>Tarif d'entrée (public, optionnel)</label>
+          <input type="text" id="rmTicketPrice" placeholder="ex: 12 € ou Entrée libre">
+        </div>
+      </div>
+
+      <div class="form-row">
         <div class="field-group" style="flex:1; min-width:220px;">
           <label>Nom du lieu</label>
           <input type="text" id="rmVenueName" placeholder="ex: La Cave à Manger">
@@ -2535,6 +2546,8 @@
     const showTypeSel = document.getElementById('rmShowType').value;
     const show_type = showTypeSel === 'autre' ? document.getElementById('rmShowTypeOther').value.trim() : showTypeSel;
     return {
+      ticket_url: document.getElementById('rmTicketUrl').value.trim(),
+      ticket_price: document.getElementById('rmTicketPrice').value.trim(),
       venue_name: document.getElementById('rmVenueName').value.trim(),
       venue_address: document.getElementById('rmVenueAddress').value.trim(),
       venue_postal_code: document.getElementById('rmVenuePostal').value.trim(),
@@ -2564,6 +2577,8 @@
   }
 
   function setRoadmapFields(a){
+    document.getElementById('rmTicketUrl').value = a.ticket_url || '';
+    document.getElementById('rmTicketPrice').value = a.ticket_price || '';
     document.getElementById('rmVenueName').value = a.venue_name || '';
     document.getElementById('rmVenueAddress').value = a.venue_address || '';
     document.getElementById('rmVenuePostal').value = a.venue_postal_code || '';
