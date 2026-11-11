@@ -912,6 +912,7 @@ async function retryFailedContactMails(env, { minAgeMin = 2, limit = 10 } = {}) 
 }
 
 async function recordContactEvent(env, site, d, cf, vp) {
+  if (vp.isBot) return; // robots : rien d'enregistré
   try {
     await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, 'envoi', ?, ?, ?, ?, ?, ?)")
       .bind(site, d.page || null, d.sid || null, cf.city || null, vp.network, vp.device, vp.isBot).run();
@@ -1572,6 +1573,7 @@ export default {
         const ev = ["play", "25", "50", "75", "fin"].includes(body.event) ? body.event : null;
         if (!videoId || !ev) return json({ ok: false }, 200, origin);
         const site = siteFromRequest(request, body); const vp = visitProfile(request, body, request.cf || {}); const cf = request.cf || {};
+        if (vp.isBot) return json({ ok: true }, 200, origin); // robots : rien d'enregistré
         await env.DB.prepare(
           "INSERT INTO video_events (site, page, video_id, event, session_id, is_bot, city, network, device, referrer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         ).bind(site, String(body.page || "").slice(0, 120) || null, videoId, ev, String(body.session_id || "").slice(0, 40) || null, vp.isBot, cf.city || null, vp.network, vp.device, vp.referrer).run();
@@ -1833,6 +1835,7 @@ export default {
         const action = ["appel", "whatsapp", "mail", "formulaire", "devis", "suivre", "chat", "chat_menu", "photos"].includes(body.action) ? body.action : null;
         if (!action) return json({ ok: false }, 200, origin);
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
+        if (vp.isBot) return json({ ok: true }, 200, origin); // robots : rien d'enregistré
         await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
           .bind(siteFromRequest(request, body), action, String(body.page || "").slice(0, 200) || null, String(body.session_id || "").slice(0, 60) || null, cf.city || null, vp.network, vp.device, vp.isBot).run();
         return json({ ok: true }, 200, origin);
@@ -1847,6 +1850,7 @@ export default {
         const known = await env.DB.prepare("SELECT 1 AS ok FROM artist_tokens WHERE artist_slug = ?").bind(slug).first();
         if (!known) return json({ ok: false }, 200, origin);
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
+        if (vp.isBot) return json({ ok: true }, 200, origin); // robots : rien d'enregistré
         await env.DB.prepare("INSERT INTO agenda_visits (artist_slug, action, session_id, city, country, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
           .bind(slug, action, String(body.session_id || "").slice(0, 60) || null, cf.city || null, cf.country || null, vp.network, vp.device, vp.isBot).run();
         return json({ ok: true }, 200, origin);
