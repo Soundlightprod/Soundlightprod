@@ -46,7 +46,19 @@
     #tab-crm .crm-chip{background:var(--ink-2);border:1px solid var(--line);color:var(--muted);border-radius:100px;padding:5px 12px;font-size:.78rem;cursor:pointer}
     #tab-crm .crm-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
     #tab-crm input,#tab-crm select,#tab-crm textarea,#crmModal input,#crmModal select,#crmModal textarea{background:var(--ink);border:1px solid var(--line);color:var(--paper);border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;min-width:0}
-    #tab-crm .crm-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:10px}
+    #tab-crm .crm-list{display:flex;flex-direction:column;gap:6px}
+    #tab-crm .crm-row{display:grid;grid-template-columns:minmax(190px,1.5fr) minmax(130px,.8fr) minmax(200px,1.6fr) minmax(120px,.7fr) auto;gap:14px;align-items:center;background:var(--ink-2);border:1px solid var(--line);border-radius:12px;padding:12px 16px;cursor:pointer}
+    #tab-crm .crm-row:hover{border-color:var(--amber)}
+    #tab-crm .crm-row.head{background:none;border:0;cursor:default;padding:2px 16px;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    #tab-crm .crm-row h4{margin:0 0 2px;font-size:1.05rem;font-family:'Space Grotesk',sans-serif}
+    #tab-crm .c-last{display:flex;flex-direction:column;gap:2px;font-size:.95rem}
+    #tab-crm .c-money{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+    #tab-crm .c-acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+    #tab-crm .c-acts a{background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--paper);text-decoration:none;font-size:.88rem;white-space:nowrap}
+    #tab-crm .c-acts a.main{background:var(--amber);color:#1b1300;font-weight:700;border-color:var(--amber)}
+    @media(max-width:900px){#tab-crm .crm-row{grid-template-columns:1fr 1fr}#tab-crm .crm-row.head{display:none}#tab-crm .c-acts{grid-column:1/-1;justify-content:flex-start}}
+    @media(max-width:560px){#tab-crm .crm-row{grid-template-columns:1fr}}
+
     #tab-crm .crm-card{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer}
     #tab-crm .crm-card:active{transform:scale(.99)}
     #tab-crm .crm-card h4{margin:0 0 2px;font-size:1rem;font-family:'Space Grotesk',sans-serif}
@@ -134,34 +146,34 @@
     $('crmSeg').querySelectorAll('button').forEach((b) => (b.onclick = () => { vue = b.dataset.v; filtreEtape = ''; render(); }));
     $('crmChips').innerHTML = vue === 'prospect' ? `<span class="crm-chip${!filtreEtape ? ' on' : ''}" data-e="">Toutes étapes</span>` + ETAPES.map(([k, l]) => `<span class="crm-chip${filtreEtape === k ? ' on' : ''}" data-e="${k}">${l} (${n((c) => c.statut === 'prospect' && c.etape === k)})</span>`).join('') : '';
     $('crmChips').querySelectorAll('.crm-chip').forEach((b) => (b.onclick = () => { filtreEtape = b.dataset.e; render(); }));
+    const last = (c) => { if (!c._dern) { try { c._dern = c.dernier ? JSON.parse(c.dernier) : 0; } catch (e) { c._dern = 0; } } return c._dern; };
+    const lastQ = (c) => { const d = last(c); return d ? quand({ date_echange: d.e, cree_le: d.c }) : ''; };
     const rows = filtered().sort((a, b) => {
       if (vue === 'relance') return (a.date_relance || '').localeCompare(b.date_relance || '');
-      return (b.priorite - a.priorite) || (b.maj_le || '').localeCompare(a.maj_le || '');
+      return lastQ(b).localeCompare(lastQ(a)) || (b.maj_le || '').localeCompare(a.maj_le || '');
     });
+    const TL = (t) => (TYPES_J.find((x) => x[0] === t) || [0, t])[1];
+    const head = '<div class="crm-row head"><span>Contact</span><span>Étape</span><span>Dernier contact</span><span>Montant</span><span></span></div>';
     const html = rows.slice(0, 300).map((c) => {
       const late = c.statut !== 'perdu' && c.date_relance && c.date_relance <= today();
       const wa = c.telephone ? 'https://wa.me/' + c.telephone.replace(/^0/, '33').replace(/^\+/, '') : '';
-      return `<div class="crm-card" data-id="${c.id}">
-        <h4>${c.priorite ? '⭐ ' : ''}${ce(nomAff(c))}</h4>
-        <div class="crm-sub">${ce(sousNom(c))}${sousNom(c) && c.ville ? ' · ' : ''}${ce(c.ville || '')}${c.categorie ? ' · ' + ce(c.categorie) : ''}</div>
-        <div style="margin-top:6px">
-          ${c.statut === 'client' ? '<span class="crm-badge client">Client</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : `<span class="crm-badge">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
-          ${late ? `<span class="crm-badge late">⏰ ${fmtD(c.date_relance)}</span>` : c.date_relance ? `<span class="crm-sub">relance ${fmtD(c.date_relance)}</span>` : ''}
-          ${c.offres_en_cours ? `<span class="crm-badge prio money">Proposition ${eur(c.offres_en_cours)} HT</span>` : ''}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}
-        </div>
-        ${c.prochaine_action ? `<div class="crm-sub" style="margin-top:4px">→ ${ce(c.prochaine_action)}</div>` : ''}
-        ${(c.pdf_offre_id || c.pdf_devis_id) ? `<div class="crm-acts" onclick="event.stopPropagation()">
-          ${c.pdf_offre_id ? `<a href="#" data-pdf="${c.pdf_offre_id}" data-nom="${ce(c.pdf_offre_nom)}" style="background:var(--blue);color:#06121f;font-weight:700;border-color:var(--blue)">👁 Proposition</a>` : ''}${c.pdf_devis_id ? `<a href="#" data-pdf="${c.pdf_devis_id}" data-nom="${ce(c.pdf_devis_nom)}" style="background:var(--amber);color:#1b1300;font-weight:700;border-color:var(--amber)">👁 Devis</a>` : ''}
-        </div>` : ''}
-        <div class="crm-acts" onclick="event.stopPropagation()">
-          <a href="#" data-resume="${c.id}" style="background:var(--amber);color:#1b1300;font-weight:700;border-color:var(--amber)">📋 Résumé des échanges</a>
-        </div>
-        <div class="crm-acts" onclick="event.stopPropagation()">
-          ${c.telephone ? `<a href="tel:${ce(c.telephone)}">📞 Appeler</a>` : ''}${wa ? `<a href="${ce(wa)}" target="_blank" rel="noopener">💬</a>` : ''}${c.email ? `<a href="mailto:${ce(c.email)}">✉️</a>` : ''}
+      const d = last(c), q = lastQ(c);
+      const ex = d && d.x ? (d.x.length > 90 ? d.x.slice(0, 90) + '…' : d.x) : '';
+      const sub = [sousNom(c), c.ville, c.categorie].filter(Boolean).map(ce).join(' · ');
+      return `<div class="crm-row" data-id="${c.id}">
+        <div class="c-nom"><h4>${c.priorite ? '⭐ ' : ''}${ce(nomAff(c))}</h4><div class="crm-sub">${sub}</div>${c.prochaine_action ? `<div class="crm-sub">→ ${ce(c.prochaine_action)}</div>` : ''}</div>
+        <div class="c-etape">${c.statut === 'client' ? '<span class="crm-badge client">Client</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : `<span class="crm-badge">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
+          ${late ? `<span class="crm-badge late">⏰ relance ${fmtD(c.date_relance)}</span>` : c.date_relance ? `<span class="crm-sub">relance ${fmtD(c.date_relance)}</span>` : ''}</div>
+        <div class="c-last">${d ? `<b>${fmtDT(q)}</b><span class="crm-sub">${ce(TL(d.t))}${ex ? ' · ' + ce(ex) : ''}</span>` : '<span class="crm-sub">Aucun échange noté</span>'}</div>
+        <div class="c-money">${c.offres_en_cours ? `<span class="crm-badge prio money">Proposition ${eur(c.offres_en_cours)} HT</span>` : ''}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
+        <div class="c-acts" onclick="event.stopPropagation()">
+          <a href="#" data-resume="${c.id}" class="main">📋 Résumé</a>
+          ${c.pdf_offre_id ? `<a href="#" data-pdf="${c.pdf_offre_id}" data-nom="${ce(c.pdf_offre_nom)}">👁 Proposition</a>` : ''}${c.pdf_devis_id ? `<a href="#" data-pdf="${c.pdf_devis_id}" data-nom="${ce(c.pdf_devis_nom)}">👁 Devis</a>` : ''}
+          ${c.telephone ? `<a href="tel:${ce(c.telephone)}">📞</a>` : ''}${wa ? `<a href="${ce(wa)}" target="_blank" rel="noopener">💬</a>` : ''}${c.email ? `<a href="mailto:${ce(c.email)}">✉️</a>` : ''}
         </div></div>`;
     }).join('');
-    $('crmList').innerHTML = html || '<p class="vz-note">Aucun contact ici. Utilise « ＋ Nouveau » ou « ⬆ Importer ».</p>';
-    $('crmList').querySelectorAll('.crm-card').forEach((el) => (el.onclick = () => openDetail(+el.dataset.id)));
+    $('crmList').innerHTML = (html ? head : '') + html || '<p class="vz-note">Aucun contact ici. Utilise « ＋ Nouveau » ou « ⬆ Importer ».</p>';
+    $('crmList').querySelectorAll('.crm-row[data-id]').forEach((el) => (el.onclick = () => openDetail(+el.dataset.id)));
     $('crmList').querySelectorAll('[data-resume]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); openResume(+a.dataset.resume); }));
     $('crmList').querySelectorAll('[data-pdf]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); viewFile(a.dataset.pdf, a.dataset.nom); }));
     if (rows.length > 300) $('crmList').insertAdjacentHTML('beforeend', `<p class="vz-note">300 premiers résultats sur ${rows.length} : affine la recherche.</p>`);
