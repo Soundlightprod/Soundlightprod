@@ -1,10 +1,11 @@
 /* Onglet « Prospects & clients » de l'admin SLP : une seule base, deux statuts, suivi des échanges et des devis, export Brevo.
    Chargé par admin.html après le script principal (utilise la variable globale `token`). */
 (function () {
-  const ETAPES = [['nouveau', 'Nouveau'], ['contacte', 'Contacté'], ['echange', 'Échange en cours'], ['devis', 'Devis envoyé'], ['negociation', 'Négociation']];
+  const ETAPES = [['nouveau', 'Nouveau'], ['contacte', 'Contacté'], ['echange', 'Échange en cours'], ['proposition', 'Proposition envoyée'], ['devis', 'Devis envoyé'], ['negociation', 'Négociation']];
   const ETAPE_LBL = Object.fromEntries(ETAPES);
   const CATEGORIES = ['Mairie', 'Comité des fêtes', 'Association', 'Centre culturel', 'Entreprise', 'Particulier', 'Camping / hôtel', 'Autre'];
   const TYPES_J = [['appel', '📞 Appel'], ['mail', '✉️ Mail'], ['whatsapp', '💬 WhatsApp'], ['rdv', '🤝 RDV'], ['note', '📝 Note']];
+  const OFFRE_ST = [['brouillon', 'Brouillon'], ['envoyee', 'Envoyée'], ['acceptee', 'Acceptée'], ['refusee', 'Refusée']];
   const DEVIS_ST = [['brouillon', 'Brouillon'], ['envoye', 'Envoyé'], ['accepte', 'Accepté'], ['refuse', 'Refusé']];
 
   let all = [], vue = 'prospect', filtreEtape = '', q = '', ready = false, cur = null;
@@ -55,6 +56,17 @@
     #crmModal .j small{color:var(--muted);display:block}
     #crmModal .crm-sec{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
     #crmModal .crm-sticky{position:sticky;bottom:-16px;margin:16px -16px -16px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--ink-2);border-top:1px solid var(--line);border-radius:0 0 16px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    #crmModal .crm-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+    #crmModal .crm-sub{color:var(--muted);font-size:.8rem}
+    #crmModal .crm-badge{display:inline-block;border-radius:100px;padding:2px 10px;font-size:.72rem;font-weight:700;background:rgba(139,92,246,.25);color:#d6c6ff;margin-right:4px}
+    #crmModal .crm-badge.client{background:rgba(47,155,255,.25);color:#b9dcff}
+    #crmModal .crm-files{margin:4px 0;display:flex;flex-direction:column;gap:3px}
+    #crmModal .crm-file a{color:var(--blue);text-decoration:none}
+    #crmViewer{position:fixed;inset:0;z-index:10000;background:#000;display:flex;flex-direction:column}
+    #crmViewer .vbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:var(--ink-2);color:var(--paper);border-bottom:1px solid var(--line)}
+    #crmViewer .vbar b{font-size:.85rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    #crmViewer .vbar a.period-btn{text-decoration:none}
+    #crmViewer iframe{flex:1;border:0;background:#fff;width:100%}
     @media(max-width:560px){#crmModal .row{grid-template-columns:1fr}#crmModal{padding:6px}}`;
     document.head.appendChild(s);
   }
@@ -186,6 +198,50 @@
     };
   }
 
+  const ko = (n) => (n ? (n >= 1048576 ? (n / 1048576).toFixed(1) + ' Mo' : Math.max(1, Math.round(n / 1024)) + ' Ko') : '');
+
+  // Bloc « Propositions commerciales » ou « Devis » : liste, statut, PDF joints (cliquables), ajout.
+  function docSection(d, kind, titre, items, statuts, defSt, refPh, note) {
+    const p = kind === 'offre' ? 'o' : 'v';
+    const sing = kind === 'devis' ? 'le devis' : 'la proposition';
+    const files = (pid) => (d.fichiers || []).filter((f) => f.kind === kind && f.parent_id === pid);
+    const lines = items.map((v) => `<div class="j" style="border-color:var(--amber)"><b>${ce(v.ref || (kind === 'devis' ? 'Devis' : 'Proposition'))}</b> ${ce(v.objet || '')} — ${v.montant_ht != null ? eur(v.montant_ht) + ' HT' : 'montant ?'}${v.date_envoi ? ' · envoyé(e) le ' + fmtD(v.date_envoi) : ''}
+        <div class="crm-files">${files(v.id).map((f) => `<span class="crm-file"><a href="#" data-fv="${f.id}" data-fn="${ce(f.nom)}">📄 ${ce(f.nom)}</a> <small>${ko(f.taille)}</small> <a href="#" data-fd="${f.id}" style="color:var(--pink)" title="Retirer ce PDF">✕</a></span>`).join('') || '<span class="vz-note">Aucun PDF joint</span>'}</div>
+        <div class="crm-bar" style="margin:4px 0 0"><select data-st="${kind}:${v.id}" style="padding:6px 8px;font-size:14px">${opt(statuts, v.statut)}</select>
+          <button class="period-btn" type="button" data-up="${kind}:${v.id}" style="padding:5px 12px;font-size:.78rem">📎 Joindre un PDF</button>
+          <a href="#" data-del="${kind}:${v.id}" style="color:var(--pink);font-size:.8rem">supprimer</a></div></div>`).join('');
+    return `<div class="crm-sec"><h4 style="margin:0 0 8px">${titre}</h4>
+        <div>${lines || `<p class="vz-note">Aucun${kind === 'devis' ? ' devis' : 'e proposition'}.</p>`}</div>
+        <div class="row"><div><label>Réf.</label><input id="${p}Ref" placeholder="${refPh}"></div><div><label>Montant HT (€)</label><input id="${p}Mt" inputmode="decimal"></div></div>
+        <div class="row"><div><label>Objet</label><input id="${p}Obj" placeholder="Soirée, mariage, fête du village…"></div><div><label>Statut</label><select id="${p}St">${opt(statuts, defSt)}</select></div></div>
+        <div class="row one"><div><label>PDF à joindre (facultatif)</label><input id="${p}File" type="file" accept="application/pdf,.pdf"></div></div>
+        <button class="period-btn" type="button" id="${p}Add">Ajouter ${sing}</button>
+        <p class="vz-note">${note}</p></div>`;
+  }
+
+  async function upload(kind, parentId, file) {
+    if (file.size > 15 * 1024 * 1024) throw new Error('Fichier trop lourd (15 Mo maximum)');
+    const r = await fetch('/api/admin/crm/fichiers?kind=' + kind + '&parent=' + parentId + '&nom=' + encodeURIComponent(file.name), { method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/pdf' }, body: file });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error || 'Erreur ' + r.status);
+    return j;
+  }
+
+  // Lecteur de PDF : récupère le fichier avec le mot de passe admin puis l'affiche dans la page.
+  async function viewFile(fid, nom) {
+    let url;
+    try {
+      const r = await fetch('/api/admin/crm/fichiers/' + fid, { headers: { Authorization: 'Bearer ' + token } });
+      if (!r.ok) throw new Error('Erreur ' + r.status);
+      url = URL.createObjectURL(await r.blob());
+    } catch (e) { alert("Impossible d'ouvrir ce PDF : " + e.message); return; }
+    const v = document.createElement('div');
+    v.id = 'crmViewer';
+    v.innerHTML = `<div class="vbar"><b>${ce(nom)}</b><span style="flex:1"></span><a class="period-btn" href="${url}" target="_blank" rel="noopener">Ouvrir en grand</a><a class="period-btn" href="${url}" download="${ce(nom)}">Télécharger</a><button class="period-btn" type="button" id="vClose">✕ Fermer</button></div><iframe src="${url}" title="${ce(nom)}"></iframe>`;
+    document.body.appendChild(v);
+    $('vClose').onclick = () => { v.remove(); URL.revokeObjectURL(url); };
+  }
+
   async function openDetail(id) {
     modal('<p class="vz-note">Chargement…</p>');
     let d;
@@ -210,16 +266,12 @@
         <div class="row one"><textarea id="jTxt" rows="2" placeholder="Ce qui s'est dit, ce qui est convenu…"></textarea></div>
         <button class="period-btn" type="button" id="jAdd">Ajouter au suivi</button>
         <div id="jList">${d.journal.map((j) => `<div class="j"><small>${fmtDT(j.cree_le)} · ${ce((TYPES_J.find((t) => t[0] === j.type) || [0, j.type])[1])} <a href="#" data-jd="${j.id}" style="color:var(--pink)">suppr.</a></small>${ce(j.texte)}</div>`).join('') || '<p class="vz-note">Aucun échange noté.</p>'}</div></div>
-      <div class="crm-sec"><h4 style="margin:0 0 8px">Devis</h4>
-        <div id="dvList">${d.devis.map((v) => `<div class="j" style="border-color:var(--amber)"><b>${ce(v.ref || 'Devis')}</b> ${ce(v.objet || '')} — ${v.montant_ht != null ? eur(v.montant_ht) + ' HT' : 'montant ?'}${v.date_envoi ? ' · envoyé le ' + fmtD(v.date_envoi) : ''}
-          <div class="crm-bar" style="margin:4px 0 0"><select data-dv="${v.id}" style="padding:6px 8px;font-size:14px">${opt(DEVIS_ST, v.statut)}</select><a href="#" data-dd="${v.id}" style="color:var(--pink);font-size:.8rem">supprimer</a></div></div>`).join('') || '<p class="vz-note">Aucun devis.</p>'}</div>
-        <div class="row"><div><label>Réf. devis</label><input id="vRef" placeholder="ex. D-2026-014"></div><div><label>Montant HT (€)</label><input id="vMt" inputmode="decimal"></div></div>
-        <div class="row"><div><label>Objet</label><input id="vObj" placeholder="Soirée, mariage, fête du village…"></div><div><label>Statut</label><select id="vSt">${opt(DEVIS_ST, 'envoye')}</select></div></div>
-        <button class="period-btn" type="button" id="vAdd">Ajouter le devis</button>
-        <p class="vz-note">Devis « Envoyé » → le prospect passe à l'étape Devis. Devis « Accepté » → il devient client.</p></div>
+      ${docSection(d, 'offre', 'Propositions commerciales', d.offres || [], OFFRE_ST, 'envoyee', 'ex. P-2026-007', "Proposition « Envoyée » → le prospect passe à l'étape Proposition envoyée.")}
+      ${docSection(d, 'devis', 'Devis', d.devis, DEVIS_ST, 'envoye', 'ex. D-2026-014', "Devis « Envoyé » → le prospect passe à l'étape Devis. Devis « Accepté » → il devient client.")}
+      <input type="file" id="fileIn" accept="application/pdf,.pdf" style="display:none">
       <div class="crm-sec"><button class="period-btn" type="button" id="dDel" style="color:var(--pink)">🗑 Supprimer ce contact</button></div>
       <div class="crm-sticky"><button class="period-btn" style="background:var(--amber);color:#1b1300;font-weight:700;flex:1" id="dSave2" type="button">💾 Enregistrer les infos de la fiche</button><span id="dMsg2" class="vz-note"></span></div>`);
-    const refresh = () => openDetail(id).then(load);
+    const refresh = async () => { const y = $('crmModal').scrollTop; await openDetail(id); $('crmModal').scrollTop = y; load(); };
     const saveFiche = async () => {
       const set = (t) => { $('dMsg').textContent = t; $('dMsg2').textContent = t; };
       try { await api('/contacts/' + id, { method: 'PUT', body: readForm() }); set('Enregistré ✓'); load(); }
@@ -236,11 +288,30 @@
       try { await api('/contacts/' + id + '/journal', { method: 'POST', body: b }); refresh(); } catch (e) { alert(e.message); }
     };
     $('jList').querySelectorAll('[data-jd]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); if (confirm('Supprimer cette ligne du suivi ?')) { await api('/journal/' + a.dataset.jd, { method: 'DELETE' }); refresh(); } }));
-    $('vAdd').onclick = async () => {
-      try { await api('/contacts/' + id + '/devis', { method: 'POST', body: { ref: $('vRef').value, objet: $('vObj').value, montant_ht: $('vMt').value, statut: $('vSt').value } }); refresh(); } catch (e) { alert(e.message); }
+    const BASE = { offre: 'offres', devis: 'devis' };
+    ['offre', 'devis'].forEach((kind) => {
+      const p = kind === 'offre' ? 'o' : 'v';
+      $(p + 'Add').onclick = async () => {
+        const btn = $(p + 'Add'); btn.disabled = true;
+        try {
+          const r = await api('/contacts/' + id + '/' + BASE[kind], { method: 'POST', body: { ref: $(p + 'Ref').value, objet: $(p + 'Obj').value, montant_ht: $(p + 'Mt').value, statut: $(p + 'St').value } });
+          const f = $(p + 'File').files[0];
+          if (f) await upload(kind, r.id, f);
+          refresh();
+        } catch (e) { alert(e.message); btn.disabled = false; }
+      };
+    });
+    const root = $('crmModal');
+    root.querySelectorAll('select[data-st]').forEach((sel) => (sel.onchange = async () => { const [k, pid] = sel.dataset.st.split(':'); await api('/' + BASE[k] + '/' + pid, { method: 'PUT', body: { statut: sel.value } }); refresh(); }));
+    root.querySelectorAll('[data-del]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); const [k, pid] = a.dataset.del.split(':'); if (confirm('Supprimer ' + (k === 'devis' ? 'ce devis' : 'cette proposition') + ' et ses PDF ?')) { await api('/' + BASE[k] + '/' + pid, { method: 'DELETE' }); refresh(); } }));
+    root.querySelectorAll('[data-fv]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); viewFile(a.dataset.fv, a.dataset.fn); }));
+    root.querySelectorAll('[data-fd]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); if (confirm('Retirer ce PDF ?')) { await api('/fichiers/' + a.dataset.fd, { method: 'DELETE' }); refresh(); } }));
+    let pend = null;
+    root.querySelectorAll('[data-up]').forEach((b) => (b.onclick = () => { const [k, pid] = b.dataset.up.split(':'); pend = { kind: k, id: +pid }; $('fileIn').value = ''; $('fileIn').click(); }));
+    $('fileIn').onchange = async () => {
+      const f = $('fileIn').files[0]; if (!f || !pend) return;
+      try { await upload(pend.kind, pend.id, f); refresh(); } catch (e) { alert(e.message); }
     };
-    $('dvList').querySelectorAll('select[data-dv]').forEach((s) => (s.onchange = async () => { await api('/devis/' + s.dataset.dv, { method: 'PUT', body: { statut: s.value } }); refresh(); }));
-    $('dvList').querySelectorAll('[data-dd]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); if (confirm('Supprimer ce devis ?')) { await api('/devis/' + a.dataset.dd, { method: 'DELETE' }); refresh(); } }));
     $('dDel').onclick = async () => { if (confirm('Supprimer définitivement ce contact, son suivi et ses devis ?')) { await api('/contacts/' + id, { method: 'DELETE' }); closeModal(); load(); } };
   }
 
