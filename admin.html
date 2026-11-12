@@ -1923,17 +1923,30 @@
 
   // Rapport visuel écrit par Claude à chaque passage (colonne rapports.html) : affiché dans un cadre, ouvrable en grand
   let mtVisuelHtml = '';
+  // Rend le rapport lisible sur téléphone : largeur fluide, rien ne dépasse, tableaux défilables
+  function mtMobileSafe(html){
+    if (!html) return html;
+    const css = '<meta name="viewport" content="width=device-width,initial-scale=1"><style>'
+      + 'html,body{max-width:100%;overflow-x:hidden}*{box-sizing:border-box;min-width:0}'
+      + '.wrap{width:auto!important;max-width:780px;margin:0 auto;padding:16px 12px!important}'
+      + 'img,svg,canvas,iframe{max-width:100%;height:auto}'
+      + 'table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}'
+      + 'p,li,td,th,a,b,span,div{overflow-wrap:anywhere}'
+      + '.kpis{flex-wrap:wrap}.kpis div{min-width:90px!important}'
+      + '</style>';
+    return /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + css) : css + html;
+  }
   function mtAfficherVisuel(html){
     mtVisuelHtml = html;
     const wrap = document.getElementById('mtVisuelWrap'), fr = document.getElementById('mtVisuel');
     if (!html){ wrap.style.display = 'none'; return; }
     wrap.style.display = '';
     fr.onload = () => { try { fr.style.height = (fr.contentDocument.documentElement.scrollHeight + 4) + 'px'; } catch(e){ fr.style.height = '1600px'; } };
-    fr.srcdoc = html;
+    fr.srcdoc = mtMobileSafe(html);
   }
   function mtOuvrirVisuel(){
     if (!mtVisuelHtml) return;
-    const url = URL.createObjectURL(new Blob([mtVisuelHtml], { type:'text/html;charset=utf-8' }));
+    const url = URL.createObjectURL(new Blob([mtMobileSafe(mtVisuelHtml)], { type:'text/html;charset=utf-8' }));
     window.open(url, '_blank');
   }
 
