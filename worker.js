@@ -1928,6 +1928,23 @@ export default {
             if (b && b.n >= 6) await env.DB.prepare("UPDATE page_visits SET is_bot = 2 WHERE is_bot = 0 AND visited_at >= datetime('now', '-3 seconds')").run();
           } catch (e) { /* ne bloque jamais l'enregistrement de la visite */ }
         }
+        // Scanners de liens (antivirus, filtres anti-spam) : sessions d'une seule page, mentions légales ou CGV boutique, sans provenance
+        // externe, arrivées par grappes (une autre session du même genre dans les 5 minutes). Marquées is_bot = 2, comme les rafales.
+        // Une visite isolée (lecture humaine, lien d'un moteur de recherche) n'est jamais touchée.
+        if (!vp.isBot && !vp.referrer && session_id && (artist_slug === "mentions-legales" || artist_slug === "cgv-boutique")) {
+          try {
+            const own = await env.DB.prepare("SELECT COUNT(*) AS n FROM page_visits WHERE session_id = ?").bind(session_id).first();
+            if (own && own.n === 1) {
+              const nb = (await env.DB.prepare(
+                "SELECT p.session_id FROM page_visits p WHERE p.session_id <> ? AND p.artist_slug IN ('mentions-legales', 'cgv-boutique') AND p.referrer IS NULL AND p.is_bot IN (0, 2) AND p.visited_at >= datetime('now', '-5 minutes') AND (SELECT COUNT(*) FROM page_visits q WHERE q.session_id = p.session_id) = 1"
+              ).bind(session_id).all()).results || [];
+              if (nb.length) {
+                const ids = [session_id, ...nb.map((r) => r.session_id)];
+                await env.DB.prepare("UPDATE page_visits SET is_bot = 2 WHERE is_bot = 0 AND session_id IN (" + ids.map(() => "?").join(",") + ")").bind(...ids).run();
+              }
+            }
+          } catch (e) { /* ne bloque jamais l'enregistrement de la visite */ }
+        }
         return json({ ok: true }, 200, origin);
       }
 
