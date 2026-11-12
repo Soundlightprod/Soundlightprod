@@ -55,6 +55,10 @@ export async function ensureCrmSchema(env) {
   ]);
   // date et heure réelles de l'échange (heure de Paris), distinctes de la date de saisie (cree_le, en UTC)
   try { await env.DB.prepare("ALTER TABLE crm_journal ADD COLUMN date_echange TEXT").run(); } catch (e) { /* colonne déjà présente */ }
+  // propositions : événement concerné (un client peut en avoir plusieurs), date de l'événement, frais en plus du tarif
+  for (const col of ["evenement", "date_evenement", "complement"]) {
+    try { await env.DB.prepare("ALTER TABLE crm_offres ADD COLUMN " + col + " TEXT").run(); } catch (e) { /* colonne déjà présente */ }
+  }
   ready = true;
 }
 
@@ -87,7 +91,7 @@ async function contactDetail(env, id) {
   const [j, d, o, f] = await Promise.all([
     env.DB.prepare("SELECT id, type, texte, cree_le, date_echange FROM crm_journal WHERE contact_id = ? ORDER BY id DESC LIMIT 200").bind(id).all(),
     env.DB.prepare("SELECT id, ref, objet, montant_ht, statut, date_envoi, cree_le FROM crm_devis WHERE contact_id = ? ORDER BY id DESC").bind(id).all(),
-    env.DB.prepare("SELECT id, ref, objet, montant_ht, statut, date_envoi, cree_le FROM crm_offres WHERE contact_id = ? ORDER BY id DESC").bind(id).all(),
+    env.DB.prepare("SELECT id, ref, objet, montant_ht, statut, date_envoi, cree_le, evenement, date_evenement, complement FROM crm_offres WHERE contact_id = ? ORDER BY id DESC").bind(id).all(),
     env.DB.prepare("SELECT id, kind, parent_id, nom, taille, cree_le FROM crm_fichiers WHERE contact_id = ? ORDER BY id").bind(id).all(),
   ]);
   return { contact: c, journal: j.results || [], devis: d.results || [], offres: o.results || [], fichiers: f.results || [] };
@@ -136,7 +140,8 @@ export async function handleCrm(request, env, url, origin, json, cors) {
               c.client_depuis, c.maj_le, c.cree_le,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'accepte') AS ca_accepte,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'envoye') AS devis_en_cours,
-              (SELECT COALESCE(SUM(montant_ht),0) FROM crm_offres o WHERE o.contact_id = c.id AND o.statut = 'envoyee') AS offres_en_cours,
+              (SELECT COALESCE(SUM(o.montant_ht),0) FROM crm_offres o WHERE o.contact_id = c.id AND o.statut = 'envoyee' AND o.id = (SELECT o2.id FROM crm_offres o2 WHERE o2.contact_id = o.contact_id AND o2.statut = 'envoyee' AND COALESCE(NULLIF(o2.evenement,''), 'id' || o2.id) = COALESCE(NULLIF(o.evenement,''), 'id' || o.id) ORDER BY COALESCE(o2.montant_ht,0) DESC, o2.id DESC LIMIT 1)) AS offres_en_cours,
+              (SELECT json_group_array(json_object('e', o3.evenement, 'm', o3.montant_ht, 'c', o3.complement, 's', o3.statut)) FROM crm_offres o3 WHERE o3.contact_id = c.id AND o3.statut IN ('brouillon','envoyee','acceptee')) AS offres_json,
               (SELECT json_object('t', j.type, 'x', substr(COALESCE(j.texte,''), 1, 140), 'e', j.date_echange, 'c', j.cree_le) FROM crm_journal j WHERE j.contact_id = c.id AND j.type != 'note' ORDER BY COALESCE(j.date_echange, datetime(j.cree_le, '+1 hour')) DESC, j.id DESC LIMIT 1) AS dernier,
               (SELECT f.id FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'offre' ORDER BY f.id DESC LIMIT 1) AS pdf_offre_id,
               (SELECT f.nom FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'offre' ORDER BY f.id DESC LIMIT 1) AS pdf_offre_nom,
@@ -337,8 +342,8 @@ export async function handleCrm(request, env, url, origin, json, cors) {
     const b = await body();
     const statut = OFFRE_STATUTS.includes(b.statut) ? b.statut : "brouillon";
     const montant = b.montant_ht === "" || b.montant_ht == null ? null : Number(String(b.montant_ht).replace(",", "."));
-    const r = await env.DB.prepare("INSERT INTO crm_offres (contact_id, ref, objet, montant_ht, statut, date_envoi) VALUES (?, ?, ?, ?, ?, ?)")
-      .bind(id, clean(b.ref, 60), clean(b.objet, 200), Number.isFinite(montant) ? montant : null, statut, clean(b.date_envoi, 10) || (statut === "envoyee" ? new Date().toISOString().slice(0, 10) : null)).run();
+    const r = await env.DB.prepare("INSERT INTO crm_offres (contact_id, ref, objet, montant_ht, statut, date_envoi, evenement, date_evenement, complement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .bind(id, clean(b.ref, 60), clean(b.objet, 200), Number.isFinite(montant) ? montant : null, statut, clean(b.date_envoi, 10) || (statut === "envoyee" ? new Date().toISOString().slice(0, 10) : null), clean(b.evenement, 120), clean(b.date_evenement, 10), clean(b.complement, 300)).run();
     await afterOffre(env, id, statut, clean(b.ref, 60));
     return json({ id: r.meta.last_row_id }, 201, origin);
   }
@@ -353,6 +358,9 @@ export async function handleCrm(request, env, url, origin, json, cors) {
       const montant = b.montant_ht === undefined ? undefined : (b.montant_ht === "" || b.montant_ht == null ? null : Number(String(b.montant_ht).replace(",", ".")));
       await env.DB.prepare("UPDATE crm_offres SET ref = COALESCE(?, ref), objet = COALESCE(?, objet), statut = ?, montant_ht = CASE WHEN ? = 1 THEN ? ELSE montant_ht END, date_envoi = CASE WHEN ? = 'envoyee' AND date_envoi IS NULL THEN date('now') ELSE date_envoi END WHERE id = ?")
         .bind(clean(b.ref, 60), clean(b.objet, 200), statut, montant === undefined ? 0 : 1, Number.isFinite(montant) ? montant : null, statut, oid).run();
+      for (const [k, max] of [["evenement", 120], ["date_evenement", 10], ["complement", 300]]) {
+        if (b[k] !== undefined) await env.DB.prepare("UPDATE crm_offres SET " + k + " = ? WHERE id = ?").bind(clean(b[k], max), oid).run();
+      }
       if (statut !== cur.statut) await afterOffre(env, cur.contact_id, statut, cur.ref);
       return json({ ok: true }, 200, origin);
     }

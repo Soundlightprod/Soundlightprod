@@ -19,6 +19,7 @@
   const parisFmt = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
   const nowParis = () => parisFmt.format(new Date());
   const quand = (j) => j.date_echange || (j.cree_le ? parisFmt.format(new Date(j.cree_le.replace(' ', 'T') + 'Z')) : '');
+  const plus = (t) => '+ ' + String(t).replace(/^\s*\+\s*/, '');
   const parDate = (list) => list.slice().sort((a, b) => quand(b).localeCompare(quand(a)) || b.id - a.id);
   const nomAff = (c) => c.organisation || [c.prenom, c.nom].filter(Boolean).join(' ') || c.email || c.telephone || 'Sans nom';
   const sousNom = (c) => (c.organisation ? [c.prenom, c.nom].filter(Boolean).join(' ') + (c.fonction ? ' (' + c.fonction + ')' : '') : '');
@@ -153,6 +154,8 @@
       return lastQ(b).localeCompare(lastQ(a)) || (b.maj_le || '').localeCompare(a.maj_le || '');
     });
     const TL = (t) => (TYPES_J.find((x) => x[0] === t) || [0, t])[1];
+    const offLines = (c) => { let l = []; try { l = c.offres_json ? JSON.parse(c.offres_json) : []; } catch (e) { l = []; }
+      return l.filter((o) => o.s !== 'brouillon').map((o) => `<span class="crm-badge prio money">${o.e ? ce(o.e) + ' · ' : ''}${o.m != null ? eur(o.m) + ' HT' : 'montant ?'}</span>${o.c ? `<span class="crm-sub">${ce(plus(o.c))}</span>` : ''}`).join(''); };
     const head = '<div class="crm-row head"><span>Contact</span><span>Étape</span><span>Dernier contact</span><span>Montant</span><span></span></div>';
     const html = rows.slice(0, 300).map((c) => {
       const late = c.statut !== 'perdu' && c.date_relance && c.date_relance <= today();
@@ -165,7 +168,7 @@
         <div class="c-etape">${c.statut === 'client' ? '<span class="crm-badge client">Client</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : `<span class="crm-badge">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
           ${late ? `<span class="crm-badge late">⏰ relance ${fmtD(c.date_relance)}</span>` : c.date_relance ? `<span class="crm-sub">relance ${fmtD(c.date_relance)}</span>` : ''}</div>
         <div class="c-last">${d ? `<b>${fmtDT(q)}</b><span class="crm-sub">${ce(TL(d.t))}${ex ? ' · ' + ce(ex) : ''}</span>` : '<span class="crm-sub">Aucun échange noté</span>'}</div>
-        <div class="c-money">${c.offres_en_cours ? `<span class="crm-badge prio money">Proposition ${eur(c.offres_en_cours)} HT</span>` : ''}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
+        <div class="c-money">${offLines(c)}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
         <div class="c-acts" onclick="event.stopPropagation()">
           <a href="#" data-resume="${c.id}" class="main">📋 Résumé</a>
           ${c.pdf_offre_id ? `<a href="#" data-pdf="${c.pdf_offre_id}" data-nom="${ce(c.pdf_offre_nom)}">👁 Proposition</a>` : ''}${c.pdf_devis_id ? `<a href="#" data-pdf="${c.pdf_devis_id}" data-nom="${ce(c.pdf_devis_nom)}">👁 Devis</a>` : ''}
@@ -239,16 +242,29 @@
     const p = kind === 'offre' ? 'o' : 'v';
     const sing = kind === 'devis' ? 'le devis' : 'la proposition';
     const files = (pid) => (d.fichiers || []).filter((f) => f.kind === kind && f.parent_id === pid);
-    const lines = items.map((v) => `<div class="j" style="border-color:var(--amber)"><b>${ce(v.ref || (kind === 'devis' ? 'Devis' : 'Proposition'))}</b> ${ce(v.objet || '')} — ${v.montant_ht != null ? eur(v.montant_ht) + ' HT' : 'montant ?'}${v.date_envoi ? ' · envoyé(e) le ' + fmtD(v.date_envoi) : ''}
+    const line = (v) => `<div class="j" style="border-color:var(--amber)"><b>${ce(v.ref || (kind === 'devis' ? 'Devis' : 'Proposition'))}</b> ${ce(v.objet || '')} — <b style="font-size:1.05rem">${v.montant_ht != null ? eur(v.montant_ht) + ' HT' : 'montant ?'}</b>${v.date_envoi ? ' · envoyé(e) le ' + fmtD(v.date_envoi) : ''}
+        ${v.complement ? `<div style="font-size:.95rem;color:var(--amber)">${ce(plus(v.complement))}</div>` : ''}
         <div class="crm-files">${files(v.id).map((f) => `<span class="crm-file"><a href="#" data-fv="${f.id}" data-fn="${ce(f.nom)}">📄 ${ce(f.nom)}</a> <small>${ko(f.taille)}</small> <a href="#" data-fd="${f.id}" style="color:var(--pink)" title="Retirer ce PDF">✕</a></span>`).join('') || '<span class="vz-note">Aucun PDF joint</span>'}</div>
         <div class="crm-bar" style="margin:4px 0 0"><button class="period-btn" type="button" data-view="${kind}:${v.id}" style="padding:6px 14px;font-size:.85rem;background:var(--blue);color:#06121f;font-weight:700;border-color:var(--blue)">👁 Voir ${kind === 'devis' ? 'le devis' : 'la proposition'}</button>
           <select data-st="${kind}:${v.id}" style="padding:6px 8px;font-size:14px">${opt(statuts, v.statut)}</select>
           <button class="period-btn" type="button" data-up="${kind}:${v.id}" style="padding:5px 12px;font-size:.78rem">📎 Joindre un PDF</button>
-          <a href="#" data-del="${kind}:${v.id}" style="color:var(--pink);font-size:.8rem">supprimer</a></div></div>`).join('');
+          ${kind === 'offre' ? `<a href="#" data-edit="${v.id}" style="font-size:.8rem">modifier</a>` : ''}
+          <a href="#" data-del="${kind}:${v.id}" style="color:var(--pink);font-size:.8rem">supprimer</a></div></div>`;
+    let lines;
+    if (kind === 'offre') {
+      const groups = [];
+      items.forEach((v) => { const k = (v.evenement || '').trim(); let g = groups.find((x) => x.k === k && k); if (!g) { g = { k, date: v.date_evenement, list: [] }; groups.push(g); } g.list.push(v); });
+      lines = groups.map((g) => (g.k ? `<div style="margin:12px 0 2px;font-size:1.02rem"><b>🎪 ${ce(g.k)}</b>${g.date ? ' · ' + fmtD(g.date) : ''}${g.list.length > 1 ? ` <span class="crm-badge prio">${g.list.length} propositions au choix</span>` : ''}</div>` : '') + g.list.map(line).join('')).join('');
+    } else lines = items.map(line).join('');
+    const evts = kind === 'offre' ? [...new Set([d.contact.evenement].concat(items.map((v) => v.evenement)).filter(Boolean))] : [];
     return `<div class="crm-sec"><h4 style="margin:0 0 8px">${titre}</h4>
         <div>${lines || `<p class="vz-note">Aucun${kind === 'devis' ? ' devis' : 'e proposition'}.</p>`}</div>
         <div class="row"><div><label>Réf.</label><input id="${p}Ref" placeholder="${refPh}"></div><div><label>Montant HT (€)</label><input id="${p}Mt" inputmode="decimal"></div></div>
         <div class="row"><div><label>Objet</label><input id="${p}Obj" placeholder="Soirée, mariage, fête du village…"></div><div><label>Statut</label><select id="${p}St">${opt(statuts, defSt)}</select></div></div>
+        ${kind === 'offre' ? `<div class="row"><div><label>Événement concerné</label><input id="oEvt" list="oEvtL" placeholder="ex. Noël 2026, fête du village 2027">
+          <datalist id="oEvtL">${evts.map((e) => `<option value="${ce(e)}">`).join('')}</datalist></div><div><label>Date de l'événement</label><input id="oEvD" type="date"></div></div>
+          <div class="row one"><div><label>En plus du tarif / conditions</label><input id="oCpl" placeholder="ex. + VHR + SACD + technique, TVA 5,5 %"></div></div>
+          <p class="vz-note">Même événement = propositions au choix (un seul total compté). Autre événement = autre ligne, même dans l'année.</p>` : ''}
         <div class="row one"><div><label>PDF à joindre (facultatif)</label><input id="${p}File" type="file" accept="application/pdf,.pdf"></div></div>
         <button class="period-btn" type="button" id="${p}Add">Ajouter ${sing}</button>
         <p class="vz-note">${note}</p></div>`;
@@ -287,7 +303,7 @@
     const head = [nomAff(c) + (c.ville ? ' (' + c.ville + ')' : ''), c.evenement ? 'Besoin : ' + c.evenement : '',
       'Statut : ' + (c.statut === 'client' ? 'client' : c.statut === 'perdu' ? 'perdu' : (ETAPE_LBL[c.etape] || c.etape)),
       c.date_relance ? 'Prochaine relance : ' + fmtD(c.date_relance) : ''].filter(Boolean);
-    const docLines = docs.map(([k, o]) => k + (o.ref ? ' ' + o.ref : '') + (o.montant_ht != null ? ' : ' + eur(o.montant_ht) + ' HT' : '') + ' (' + String(o.statut).toLowerCase() + ')');
+    const docLines = docs.map(([k, o]) => k + (o.ref ? ' ' + o.ref : '') + (o.evenement ? ' [' + o.evenement + (o.date_evenement ? ', ' + fmtD(o.date_evenement) : '') + ']' : '') + (o.montant_ht != null ? ' : ' + eur(o.montant_ht) + ' HT' : '') + (o.complement ? ' ' + plus(o.complement) : '') + ' (' + String(o.statut).toLowerCase() + ')');
     const lines = echanges.map((j) => fmtDT(quand(j)) + ' · ' + TL(j.type) + (j.texte ? ' : ' + j.texte : ''));
     const txt = head.join('\n') + (docLines.length ? '\n\n' + docLines.join('\n') : '') + '\n\nÉchanges :\n' + (lines.join('\n') || 'Aucun échange noté.');
     modal(`<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h3 style="margin:0">Résumé des échanges</h3><button class="period-btn" type="button" onclick="crmClose()">✕</button></div>
@@ -354,7 +370,7 @@
       $(p + 'Add').onclick = async () => {
         const btn = $(p + 'Add'); btn.disabled = true;
         try {
-          const r = await api('/contacts/' + id + '/' + BASE[kind], { method: 'POST', body: { ref: $(p + 'Ref').value, objet: $(p + 'Obj').value, montant_ht: $(p + 'Mt').value, statut: $(p + 'St').value } });
+          const r = await api('/contacts/' + id + '/' + BASE[kind], { method: 'POST', body: Object.assign({ ref: $(p + 'Ref').value, objet: $(p + 'Obj').value, montant_ht: $(p + 'Mt').value, statut: $(p + 'St').value }, kind === 'offre' ? { evenement: $('oEvt').value, date_evenement: $('oEvD').value, complement: $('oCpl').value } : {}) });
           const f = $(p + 'File').files[0];
           if (f) await upload(kind, r.id, f);
           refresh();
@@ -364,6 +380,14 @@
     const root = $('crmModal');
     root.querySelectorAll('select[data-st]').forEach((sel) => (sel.onchange = async () => { const [k, pid] = sel.dataset.st.split(':'); await api('/' + BASE[k] + '/' + pid, { method: 'PUT', body: { statut: sel.value } }); refresh(); }));
     root.querySelectorAll('[data-del]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); const [k, pid] = a.dataset.del.split(':'); if (confirm('Supprimer ' + (k === 'devis' ? 'ce devis' : 'cette proposition') + ' et ses PDF ?')) { await api('/' + BASE[k] + '/' + pid, { method: 'DELETE' }); refresh(); } }));
+    root.querySelectorAll('[data-edit]').forEach((a) => (a.onclick = async (ev) => {
+      ev.preventDefault();
+      const o = (d.offres || []).find((x) => String(x.id) === a.dataset.edit); if (!o) return;
+      const evt = prompt('Événement concerné (ex. Noël 2026) :', o.evenement || ''); if (evt === null) return;
+      const mt = prompt('Montant HT (€) :', o.montant_ht != null ? o.montant_ht : ''); if (mt === null) return;
+      const cpl = prompt('En plus du tarif / conditions (ex. + VHR + SACD + technique) :', o.complement || ''); if (cpl === null) return;
+      try { await api('/offres/' + o.id, { method: 'PUT', body: { evenement: evt, montant_ht: mt, complement: cpl } }); refresh(); } catch (e) { alert(e.message); }
+    }));
     root.querySelectorAll('[data-fv]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); viewFile(a.dataset.fv, a.dataset.fn); }));
     root.querySelectorAll('[data-fd]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); if (confirm('Retirer ce PDF ?')) { await api('/fichiers/' + a.dataset.fd, { method: 'DELETE' }); refresh(); } }));
     let pend = null;
