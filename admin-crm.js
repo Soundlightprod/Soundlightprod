@@ -15,6 +15,11 @@
   const eur = (n) => (n || 0).toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €';
   const fmtD = (d) => (d ? d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4) : '');
   const fmtDT = (d) => (d ? fmtD(d.slice(0, 10)) + ' ' + d.slice(11, 16) : '');
+  // heure de Paris au format « AAAA-MM-JJ HH:MM » ; les dates de saisie (cree_le) sont stockées en UTC
+  const parisFmt = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const nowParis = () => parisFmt.format(new Date());
+  const quand = (j) => j.date_echange || (j.cree_le ? parisFmt.format(new Date(j.cree_le.replace(' ', 'T') + 'Z')) : '');
+  const parDate = (list) => list.slice().sort((a, b) => quand(b).localeCompare(quand(a)) || b.id - a.id);
   const nomAff = (c) => c.organisation || [c.prenom, c.nom].filter(Boolean).join(' ') || c.email || c.telephone || 'Sans nom';
   const sousNom = (c) => (c.organisation ? [c.prenom, c.nom].filter(Boolean).join(' ') + (c.fonction ? ' (' + c.fonction + ')' : '') : '');
 
@@ -149,11 +154,15 @@
           ${c.pdf_offre_id ? `<a href="#" data-pdf="${c.pdf_offre_id}" data-nom="${ce(c.pdf_offre_nom)}" style="background:var(--blue);color:#06121f;font-weight:700;border-color:var(--blue)">👁 Proposition</a>` : ''}${c.pdf_devis_id ? `<a href="#" data-pdf="${c.pdf_devis_id}" data-nom="${ce(c.pdf_devis_nom)}" style="background:var(--amber);color:#1b1300;font-weight:700;border-color:var(--amber)">👁 Devis</a>` : ''}
         </div>` : ''}
         <div class="crm-acts" onclick="event.stopPropagation()">
+          <a href="#" data-resume="${c.id}" style="background:var(--amber);color:#1b1300;font-weight:700;border-color:var(--amber)">📋 Résumé des échanges</a>
+        </div>
+        <div class="crm-acts" onclick="event.stopPropagation()">
           ${c.telephone ? `<a href="tel:${ce(c.telephone)}">📞 Appeler</a>` : ''}${wa ? `<a href="${ce(wa)}" target="_blank" rel="noopener">💬</a>` : ''}${c.email ? `<a href="mailto:${ce(c.email)}">✉️</a>` : ''}
         </div></div>`;
     }).join('');
     $('crmList').innerHTML = html || '<p class="vz-note">Aucun contact ici. Utilise « ＋ Nouveau » ou « ⬆ Importer ».</p>';
     $('crmList').querySelectorAll('.crm-card').forEach((el) => (el.onclick = () => openDetail(+el.dataset.id)));
+    $('crmList').querySelectorAll('[data-resume]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); openResume(+a.dataset.resume); }));
     $('crmList').querySelectorAll('[data-pdf]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); viewFile(a.dataset.pdf, a.dataset.nom); }));
     if (rows.length > 300) $('crmList').insertAdjacentHTML('beforeend', `<p class="vz-note">300 premiers résultats sur ${rows.length} : affine la recherche.</p>`);
   }
@@ -256,6 +265,30 @@
     $('vClose').onclick = () => { v.remove(); URL.revokeObjectURL(url); };
   }
 
+  // Résumé des échanges d'un contact : reprend le suivi, du plus ancien au plus récent, prêt à lire ou à copier.
+  async function openResume(id) {
+    let d;
+    try { d = await api('/contacts/' + id); } catch (e) { alert(e.message); return; }
+    const c = d.contact, TL = (t) => (TYPES_J.find((x) => x[0] === t) || [0, t])[1].replace(/^\S+\s/, '');
+    const echanges = parDate(d.journal).reverse();
+    const docs = [].concat((d.offres || []).map((o) => ['Proposition', o]), (d.devis || []).map((o) => ['Devis', o]));
+    const head = [nomAff(c) + (c.ville ? ' (' + c.ville + ')' : ''), c.evenement ? 'Besoin : ' + c.evenement : '',
+      'Statut : ' + (c.statut === 'client' ? 'client' : c.statut === 'perdu' ? 'perdu' : (ETAPE_LBL[c.etape] || c.etape)),
+      c.date_relance ? 'Prochaine relance : ' + fmtD(c.date_relance) : ''].filter(Boolean);
+    const docLines = docs.map(([k, o]) => k + (o.ref ? ' ' + o.ref : '') + (o.montant_ht != null ? ' : ' + eur(o.montant_ht) + ' HT' : '') + ' (' + String(o.statut).toLowerCase() + ')');
+    const lines = echanges.map((j) => fmtDT(quand(j)) + ' · ' + TL(j.type) + (j.texte ? ' : ' + j.texte : ''));
+    const txt = head.join('\n') + (docLines.length ? '\n\n' + docLines.join('\n') : '') + '\n\nÉchanges :\n' + (lines.join('\n') || 'Aucun échange noté.');
+    modal(`<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h3 style="margin:0">Résumé des échanges</h3><button class="period-btn" type="button" onclick="crmClose()">✕</button></div>
+      <p style="font-size:1.05rem;margin:10px 0 2px"><b>${ce(head[0])}</b></p>
+      <p class="crm-sub" style="font-size:.95rem">${ce(head.slice(1).join(' · '))}</p>
+      ${docLines.length ? `<div class="crm-sec" style="margin-top:10px;padding-top:8px">${docLines.map((l) => `<div style="font-size:1rem;margin:4px 0">${ce(l)}</div>`).join('')}</div>` : ''}
+      <div class="crm-sec" style="margin-top:10px">${echanges.map((j) => `<div class="j" style="font-size:1rem"><small style="font-size:.85rem">${fmtDT(quand(j))} · ${ce(TL(j.type))}</small>${ce(j.texte)}</div>`).join('') || '<p class="vz-note">Aucun échange noté.</p>'}</div>
+      <div class="crm-bar" style="margin-top:12px"><button class="period-btn" style="background:var(--amber);color:#1b1300;font-weight:700" id="rsCopy" type="button">Copier le résumé</button>
+      <button class="period-btn" type="button" id="rsOpen">Ouvrir la fiche</button><span id="rsMsg" class="vz-note"></span></div>`);
+    $('rsCopy').onclick = async () => { try { await navigator.clipboard.writeText(txt); $('rsMsg').textContent = 'Copié ✓'; } catch (e) { $('rsMsg').textContent = 'Copie impossible'; } };
+    $('rsOpen').onclick = () => openDetail(id);
+  }
+
   async function openDetail(id) {
     modal('<p class="vz-note">Chargement…</p>');
     let d;
@@ -276,10 +309,11 @@
       <div class="crm-sec"><h4 style="margin:0 0 8px">Fiche</h4>${formHtml(c)}
         <div class="crm-bar"><button class="period-btn" style="background:var(--amber);color:#1b1300" id="dSave" type="button">Enregistrer</button><span id="dMsg" class="vz-note"></span></div></div>
       <div class="crm-sec"><h4 style="margin:0 0 8px">Suivi des échanges</h4>
-        <div class="row"><div><select id="jType">${opt(TYPES_J, 'appel')}</select></div><div><input id="jRel" type="date" title="Prochaine relance"></div></div>
+        <div class="row"><div><label>Type d'échange</label><select id="jType">${opt(TYPES_J, 'appel')}</select></div><div><label>Date et heure de l'échange</label><input id="jWhen" type="datetime-local" value="${nowParis().replace(' ', 'T')}"></div></div>
         <div class="row one"><textarea id="jTxt" rows="2" placeholder="Ce qui s'est dit, ce qui est convenu…"></textarea></div>
+        <div class="row"><div><label>Prochaine relance (facultatif)</label><input id="jRel" type="date"></div><div></div></div>
         <button class="period-btn" type="button" id="jAdd">Ajouter au suivi</button>
-        <div id="jList">${d.journal.map((j) => `<div class="j"><small>${fmtDT(j.cree_le)} · ${ce((TYPES_J.find((t) => t[0] === j.type) || [0, j.type])[1])} <a href="#" data-jd="${j.id}" style="color:var(--pink)">suppr.</a></small>${ce(j.texte)}</div>`).join('') || '<p class="vz-note">Aucun échange noté.</p>'}</div></div>
+        <div id="jList">${parDate(d.journal).map((j) => `<div class="j"><small>${fmtDT(quand(j))} · ${ce((TYPES_J.find((t) => t[0] === j.type) || [0, j.type])[1])} <a href="#" data-jd="${j.id}" style="color:var(--pink)">suppr.</a></small>${ce(j.texte)}</div>`).join('') || '<p class="vz-note">Aucun échange noté.</p>'}</div></div>
       ${docSection(d, 'offre', 'Propositions commerciales', d.offres || [], OFFRE_ST, 'envoyee', 'ex. P-2026-007', "Proposition « Envoyée » → le prospect passe à l'étape Proposition envoyée.")}
       ${docSection(d, 'devis', 'Devis', d.devis, DEVIS_ST, 'envoye', 'ex. D-2026-014', "Devis « Envoyé » → le prospect passe à l'étape Devis. Devis « Accepté » → il devient client.")}
       <input type="file" id="fileIn" accept="application/pdf,.pdf" style="display:none">
@@ -298,7 +332,7 @@
     if ($('dProsp')) $('dProsp').onclick = () => stat('prospect');
     if ($('dPerdu')) $('dPerdu').onclick = () => { const r = prompt('Raison (facultatif) : prix, date prise, pas de réponse…', ''); if (r !== null) stat('perdu', r); };
     $('jAdd').onclick = async () => {
-      const b = { type: $('jType').value, texte: $('jTxt').value }; if ($('jRel').value) b.date_relance = $('jRel').value;
+      const b = { type: $('jType').value, texte: $('jTxt').value }; if ($('jRel').value) b.date_relance = $('jRel').value; if ($('jWhen').value) b.date_echange = $('jWhen').value;
       try { await api('/contacts/' + id + '/journal', { method: 'POST', body: b }); refresh(); } catch (e) { alert(e.message); }
     };
     $('jList').querySelectorAll('[data-jd]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); if (confirm('Supprimer cette ligne du suivi ?')) { await api('/journal/' + a.dataset.jd, { method: 'DELETE' }); refresh(); } }));
