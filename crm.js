@@ -53,6 +53,8 @@ export async function ensureCrmSchema(env) {
     )`),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS crm_fichiers_contact ON crm_fichiers(contact_id)"),
   ]);
+  // date et heure réelles de l'échange (heure de Paris), distinctes de la date de saisie (cree_le, en UTC)
+  try { await env.DB.prepare("ALTER TABLE crm_journal ADD COLUMN date_echange TEXT").run(); } catch (e) { /* colonne déjà présente */ }
   ready = true;
 }
 
@@ -83,7 +85,7 @@ async function contactDetail(env, id) {
   const c = await env.DB.prepare("SELECT * FROM crm_contacts WHERE id = ?").bind(id).first();
   if (!c) return null;
   const [j, d, o, f] = await Promise.all([
-    env.DB.prepare("SELECT id, type, texte, cree_le FROM crm_journal WHERE contact_id = ? ORDER BY id DESC LIMIT 200").bind(id).all(),
+    env.DB.prepare("SELECT id, type, texte, cree_le, date_echange FROM crm_journal WHERE contact_id = ? ORDER BY id DESC LIMIT 200").bind(id).all(),
     env.DB.prepare("SELECT id, ref, objet, montant_ht, statut, date_envoi, cree_le FROM crm_devis WHERE contact_id = ? ORDER BY id DESC").bind(id).all(),
     env.DB.prepare("SELECT id, ref, objet, montant_ht, statut, date_envoi, cree_le FROM crm_offres WHERE contact_id = ? ORDER BY id DESC").bind(id).all(),
     env.DB.prepare("SELECT id, kind, parent_id, nom, taille, cree_le FROM crm_fichiers WHERE contact_id = ? ORDER BY id").bind(id).all(),
@@ -98,8 +100,8 @@ async function removeFiles(env, where, ...params) {
   await env.DB.prepare(`DELETE FROM crm_fichiers WHERE ${where}`).bind(...params).run();
 }
 
-async function logEvent(env, id, type, texte) {
-  await env.DB.prepare("INSERT INTO crm_journal (contact_id, type, texte) VALUES (?, ?, ?)").bind(id, type, texte).run();
+async function logEvent(env, id, type, texte, quand) {
+  await env.DB.prepare("INSERT INTO crm_journal (contact_id, type, texte, date_echange) VALUES (?, ?, ?, ?)").bind(id, type, texte, quand || null).run();
 }
 const touch = (env, id) => env.DB.prepare("UPDATE crm_contacts SET maj_le = datetime('now') WHERE id = ?").bind(id).run();
 
@@ -134,6 +136,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
               c.client_depuis, c.maj_le, c.cree_le,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'accepte') AS ca_accepte,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'envoye') AS devis_en_cours,
+              (SELECT COALESCE(SUM(montant_ht),0) FROM crm_offres o WHERE o.contact_id = c.id AND o.statut = 'envoyee') AS offres_en_cours,
               (SELECT f.id FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'offre' ORDER BY f.id DESC LIMIT 1) AS pdf_offre_id,
               (SELECT f.nom FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'offre' ORDER BY f.id DESC LIMIT 1) AS pdf_offre_nom,
               (SELECT f.id FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'devis' ORDER BY f.id DESC LIMIT 1) AS pdf_devis_id,
@@ -288,7 +291,8 @@ export async function handleCrm(request, env, url, origin, json, cors) {
     const type = ["appel", "mail", "rdv", "note", "whatsapp"].includes(b.type) ? b.type : "note";
     const texte = clean(b.texte, 2000);
     if (!texte && type === "note") return json({ error: "Texte vide" }, 400, origin);
-    await logEvent(env, id, type, texte || "");
+    const quand = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}$/.test(String(b.date_echange || "")) ? String(b.date_echange).replace("T", " ") : null;
+    await logEvent(env, id, type, texte || "", quand);
     // un premier échange fait avancer un prospect « nouveau » vers « contacté »
     await env.DB.prepare("UPDATE crm_contacts SET etape = CASE WHEN statut = 'prospect' AND etape = 'nouveau' AND ? != 'note' THEN 'contacte' ELSE etape END, maj_le = datetime('now') WHERE id = ?").bind(type, id).run();
     if (b.date_relance !== undefined) await env.DB.prepare("UPDATE crm_contacts SET date_relance = ? WHERE id = ?").bind(clean(b.date_relance, 10), id).run();
