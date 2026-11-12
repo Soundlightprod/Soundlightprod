@@ -134,6 +134,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
               c.client_depuis, c.maj_le, c.cree_le,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'accepte') AS ca_accepte,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'envoye') AS devis_en_cours,
+              (SELECT COALESCE(SUM(montant_ht),0) FROM crm_offres o WHERE o.contact_id = c.id AND o.statut = 'envoyee') AS offres_en_cours,
               (SELECT f.id FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'offre' ORDER BY f.id DESC LIMIT 1) AS pdf_offre_id,
               (SELECT f.nom FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'offre' ORDER BY f.id DESC LIMIT 1) AS pdf_offre_nom,
               (SELECT f.id FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'devis' ORDER BY f.id DESC LIMIT 1) AS pdf_devis_id,

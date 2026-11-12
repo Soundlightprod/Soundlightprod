@@ -30,6 +30,12 @@
   function injectStyle() {
     const s = document.createElement('style');
     s.textContent = `
+    #tab-crm .crm-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}
+    #tab-crm .crm-kpi{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+    #tab-crm .crm-kpi b{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;line-height:1.1;color:var(--paper)}
+    #tab-crm .crm-kpi b small{font-size:.9rem;color:var(--amber)}
+    #tab-crm .crm-kpi span{font-size:.95rem;color:var(--muted)}
+    #tab-crm .crm-badge.money{font-size:.95rem;padding:4px 12px}
     #tab-crm .crm-seg{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     #tab-crm .crm-seg .period-btn.on,#tab-crm .crm-chip.on{background:var(--amber);color:#1b1300;border-color:var(--amber);font-weight:700}
     #tab-crm .crm-chip{background:var(--ink-2);border:1px solid var(--line);color:var(--muted);border-radius:100px;padding:5px 12px;font-size:.78rem;cursor:pointer}
@@ -39,8 +45,8 @@
     #tab-crm .crm-card{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer}
     #tab-crm .crm-card:active{transform:scale(.99)}
     #tab-crm .crm-card h4{margin:0 0 2px;font-size:1rem;font-family:'Space Grotesk',sans-serif}
-    #tab-crm .crm-sub{color:var(--muted);font-size:.8rem}
-    #tab-crm .crm-badge{display:inline-block;border-radius:100px;padding:2px 10px;font-size:.72rem;font-weight:700;background:rgba(139,92,246,.25);color:#d6c6ff;margin-right:4px}
+    #tab-crm .crm-sub{color:var(--muted);font-size:.9rem}
+    #tab-crm .crm-badge{display:inline-block;border-radius:100px;padding:3px 11px;font-size:.82rem;font-weight:700;background:rgba(139,92,246,.25);color:#d6c6ff;margin-right:4px}
     #tab-crm .crm-badge.client{background:rgba(47,155,255,.25);color:#b9dcff}
     #tab-crm .crm-badge.late{background:rgba(255,77,125,.3);color:#ffc2d3}
     #tab-crm .crm-badge.prio{background:rgba(255,178,56,.3);color:#ffe0a8}
@@ -76,7 +82,7 @@
     t.innerHTML = `
       <h2>Prospects & clients</h2>
       <p class="vz-sub">Une seule base : tu suis chaque contact jusqu'au devis accepté, il devient alors client automatiquement. Export prêt à importer dans Brevo.</p>
-      <div id="crmStats" class="vz-note" style="margin:8px 0"></div>
+      <div id="crmStats" class="crm-kpis"></div>
       <div class="crm-seg" id="crmSeg"></div>
       <div class="crm-bar">
         <input id="crmQ" type="search" placeholder="Rechercher (nom, ville, email, tel…)" style="flex:1 1 220px">
@@ -114,7 +120,10 @@
     const n = (f) => all.filter(f).length;
     const nLate = n((c) => c.statut !== 'perdu' && c.date_relance && c.date_relance <= today());
     const ca = all.reduce((s, c) => s + (c.ca_accepte || 0), 0), enc = all.reduce((s, c) => s + (c.devis_en_cours || 0), 0);
-    $('crmStats').innerHTML = `${n((c) => c.statut === 'prospect')} prospects · ${n((c) => c.statut === 'client')} clients · devis en attente : <b>${eur(enc)}</b> HT · devis acceptés : <b>${eur(ca)}</b> HT`;
+    const offEnc = all.reduce((s, c) => s + (c.offres_en_cours || 0), 0);
+    const kpi = (v, l) => `<div class="crm-kpi"><b>${v}</b><span>${l}</span></div>`;
+    $('crmStats').innerHTML = kpi(n((c) => c.statut === 'prospect'), 'prospects') + kpi(n((c) => c.statut === 'client'), 'clients')
+      + kpi(eur(offEnc) + ' <small>HT</small>', 'propositions en attente') + kpi(eur(enc) + ' <small>HT</small>', 'devis en attente') + kpi(eur(ca) + ' <small>HT</small>', 'devis acceptés');
     const segs = [['prospect', 'Prospects'], ['client', 'Clients'], ['relance', '⏰ À relancer (' + nLate + ')'], ['perdu', 'Perdus'], ['tous', 'Tous']];
     $('crmSeg').innerHTML = segs.map(([k, l]) => `<button type="button" class="period-btn${vue === k ? ' on' : ''}" data-v="${k}">${l}</button>`).join('');
     $('crmSeg').querySelectorAll('button').forEach((b) => (b.onclick = () => { vue = b.dataset.v; filtreEtape = ''; render(); }));
@@ -133,7 +142,7 @@
         <div style="margin-top:6px">
           ${c.statut === 'client' ? '<span class="crm-badge client">Client</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : `<span class="crm-badge">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
           ${late ? `<span class="crm-badge late">⏰ ${fmtD(c.date_relance)}</span>` : c.date_relance ? `<span class="crm-sub">relance ${fmtD(c.date_relance)}</span>` : ''}
-          ${c.devis_en_cours ? `<span class="crm-badge prio">Devis ${eur(c.devis_en_cours)}</span>` : ''}
+          ${c.offres_en_cours ? `<span class="crm-badge prio money">Proposition ${eur(c.offres_en_cours)} HT</span>` : ''}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}
         </div>
         ${c.prochaine_action ? `<div class="crm-sub" style="margin-top:4px">→ ${ce(c.prochaine_action)}</div>` : ''}
         ${(c.pdf_offre_id || c.pdf_devis_id) ? `<div class="crm-acts" onclick="event.stopPropagation()">
