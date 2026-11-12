@@ -133,7 +133,11 @@ export async function handleCrm(request, env, url, origin, json, cors) {
               c.departement, c.source, c.evenement, c.date_evenement, c.priorite, c.prochaine_action, c.date_relance, c.no_mailing, c.brevo_le,
               c.client_depuis, c.maj_le, c.cree_le,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'accepte') AS ca_accepte,
-              (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'envoye') AS devis_en_cours
+              (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'envoye') AS devis_en_cours,
+              (SELECT f.id FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'offre' ORDER BY f.id DESC LIMIT 1) AS pdf_offre_id,
+              (SELECT f.nom FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'offre' ORDER BY f.id DESC LIMIT 1) AS pdf_offre_nom,
+              (SELECT f.id FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'devis' ORDER BY f.id DESC LIMIT 1) AS pdf_devis_id,
+              (SELECT f.nom FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'devis' ORDER BY f.id DESC LIMIT 1) AS pdf_devis_nom
        FROM crm_contacts c ORDER BY c.maj_le DESC LIMIT 5000`).all();
     return json({ contacts: results || [] }, 200, origin);
   }

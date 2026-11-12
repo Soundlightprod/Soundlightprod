@@ -136,12 +136,16 @@
           ${c.devis_en_cours ? `<span class="crm-badge prio">Devis ${eur(c.devis_en_cours)}</span>` : ''}
         </div>
         ${c.prochaine_action ? `<div class="crm-sub" style="margin-top:4px">→ ${ce(c.prochaine_action)}</div>` : ''}
+        ${(c.pdf_offre_id || c.pdf_devis_id) ? `<div class="crm-acts" onclick="event.stopPropagation()">
+          ${c.pdf_offre_id ? `<a href="#" data-pdf="${c.pdf_offre_id}" data-nom="${ce(c.pdf_offre_nom)}" style="background:var(--blue);color:#06121f;font-weight:700;border-color:var(--blue)">👁 Proposition</a>` : ''}${c.pdf_devis_id ? `<a href="#" data-pdf="${c.pdf_devis_id}" data-nom="${ce(c.pdf_devis_nom)}" style="background:var(--amber);color:#1b1300;font-weight:700;border-color:var(--amber)">👁 Devis</a>` : ''}
+        </div>` : ''}
         <div class="crm-acts" onclick="event.stopPropagation()">
           ${c.telephone ? `<a href="tel:${ce(c.telephone)}">📞 Appeler</a>` : ''}${wa ? `<a href="${ce(wa)}" target="_blank" rel="noopener">💬</a>` : ''}${c.email ? `<a href="mailto:${ce(c.email)}">✉️</a>` : ''}
         </div></div>`;
     }).join('');
     $('crmList').innerHTML = html || '<p class="vz-note">Aucun contact ici. Utilise « ＋ Nouveau » ou « ⬆ Importer ».</p>';
     $('crmList').querySelectorAll('.crm-card').forEach((el) => (el.onclick = () => openDetail(+el.dataset.id)));
+    $('crmList').querySelectorAll('[data-pdf]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); viewFile(a.dataset.pdf, a.dataset.nom); }));
     if (rows.length > 300) $('crmList').insertAdjacentHTML('beforeend', `<p class="vz-note">300 premiers résultats sur ${rows.length} : affine la recherche.</p>`);
   }
 
