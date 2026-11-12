@@ -54,6 +54,7 @@
     #crmModal .j{border-left:3px solid var(--violet);padding:4px 10px;margin:6px 0;font-size:.88rem;white-space:pre-wrap}
     #crmModal .j small{color:var(--muted);display:block}
     #crmModal .crm-sec{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+    #crmModal .crm-sticky{position:sticky;bottom:-16px;margin:16px -16px -16px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--ink-2);border-top:1px solid var(--line);border-radius:0 0 16px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     @media(max-width:560px){#crmModal .row{grid-template-columns:1fr}#crmModal{padding:6px}}`;
     document.head.appendChild(s);
   }
@@ -216,12 +217,16 @@
         <div class="row"><div><label>Objet</label><input id="vObj" placeholder="Soirée, mariage, fête du village…"></div><div><label>Statut</label><select id="vSt">${opt(DEVIS_ST, 'envoye')}</select></div></div>
         <button class="period-btn" type="button" id="vAdd">Ajouter le devis</button>
         <p class="vz-note">Devis « Envoyé » → le prospect passe à l'étape Devis. Devis « Accepté » → il devient client.</p></div>
-      <div class="crm-sec"><button class="period-btn" type="button" id="dDel" style="color:var(--pink)">🗑 Supprimer ce contact</button></div>`);
+      <div class="crm-sec"><button class="period-btn" type="button" id="dDel" style="color:var(--pink)">🗑 Supprimer ce contact</button></div>
+      <div class="crm-sticky"><button class="period-btn" style="background:var(--amber);color:#1b1300;font-weight:700;flex:1" id="dSave2" type="button">💾 Enregistrer les infos de la fiche</button><span id="dMsg2" class="vz-note"></span></div>`);
     const refresh = () => openDetail(id).then(load);
-    $('dSave').onclick = async () => {
-      try { await api('/contacts/' + id, { method: 'PUT', body: readForm() }); $('dMsg').textContent = 'Enregistré ✓'; load(); }
-      catch (e) { $('dMsg').textContent = e.message; }
+    const saveFiche = async () => {
+      const set = (t) => { $('dMsg').textContent = t; $('dMsg2').textContent = t; };
+      try { await api('/contacts/' + id, { method: 'PUT', body: readForm() }); set('Enregistré ✓'); load(); }
+      catch (e) { set(e.message); }
     };
+    $('dSave').onclick = saveFiche;
+    $('dSave2').onclick = saveFiche;
     const stat = (statut, raison) => api('/contacts/' + id + '/statut', { method: 'POST', body: { statut, raison } }).then(refresh);
     if ($('dClient')) $('dClient').onclick = () => stat('client');
     if ($('dProsp')) $('dProsp').onclick = () => stat('prospect');
