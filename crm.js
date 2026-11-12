@@ -317,3 +317,18 @@ async function afterDevis(env, contactId, statut, ref) {
     await touch(env, contactId);
   }
 }
+
+// Rappel quotidien : relances dues, devis à préparer, devis sans réponse depuis 7 jours. Uniquement des chiffres (aucun nom dans la notification).
+export async function crmReminderMessage(env, today) {
+  await ensureCrmSchema(env);
+  const n = async (sql, ...p) => ((await env.DB.prepare(sql).bind(...p).first()) || {}).n || 0;
+  const relances = await n("SELECT COUNT(*) AS n FROM crm_contacts WHERE statut != 'perdu' AND date_relance IS NOT NULL AND date_relance != '' AND date_relance <= ?", today);
+  const aPreparer = await n("SELECT COUNT(*) AS n FROM crm_contacts c WHERE c.statut = 'prospect' AND c.etape = 'echange' AND NOT EXISTS (SELECT 1 FROM crm_devis d WHERE d.contact_id = c.id)");
+  const sansReponse = await n("SELECT COUNT(DISTINCT c.id) AS n FROM crm_contacts c JOIN crm_devis d ON d.contact_id = c.id WHERE c.statut = 'prospect' AND d.statut = 'envoye' AND d.date_envoi IS NOT NULL AND d.date_envoi <= date(?, '-7 days')", today);
+  const parts = [];
+  if (relances) parts.push(`${relances} relance${relances > 1 ? "s" : ""}`);
+  if (aPreparer) parts.push(`${aPreparer} devis à préparer`);
+  if (sansReponse) parts.push(`${sansReponse} devis sans réponse (7 j)`);
+  if (!parts.length) return null;
+  return { title: "👥 SLP — à faire aujourd'hui", body: parts.join(" · "), url: "/admin-contacts.html#relance" };
+}

@@ -328,5 +328,6 @@
   }
 
   window.crmNew = function () { if (!ready) { build(); ready = true; } load(); openForm(null); };
-  window.crmOpen = function () { if (!ready) { build(); ready = true; } load(); };
+  window.crmOpen = function () { if (!ready) { build(); ready = true; } return load(); };
+  window.crmView = function (v) { vue = v; filtreEtape = ''; if (ready) render(); };
 })();

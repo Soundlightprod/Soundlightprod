@@ -40,6 +40,9 @@
   <p id="loginErr" class="vz-note" style="color:var(--pink)"></p>
 </div>
 <div id="app" style="display:none">
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+    <button type="button" class="period-btn" id="pushBtn">🔔 Activer les rappels sur ce téléphone</button><span id="pushMsg" class="vz-note"></span>
+  </div>
   <div id="tab-crm"></div>
 </div>
 <button type="button" id="fab">＋ Nouveau contact</button>
@@ -55,9 +58,37 @@
     $('loginBox').style.display = 'none';
     $('app').style.display = 'block';
     $('fab').style.display = 'block';
-    crmOpen();
+    crmOpen().then(() => { if (location.hash === '#relance') crmView('relance'); });
     if (location.hash === '#nouveau') setTimeout(crmNew, 150);
+    refreshPushBtn();
   }
+  async function refreshPushBtn() {
+    try {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+      const reg = await navigator.serviceWorker.ready; const sub = await reg.pushManager.getSubscription();
+      if (sub && Notification.permission === 'granted') { $('pushBtn').textContent = '🔔 Rappels activés (re-tester)'; }
+    } catch (e) {}
+  }
+  async function enablePush() {
+    const msg = $('pushMsg');
+    const call = async (path, body) => { const r = await fetch('/api/admin/crm' + path, { method: body ? 'POST' : 'GET', headers: Object.assign({ Authorization: 'Bearer ' + token }, body ? { 'Content-Type': 'application/json' } : {}), body: body ? JSON.stringify(body) : undefined }); return r.json(); };
+    try {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) { msg.textContent = "Sur iPhone : ouvre d'abord cette page depuis l'icône de l'écran d'accueil (Partager → Sur l'écran d'accueil), puis réessaie."; return; }
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') { msg.textContent = 'Notifications refusées : autorise-les dans les réglages du téléphone.'; return; }
+      const reg = await navigator.serviceWorker.ready;
+      const k = await call('/push-key');
+      if (!k.key) throw new Error('clé serveur indisponible');
+      const raw = atob(k.key.replace(/-/g, '+').replace(/_/g, '/')), arr = Uint8Array.from(raw, (c) => c.charCodeAt(0));
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: arr });
+      const r = await call('/push-subscribe', { subscription: sub.toJSON() });
+      if (!r.ok) throw new Error(r.error || 'erreur');
+      await call('/push-test', {});
+      msg.textContent = '✅ Activé : une notification de test arrive. Rappel chaque matin s\'il y a des relances ou devis à faire.';
+    } catch (e) { msg.textContent = 'Échec : ' + (e && e.message || e); }
+  }
+  $('pushBtn').onclick = enablePush;
   async function login() {
     const t = $('pw').value;
     const ok = await check(t);
