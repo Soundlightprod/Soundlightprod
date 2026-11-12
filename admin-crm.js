@@ -144,22 +144,24 @@
   const opt = (list, v) => list.map((x) => { const [k, l] = Array.isArray(x) ? x : [x, x]; return `<option value="${ce(k)}"${k === v ? ' selected' : ''}>${ce(l)}</option>`; }).join('');
   const fld = (id, lab, v, type) => `<div><label>${lab}</label><input id="cf_${id}" type="${type || 'text'}" value="${ce(v)}"></div>`;
 
-  function formHtml(c) {
+  function formHtml(c, quick) {
     c = c || { statut: 'prospect', etape: 'nouveau' };
-    return `
-      <div class="row"><div><label>Organisation / société</label><input id="cf_organisation" value="${ce(c.organisation)}" placeholder="Mairie de…, Comité des fêtes de…"></div>
-        <div><label>Catégorie</label><select id="cf_categorie"><option value=""></option>${opt(CATEGORIES, c.categorie)}</select></div></div>
-      <div class="row">${fld('prenom', 'Prénom', c.prenom)}${fld('nom', 'Nom', c.nom)}</div>
-      <div class="row">${fld('fonction', 'Fonction', c.fonction)}${fld('telephone', 'Téléphone', c.telephone, 'tel')}</div>
-      <div class="row one">${fld('email', 'Email', c.email, 'email')}</div>
+    const adv = `
+      <div class="row"><div><label>Catégorie</label><select id="cf_categorie"><option value=""></option>${opt(CATEGORIES, c.categorie)}</select></div>${fld('fonction', 'Fonction', c.fonction)}</div>
       <div class="row">${fld('ville', 'Ville', c.ville)}${fld('code_postal', 'Code postal', c.code_postal)}</div>
-      <div class="row">${fld('evenement', 'Événement / besoin', c.evenement)}${fld('date_evenement', "Date de l'événement", c.date_evenement, 'date')}</div>
-      <div class="row">${fld('budget', 'Budget annoncé', c.budget)}${fld('source', 'Source', c.source)}</div>
-      <div class="row">${fld('prochaine_action', 'Prochaine action', c.prochaine_action)}${fld('date_relance', 'Date de relance', c.date_relance, 'date')}</div>
+      <div class="row">${fld('date_evenement', "Date de l'événement", c.date_evenement, 'date')}${fld('budget', 'Budget annoncé', c.budget)}</div>
+      <div class="row">${fld('source', 'Source', c.source)}${fld('prochaine_action', 'Prochaine action', c.prochaine_action)}</div>
       ${c.statut === 'prospect' || !c.id ? `<div class="row one"><div><label>Étape</label><select id="cf_etape">${opt(ETAPES, c.etape)}</select></div></div>` : ''}
-      <div class="row one"><div><label>Notes</label><textarea id="cf_notes" rows="3">${ce(c.notes)}</textarea></div></div>
       <label style="display:block;margin:4px 0"><input type="checkbox" id="cf_priorite" style="width:auto"${c.priorite ? ' checked' : ''}> ⭐ Prioritaire</label>
       <label style="display:block;margin:4px 0"><input type="checkbox" id="cf_no_mailing" style="width:auto"${c.no_mailing ? ' checked' : ''}> Ne pas inclure dans les mailings (désinscrit / refus)</label>`;
+    return `
+      <div class="row one"><div><label>Organisation / société</label><input id="cf_organisation" value="${ce(c.organisation)}" placeholder="Mairie de…, Comité des fêtes de…"></div></div>
+      <div class="row">${fld('prenom', 'Prénom', c.prenom)}${fld('nom', 'Nom', c.nom)}</div>
+      <div class="row">${fld('telephone', 'Téléphone', c.telephone, 'tel')}${fld('email', 'Email', c.email, 'email')}</div>
+      <div class="row one">${fld('evenement', 'Événement / besoin', c.evenement)}</div>
+      <div class="row">${fld('date_relance', 'Date de relance', c.date_relance, 'date')}<div></div></div>
+      <div class="row one"><div><label>Notes</label><textarea id="cf_notes" rows="3">${ce(c.notes)}</textarea></div></div>
+      ${quick ? `<details style="margin:6px 0"><summary class="vz-note" style="cursor:pointer;padding:6px 0">Plus de champs (ville, catégorie, budget…)</summary>${adv}</details>` : adv}`;
   }
 
   function readForm() {
@@ -172,7 +174,7 @@
   }
 
   function openForm(c) {
-    modal(`<h3 style="margin-top:0">Nouveau contact</h3>${formHtml(null)}
+    modal(`<h3 style="margin-top:0">Nouveau contact</h3>${formHtml(null, true)}
       <div class="crm-bar"><button class="period-btn on" style="background:var(--amber);color:#1b1300" id="cfSave" type="button">Créer</button>
       <button class="period-btn" type="button" onclick="crmClose()">Annuler</button><span id="cfMsg" class="vz-note"></span></div>
       <label style="display:block;margin-top:8px"><input type="checkbox" id="cfClient" style="width:auto"> C'est déjà un client</label>`);
@@ -325,5 +327,6 @@
     };
   }
 
+  window.crmNew = function () { if (!ready) { build(); ready = true; } load(); openForm(null); };
   window.crmOpen = function () { if (!ready) { build(); ready = true; } load(); };
 })();

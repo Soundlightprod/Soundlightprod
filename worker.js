@@ -593,7 +593,7 @@ function routeDomain(request, url) {
   // Exclus : admin, agenda de groupe, vérification Google, pages boutique (gérées plus haut / sur le .store).
   if (
     host.endsWith("soundlightprod.fr") && !isApi && path.endsWith(".html") &&
-    !/^\/(admin|mon-agenda)\.html$/.test(path) &&
+    !/^\/(admin|admin-contacts|mon-agenda)\.html$/.test(path) &&
     !/^\/google[0-9a-f]{16}\.html$/.test(path) &&
     !STORE_PAGES.test(path) &&
     !INTL_LANGS.some((l) => path.startsWith(`/${l}/`))

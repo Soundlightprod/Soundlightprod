@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<title>Contacts — SLP</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="admin-contacts-manifest.json?v=1">
+<meta name="theme-color" content="#0c0b10">
+<link rel="icon" href="admin-icon-192.png?v=20261010">
+<link rel="apple-touch-icon" href="admin-icon-180.png?v=20261010">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SLP Contacts">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --violet:#8b5cf6; --blue:#2f9bff; --line:rgba(255,255,255,0.1); }
+  *{box-sizing:border-box}
+  body{background:var(--ink);color:var(--paper);font-family:'Manrope',sans-serif;margin:0;padding:calc(env(safe-area-inset-top) + 14px) 14px 110px}
+  h2{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;margin:6px 0 4px}
+  h3,h4{font-family:'Space Grotesk',sans-serif}
+  .vz-sub{color:var(--muted);font-size:.82rem;margin:4px 0 0}
+  .vz-note{color:var(--muted);font-size:.78rem}
+  .vz-card{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px}
+  .period-btn{background:var(--ink-2);border:1px solid var(--line);color:var(--muted);border-radius:100px;padding:9px 16px;cursor:pointer;font-family:'Manrope',sans-serif;font-size:.88rem}
+  .login-box{max-width:340px;margin:70px auto;text-align:center}
+  .login-box input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--ink-2);color:var(--paper);margin-bottom:12px;font-size:16px}
+  .login-box button{background:var(--paper);color:var(--ink);border:none;border-radius:100px;padding:10px 22px;font-weight:700;font-size:1rem}
+  #fab{position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 14px);z-index:50;background:var(--amber);color:#1b1300;border:none;border-radius:100px;padding:16px;font-weight:800;font-size:1.05rem;font-family:'Space Grotesk',sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.5);display:none}
+  #crmExp,#crmImp,#crmNew{display:none}
+</style>
+</head>
+<body>
+<div class="login-box" id="loginBox" style="display:none">
+  <h2>Contacts SLP</h2>
+  <p class="vz-sub" style="margin-bottom:16px">Entre le mot de passe admin (une seule fois sur cet appareil).</p>
+  <input type="password" id="pw" placeholder="Mot de passe" autocomplete="current-password">
+  <button type="button" id="loginBtn">Entrer</button>
+  <p id="loginErr" class="vz-note" style="color:var(--pink)"></p>
+</div>
+<div id="app" style="display:none">
+  <div id="tab-crm"></div>
+</div>
+<button type="button" id="fab">＋ Nouveau contact</button>
+
+<script>
+  let token = localStorage.getItem('slp_admin_token') || sessionStorage.getItem('slp_admin_token') || '';
+  const $ = (id) => document.getElementById(id);
+
+  async function check(t) {
+    try { const r = await fetch('/api/admin/crm/contacts', { headers: { Authorization: 'Bearer ' + t } }); return r.ok; } catch (e) { return null; }
+  }
+  function start() {
+    $('loginBox').style.display = 'none';
+    $('app').style.display = 'block';
+    $('fab').style.display = 'block';
+    crmOpen();
+    if (location.hash === '#nouveau') setTimeout(crmNew, 150);
+  }
+  async function login() {
+    const t = $('pw').value;
+    const ok = await check(t);
+    if (ok) { token = t; localStorage.setItem('slp_admin_token', t); start(); }
+    else $('loginErr').textContent = ok === false ? 'Mot de passe incorrect.' : 'Connexion impossible, réessaie.';
+  }
+  $('loginBtn').onclick = login;
+  $('pw').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+  $('fab').onclick = () => crmNew();
+  (async () => {
+    if (token && (await check(token)) !== false) start(); else $('loginBox').style.display = 'block';
+  })();
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('admin-sw.js').catch(() => {});
+</script>
+<script src="admin-crm.js?v=2"></script>
+</body>
+</html>
