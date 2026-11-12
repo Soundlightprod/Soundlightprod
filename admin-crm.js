@@ -61,7 +61,7 @@
     #crmModal .crm-badge{display:inline-block;border-radius:100px;padding:2px 10px;font-size:.72rem;font-weight:700;background:rgba(139,92,246,.25);color:#d6c6ff;margin-right:4px}
     #crmModal .crm-badge.client{background:rgba(47,155,255,.25);color:#b9dcff}
     #crmModal .crm-files{margin:4px 0;display:flex;flex-direction:column;gap:3px}
-    #crmModal .crm-file a{color:var(--blue);text-decoration:none}
+    #crmModal .crm-file a{color:var(--blue);text-decoration:underline;padding:4px 0;display:inline-block}
     #crmViewer{position:fixed;inset:0;z-index:10000;background:#000;display:flex;flex-direction:column}
     #crmViewer .vbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:var(--ink-2);color:var(--paper);border-bottom:1px solid var(--line)}
     #crmViewer .vbar b{font-size:.85rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -207,7 +207,8 @@
     const files = (pid) => (d.fichiers || []).filter((f) => f.kind === kind && f.parent_id === pid);
     const lines = items.map((v) => `<div class="j" style="border-color:var(--amber)"><b>${ce(v.ref || (kind === 'devis' ? 'Devis' : 'Proposition'))}</b> ${ce(v.objet || '')} — ${v.montant_ht != null ? eur(v.montant_ht) + ' HT' : 'montant ?'}${v.date_envoi ? ' · envoyé(e) le ' + fmtD(v.date_envoi) : ''}
         <div class="crm-files">${files(v.id).map((f) => `<span class="crm-file"><a href="#" data-fv="${f.id}" data-fn="${ce(f.nom)}">📄 ${ce(f.nom)}</a> <small>${ko(f.taille)}</small> <a href="#" data-fd="${f.id}" style="color:var(--pink)" title="Retirer ce PDF">✕</a></span>`).join('') || '<span class="vz-note">Aucun PDF joint</span>'}</div>
-        <div class="crm-bar" style="margin:4px 0 0"><select data-st="${kind}:${v.id}" style="padding:6px 8px;font-size:14px">${opt(statuts, v.statut)}</select>
+        <div class="crm-bar" style="margin:4px 0 0"><button class="period-btn" type="button" data-view="${kind}:${v.id}" style="padding:6px 14px;font-size:.85rem;background:var(--blue);color:#06121f;font-weight:700;border-color:var(--blue)">👁 Voir ${kind === 'devis' ? 'le devis' : 'la proposition'}</button>
+          <select data-st="${kind}:${v.id}" style="padding:6px 8px;font-size:14px">${opt(statuts, v.statut)}</select>
           <button class="period-btn" type="button" data-up="${kind}:${v.id}" style="padding:5px 12px;font-size:.78rem">📎 Joindre un PDF</button>
           <a href="#" data-del="${kind}:${v.id}" style="color:var(--pink);font-size:.8rem">supprimer</a></div></div>`).join('');
     return `<div class="crm-sec"><h4 style="margin:0 0 8px">${titre}</h4>
@@ -307,6 +308,13 @@
     root.querySelectorAll('[data-fv]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); viewFile(a.dataset.fv, a.dataset.fn); }));
     root.querySelectorAll('[data-fd]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); if (confirm('Retirer ce PDF ?')) { await api('/fichiers/' + a.dataset.fd, { method: 'DELETE' }); refresh(); } }));
     let pend = null;
+    // « Voir » : ouvre le PDF le plus récent de l'élément ; s'il n'y en a pas, propose d'en joindre un.
+    root.querySelectorAll('[data-view]').forEach((b) => (b.onclick = () => {
+      const [k, pid] = b.dataset.view.split(':');
+      const fs = (d.fichiers || []).filter((f) => f.kind === k && String(f.parent_id) === pid);
+      if (fs.length) { const f = fs[fs.length - 1]; viewFile(f.id, f.nom); return; }
+      if (confirm('Aucun PDF n\'est joint à ' + (k === 'devis' ? 'ce devis' : 'cette proposition') + '. En joindre un maintenant ?')) { pend = { kind: k, id: +pid }; $('fileIn').value = ''; $('fileIn').click(); }
+    }));
     root.querySelectorAll('[data-up]').forEach((b) => (b.onclick = () => { const [k, pid] = b.dataset.up.split(':'); pend = { kind: k, id: +pid }; $('fileIn').value = ''; $('fileIn').click(); }));
     $('fileIn').onchange = async () => {
       const f = $('fileIn').files[0]; if (!f || !pend) return;
