@@ -1,3 +1,4 @@
+import { handleCrm, crmReminderMessage } from "./crm.js";
 // SLP — API Worker : boutique (vente, sur soundlightprod.fr) + location de matériel (sur csanimations.fr)
 //                    + actualités artistes + agenda de disponibilités
 // Déploiement : wrangler deploy (depuis /worker)
@@ -183,7 +184,9 @@ async function ensureChatTables(env) {
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_settings (id INTEGER PRIMARY KEY, enabled INTEGER DEFAULT 1, days TEXT DEFAULT '1,2,3,4,5', start_h INTEGER DEFAULT 9, end_h INTEGER DEFAULT 20)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS push_subs (id INTEGER PRIMARY KEY AUTOINCREMENT, endpoint TEXT UNIQUE NOT NULL, p256dh TEXT, auth TEXT, created_at TEXT)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS push_vapid (id INTEGER PRIMARY KEY, pub TEXT, priv TEXT)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS push_msgs (id INTEGER PRIMARY KEY AUTOINCREMENT, h TEXT NOT NULL, title TEXT, body TEXT, url TEXT, created_at TEXT DEFAULT (datetime('now')))"),
   ]);
+  try { await env.DB.prepare("ALTER TABLE push_subs ADD COLUMN crm INTEGER NOT NULL DEFAULT 0").run(); } catch (e) { /* colonne déjà présente */ }
   chatTablesReady = true;
 }
 
@@ -200,9 +203,21 @@ async function getVapid(env) {
   return row;
 }
 // Notification push (sans contenu) vers les appareils d'admin abonnés ; le service worker affiche le texte.
-async function sendAdminPush(env) {
-  const subs = (await env.DB.prepare("SELECT id, endpoint FROM push_subs").all()).results || [];
+const parisToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+const endpointHash = async (endpoint) => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(endpoint)))].slice(0, 16).map((x) => x.toString(16).padStart(2, "0")).join("");
+// opts.crm = true : uniquement les appareils qui ont activé les rappels CRM ; opts.msg = { title, body, url } affiché à la place du message du chat
+// (le push reste « vide » : le service worker vient chercher le texte sur /api/push/pending avec l'empreinte de son abonnement).
+async function sendAdminPush(env, opts) {
+  await ensureChatTables(env);
+  const crmOnly = !!(opts && opts.crm);
+  const subs = (await env.DB.prepare(crmOnly ? "SELECT id, endpoint FROM push_subs WHERE crm = 1" : "SELECT id, endpoint FROM push_subs").all()).results || [];
   if (!subs.length) return;
+  if (opts && opts.msg) {
+    await env.DB.prepare("DELETE FROM push_msgs WHERE created_at < datetime('now', '-1 day')").run();
+    for (const sub of subs) {
+      await env.DB.prepare("INSERT INTO push_msgs (h, title, body, url) VALUES (?, ?, ?, ?)").bind(await endpointHash(sub.endpoint), opts.msg.title, opts.msg.body, opts.msg.url || null).run();
+    }
+  }
   const v = await getVapid(env);
   const key = await crypto.subtle.importKey("jwk", JSON.parse(v.priv), { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
   const enc = new TextEncoder();
@@ -592,7 +607,7 @@ function routeDomain(request, url) {
   // Exclus : admin, agenda de groupe, vérification Google, pages boutique (gérées plus haut / sur le .store).
   if (
     host.endsWith("soundlightprod.fr") && !isApi && path.endsWith(".html") &&
-    !/^\/(admin|mon-agenda)\.html$/.test(path) &&
+    !/^\/(admin|admin-contacts|mon-agenda)\.html$/.test(path) &&
     !/^\/google[0-9a-f]{16}\.html$/.test(path) &&
     !STORE_PAGES.test(path) &&
     !INTL_LANGS.some((l) => path.startsWith(`/${l}/`))
@@ -1033,6 +1048,41 @@ export default {
     }
 
     try {
+      // ============ CRM prospects & clients (admin) ============
+      if (url.pathname.startsWith("/api/admin/crm/") && env.DB) {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        // Rappels sur téléphone : clé publique, abonnement de l'appareil (rappels CRM activés), test
+        if (url.pathname === "/api/admin/crm/push-key" && request.method === "GET") {
+          await ensureChatTables(env); const v = await getVapid(env); return json({ ok: true, key: v.pub }, 200, origin);
+        }
+        if (url.pathname === "/api/admin/crm/push-subscribe" && request.method === "POST") {
+          await ensureChatTables(env);
+          const body = await request.json().catch(() => ({}));
+          const sub = body.subscription || {};
+          if (!sub.endpoint || !/^https:\/\//.test(sub.endpoint)) return json({ error: "Abonnement invalide" }, 400, origin);
+          await env.DB.prepare("INSERT INTO push_subs (endpoint, p256dh, auth, created_at, crm) VALUES (?,?,?,datetime('now'),1) ON CONFLICT(endpoint) DO UPDATE SET p256dh = excluded.p256dh, auth = excluded.auth, crm = 1")
+            .bind(sub.endpoint, String((sub.keys && sub.keys.p256dh) || "").slice(0, 200) || null, String((sub.keys && sub.keys.auth) || "").slice(0, 100) || null).run();
+          return json({ ok: true }, 200, origin);
+        }
+        if (url.pathname === "/api/admin/crm/push-test" && request.method === "POST") {
+          const real = await crmReminderMessage(env, parisToday());
+          await sendAdminPush(env, { crm: true, msg: real || { title: "🔔 Rappels SLP activés", body: "Tu recevras ici tes relances et devis à faire. Rien à signaler aujourd'hui.", url: "/admin-contacts.html" } });
+          return json({ ok: true, rappel: real }, 200, origin);
+        }
+        return await handleCrm(request, env, url, origin, json, cors);
+      }
+
+      // Texte de la notification en attente pour un appareil (appelé par le service worker ; contient uniquement des chiffres)
+      if (url.pathname === "/api/push/pending" && request.method === "GET" && env.DB) {
+        await ensureChatTables(env);
+        const h = (url.searchParams.get("h") || "").replace(/[^0-9a-f]/g, "").slice(0, 32);
+        if (h.length !== 32) return json({ error: "invalide" }, 400, origin);
+        const row = await env.DB.prepare("SELECT id, title, body, url FROM push_msgs WHERE h = ? AND created_at > datetime('now', '-3 hours') ORDER BY id DESC LIMIT 1").bind(h).first();
+        if (!row) return json({}, 200, origin);
+        await env.DB.prepare("DELETE FROM push_msgs WHERE h = ?").bind(h).run();
+        return json({ title: row.title, body: row.body, url: row.url }, 200, origin);
+      }
+
       // ============ BOUTIQUE (VENTE) ============
 
       // GET /api/products — catalogue public
@@ -2290,6 +2340,7 @@ export default {
   },
   async scheduled(event, env, ctx) {
     ctx.waitUntil(collectMetaStats(env));
+    ctx.waitUntil((async () => { const msg = await crmReminderMessage(env, parisToday()); if (msg) await sendAdminPush(env, { crm: true, msg }); })().catch((e) => console.error("crm: rappels", e && e.message)));
     ctx.waitUntil(retryFailedContactMails(env, { minAgeMin: 5, limit: 50 }).catch((e) => console.error("contact: reprise cron", e && e.message)));
   },
 };
