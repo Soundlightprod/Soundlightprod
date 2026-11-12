@@ -1,3 +1,4 @@
+import { handleCrm } from "./crm.js";
 // SLP — API Worker : boutique (vente, sur soundlightprod.fr) + location de matériel (sur csanimations.fr)
 //                    + actualités artistes + agenda de disponibilités
 // Déploiement : wrangler deploy (depuis /worker)
@@ -1033,6 +1034,12 @@ export default {
     }
 
     try {
+      // ============ CRM prospects & clients (admin) ============
+      if (url.pathname.startsWith("/api/admin/crm/") && env.DB) {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        return await handleCrm(request, env, url, origin, json, cors);
+      }
+
       // ============ BOUTIQUE (VENTE) ============
 
       // GET /api/products — catalogue public

@@ -455,6 +455,7 @@
     <button class="tab-btn" id="tabBtn-devices" onclick="switchTab('devices')">10. 📱 Mes appareils</button>
     <button class="tab-btn" id="tabBtn-chat" onclick="switchTab('chat')">11. 💬 Chat <span id="chatBadge" style="display:none;background:#FF0953;color:#fff;border-radius:10px;padding:0 7px;font-size:.75rem;margin-left:4px;"></span></button>
     <button class="tab-btn" id="tabBtn-supernova" onclick="switchTab('supernova')">12. 🌠 Supernova</button>
+    <button class="tab-btn" id="tabBtn-crm" onclick="switchTab('crm')">13. 👥 Prospects &amp; clients</button>
   </div>
 
   <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
@@ -1196,6 +1197,9 @@
   </div>
 
   <!-- ============ ONGLET 12 : SUPERNOVA (espace privé des musiciens) ============ -->
+  <!-- ============ ONGLET 13 : PROSPECTS & CLIENTS (CRM) ============ -->
+  <div class="tab-content" id="tab-crm"></div>
+
   <div class="tab-content" id="tab-supernova">
     <h2>Supernova</h2>
     <p class="vz-sub">Espace privé des musiciens du projet : chat, vidéos, tâches. Tu y entres d'ici directement, sans te réidentifier ; les autres membres se connectent avec leur identifiant.</p>
@@ -1982,6 +1986,7 @@
       if (slot && form && form.parentElement !== slot) slot.appendChild(form);
     }
     if (name === 'groupview') renderGroupView();
+    if (name === 'crm' && window.crmOpen) crmOpen();
     if (name === 'supernova') { snEmbed(); snLoad(); }
     if (name === 'chat') { chatLoadSettings(); chatStartPolling(); try { history.replaceState(null,'','#chat'); } catch(e){} }
     if (name === 'visits'){ refreshStats(); try { const v = localStorage.getItem('slp_vpane'); if (v) switchVisitsPane(v); } catch(e){} }
@@ -4036,6 +4041,7 @@
     navigator.serviceWorker.register('admin-sw.js').catch(() => {});
   }
 </script>
+<script src="admin-crm.js?v=1"></script>
 
 </body>
 </html>
