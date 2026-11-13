@@ -516,6 +516,7 @@
         <option value="clement-blouin">Clément Blouin</option>
         <option value="animation">🎉 Animation</option>
         <option value="presta-technique">🔧 Prestation technique</option>
+        <option value="location-materiel">📦 Location / prêt matériel</option>
         <option value="_guest">👤 Invité (pas de fiche sur le site)</option>
       </select>
       <select id="evtType" onchange="onEventTypeChange()">
@@ -524,7 +525,6 @@
         <option value="dj">🎧 DJ</option>
         <option value="animation">🎉 Animation</option>
         <option value="karaoke">🎙️ Karaoké</option>
-        <option value="location">📦 Location / prêt matériel</option>
         <option value="indisponible">🚫 Indisponibilité</option>
         <option value="actu">📣 Actu libre</option>
       </select>
@@ -2435,8 +2435,8 @@
     showToast('Commande supprimée');
   }
 
-  const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'supernova':'Supernova', 'voice-of-freedom':'Voice of Freedom', 'the-best-abba-tribute':'Tribute ABBA', 'calo2-0':'Tribute Calogero', 'tribute-matmatah':'Tribute Matmatah', 'tribute-celine-dion':'Tribute Céline Dion', 'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'tribute-bee-gees':'Tribute Bee Gees', 'tribute-phil-collins':'Tribute Phil Collins', 'tribute-balavoine':'Tribute Balavoine', 'tribute-barry-white':'Tribute Barry White', 'bim-bam-boom':'Bim Bam Boom', 'clement-blouin':'Clément Blouin', 'animation':'Animation', 'presta-technique':'Prestation technique' };
-  const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'supernova':'#ff3d81', 'voice-of-freedom':'#cda754', 'the-best-abba-tribute':'#14b8a6', 'calo2-0':'#e2352c', 'tribute-matmatah':'#4fb8ff', 'tribute-celine-dion':'#fbc608', 'tribute-kool-and-the-gang':'#ffb238', 'tribute-bee-gees':'#22c55e', 'tribute-phil-collins':'#a855f7', 'tribute-balavoine':'#94a3b8', 'tribute-barry-white':'#d4a24c', 'bim-bam-boom':'#f472b6', 'clement-blouin':'#34d399', 'animation':'#f97316', 'presta-technique':'#9a93a6' };
+  const ARTIST_LABELS = { 'location-materiel':'Location / prêt matériel', 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'supernova':'Supernova', 'voice-of-freedom':'Voice of Freedom', 'the-best-abba-tribute':'Tribute ABBA', 'calo2-0':'Tribute Calogero', 'tribute-matmatah':'Tribute Matmatah', 'tribute-celine-dion':'Tribute Céline Dion', 'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'tribute-bee-gees':'Tribute Bee Gees', 'tribute-phil-collins':'Tribute Phil Collins', 'tribute-balavoine':'Tribute Balavoine', 'tribute-barry-white':'Tribute Barry White', 'bim-bam-boom':'Bim Bam Boom', 'clement-blouin':'Clément Blouin', 'animation':'Animation', 'presta-technique':'Prestation technique' };
+  const ARTIST_COLORS = { 'location-materiel':'#14b8a6', 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'supernova':'#ff3d81', 'voice-of-freedom':'#cda754', 'the-best-abba-tribute':'#14b8a6', 'calo2-0':'#e2352c', 'tribute-matmatah':'#4fb8ff', 'tribute-celine-dion':'#fbc608', 'tribute-kool-and-the-gang':'#ffb238', 'tribute-bee-gees':'#22c55e', 'tribute-phil-collins':'#a855f7', 'tribute-balavoine':'#94a3b8', 'tribute-barry-white':'#d4a24c', 'bim-bam-boom':'#f472b6', 'clement-blouin':'#34d399', 'animation':'#f97316', 'presta-technique':'#9a93a6' };
   const TYPE_ICONS = { concert:'🎤', cabaret:'🎭', dj:'🎧', animation:'🎉', karaoke:'🎙️', indisponible:'🚫', location:'📦', actu:'📣' };
   const ROADMAP_TYPES = ['concert', 'cabaret', 'dj', 'animation', 'karaoke'];
   // Types qui bloquent seulement une date dans l'agenda (jamais publics, pas d'actu ni de feuille de route)
@@ -2921,7 +2921,7 @@
   function onArtistChange(){
     const artistVal = document.getElementById('evtArtist').value;
     const isGuest = artistVal === '_guest';
-    const isPresta = artistVal === 'presta-technique';
+    const isPresta = artistVal === 'presta-technique' || artistVal === 'location-materiel';
     document.getElementById('evtGuestNameRow').style.display = isGuest ? 'flex' : 'none';
     document.getElementById('evtGuestNote').style.display = isGuest ? 'block' : 'none';
     document.getElementById('evtPublicLabel').style.display = isPresta ? 'none' : 'flex';
@@ -3305,7 +3305,7 @@
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const todayStr = new Date().toISOString().slice(0,10);
     // Les indisponibilités des artistes (Supernova…) n'encombrent pas le planning SLP : seules les siennes (prestation technique) restent
-    const data = (window.dispoData || []).filter(d => !(d.type === 'indisponible' && d.artist_slug !== 'presta-technique'));
+    const data = (window.dispoData || []).filter(d => !(d.type === 'indisponible' && !['presta-technique', 'location-materiel'].includes(d.artist_slug)));
 
     for (let i = 0; i < startOffset; i++){
       html += `<div class="agenda-day empty"></div>`;
@@ -3435,7 +3435,7 @@
   // (karaoké, animation, DJ…), et pour tout type autre que « concert » sur les groupes.
   function typeTag(e){
     if (!e || e.type === 'indisponible' || e.type === 'actu') return '';
-    if (e.artist_slug === 'presta-technique' || e.type !== 'concert') return ' · ' + escapeAttr(DISPO_TYPE_PLAIN[e.type] || e.type);
+    if (e.artist_slug === 'presta-technique' || e.artist_slug === 'location-materiel' || e.type !== 'concert') return ' · ' + escapeAttr(DISPO_TYPE_PLAIN[e.type] || e.type);
     return '';
   }
 

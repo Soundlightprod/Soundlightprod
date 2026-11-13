@@ -1308,7 +1308,7 @@ export default {
       // seules les dates VALIDÉES apparaissent sur le site (fiche artiste + agenda public).
       if (url.pathname === "/api/actualites" && request.method === "GET") {
         const artist = url.searchParams.get("artist");
-        if (!artist || artist === "presta-technique") return json([], 200, origin);
+        if (!artist || artist === "presta-technique" || artist === "location-materiel") return json([], 200, origin);
         const today = new Date().toISOString().slice(0, 10);
         const { results } = await env.DB.prepare(
           `SELECT id, artist_slug, type, text, photo_url, requalified, publish_at, event_date, event_end_date, expires_at, created_at,
@@ -1333,7 +1333,7 @@ export default {
           `SELECT id, artist_slug, guest_name, type, text, photo_url, event_date, event_end_date, event_time, venue_name, venue_city, ticket_url, ticket_price
            FROM actualites
            WHERE type IN ('concert', 'cabaret', 'dj', 'animation', 'karaoke') AND is_public = 1
-           AND artist_slug != 'presta-technique'
+           AND artist_slug NOT IN ('presta-technique', 'location-materiel')
            AND (publish_at IS NULL OR publish_at = '' OR publish_at <= ?)
            AND event_date >= ?
            AND id NOT IN (SELECT DISTINCT source_actu_id FROM artist_agenda WHERE source_actu_id IS NOT NULL AND status = 'option')
@@ -2090,7 +2090,7 @@ export default {
         const ARTIST_LABELS = {
           "alchimie": "Alchimie", "cache-candy": "Cache Candy", "the-fine-allies": "The Fine Allies",
           "noon-coverband": "NooN Coverband", "panache": "Panache", "supernova": "Supernova", "voice-of-freedom": "Voice of Freedom",
-          "presta-technique": "Prestation technique",
+          "presta-technique": "Prestation technique", "location-materiel": "Location / prêt matériel",
         };
         const foldLine = (line) => {
           // RFC 5545 : replie les lignes de plus de 75 octets avec un saut de ligne + espace
