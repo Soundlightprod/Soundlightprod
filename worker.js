@@ -1890,6 +1890,8 @@ export default {
         const secondaire = (async () => {
           try { await notifyContactMail(env, { id, reference, site, nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, page_origine: d.page, city: cf.city, artiste_nom: d.artiste_nom, produit_ref: d.produit_ref, commande_num: d.commande_num, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget, technique: d.technique }); } catch (e) { console.error("contact: notification", e && e.message); }
           await recordContactEvent(env, site, d, cf, vp);
+          // Alerte téléphone : nouvelle demande reçue par le formulaire (aucun nom ni coordonnée dans la notification)
+          try { await sendAdminPush(env, { msg: { title: "📩 Nouvelle demande de contact", body: `Une demande vient d'arriver par le formulaire ${site === "store" ? "de la boutique" : site === "bmb" ? "Book My Band" : "SLP"}. Rappelle vite.`, url: "/admin-contacts.html" } }); } catch (e) { console.error("contact: alerte téléphone", e && e.message); }
           // Versement automatique dans le CRM (prospects) : formulaires SLP et Book My Band, pas la boutique
           if (site !== "store") { try { await crmIngestSiteRequest(env, { id, cree_le: new Date().toISOString().slice(0, 16).replace("T", " "), nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, artiste_nom: d.artiste_nom, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget }); } catch (e) { console.error("crm: demande du site", e && e.message); } }
           try { await retryFailedContactMails(env, { minAgeMin: 2, limit: 3 }); } catch (e) { console.error("contact: reprise", e && e.message); }
@@ -1911,8 +1913,23 @@ export default {
         if (!action) return json({ ok: false }, 200, origin);
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
         if (vp.isBot) return json({ ok: true }, 200, origin); // robots : rien d'enregistré
+        const sidEv = String(body.session_id || "").slice(0, 60) || null;
+        // Alerte téléphone quand un visiteur ouvre le chat : au plus une par visiteur toutes les 30 min (5 min si on ne connaît pas sa session)
+        let alerteChat = false;
+        if (action === "chat") {
+          try {
+            const deja = sidEv
+              ? await env.DB.prepare("SELECT 1 AS ok FROM contact_events WHERE action = 'chat' AND session_id = ? AND cree_le >= datetime('now', '-30 minutes') LIMIT 1").bind(sidEv).first()
+              : await env.DB.prepare("SELECT 1 AS ok FROM contact_events WHERE action = 'chat' AND cree_le >= datetime('now', '-5 minutes') LIMIT 1").first();
+            alerteChat = !deja;
+          } catch (e) { /* pas d'alerte si le contrôle échoue */ }
+        }
         await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-          .bind(siteFromRequest(request, body), action, String(body.page || "").slice(0, 200) || null, String(body.session_id || "").slice(0, 60) || null, cf.city || null, vp.network, vp.device, vp.isBot).run();
+          .bind(siteFromRequest(request, body), action, String(body.page || "").slice(0, 200) || null, sidEv, cf.city || null, vp.network, vp.device, vp.isBot).run();
+        if (alerteChat) {
+          const push = sendAdminPush(env, { msg: { title: "💬 Un visiteur ouvre le chat", body: "Quelqu'un est en train de consulter le chat du site. Réponds vite s'il écrit.", url: "/admin.html" } }).catch((e) => console.error("chat: alerte téléphone", e && e.message));
+          if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(push); else await push;
+        }
         return json({ ok: true }, 200, origin);
       }
 
