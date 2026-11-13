@@ -1318,6 +1318,8 @@
 
 <script>
   const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+  // Agenda / événements : servis par le serveur actuel du site (l'ancien slp-api ne connaît pas les types animation, karaoké, location)
+  const EVENTS_BASE = location.origin;
   let token = localStorage.getItem('slp_admin_token') || sessionStorage.getItem('slp_admin_token') || '';
 
   function money(cents){ return (cents/100).toFixed(2).replace('.', ',') + ' €'; }
@@ -2521,7 +2523,7 @@
 
   async function loadActus(){
     try {
-      const res = await fetch(`${API_BASE}/api/admin/actualites`, { headers:{ Authorization:`Bearer ${token}` } });
+      const res = await fetch(`${EVENTS_BASE}/api/admin/actualites`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
       if (!Array.isArray(data)) throw new Error(data.error || 'Réponse inattendue');
       window.actusData = data;
@@ -3025,7 +3027,7 @@
     const label = ARTIST_LABELS[d.artist_slug] || d.artist_slug;
     if (!confirm(`Requalifier cette indisponibilité de ${label} (${d.date}) en concert ? Le blocage actuel sera libéré puis recréé en tant que concert une fois le formulaire enregistré.`)) return;
 
-    await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    await fetch(`${EVENTS_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
     await loadDispos();
 
     cancelEdit();
@@ -3155,8 +3157,8 @@
     let res, data;
     if (editingDispoId && type !== editingDispoType){
       // Conversion d'une indisponibilité en événement : on libère le créneau puis on recrée l'événement.
-      await fetch(`${API_BASE}/api/admin/agenda/${editingDispoId}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
-      res = await fetch(`${API_BASE}/api/admin/actualites`, {
+      await fetch(`${EVENTS_BASE}/api/admin/agenda/${editingDispoId}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+      res = await fetch(`${EVENTS_BASE}/api/admin/actualites`, {
         method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
         body: JSON.stringify({
           artist_slug, guest_name, type, text, label, is_public,
@@ -3167,19 +3169,26 @@
         })
       });
       data = await res.json();
-      if (!res.ok){ alert(data.error || "Erreur lors de la conversion (l'indisponibilité d'origine a été supprimée, recrée l'événement)."); }
+      if (!res.ok){
+        // Échec : on remet la ligne d'origine pour ne rien perdre
+        await fetch(`${EVENTS_BASE}/api/admin/actualites`, {
+          method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+          body: JSON.stringify({ artist_slug, type: editingDispoType, label, start_date, end_date, publish_at, expires_at, status })
+        });
+        alert((data && data.error) || "Erreur lors de la conversion : la ligne d'origine a été remise.");
+      }
       else if (data.conflicts && data.conflicts.length){
         conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${guest_name || ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
       }
     } else if (editingDispoId){
-      res = await fetch(`${API_BASE}/api/admin/agenda/${editingDispoId}`, {
+      res = await fetch(`${EVENTS_BASE}/api/admin/agenda/${editingDispoId}`, {
         method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
         body: JSON.stringify({ date: start_date, label, publish_at, expires_at, status })
       });
       data = await res.json();
       if (!res.ok){ alert(data.error || 'Erreur lors de la modification.'); return; }
     } else if (editingActuId){
-      res = await fetch(`${API_BASE}/api/admin/actualites/${editingActuId}`, {
+      res = await fetch(`${EVENTS_BASE}/api/admin/actualites/${editingActuId}`, {
         method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
         body: JSON.stringify({
           artist_slug, guest_name, type, text, is_public,
@@ -3194,7 +3203,7 @@
         conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${guest_name || ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
       }
     } else {
-      res = await fetch(`${API_BASE}/api/admin/actualites`, {
+      res = await fetch(`${EVENTS_BASE}/api/admin/actualites`, {
         method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
         body: JSON.stringify({
           artist_slug, guest_name, type, text, label, is_public,
@@ -3205,6 +3214,7 @@
         })
       });
       data = await res.json();
+      if (!res.ok){ alert(data.error || "Erreur lors de l'enregistrement."); return; }
       pendingRequalify = false;
       if (data.conflicts && data.conflicts.length){
         conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${guest_name || ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
@@ -3231,7 +3241,7 @@
   }
 
   async function toggleActuPublic(id, newValue){
-    await fetch(`${API_BASE}/api/admin/actualites/${id}/visibility`, {
+    await fetch(`${EVENTS_BASE}/api/admin/actualites/${id}/visibility`, {
       method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
       body: JSON.stringify({ is_public: newValue })
     });
@@ -3241,7 +3251,7 @@
 
   async function deleteActu(id){
     if (!confirm('Supprimer cette actualité ? Si elle a bloqué des dates dans l\'agenda, elles seront libérées aussi.')) return;
-    await fetch(`${API_BASE}/api/admin/actualites/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    await fetch(`${EVENTS_BASE}/api/admin/actualites/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
     loadActus();
     loadDispos();
     showToast('Actualité supprimée');
@@ -3294,7 +3304,8 @@
     const startOffset = (firstDay.getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const todayStr = new Date().toISOString().slice(0,10);
-    const data = window.dispoData || [];
+    // Les indisponibilités des artistes (Supernova…) n'encombrent pas le planning SLP : seules les siennes (prestation technique) restent
+    const data = (window.dispoData || []).filter(d => !(d.type === 'indisponible' && d.artist_slug !== 'presta-technique'));
 
     for (let i = 0; i < startOffset; i++){
       html += `<div class="agenda-day empty"></div>`;
@@ -3384,7 +3395,7 @@
 
   async function loadDispos(){
     try {
-      const res = await fetch(`${API_BASE}/api/admin/agenda`, { headers:{ Authorization:`Bearer ${token}` } });
+      const res = await fetch(`${EVENTS_BASE}/api/admin/agenda`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
       if (!Array.isArray(data)) throw new Error(data.error || 'Réponse inattendue');
       window.dispoData = data;
@@ -4045,7 +4056,7 @@
   }
 
   async function toggleDispoStatus(id, newStatus){
-    await fetch(`${API_BASE}/api/admin/agenda/${id}/status`, {
+    await fetch(`${EVENTS_BASE}/api/admin/agenda/${id}/status`, {
       method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
       body: JSON.stringify({ status: newStatus })
     });
@@ -4059,7 +4070,7 @@
     const d = (window.dispoData || []).find(x => x.id === id); if (!d) return;
     const ids = d.source_actu_id ? (window.dispoData || []).filter(x => x.source_actu_id === d.source_actu_id && x.status === 'option').map(x => x.id) : [id];
     for (const i of ids){
-      await fetch(`${API_BASE}/api/admin/agenda/${i}/status`, { method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`}, body: JSON.stringify({ status:'validee' }) });
+      await fetch(`${EVENTS_BASE}/api/admin/agenda/${i}/status`, { method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`}, body: JSON.stringify({ status:'validee' }) });
     }
     await loadDispos();
     showToast('Option validée');
@@ -4077,19 +4088,19 @@
         ? `${who} — ${when}\n\nCette date fait partie d'un événement sur ${n} jours.\n\nOK = supprimer tout l'événement (toutes ses dates)\nAnnuler = ne rien supprimer`
         : `Supprimer ${kind} « ${who} » du ${when} ?\n(l'événement associé sera aussi supprimé)`;
       if (!confirm(msg)) return;
-      await fetch(`${API_BASE}/api/admin/actualites/${d.source_actu_id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
-      await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } }).catch(()=>{});
+      await fetch(`${EVENTS_BASE}/api/admin/actualites/${d.source_actu_id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+      await fetch(`${EVENTS_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } }).catch(()=>{});
       if (typeof loadActus === 'function') loadActus();
     } else {
       if (!confirm(`Supprimer ${kind} « ${who} » du ${when} ?`)) return;
-      await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+      await fetch(`${EVENTS_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
     }
     await loadDispos();
     showToast(d.status === 'option' ? 'Option supprimée' : 'Date supprimée');
   }
 
   async function deleteDispo(id){
-    await fetch(`${API_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+    await fetch(`${EVENTS_BASE}/api/admin/agenda/${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
     loadDispos();
     showToast('Date supprimée');
   }

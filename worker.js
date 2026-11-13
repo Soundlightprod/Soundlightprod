@@ -1344,7 +1344,7 @@ export default {
 
       // GET /api/admin/actualites — toutes les actus, tous artistes (admin)
       if (url.pathname === "/api/admin/actualites" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const { results } = await env.DB.prepare(
           `SELECT id, artist_slug, guest_name, type, text, photo_url, is_public, requalified, publish_at, event_date, event_end_date, expires_at, created_at,
                   ${ROADMAP_COLUMNS.join(", ")}
@@ -1367,7 +1367,7 @@ export default {
       // - type 'indisponible' : bloque start_date..end_date dans artist_agenda seulement,
       //                          rien dans actualites (jamais publique).
       if (url.pathname === "/api/admin/actualites" && request.method === "POST") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const body = await request.json();
         const { artist_slug, guest_name, type, text, photo_url, publish_at, expires_at, label, status } = body;
         const is_public = body.is_public === false || body.is_public === 0 ? 0 : 1;
@@ -1428,7 +1428,7 @@ export default {
       // Si le type devient 'actu', les jours liés sont simplement libérés.
       const actuUpdateMatch = url.pathname.match(/^\/api\/admin\/actualites\/(\d+)$/);
       if (actuUpdateMatch && request.method === "PUT") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const id = actuUpdateMatch[1];
         const existingActu = await env.DB.prepare("SELECT * FROM actualites WHERE id = ?").bind(id).first();
         if (!existingActu) return json({ error: "Actu introuvable" }, 404, origin);
@@ -1475,7 +1475,7 @@ export default {
       // POST /api/admin/actualites/:id/visibility — { is_public: 0|1 } : masquer/afficher au public
       const actuVisibilityMatch = url.pathname.match(/^\/api\/admin\/actualites\/(\d+)\/visibility$/);
       if (actuVisibilityMatch && request.method === "POST") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const { is_public } = await request.json();
         await env.DB.prepare("UPDATE actualites SET is_public = ? WHERE id = ?")
           .bind(is_public ? 1 : 0, actuVisibilityMatch[1]).run();
@@ -1485,7 +1485,7 @@ export default {
       // DELETE /api/admin/actualites/:id — supprime l'actu ET les jours d'agenda qu'elle avait bloqués
       const actuDeleteMatch = url.pathname.match(/^\/api\/admin\/actualites\/(\d+)$/);
       if (actuDeleteMatch && request.method === "DELETE") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         await env.DB.prepare("DELETE FROM artist_agenda WHERE source_actu_id = ?").bind(actuDeleteMatch[1]).run();
         await env.DB.prepare("DELETE FROM actualites WHERE id = ?").bind(actuDeleteMatch[1]).run();
         return json({ ok: true }, 200, origin);
@@ -1495,7 +1495,7 @@ export default {
 
       // GET /api/admin/agenda — toutes les dates bloquées, tous artistes
       if (url.pathname === "/api/admin/agenda" && request.method === "GET") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const { results } = await env.DB.prepare(
           `SELECT a.id, a.artist_slug, a.date, a.type, a.label, a.status, a.publish_at, a.expires_at, a.source_actu_id, a.created_at,
                   u.guest_name, u.venue_name, u.venue_city, u.requalified
@@ -1509,7 +1509,7 @@ export default {
       // POST /api/admin/agenda/:id/status — { status: 'option'|'validee' } : bascule le statut d'une date
       const agendaStatusMatch = url.pathname.match(/^\/api\/admin\/agenda\/(\d+)\/status$/);
       if (agendaStatusMatch && request.method === "POST") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const { status } = await request.json();
         if (!["option", "validee"].includes(status)) return json({ error: "Statut invalide" }, 400, origin);
         await env.DB.prepare("UPDATE artist_agenda SET status = ? WHERE id = ?").bind(status, agendaStatusMatch[1]).run();
@@ -1520,7 +1520,7 @@ export default {
       // liée à un concert : celles-ci se modifient depuis l'actu correspondante).
       const agendaUpdateMatch = url.pathname.match(/^\/api\/admin\/agenda\/(\d+)$/);
       if (agendaUpdateMatch && request.method === "PUT") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         const id = agendaUpdateMatch[1];
         const row = await env.DB.prepare("SELECT * FROM artist_agenda WHERE id = ?").bind(id).first();
         if (!row) return json({ error: "Entrée introuvable" }, 404, origin);
@@ -1546,7 +1546,7 @@ export default {
       // DELETE /api/admin/agenda/:id
       const agendaDeleteMatch = url.pathname.match(/^\/api\/admin\/agenda\/(\d+)$/);
       if (agendaDeleteMatch && request.method === "DELETE") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         await env.DB.prepare("DELETE FROM artist_agenda WHERE id = ?").bind(agendaDeleteMatch[1]).run();
         return json({ ok: true }, 200, origin);
       }
