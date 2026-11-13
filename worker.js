@@ -1888,10 +1888,10 @@ export default {
         try { await env.DB.prepare("UPDATE contact_requests SET reference = ? WHERE id = ?").bind(reference, id).run(); } catch (e) { console.error("contact: référence non enregistrée", id, e && e.message); }
         // Tâches secondaires : leur échec ne change jamais la réponse (la demande est déjà enregistrée).
         const secondaire = (async () => {
-          try { await notifyContactMail(env, { id, reference, site, nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, page_origine: d.page, city: cf.city, artiste_nom: d.artiste_nom, produit_ref: d.produit_ref, commande_num: d.commande_num, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget, technique: d.technique }); } catch (e) { console.error("contact: notification", e && e.message); }
-          await recordContactEvent(env, site, d, cf, vp);
           // Alerte téléphone : nouvelle demande reçue par le formulaire (aucun nom ni coordonnée dans la notification)
           try { await sendAdminPush(env, { msg: { title: "📩 Nouvelle demande de contact", body: `Une demande vient d'arriver par le formulaire ${site === "store" ? "de la boutique" : site === "bmb" ? "Book My Band" : "SLP"}. Rappelle vite.`, url: "/admin-contacts.html" } }); } catch (e) { console.error("contact: alerte téléphone", e && e.message); }
+          try { await notifyContactMail(env, { id, reference, site, nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, page_origine: d.page, city: cf.city, artiste_nom: d.artiste_nom, produit_ref: d.produit_ref, commande_num: d.commande_num, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget, technique: d.technique }); } catch (e) { console.error("contact: notification", e && e.message); }
+          await recordContactEvent(env, site, d, cf, vp);
           // Versement automatique dans le CRM (prospects) : formulaires SLP et Book My Band, pas la boutique
           if (site !== "store") { try { await crmIngestSiteRequest(env, { id, cree_le: new Date().toISOString().slice(0, 16).replace("T", " "), nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, artiste_nom: d.artiste_nom, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget }); } catch (e) { console.error("crm: demande du site", e && e.message); } }
           try { await retryFailedContactMails(env, { minAgeMin: 2, limit: 3 }); } catch (e) { console.error("contact: reprise", e && e.message); }
@@ -1924,12 +1924,14 @@ export default {
             alerteChat = !deja;
           } catch (e) { /* pas d'alerte si le contrôle échoue */ }
         }
+        let push = null;
+        if (alerteChat) {
+          push = sendAdminPush(env, { msg: { title: "💬 Un visiteur ouvre le chat", body: "Quelqu'un est en train de consulter le chat du site. Réponds vite s'il écrit.", url: "/admin.html" } }).catch((e) => console.error("chat: alerte téléphone", e && e.message));
+          if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(push);
+        }
         await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
           .bind(siteFromRequest(request, body), action, String(body.page || "").slice(0, 200) || null, sidEv, cf.city || null, vp.network, vp.device, vp.isBot).run();
-        if (alerteChat) {
-          const push = sendAdminPush(env, { msg: { title: "💬 Un visiteur ouvre le chat", body: "Quelqu'un est en train de consulter le chat du site. Réponds vite s'il écrit.", url: "/admin.html" } }).catch((e) => console.error("chat: alerte téléphone", e && e.message));
-          if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(push); else await push;
-        }
+        if (push && !(ctx && typeof ctx.waitUntil === "function")) await push;
         return json({ ok: true }, 200, origin);
       }
 
