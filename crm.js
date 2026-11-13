@@ -62,6 +62,19 @@ export async function ensureCrmSchema(env) {
   ready = true;
 }
 
+// Date du jour (heure de Paris) + n jours, au format AAAA-MM-JJ : relance par défaut = J+7
+const RELANCE_JOURS = 7;
+function datePlus(n) {
+  const base = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Paris" }).format(new Date());
+  const d = new Date(base + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+// Programme la relance à J+7 pour un prospect qui n'en a pas (ou dont la relance est déjà passée)
+async function relanceParDefaut(env, id) {
+  await env.DB.prepare("UPDATE crm_contacts SET date_relance = ? WHERE id = ? AND statut = 'prospect' AND (date_relance IS NULL OR date_relance = '' OR date_relance < ?)").bind(datePlus(RELANCE_JOURS), id, datePlus(0)).run();
+}
+
 const clean = (v, max = 500) => (v == null ? null : String(v).trim().slice(0, max) || null);
 const normEmail = (v) => { const e = clean(v, 200); return e ? e.toLowerCase() : null; };
 const normTel = (v) => { const t = clean(v, 40); return t ? t.replace(/[^\d+]/g, "") || null : null; };
@@ -218,6 +231,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
       if (ex) return json({ error: "Cet email existe déjà dans la base", id: ex.id }, 409, origin);
     }
     if (data.statut === "client") data.client_depuis = new Date().toISOString().slice(0, 10);
+    if (data.statut === "prospect" && !data.date_relance) data.date_relance = datePlus(RELANCE_JOURS);
     const id = await insertContact(env, data);
     return json({ id }, 201, origin);
   }
@@ -339,7 +353,8 @@ export async function handleCrm(request, env, url, origin, json, cors) {
     await logEvent(env, id, type, texte || "", quand);
     // un premier échange fait avancer un prospect « nouveau » vers « contacté »
     await env.DB.prepare("UPDATE crm_contacts SET etape = CASE WHEN statut = 'prospect' AND etape = 'nouveau' AND ? != 'note' THEN 'contacte' ELSE etape END, maj_le = datetime('now') WHERE id = ?").bind(type, id).run();
-    if (b.date_relance !== undefined) await env.DB.prepare("UPDATE crm_contacts SET date_relance = ? WHERE id = ?").bind(clean(b.date_relance, 10), id).run();
+    if (b.date_relance) await env.DB.prepare("UPDATE crm_contacts SET date_relance = ? WHERE id = ?").bind(clean(b.date_relance, 10), id).run();
+    else if (type !== "note") await relanceParDefaut(env, id);
     return json({ ok: true }, 201, origin);
   }
   if ((m = path.match(/^\/journal\/(\d+)$/)) && method === "DELETE") {
@@ -454,6 +469,7 @@ async function afterOffre(env, contactId, statut, ref) {
   if (statut === "envoyee") {
     await env.DB.prepare("UPDATE crm_contacts SET etape = CASE WHEN statut = 'prospect' AND etape IN ('nouveau','contacte','echange') THEN 'proposition' ELSE etape END, maj_le = datetime('now') WHERE id = ?").bind(contactId).run();
     await logEvent(env, contactId, "mail", `${label} envoyée`);
+    await relanceParDefaut(env, contactId);
   } else if (statut === "acceptee") {
     await logEvent(env, contactId, "note", `${label} acceptée : prochaine étape, le devis`);
     await touch(env, contactId);
@@ -471,6 +487,7 @@ async function afterDevis(env, contactId, statut, ref) {
   if (statut === "envoye") {
     await env.DB.prepare("UPDATE crm_contacts SET etape = CASE WHEN statut = 'prospect' AND etape IN ('nouveau','contacte','echange','proposition') THEN 'devis' ELSE etape END, maj_le = datetime('now') WHERE id = ?").bind(contactId).run();
     await logEvent(env, contactId, "devis", `${label} envoyé`);
+    await relanceParDefaut(env, contactId);
   } else if (statut === "accepte") {
     await env.DB.prepare("UPDATE crm_contacts SET statut = 'client', etape = 'nouveau', client_depuis = COALESCE(client_depuis, date('now')), date_relance = NULL, maj_le = datetime('now') WHERE id = ?").bind(contactId).run();
     await logEvent(env, contactId, "devis", `${label} accepté : passé en client`);
