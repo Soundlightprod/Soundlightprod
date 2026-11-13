@@ -2064,7 +2064,7 @@ export default {
       // DELETE /api/admin/contact-requests/:id — supprime une demande reçue par le formulaire de contact (ex: un test)
       const demandeDeleteMatch = url.pathname.match(/^\/api\/admin\/contact-requests\/(\d+)$/);
       if (demandeDeleteMatch && request.method === "DELETE") {
-        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         await env.DB.prepare("DELETE FROM contact_requests WHERE id = ?").bind(demandeDeleteMatch[1]).run();
         return json({ ok: true }, 200, origin);
       }
