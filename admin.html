@@ -1846,6 +1846,17 @@
     });
   }
 
+  // Supprime une demande du formulaire de contact (définitif), puis rafraîchit la liste et les compteurs
+  async function mtDelDemande(id, nom){
+    if (!confirm('Supprimer définitivement la demande de ' + (nom || 'ce contact') + ' ?')) return;
+    try {
+      const r = await fetch('/api/admin/contact-requests/' + id, { method:'DELETE', headers:{ Authorization:'Bearer ' + token } });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+    } catch (e) { showToast('Suppression impossible'); return; }
+    showToast('Demande supprimée');
+    if (mtData && mtData.contact) { mtData.contact.demandes = (mtData.contact.demandes || []).filter((x) => x.id !== id); mtRenderBySite(); }
+  }
+
   function mtRenderContact(c){
     c = c || { clics:[], demandes:[] };
     const n = (a) => { if (a === 'envoi') return c.demandes.length; const r = c.clics.find((x) => x.action === a); return r ? r.n : 0; };
@@ -1871,6 +1882,7 @@
       if (d.telephone){ const a = mtEl('a', null, d.telephone); a.href = 'tel:' + d.telephone.replace(/[^+0-9]/g, ''); a.style.color = 'var(--amber)'; contact.append(a, document.createTextNode('  ')); }
       if (d.email){ const a = mtEl('a', null, d.email); a.href = 'mailto:' + d.email; a.style.color = 'var(--amber)'; contact.appendChild(a); }
       const l2 = mtEl('div', 'm', [quand, d.date_event && ('date : ' + d.date_event), d.lieu, d.produit_ref && ('produit : ' + d.produit_ref), d.commande_num && ('commande : ' + d.commande_num), d.page_origine && ('venu de ' + d.page_origine), d.device, d.mail_envoye ? 'mail reçu ✓' : '⚠️ mail non parti' + (d.mail_tentatives ? ' après ' + d.mail_tentatives + ' essai(s), repris automatiquement' : '') + (d.mail_erreur ? ' (' + d.mail_erreur + ')' : '')].filter(Boolean).join(' · '));
+      if (d.id){ const del = mtEl('button', 'btn-outline', '🗑 Supprimer'); del.type = 'button'; del.style.marginLeft = '8px'; del.addEventListener('click', () => mtDelDemande(d.id, d.nom)); l1.append(del); }
       it.append(l1, contact, l2);
       if (d.message) it.appendChild(mtEl('div', 'p', d.message));
       box.appendChild(it);
