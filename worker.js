@@ -1,4 +1,4 @@
-import { handleCrm, crmReminderMessage } from "./crm.js";
+import { handleCrm, crmReminderMessage, crmIngestSiteRequest, crmIngestChat } from "./crm.js";
 // SLP — API Worker : boutique (vente, sur soundlightprod.fr) + location de matériel (sur csanimations.fr)
 //                    + actualités artistes + agenda de disponibilités
 // Déploiement : wrangler deploy (depuis /worker)
@@ -1673,6 +1673,7 @@ export default {
           const cf = request.cf || {};
           let th = null, token = t(body.token, 64);
           if (token) th = await env.DB.prepare("SELECT * FROM chat_threads WHERE token = ?").bind(token).first();
+          const contactAvant = th ? th.contact : null;
           if (!th) {
             const ipRaw = request.headers.get("CF-Connecting-IP") || "";
             const ipHash = ipRaw ? [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ipRaw + "slp")))].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("") : null;
@@ -1693,6 +1694,8 @@ export default {
           if (nm || ct) await env.DB.prepare("UPDATE chat_threads SET name = COALESCE(?, name), contact = COALESCE(?, contact) WHERE id = ?").bind(nm || null, ct || null, th.id).run();
           const ins = await env.DB.prepare("INSERT INTO chat_messages (thread_id, sender, body, created_at) VALUES (?, 'visitor', ?, ?)").bind(th.id, text, now()).run();
           await env.DB.prepare("UPDATE chat_threads SET last_visitor_at = ?, unread_admin = unread_admin + 1 WHERE id = ?").bind(now(), th.id).run();
+          // Le visiteur vient de laisser ses coordonnées : il devient un prospect dans le CRM
+          if (ct && !contactAvant) { try { await crmIngestChat(env, { id: th.id, name: nm || th.name, contact: ct, page: th.page, city: th.city, text }); } catch (e) { console.error("crm: chat", e && e.message); } }
           try { await sendAdminPush(env); } catch (e) {}
           // Mail de notification : au plus un toutes les 10 min par conversation (ou tout de suite si le visiteur laisse ses coordonnées)
           const fresh = await env.DB.prepare("SELECT * FROM chat_threads WHERE id = ?").bind(th.id).first();
@@ -1887,6 +1890,8 @@ export default {
         const secondaire = (async () => {
           try { await notifyContactMail(env, { id, reference, site, nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, page_origine: d.page, city: cf.city, artiste_nom: d.artiste_nom, produit_ref: d.produit_ref, commande_num: d.commande_num, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget, technique: d.technique }); } catch (e) { console.error("contact: notification", e && e.message); }
           await recordContactEvent(env, site, d, cf, vp);
+          // Versement automatique dans le CRM (prospects) : formulaires SLP et Book My Band, pas la boutique
+          if (site !== "store") { try { await crmIngestSiteRequest(env, { id, cree_le: new Date().toISOString().slice(0, 16).replace("T", " "), nom: d.nom, email: d.email, telephone: d.telephone, sujet: d.sujet, date_event: d.date_event, lieu: d.lieu, message: d.message, artiste_nom: d.artiste_nom, organisme: d.organisme, type_evenement: d.type_evenement, jauge: d.jauge, budget: d.budget }); } catch (e) { console.error("crm: demande du site", e && e.message); } }
           try { await retryFailedContactMails(env, { minAgeMin: 2, limit: 3 }); } catch (e) { console.error("contact: reprise", e && e.message); }
         })();
         if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(secondaire); else await secondaire;
@@ -2034,6 +2039,14 @@ export default {
       if (visitDeleteMatch && request.method === "DELETE") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         await env.DB.prepare("DELETE FROM page_visits WHERE id = ?").bind(visitDeleteMatch[1]).run();
+        return json({ ok: true }, 200, origin);
+      }
+
+      // DELETE /api/admin/contact-requests/:id — supprime une demande reçue par le formulaire de contact (ex: un test)
+      const demandeDeleteMatch = url.pathname.match(/^\/api\/admin\/contact-requests\/(\d+)$/);
+      if (demandeDeleteMatch && request.method === "DELETE") {
+        if (!requireAdmin(request, env)) return json({ error: "Non autorisé" }, 401, origin);
+        await env.DB.prepare("DELETE FROM contact_requests WHERE id = ?").bind(demandeDeleteMatch[1]).run();
         return json({ ok: true }, 200, origin);
       }
 

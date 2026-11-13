@@ -125,6 +125,63 @@ function smsFr(tel) {
   return "";
 }
 
+// Verse une demande du formulaire du site dans le CRM (prospect « nouveau » à rappeler). Idempotent : une demande déjà
+// versée n'est jamais recréée. Retourne "ajoute" | "existant" | "deja".
+export async function crmIngestSiteRequest(env, r) {
+  await ensureCrmSchema(env);
+  const lie = await env.DB.prepare("SELECT id FROM crm_contacts WHERE site_request_id = ?").bind(r.id).first();
+  if (lie) return "deja";
+  const email = normEmail(r.email), tel = normTel(r.telephone);
+  let ex = null;
+  if (email) ex = await env.DB.prepare("SELECT id FROM crm_contacts WHERE email = ?").bind(email).first();
+  if (!ex && tel) ex = await env.DB.prepare("SELECT id FROM crm_contacts WHERE telephone = ?").bind(tel).first();
+  const note = [r.sujet, r.artiste_nom && `Artiste : ${r.artiste_nom}`, r.type_evenement, r.jauge && `Jauge : ${r.jauge}`, r.budget && `Budget : ${r.budget}`, r.message].filter(Boolean).join("\n");
+  if (ex) {
+    const marque = `Nouvelle demande via le site (${r.cree_le})`;
+    const dejaNote = await env.DB.prepare("SELECT id FROM crm_journal WHERE contact_id = ? AND texte LIKE ?").bind(ex.id, marque + "%").first();
+    if (!dejaNote) await logEvent(env, ex.id, "note", `${marque} :\n${note}`.slice(0, 2000));
+    await env.DB.prepare("UPDATE crm_contacts SET site_request_id = COALESCE(site_request_id, ?) WHERE id = ?").bind(r.id, ex.id).run();
+    await touch(env, ex.id);
+    return "existant";
+  }
+  const id = await insertContact(env, {
+    statut: "prospect", etape: "nouveau", nom: clean(r.nom, 200), organisation: clean(r.organisme, 200), email, telephone: tel,
+    ville: clean(r.lieu, 200), source: "Site web", evenement: clean(r.type_evenement || r.sujet, 200), date_evenement: clean(r.date_event, 10),
+    notes: note.slice(0, 5000) || null, site_request_id: r.id, priorite: 1, date_relance: new Date().toISOString().slice(0, 10),
+    prochaine_action: "Rappeler / répondre à la demande du site",
+  });
+  await logEvent(env, id, "note", `Demande reçue via le site le ${r.cree_le}`);
+  return "ajoute";
+}
+
+// Verse un visiteur du chat qui a laissé ses coordonnées (email ou téléphone) dans le CRM. Sans coordonnées exploitables,
+// rien n'est créé. Retourne "ajoute" | "existant" | "ignore".
+export async function crmIngestChat(env, t) {
+  await ensureCrmSchema(env);
+  const brut = String(t.contact || "");
+  const mail = (brut.match(/[^\s@,;]+@[^\s@,;]+\.[^\s@,;]{2,}/) || [])[0];
+  const telBrut = brut.replace(mail || "", " ").match(/\+?\d[\d .\-()]{5,}\d/);
+  const email = normEmail(mail), tel = normTel(telBrut && telBrut[0]);
+  if (!email && !(tel && tel.replace(/\D/g, "").length >= 6)) return "ignore";
+  const marque = `Chat du site n°${t.id}`;
+  const note = [t.page && `Page : ${t.page}`, t.text && `Message : ${t.text}`].filter(Boolean).join("\n");
+  let ex = null;
+  if (email) ex = await env.DB.prepare("SELECT id FROM crm_contacts WHERE email = ?").bind(email).first();
+  if (!ex && tel) ex = await env.DB.prepare("SELECT id FROM crm_contacts WHERE telephone = ?").bind(tel).first();
+  if (ex) {
+    const deja = await env.DB.prepare("SELECT id FROM crm_journal WHERE contact_id = ? AND texte LIKE ?").bind(ex.id, marque + "%").first();
+    if (!deja) await logEvent(env, ex.id, "note", `${marque} :\n${note}`.slice(0, 2000));
+    await touch(env, ex.id);
+    return "existant";
+  }
+  const id = await insertContact(env, {
+    statut: "prospect", etape: "nouveau", nom: clean(t.name, 200), email, telephone: tel, ville: clean(t.city, 200), source: "Chat du site",
+    notes: note.slice(0, 5000) || null, priorite: 1, date_relance: new Date().toISOString().slice(0, 10), prochaine_action: "Répondre au visiteur du chat",
+  });
+  await logEvent(env, id, "note", `${marque} : le visiteur a laissé ses coordonnées`);
+  return "ajoute";
+}
+
 export async function handleCrm(request, env, url, origin, json, cors) {
   await ensureCrmSchema(env);
   const path = url.pathname.replace(/^\/api\/admin\/crm/, "") || "/";
@@ -187,29 +244,10 @@ export async function handleCrm(request, env, url, origin, json, cors) {
     let rows = [];
     try { rows = (await env.DB.prepare("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, artiste_nom, organisme, type_evenement, jauge, budget FROM contact_requests WHERE site IN ('slp','bmb') OR site IS NULL ORDER BY id").all()).results || []; }
     catch (e) { rows = (await env.DB.prepare("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message FROM contact_requests ORDER BY id").all()).results || []; }
-    const deja = new Set(((await env.DB.prepare("SELECT site_request_id FROM crm_contacts WHERE site_request_id IS NOT NULL").all()).results || []).map((x) => x.site_request_id));
     let ajoutes = 0, existants = 0;
     for (const r of rows) {
-      if (deja.has(r.id)) continue;
-      const email = normEmail(r.email), tel = normTel(r.telephone);
-      let ex = null;
-      if (email) ex = await env.DB.prepare("SELECT id FROM crm_contacts WHERE email = ?").bind(email).first();
-      if (!ex && tel) ex = await env.DB.prepare("SELECT id FROM crm_contacts WHERE telephone = ?").bind(tel).first();
-      const note = [r.sujet, r.artiste_nom && `Artiste : ${r.artiste_nom}`, r.type_evenement, r.jauge && `Jauge : ${r.jauge}`, r.budget && `Budget : ${r.budget}`, r.message].filter(Boolean).join("\n");
-      if (ex) {
-        await logEvent(env, ex.id, "note", `Nouvelle demande via le site (${r.cree_le}) :\n${note}`.slice(0, 2000));
-        await env.DB.prepare("UPDATE crm_contacts SET site_request_id = COALESCE(site_request_id, ?) WHERE id = ?").bind(r.id, ex.id).run();
-        existants++;
-        continue;
-      }
-      const id = await insertContact(env, {
-        statut: "prospect", etape: "nouveau", nom: clean(r.nom, 200), organisation: clean(r.organisme, 200), email, telephone: tel,
-        ville: clean(r.lieu, 200), source: "Site web", evenement: clean(r.type_evenement || r.sujet, 200), date_evenement: clean(r.date_event, 10),
-        notes: note.slice(0, 5000) || null, site_request_id: r.id, priorite: 1, date_relance: new Date().toISOString().slice(0, 10),
-        prochaine_action: "Rappeler / répondre à la demande du site",
-      });
-      await logEvent(env, id, "note", `Demande reçue via le site le ${r.cree_le}`);
-      ajoutes++;
+      const res = await crmIngestSiteRequest(env, r);
+      if (res === "ajoute") ajoutes++; else if (res === "existant") existants++;
     }
     return json({ ajoutes, existants }, 200, origin);
   }
