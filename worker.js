@@ -1380,14 +1380,14 @@ export default {
           const problems = [];
           if (!artist_slug) problems.push("l'artiste n'est pas choisi");
           if (!type) problems.push("le type d'événement n'est pas choisi");
-          else if (!["concert", "cabaret", "dj", "animation", "karaoke", "indisponible", "actu"].includes(type)) problems.push(`le type « ${type} » n'est pas reconnu`);
+          else if (!["concert", "cabaret", "dj", "animation", "karaoke", "indisponible", "location", "actu"].includes(type)) problems.push(`le type « ${type} » n'est pas reconnu`);
           if (problems.length) return json({ error: "Enregistrement impossible : " + problems.join(" ; ") + "." }, 400, origin);
         }
 
         // --- Cas "indisponible" : blocage pur, pas d'actu ---
-        if (type === "indisponible") {
+        if (type === "indisponible" || type === "location") {
           if (!start_date) return json({ error: "Date de début requise" }, 400, origin);
-          const { inserted, conflicts } = await blockAgendaDates(env, artist_slug, start_date, end_date, "indisponible", label || text || null, null, status, publish_at, expires_at);
+          const { inserted, conflicts } = await blockAgendaDates(env, artist_slug, start_date, end_date, type, label || text || null, null, status, publish_at, expires_at);
           return json({ ok: true, inserted, conflicts }, 201, origin);
         }
 
@@ -2116,7 +2116,7 @@ export default {
 
         for (const r of results) {
           const label = r.guest_name || ARTIST_LABELS[r.artist_slug] || r.artist_slug;
-          const icon = r.type === "indisponible" ? "🚫" : (r.type === "cabaret" ? "🎭" : (r.type === "dj" ? "🎧" : "🎤"));
+          const icon = r.type === "indisponible" ? "🚫" : r.type === "location" ? "📦" : (r.type === "cabaret" ? "🎭" : (r.type === "dj" ? "🎧" : "🎤"));
           const summary = `${icon} ${label}${r.label ? " — " + r.label : ""}`;
           const venue = [r.venue_name, r.venue_city].filter(Boolean).join(", ");
           const nextDay = new Date(r.date + "T00:00:00Z");
