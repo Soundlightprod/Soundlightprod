@@ -3061,7 +3061,11 @@
     document.getElementById('evtArtist').value = d.artist_slug;
     document.querySelector('#evtType option[value="indisponible"]').disabled = false;
     document.getElementById('evtType').value = 'indisponible';
-    document.getElementById('evtType').disabled = true;
+    // Le type reste modifiable : choisir un autre type convertit l'indisponibilité en événement
+    // (privé par défaut, case « Visible au public » décochée).
+    document.getElementById('evtType').disabled = false;
+    document.getElementById('evtPublic').checked = false;
+    document.getElementById('evtText').value = d.label || '';
     document.getElementById('evtLabel').value = d.label || '';
     document.getElementById('evtStart').value = d.date;
     document.getElementById('evtEnd').value = d.date;
@@ -3117,8 +3121,9 @@
     if (isGuest && !guest_name){ alert("Merci de renseigner le nom de l'artiste invité."); return; }
     const artist_slug = isGuest ? slugifyGuest(guest_name) : artistSel;
     const type = document.getElementById('evtType').value;
-    const text = document.getElementById('evtText').value.trim();
+    let text = document.getElementById('evtText').value.trim();
     const label = document.getElementById('evtLabel').value.trim();
+    if (editingDispoId && type !== 'indisponible' && !text) text = label;
     const is_public = document.getElementById('evtPublic').checked;
     const start_date = document.getElementById('evtStart').value;
     const end_date = document.getElementById('evtEnd').value || start_date;
@@ -3143,7 +3148,25 @@
     const roadmap = ROADMAP_TYPES.includes(type) ? getRoadmapFields() : {};
 
     let res, data;
-    if (editingDispoId){
+    if (editingDispoId && type !== 'indisponible'){
+      // Conversion d'une indisponibilité en événement : on libère le créneau puis on recrée l'événement.
+      await fetch(`${API_BASE}/api/admin/agenda/${editingDispoId}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } });
+      res = await fetch(`${API_BASE}/api/admin/actualites`, {
+        method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+        body: JSON.stringify({
+          artist_slug, guest_name, type, text, label, is_public,
+          requalified: false,
+          photo_url: evtPhotoBase64,
+          start_date, end_date, publish_at, expires_at, status,
+          ...roadmap
+        })
+      });
+      data = await res.json();
+      if (!res.ok){ alert(data.error || "Erreur lors de la conversion (l'indisponibilité d'origine a été supprimée, recrée l'événement)."); }
+      else if (data.conflicts && data.conflicts.length){
+        conflictBox.innerHTML = `<div class="conflict-msg">Ces dates sont déjà occupées pour ${guest_name || ARTIST_LABELS[artist_slug] || artist_slug} et n'ont pas été bloquées à nouveau : ${data.conflicts.join(', ')}.</div>`;
+      }
+    } else if (editingDispoId){
       res = await fetch(`${API_BASE}/api/admin/agenda/${editingDispoId}`, {
         method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
         body: JSON.stringify({ date: start_date, label, publish_at, expires_at, status })
