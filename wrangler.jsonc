@@ -11,7 +11,7 @@
   "r2_buckets": [
     { "binding": "CRM_FILES", "bucket_name": "slp-crm-fichiers" }
   ],
-  "triggers": { "crons": ["30 5 * * *"] },
+  "triggers": { "crons": ["30 5 * * *", "0 7,8 * * *"] },
   "assets": {
     "directory": "./",
     "binding": "ASSETS",

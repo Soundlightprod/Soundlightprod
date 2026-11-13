@@ -12,6 +12,7 @@
   const $ = (id) => document.getElementById(id);
   const ce = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const today = () => new Date().toISOString().slice(0, 10);
+  const plus7 = () => { const d = new Date(); d.setDate(d.getDate() + 7); return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Paris' }).format(d); }; // relance par défaut : J+7
   const eur = (n) => (n || 0).toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €';
   const fmtD = (d) => (d ? d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4) : '');
   const fmtDT = (d) => (d ? fmtD(d.slice(0, 10)) + ' ' + d.slice(11, 16) : '');
@@ -209,7 +210,7 @@
       <div class="row">${fld('prenom', 'Prénom', c.prenom)}${fld('nom', 'Nom', c.nom)}</div>
       <div class="row">${fld('telephone', 'Téléphone', c.telephone, 'tel')}${fld('email', 'Email', c.email, 'email')}</div>
       <div class="row one">${fld('evenement', 'Événement / besoin', c.evenement)}</div>
-      <div class="row">${fld('date_relance', 'Date de relance', c.date_relance, 'date')}<div></div></div>
+      <div class="row">${fld('date_relance', 'Date de relance', c.id ? c.date_relance : (c.date_relance || plus7()), 'date')}<div></div></div>
       <div class="row one"><div><label>Notes</label><textarea id="cf_notes" rows="3">${ce(c.notes)}</textarea></div></div>
       ${quick ? `<details style="margin:6px 0"><summary class="vz-note" style="cursor:pointer;padding:6px 0">Plus de champs (ville, catégorie, budget…)</summary>${adv}</details>` : adv}`;
   }
@@ -339,7 +340,7 @@
       <div class="crm-sec"><h4 style="margin:0 0 8px">Suivi des échanges</h4>
         <div class="row"><div><label>Type d'échange</label><select id="jType">${opt(TYPES_J, 'appel')}</select></div><div><label>Date et heure de l'échange</label><input id="jWhen" type="datetime-local" value="${nowParis().replace(' ', 'T')}"></div></div>
         <div class="row one"><textarea id="jTxt" rows="2" placeholder="Ce qui s'est dit, ce qui est convenu…"></textarea></div>
-        <div class="row"><div><label>Prochaine relance (facultatif)</label><input id="jRel" type="date"></div><div></div></div>
+        <div class="row"><div><label>Prochaine relance (facultatif)</label><input id="jRel" type="date" value="${plus7()}"></div><div></div></div>
         <button class="period-btn" type="button" id="jAdd">Ajouter au suivi</button>
         <div id="jList">${parDate(d.journal).map((j) => `<div class="j"><small>${fmtDT(quand(j))} · ${ce((TYPES_J.find((t) => t[0] === j.type) || [0, j.type])[1])} <a href="#" data-jd="${j.id}" style="color:var(--pink)">suppr.</a></small>${ce(j.texte)}</div>`).join('') || '<p class="vz-note">Aucun échange noté.</p>'}</div></div>
       ${docSection(d, 'offre', 'Propositions commerciales', d.offres || [], OFFRE_ST, 'envoyee', 'ex. P-2026-007', "Proposition « Envoyée » → le prospect passe à l'étape Proposition envoyée.")}
