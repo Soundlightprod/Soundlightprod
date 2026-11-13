@@ -2352,8 +2352,13 @@ export default {
     }
   },
   async scheduled(event, env, ctx) {
+    // Rappels CRM : tous les jours à 9 h (heure de Paris). Deux déclenchements UTC (7 h et 8 h) couvrent l'heure d'été et d'hiver ; seul celui qui tombe à 9 h à Paris envoie.
+    if (event.cron === "0 7,8 * * *") {
+      const heure = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", hour: "2-digit", hour12: false }).format(new Date()));
+      if (heure === 9) ctx.waitUntil((async () => { const msg = await crmReminderMessage(env, parisToday()); if (msg) await sendAdminPush(env, { crm: true, msg }); })().catch((e) => console.error("crm: rappels", e && e.message)));
+      return;
+    }
     ctx.waitUntil(collectMetaStats(env));
-    ctx.waitUntil((async () => { const msg = await crmReminderMessage(env, parisToday()); if (msg) await sendAdminPush(env, { crm: true, msg }); })().catch((e) => console.error("crm: rappels", e && e.message)));
     ctx.waitUntil(retryFailedContactMails(env, { minAgeMin: 5, limit: 50 }).catch((e) => console.error("contact: reprise cron", e && e.message)));
   },
 };
