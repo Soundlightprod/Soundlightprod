@@ -173,6 +173,24 @@
   .lyrics-cap{text-align:center; color:var(--muted); font-size:.85rem; margin-top:14px;}
   .hl{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px;}
   .hl .member-card .role{text-transform:none; letter-spacing:0; font-family:'Instrument Sans',sans-serif; font-size:.9rem; color:var(--muted); margin-top:4px;}
+
+  .klb-hero{position:relative; min-height:min(82vh,680px); display:flex; align-items:flex-end; overflow:hidden; background:#0c0a14;}
+  .klb-hero::before{content:""; position:absolute; inset:0; background:url(images/karaoke-live-scene.webp) center 35%/cover no-repeat; transform:scale(1.04);}
+  .klb-hero::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(12,10,20,.35) 0%,rgba(12,10,20,.55) 45%,rgba(12,10,20,.96) 100%), linear-gradient(90deg,rgba(12,10,20,.75) 0%,rgba(12,10,20,0) 70%);}
+  .klb-hero-inner{position:relative; z-index:2; width:100%; padding:120px clamp(24px,3.5vw,72px) 64px;}
+  .klb-hero h1{font-size:clamp(2.6rem,7vw,5rem); max-width:900px; margin:10px 0 18px; text-shadow:0 4px 30px rgba(0,0,0,.5);}
+  .klb-hero h1 em{font-style:normal; background:linear-gradient(90deg,var(--pink),var(--amber),var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .klb-hero p.lead{color:#e9e6f2; font-size:clamp(1.05rem,2vw,1.3rem); max-width:640px; margin-bottom:28px;}
+  .klb-hero .breadcrumb a{color:#e9e6f2;}
+  .klb-cta{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:26px;}
+  .klb-strip{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--ink-2);}
+  .klb-strip .in{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px 30px; padding:22px clamp(24px,3.5vw,72px);}
+  .klb-strip .it{display:flex; gap:12px; align-items:center; font-weight:600; font-size:.95rem;}
+  .klb-strip .it span{color:var(--gold); font-size:1.1rem;}
+  .klb-intro{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:44px; align-items:center; max-width:1200px; margin:0 auto;}
+  .klb-intro p{color:var(--muted); font-size:1.02rem; margin-bottom:16px;}
+  .klb-intro img{width:100%; height:auto; display:block; border-radius:18px; box-shadow:0 20px 60px rgba(0,0,0,.45);}
+  @media (max-width:800px){ .klb-intro{grid-template-columns:1fr; gap:26px;} .klb-hero{min-height:560px;} }
 </style>
 
 
@@ -210,23 +228,39 @@
   </div>
 </header>
 
-<section class="page-hero">
-  <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
-  <div class="page-hero-inner">
+<section class="klb-hero">
+  <div class="klb-hero-inner">
     <span class="breadcrumb"><a href="artistes">← Nos artistes et spectacles</a></span>
-    <span class="label">Animation</span>
-    <h1>Karaoké live avec groupe</h1>
-    <p>Montez sur scène et chantez accompagné par un vrai groupe. Paroles sur grand écran, passages organisés, technique complète : un format fédérateur pour vos soirées.</p>
-    <div class="tags"><span class="tag">100 % live</span><span class="tag">Paroles sur écran</span><span class="tag">Inscription par QR code</span><span class="tag">Clé en main</span></div>
+    <span class="label">Animation · Soirées · Festivals</span>
+    <h1>Montez sur scène.<br><em>Chantez avec un vrai groupe live.</em></h1>
+    <p class="lead">Le karaoké comme un concert : un groupe sur scène, les paroles en grand sur écran, et toute la salle qui chante avec vous.</p>
+    <div class="klb-cta">
+      <a href="contact?artiste=karaoke-live" class="btn btn-primary" data-contact="devis">Demander un devis</a>
+      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel">06 31 94 96 53</a>
+    </div>
+    <div class="tags"><span class="tag">100 % live</span><span class="tag">Paroles sur grand écran</span><span class="tag">Inscription par QR code</span><span class="tag">Clé en main</span></div>
+  </div>
+</section>
+
+<section class="klb-strip">
+  <div class="in">
+    <div class="it"><span>★</span>Un groupe sur scène</div>
+    <div class="it"><span>★</span>Paroles sur écran géant</div>
+    <div class="it"><span>★</span>Inscriptions depuis le smartphone</div>
+    <div class="it"><span>★</span>Son, lumière et écran inclus</div>
   </div>
 </section>
 
 <section>
-  <div class="wrap tight narrow">
-    <div class="bio-text-full">
-      <p>Le karaoké live remplace la bande-son figée par un groupe sur scène. Chaque participant chante comme dans un concert : les musiciens lancent le morceau, adaptent la tonalité et le tempo, soutiennent la voix, et le public suit en chœur grâce aux paroles affichées sur grand écran.</p>
-      <p>Pour l'organisateur, l'événement reste simple à piloter. Les chanteurs s'inscrivent depuis leur smartphone ou sur place, l'ordre de passage est géré automatiquement et chacun est prévenu quand son tour approche : moins d'attente, moins d'organisation à gérer, davantage de temps passé à profiter de la soirée.</p>
-      <p>SLP sélectionne le dispositif et coordonne l'ensemble : groupe, sonorisation, lumière, écran et installation, avec une équipe présente sur place.</p>
+  <div class="wrap">
+    <div class="klb-intro">
+      <div>
+        <div class="section-head" style="margin-bottom:22px;"><span class="label">Le concept</span><h2>Un karaoké sans bande-son : le groupe joue pour vous</h2></div>
+        <p>Le karaoké live remplace la bande-son figée par un groupe sur scène. Chaque participant chante comme dans un concert : les musiciens lancent le morceau, adaptent la tonalité et le tempo, soutiennent la voix, et le public suit en chœur grâce aux paroles affichées sur grand écran.</p>
+        <p>Pour l'organisateur, l'événement reste simple à piloter. Les chanteurs s'inscrivent depuis leur smartphone ou sur place, l'ordre de passage est géré automatiquement et chacun est prévenu quand son tour approche : moins d'attente, moins d'organisation à gérer.</p>
+        <p>SLP sélectionne le dispositif et coordonne l'ensemble : groupe, sonorisation, lumière, écran et installation, avec une équipe présente sur place.</p>
+      </div>
+      <img src="images/karaoke-live-chanteuses.webp" alt="Deux chanteuses sur scène avec le groupe, paroles affichées sur l'écran" loading="eager" decoding="async">
     </div>
   </div>
 </section>
@@ -234,11 +268,14 @@
 <section>
   <div class="wrap tight">
     <div class="section-head"><span class="label">En images</span><h2>Le karaoké live en situation</h2></div>
+    <!-- VIDEO YOUTUBE : remplacer le bloc "video-wrap" ci-dessous par :
+    <div class="video-wrap" style="max-width:860px; margin:0 auto;"><iframe src="https://www.youtube-nocookie.com/embed/ID_VIDEO" title="Karaoké live avec groupe" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    -->
     <div class="video-wrap" style="max-width:860px; margin:0 auto;">
-      <video controls muted loop playsinline preload="metadata" poster="images/karaoke-live-poster.jpg" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
-        <source src="karaoke-live.mp4" type="video/mp4">
-        <source src="karaoke-live.webm" type="video/webm">
-      </video>
+      <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--muted); background:repeating-linear-gradient(45deg,#14121a,#14121a 10px,#191621 10px,#191621 20px); border:2px dashed rgba(255,255,255,0.15); border-radius:16px;">
+        <span class="label" style="margin-bottom:10px;">Emplacement vidéo YouTube</span>
+        <span style="font-size:.9rem;">La vidéo sera ajoutée ici</span>
+      </div>
     </div>
   </div>
 </section>
