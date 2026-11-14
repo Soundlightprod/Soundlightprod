@@ -2084,6 +2084,7 @@ export default {
           `SELECT a.id, a.artist_slug, a.date, a.type, a.label, a.status, u.guest_name, u.venue_name, u.venue_city
            FROM artist_agenda a
            LEFT JOIN actualites u ON u.id = a.source_actu_id
+           WHERE a.type != 'indisponible'
            ORDER BY a.date ASC`
         ).all();
 
