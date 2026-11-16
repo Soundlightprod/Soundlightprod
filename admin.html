@@ -980,6 +980,7 @@
         <button data-s="bmb" onclick="dbSetSite('bmb')"><i style="background:#ff2d6f"></i>Book My Band</button>
         <button data-s="csa" onclick="dbSetSite('csa')"><i style="background:#38bdf8"></i>CS Animations</button>
         <button data-s="store" onclick="dbSetSite('store')"><i style="background:#a3e635"></i>Boutique</button>
+        <button data-s="digital" onclick="dbSetSite('digital')"><i style="background:#a78bfa"></i>SLP Digital</button>
       </div>
     </div>
     <p class="vz-note" id="mtTests" style="display:none; margin:0 0 10px;"></p>
@@ -1085,6 +1086,7 @@
         <button class="site-btn" data-site="bmb" onclick="setVisitsSite('bmb')"><i style="background:#ff2d6f"></i>Book My Band <span class="n"></span></button>
         <button class="site-btn" data-site="csa" onclick="setVisitsSite('csa')"><i style="background:#38bdf8"></i>CS Animations <span class="n"></span></button>
         <button class="site-btn" data-site="store" onclick="setVisitsSite('store')"><i style="background:#a3e635"></i>Boutique <span class="n"></span></button>
+        <button class="site-btn" data-site="digital" onclick="setVisitsSite('digital')"><i style="background:#a78bfa"></i>SLP Digital <span class="n"></span></button>
       </div>
       <div class="vz-seg">
         <button class="period-btn active" id="periodBtn-today" onclick="setVisitsPeriod('today')">Aujourd'hui</button>
@@ -1358,6 +1360,7 @@
         <a class="period-btn" style="text-decoration:none;" href="https://bookmyband.fr/?notrack=1" target="_blank" rel="noopener">bookmyband.fr</a>
         <a class="period-btn" style="text-decoration:none;" href="https://csanimations.fr/?notrack=1" target="_blank" rel="noopener">csanimations.fr</a>
         <a class="period-btn" style="text-decoration:none;" href="https://slpstore.fr/?notrack=1" target="_blank" rel="noopener">slpstore.fr</a>
+        <a class="period-btn" style="text-decoration:none;" href="https://slpdigital.fr/?notrack=1" target="_blank" rel="noopener">slpdigital.fr</a>
       </div>
       <p class="vz-note" style="margin:12px 0 0;">Pour recompter les visites d'un appareil, remplace <b>notrack=1</b> par <b>notrack=0</b> dans le lien. Les visites de ton PC de Pessac (Free) ne sont plus écartées automatiquement : seules celles d'avant le 15/10/2026, qui étaient tes tests, restent retirées des stats.</p>
     </div>
@@ -3706,8 +3709,8 @@
   let visitsMapInstance = null;
 
   // Multi-sites : SLP, Book My Band, CS Animations (colonne "site" de page_visits)
-  const SITE_LABELS = { slp:'SLP', bmb:'Book My Band', csa:'CS Animations', store:'Boutique' };
-  const SITE_COLORS = { slp:'#ffb238', bmb:'#ff2d6f', csa:'#38bdf8', store:'#a3e635' };
+  const SITE_LABELS = { slp:'SLP', bmb:'Book My Band', csa:'CS Animations', store:'Boutique', digital:'SLP Digital' };
+  const SITE_COLORS = { slp:'#ffb238', bmb:'#ff2d6f', csa:'#38bdf8', store:'#a3e635', digital:'#a78bfa' };
   // Les dates des visites sont stockées en UTC : on les affiche à l'heure de Paris (été/hiver automatique)
   function parisDT(s){
     if (!s) return '';
