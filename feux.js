@@ -11,7 +11,7 @@
   bt.innerHTML = h1.innerHTML;
   h1.appendChild(bt);
 
-  var c = { x: 0, y: 0 }, off = { x: 0, y: 0 }, fd = 0;
+  var c = { x: 0, y: 0 }, off = { x: 0, y: 0 }, fd = 0, aim = null;
   function place() {
     var hr = hero.getBoundingClientRect(), dr = dot.getBoundingClientRect(), tr = h1.getBoundingClientRect();
     c.x = dr.left + dr.width / 2 - hr.left;
@@ -22,6 +22,8 @@
     bt.style.setProperty('--fy', (c.y - (tr.top - hr.top)) + 'px');
     off.x = tr.left - hr.left; off.y = tr.top - hr.top;
     // Le faisceau part d'un sommet placé derrière le cercle, pour qu'il ait la largeur du cercle à sa sortie
+    // Visée automatique : le faisceau pointe vers le titre (quelle que soit la mise en page), avec un léger biais vers le bas
+    aim = hero.hasAttribute('data-aim') ? Math.atan2((tr.top - hr.top + tr.height / 2) - c.y, (tr.left - hr.left + tr.width / 2) - c.x) * 180 / Math.PI + 90 - parseFloat(hero.getAttribute('data-aim')) : null;
     fd = (dr.width / 2) / Math.sin(15 * Math.PI / 180);
     hero.style.setProperty('--fd', fd + 'px'); bt.style.setProperty('--fd', fd + 'px');
   }
@@ -37,6 +39,7 @@
 
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var A0 = function () { var m = window.matchMedia && matchMedia('(max-width:960px)').matches;
+    if (!m && aim !== null && !isNaN(aim)) return aim;
     var v = parseFloat(hero.getAttribute(m && hero.hasAttribute('data-angle-m') ? 'data-angle-m' : 'data-angle')); return isNaN(v) ? 238 : v; };
   var target = null, cur = A0(), t0 = performance.now();
   hero.addEventListener('pointermove', function (e) {
@@ -46,7 +49,7 @@
   });
   hero.addEventListener('pointerleave', function () { target = null; });
   function tick(now) {
-    var goal = target !== null ? target : (reduce ? A0() : A0() + 9 * Math.sin((now - t0) / 1150));
+    var goal = target !== null ? target : (reduce ? A0() : A0() + (aim !== null ? 5 : 9) * Math.sin((now - t0) / 1150));
     var d = ((goal - cur + 540) % 360) - 180;
     cur += d * 0.12;
     hero.style.setProperty('--fa', cur.toFixed(2) + 'deg');
