@@ -280,6 +280,8 @@
 .hero-photo .slide{position:absolute; inset:0; opacity:0; transition:opacity .9s ease;} .hero-photo .slide.on{opacity:1;}
 @media (prefers-reduced-motion:reduce){ .hero-photo .slide{transition:none;} }
 
+.hero-photo.hero-video iframe{pointer-events:none;} /* pas de menu YouTube au survol */
+.hv-sound{position:absolute; right:12px; bottom:12px; z-index:3; border:0; border-radius:100px; padding:7px 14px; font:700 .82rem/1 'Manrope',sans-serif; cursor:pointer; background:rgba(12,10,20,.78); color:var(--paper); backdrop-filter:blur(6px); transition:transform .15s ease;} .hv-sound:hover{transform:scale(1.05);}
 .hero-photo.hero-video{aspect-ratio:16/9;} .hero-photo.hero-video iframe{position:absolute; inset:0; width:100%; height:100%; border:0; display:block;}
 .hero-photo figcaption{position:absolute; left:12px; bottom:10px; font-size:.78rem; padding:4px 10px; border-radius:100px; background:rgba(12,10,20,.72); color:var(--paper);}
 @media (max-width:960px){
@@ -378,7 +380,7 @@ html{scroll-padding-top:96px;}
   </div>
 </header>
 
-<section class="hero feux hero-v2" id="top" data-angle="260" data-angle-m="128">
+<section class="hero feux hero-v2" id="top" data-angle="260" data-angle-m="128" data-aim="-4">
   <div class="feux-halo" aria-hidden="true"></div><div class="feux-dot" aria-hidden="true"></div><div class="feux-light" aria-hidden="true"></div>
   <div class="hero-inner">
     <div class="hero-text">
@@ -391,7 +393,8 @@ html{scroll-padding-top:96px;}
       <ul class="reassure"><li>Un seul interlocuteur</li><li>Partout en France</li><li>Premier retour rapide</li></ul>
     </div>
     <figure class="hero-photo hero-video" id="heroVideo">
-      <iframe src="https://www.youtube-nocookie.com/embed/CSD4xiWCw0I?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=CSD4xiWCw0I&amp;rel=0&amp;modestbranding=1&amp;playsinline=1" title="SLP Sound Light Prod — vidéo de présentation" data-notrack="1" allow="autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe src="https://www.youtube-nocookie.com/embed/CSD4xiWCw0I?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=CSD4xiWCw0I&amp;controls=0&amp;disablekb=1&amp;fs=0&amp;iv_load_policy=3&amp;cc_load_policy=0&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1" title="SLP Sound Light Prod — vidéo de présentation" data-notrack="1" allow="autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <button type="button" class="hv-sound" id="hvSound" aria-label="Activer le son" aria-pressed="false">🔇 Activer le son</button>
     </figure>
   </div>
 </section>
@@ -552,6 +555,10 @@ requestAnimationFrame(step);})();</script>
 })();
 </script>
 <!-- cta-contact:end -->
+<script id="hero-video-sound">(function(){var b=document.getElementById('hvSound'),f=document.querySelector('#heroVideo iframe');if(!b||!f)return;var on=false;
+function cmd(fn,args){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(e){}}
+b.addEventListener('click',function(){on=!on;if(on){cmd('unMute');cmd('setVolume',[100]);cmd('playVideo');}else{cmd('mute');}
+b.textContent=on?'🔊 Couper le son':'🔇 Activer le son';b.setAttribute('aria-pressed',on?'true':'false');b.setAttribute('aria-label',on?'Couper le son':'Activer le son');});})();</script>
 <script id="hero-video-align">(function(){var v=document.getElementById('heroVideo');if(!v)return;
 function find(){var a=document.querySelectorAll('header a');for(var i=0;i<a.length;i++){if(a[i].textContent.trim()==='Galerie'&&a[i].offsetParent)return a[i];}return null;}
 function align(){v.style.transform='';if(innerWidth<1200)return;var g=find();if(!g)return;var gr=g.getBoundingClientRect().right,b=v.getBoundingClientRect();
