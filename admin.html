@@ -79,6 +79,20 @@
   .agenda-legend{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:16px; font-size:0.8rem; color:var(--muted);}
   .agenda-legend span{display:inline-flex; align-items:center; gap:6px;}
   .agenda-dot{width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0;}
+  .agenda-views{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .agenda-views button{background:var(--ink-2); color:var(--muted); border:1px solid var(--line); border-radius:100px; padding:6px 14px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.85rem;}
+  .agenda-views button.on{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
+  .agenda-nav{flex-wrap:wrap;} .agenda-today-btn{margin-left:auto;}
+  .agenda-grid.as-list{display:flex !important; flex-direction:column; gap:8px !important;}
+  .agenda-day.lday{min-height:56px !important; gap:6px !important;}
+  .agenda-lhead{font-size:.82rem; font-weight:700; text-transform:capitalize; color:var(--paper);}
+  .agenda-day.today .agenda-lhead{color:var(--amber);}
+  .agenda-lempty{font-size:.74rem; color:var(--muted); opacity:.6;}
+  .agenda-grid.as-list .dispo-item{font-size:.8rem; padding:5px 8px;}
+  .agenda-grid.as-list .dispo-item .di-txt{white-space:normal; overflow:visible;}
+  .agenda-recap-month{font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-top:6px;}
+  @media (min-width:700px){ .agenda-grid.as-list.v3j{display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important;} }
+  @media (min-width:900px){ .agenda-grid.as-list.vsem, .agenda-grid.as-list.vquinz{display:grid !important; grid-template-columns:repeat(7,minmax(0,1fr)) !important;} .agenda-grid.as-list.vsem .agenda-day.lday, .agenda-grid.as-list.vquinz .agenda-day.lday{min-height:130px !important;} .agenda-grid.as-list.vsem .dispo-item, .agenda-grid.as-list.vquinz .dispo-item{font-size:.68rem; padding:3px 6px;} }
   .agenda-nav{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
   .agenda-nav button{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:8px; padding:6px 14px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.9rem;}
   .agenda-nav button:hover{border-color:rgba(255,255,255,0.3);}
@@ -480,13 +494,21 @@
     <h2>Planning général</h2>
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Absolument tout ce qui occupe chaque groupe — concerts publics, soirées privées, prestations techniques ou DJ, options comme validées — que ce soit affiché sur le site ou pas. Clique sur une date pour ajouter un nouvel événement à ce jour-là.</p>
 
-    <div class="agenda-legend" id="dispoLegend"></div>
+    <div class="agenda-views" id="dispoViews">
+      <button data-v="month" onclick="setDispoView('month')">Mois</button>
+      <button data-v="quinz" onclick="setDispoView('quinz')">Quinzaine</button>
+      <button data-v="sem" onclick="setDispoView('sem')">Semaine</button>
+      <button data-v="3j" onclick="setDispoView('3j')">3 jours</button>
+      <button data-v="recap" onclick="setDispoView('recap')">Récap</button>
+    </div>
     <div class="agenda-nav">
-      <button onclick="shiftDispoMonth(-1)">← Mois préc.</button>
+      <button onclick="shiftDispo(-1)" aria-label="Précédent">←</button>
       <span class="agenda-month" id="dispoMonthLabel"></span>
-      <button onclick="shiftDispoMonth(1)">Mois suiv. →</button>
+      <button onclick="shiftDispo(1)" aria-label="Suivant">→</button>
+      <button onclick="dispoToday()" class="agenda-today-btn">Aujourd'hui</button>
     </div>
     <div class="agenda-grid" id="dispoGrid"></div>
+    <div class="agenda-legend" id="dispoLegend"></div>
   </div>
 
   <!-- ============ ONGLET 2 : ÉVÉNEMENTS À REMPLIR ============ -->
@@ -3388,7 +3410,15 @@
   const DISPO_TYPE_LABELS = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', animation:'Animation', karaoke:'Karaoké', indisponible:'Indisponible', location:'Location / prêt matériel' };
   const DISPO_TYPE_PLAIN = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', animation:'Animation', karaoke:'Karaoké', indisponible:'Indisponible', location:'Location / prêt matériel' };
   let dispoDate = new Date();
-  dispoDate.setDate(1);
+  let dispoView = 'month';
+  try { const v = localStorage.getItem('slp_planning_view'); if (['month','quinz','sem','3j','recap'].includes(v)) dispoView = v; } catch(e){}
+  const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  function setDispoView(v){
+    dispoView = v;
+    try { localStorage.setItem('slp_planning_view', v); } catch(e){}
+    renderDispoCalendar();
+  }
+  function dispoToday(){ dispoDate = new Date(); renderDispoCalendar(); }
 
   function renderDispoLegend(){
     document.getElementById('dispoLegend').innerHTML = Object.keys(ARTIST_LABELS).map(slug => `
@@ -3396,8 +3426,13 @@
     `).join('') + `<span class="fam-legend"><span class="agenda-dot" style="background:#3ecf6e;"></span>🏠 PERSO-Famille · Marie</span><span class="fam-legend"><span class="agenda-dot" style="background:#f1ece2;"></span>🏠 PERSO-Famille · Nj &amp; Merlyn</span>`;
   }
 
-  function shiftDispoMonth(delta){
-    dispoDate.setMonth(dispoDate.getMonth() + delta);
+  function shiftDispo(dir){
+    if (dispoView === 'month' || dispoView === 'recap'){
+      dispoDate = new Date(dispoDate.getFullYear(), dispoDate.getMonth() + dir, 1);
+    } else {
+      const step = dispoView === '3j' ? 3 : dispoView === 'sem' ? 7 : 14;
+      dispoDate = new Date(dispoDate.getFullYear(), dispoDate.getMonth(), dispoDate.getDate() + dir * step);
+    }
     renderDispoCalendar();
   }
 
@@ -3418,11 +3453,58 @@
     if (slot && form) slot.appendChild(form);
   }
 
+  // Pastilles d'un jour (famille + événements SLP) : mêmes éléments dans toutes les vues
+  function dispoDayItems(dateStr, data){
+    const dayEntries = data.filter(d => d.date === dateStr);
+    const dayFam = (window.familleData || []).filter(f => f.date === dateStr);
+    return `${dayFam.map(f => { const who = f.auteur === 'Marie' ? 'Marie' : 'Nous'; return `<div class="dispo-item fam" style="--fc:${FAM_COLORS[who]};" title="PERSO-Famille — ${escapeAttr(f.titre)}${f.heure ? ' — ' + escapeAttr(f.heure) : ''}${f.pour && f.pour !== 'Tous' ? ' — pour ' + escapeAttr(f.pour) : ''} — ajouté par ${who === 'Marie' ? 'Marie' : 'Nj et Merlyn'}${f.note ? ' — ' + escapeAttr(f.note) : ''}"><span class="di-txt" onclick="event.stopPropagation(); switchTab('famille')" title="Ouvrir PERSO-Famille">🏠 ${f.heure ? escapeAttr(f.heure) + ' ' : ''}${escapeAttr(f.titre)}</span></div>`; }).join('')}
+        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt" onclick="event.stopPropagation(); editDispo(${d.id})" title="Modifier">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || ''} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${typeTag(d)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span>${d.status === 'option' ? `<button class="di-ok" title="Valider l'option" onclick="event.stopPropagation(); quickValidate(${d.id})">✓</button>` : ''}<button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}`;
+  }
+
   function renderDispoCalendar(){
     const grid = document.getElementById('dispoGrid');
     const label = document.getElementById('dispoMonthLabel');
+    document.querySelectorAll('#dispoViews button').forEach(b => b.classList.toggle('on', b.dataset.v === dispoView));
+    const todayStr = ymd(new Date());
+    // Les indisponibilités des artistes (Supernova…) n'encombrent pas le planning SLP : seules les siennes (prestation technique) restent
+    const data = (window.dispoData || []).filter(d => !(d.type === 'indisponible' && d.artist_slug !== 'presta-technique'));
     const year = dispoDate.getFullYear();
     const month = dispoDate.getMonth();
+
+    if (dispoView !== 'month'){
+      // Vues « liste » : une carte par jour, textes complets (lisibles sur téléphone)
+      let days = [];
+      if (dispoView === 'recap'){
+        label.textContent = dispoDate.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+        const n = new Date(year, month + 1, 0).getDate();
+        for (let i = 1; i <= n; i++) days.push(new Date(year, month, i));
+      } else {
+        const count = dispoView === '3j' ? 3 : dispoView === 'sem' ? 7 : 14;
+        const start = dispoView === '3j' ? new Date(year, month, dispoDate.getDate())
+          : new Date(year, month, dispoDate.getDate() - ((dispoDate.getDay() + 6) % 7));
+        for (let i = 0; i < count; i++) days.push(new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
+        const f1 = days[0].toLocaleDateString('fr-FR', { day:'numeric', month: days[0].getMonth() === days[count-1].getMonth() ? undefined : 'short' });
+        label.textContent = f1 + ' – ' + days[count-1].toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+      }
+      let html = '';
+      let shown = 0;
+      for (const d of days){
+        const dateStr = ymd(d);
+        const items = dispoDayItems(dateStr, data);
+        const has = items.trim().length > 0;
+        if (dispoView === 'recap' && !has) continue;
+        shown++;
+        const lab = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+        html += `<div class="agenda-day lday${dateStr === todayStr ? ' today' : ''} gv-clickable" onclick="openAddEventModal('${dateStr}')">
+          <div class="agenda-lhead">${lab}</div>${has ? items : '<div class="agenda-lempty">Rien de prévu</div>'}</div>`;
+      }
+      if (dispoView === 'recap' && !shown) html = '<div class="agenda-lempty" style="padding:14px 4px;">Rien de prévu ce mois-ci.</div>';
+      grid.className = 'agenda-grid as-list v' + dispoView;
+      grid.innerHTML = html;
+      return;
+    }
+
+    grid.className = 'agenda-grid';
     label.textContent = dispoDate.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
 
     const dows = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
@@ -3431,9 +3513,6 @@
     const firstDay = new Date(year, month, 1);
     const startOffset = (firstDay.getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const todayStr = new Date().toISOString().slice(0,10);
-    // Les indisponibilités des artistes (Supernova…) n'encombrent pas le planning SLP : seules les siennes (prestation technique) restent
-    const data = (window.dispoData || []).filter(d => !(d.type === 'indisponible' && d.artist_slug !== 'presta-technique'));
 
     for (let i = 0; i < startOffset; i++){
       html += `<div class="agenda-day empty"></div>`;
@@ -3441,13 +3520,10 @@
 
     for (let day = 1; day <= daysInMonth; day++){
       const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-      const dayEntries = data.filter(d => d.date === dateStr);
-      const dayFam = (window.familleData || []).filter(f => f.date === dateStr);
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''} gv-clickable" onclick="openAddEventModal('${dateStr}')">
         <div class="agenda-daynum">${day}</div>
-        ${dayFam.map(f => { const who = f.auteur === 'Marie' ? 'Marie' : 'Nous'; return `<div class="dispo-item fam" style="--fc:${FAM_COLORS[who]};" title="PERSO-Famille — ${escapeAttr(f.titre)}${f.heure ? ' — ' + escapeAttr(f.heure) : ''}${f.pour && f.pour !== 'Tous' ? ' — pour ' + escapeAttr(f.pour) : ''} — ajouté par ${who === 'Marie' ? 'Marie' : 'Nj et Merlyn'}${f.note ? ' — ' + escapeAttr(f.note) : ''}"><span class="di-txt" onclick="event.stopPropagation(); switchTab('famille')" title="Ouvrir PERSO-Famille">🏠 ${f.heure ? escapeAttr(f.heure) + ' ' : ''}${escapeAttr(f.titre)}</span></div>`; }).join('')}
-        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt" onclick="event.stopPropagation(); editDispo(${d.id})" title="Modifier">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || ''} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${typeTag(d)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span>${d.status === 'option' ? `<button class="di-ok" title="Valider l'option" onclick="event.stopPropagation(); quickValidate(${d.id})">✓</button>` : ''}<button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
+        ${dispoDayItems(dateStr, data)}
       </div>`;
     }
 
