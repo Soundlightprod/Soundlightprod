@@ -2548,6 +2548,18 @@ export default {
       }
 
       if (!url.pathname.startsWith("/api/")) {
+        // PERSO-Famille : page privée. Jamais indexée (en-tête noindex, absente des plans du site et de robots.txt, aucun lien public),
+        // sans les scripts publics du site (chat, bandeau cookies, suivi des visites) et réservée à soundlightprod.fr.
+        if (/^\/famille(\.html)?\/?$/i.test(url.pathname)) {
+          const h = url.hostname.toLowerCase();
+          if (h !== "soundlightprod.fr" && h !== "www.soundlightprod.fr") return new Response("Not found", { status: 404, headers: { "X-Robots-Tag": "noindex" } });
+          const r = await env.ASSETS.fetch(request);
+          const out = new Response(r.body, r);
+          out.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet, noimageindex");
+          out.headers.set("Cache-Control", "private, no-store");
+          out.headers.set("Referrer-Policy", "no-referrer");
+          return out;
+        }
         // /clement-Blouin (avec majuscule) sert la même page que /clement-blouin
         const aliasClement = url.pathname.match(/^(\/(?:en|es|it))?\/clement-blouin\/?$/i);
         const assetRequest = aliasClement ? new Request(new URL(`${aliasClement[1] || ""}/clement-blouin${url.search}`, url.origin), request) : request;
