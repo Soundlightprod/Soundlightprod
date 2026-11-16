@@ -456,7 +456,7 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" id="tabBtn-planning" onclick="switchTab('planning')">1. 📅 Planning SLP</button>
+    <button class="tab-btn active" id="tabBtn-planning" onclick="switchTab('planning')">1. 📅 Planning général</button>
     <button class="tab-btn" id="tabBtn-events" onclick="switchTab('events')">2. 🗓 Événements à remplir</button>
     <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">3. Agenda Diffusé en ligne</button>
     <button class="tab-btn" id="tabBtn-overview" onclick="switchTab('overview')">4. 🔭 Résumé par artiste</button>
@@ -474,7 +474,7 @@
 
   <!-- ============ ONGLET 1 : PLANNING SLP (calendrier global, clic = ajouter un événement) ============ -->
   <div class="tab-content active" id="tab-planning">
-    <h2>Planning SLP</h2>
+    <h2>Planning général</h2>
     <p style="color:var(--muted); font-size:0.86rem; margin-bottom:20px;">Absolument tout ce qui occupe chaque groupe — concerts publics, soirées privées, prestations techniques ou DJ, options comme validées — que ce soit affiché sur le site ou pas. Clique sur une date pour ajouter un nouvel événement à ce jour-là.</p>
 
     <div class="agenda-legend" id="dispoLegend"></div>
@@ -2096,6 +2096,7 @@
     if (name === 'crm' && window.crmOpen) crmOpen();
     if (name === 'supernova') { snEmbed(); snLoad(); }
     if (name === 'famille') famLoad();
+    if (name === 'planning' && window.loadFamilleCal) loadFamilleCal();
     if (name === 'chat') { chatLoadSettings(); chatStartPolling(); try { history.replaceState(null,'','#chat'); } catch(e){} }
     if (name === 'visits'){ refreshStats(); try { const v = localStorage.getItem('slp_vpane'); if (v) switchVisitsPane(v); } catch(e){} }
     if (name === 'access'){
@@ -3330,7 +3331,7 @@
   function renderDispoLegend(){
     document.getElementById('dispoLegend').innerHTML = Object.keys(ARTIST_LABELS).map(slug => `
       <span><span class="agenda-dot" style="background:${ARTIST_COLORS[slug]};"></span>${ARTIST_LABELS[slug]}</span>
-    `).join('');
+    `).join('') + `<span><span class="agenda-dot" style="background:#ff7ab6;"></span>🏠 PERSO-Famille</span>`;
   }
 
   function shiftDispoMonth(delta){
@@ -3379,9 +3380,11 @@
     for (let day = 1; day <= daysInMonth; day++){
       const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
       const dayEntries = data.filter(d => d.date === dateStr);
+      const dayFam = (window.familleData || []).filter(f => f.date === dateStr);
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''} gv-clickable" onclick="openAddEventModal('${dateStr}')">
         <div class="agenda-daynum">${day}</div>
+        ${dayFam.map(f => { const c = FAM_COLORS[f.pour] || FAM_COLORS.Tous; return `<div class="dispo-item" style="background:${c[0]}; color:${c[1]};" title="PERSO-Famille — ${escapeAttr(f.titre)}${f.heure ? ' — ' + escapeAttr(f.heure) : ''}${f.pour ? ' — ' + escapeAttr(f.pour) : ''}${f.note ? ' — ' + escapeAttr(f.note) : ''}"><span class="di-txt" onclick="event.stopPropagation(); switchTab('famille')" title="Ouvrir PERSO-Famille">🏠 ${f.heure ? escapeAttr(f.heure) + ' ' : ''}${escapeAttr(f.titre)}</span></div>`; }).join('')}
         ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt" onclick="event.stopPropagation(); editDispo(${d.id})" title="Modifier">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || ''} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${typeTag(d)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span>${d.status === 'option' ? `<button class="di-ok" title="Valider l'option" onclick="event.stopPropagation(); quickValidate(${d.id})">✓</button>` : ''}<button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
       </div>`;
     }
@@ -3459,7 +3462,19 @@
     }
   }
 
+  // PERSO-Famille : affichée dans le planning général, mais gardée à part (jamais mélangée aux données SLP)
+  const FAM_COLORS = { Tous:['#ffb238','#0c0b10'], Marie:['#ff4d7d','#fff'], Merlyn:['#8b5cf6','#fff'], Nj:['#2f9bff','#fff'] };
+  async function loadFamilleCal(){
+    try {
+      const res = await fetch('/api/famille/events', { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await res.json();
+      window.familleData = Array.isArray(data) ? data : [];
+    } catch(e){ window.familleData = []; }
+    renderDispoCalendar();
+  }
+
   async function loadDispos(){
+    loadFamilleCal();
     try {
       const res = await fetch(`${EVENTS_BASE}/api/admin/agenda`, { headers:{ Authorization:`Bearer ${token}` } });
       const data = await res.json();
