@@ -84,7 +84,7 @@
   </form>
 
   <div class="direct">
-    Vous préférez nous joindre directement ? Écrivez à <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a> ou appelez le <a href="tel:+33631949653" data-contact="appel">06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</a>.
+    Vous préférez nous joindre directement ? Écrivez à <a href="mailto:contact@slpstore.fr" data-contact="mail">contact@slpstore.fr</a> ou appelez le <a href="tel:+33631949653" data-contact="appel">06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</a>.
   </div>
 </main>
 <script>
@@ -143,10 +143,10 @@
         } else {
           if (window.slpAS) window.slpAS.captchaReset();
           if (x.d && x.d.champ && x.d.champ !== 'captcha') setErr(x.d.champ, x.d.error || '');
-          show('ko', (x.d && x.d.error) || 'Votre demande n’a pas pu être envoyée. Réessayez, ou écrivez-nous à contact@soundlightprod.fr.');
+          show('ko', (x.d && x.d.error) || 'Votre demande n’a pas pu être envoyée. Réessayez, ou écrivez-nous à contact@slpstore.fr.');
         }
       })
-      .catch(function(){ if (window.slpAS) window.slpAS.captchaReset(); show('ko', 'Connexion impossible. Réessayez dans un instant, ou écrivez-nous à contact@soundlightprod.fr.'); })
+      .catch(function(){ if (window.slpAS) window.slpAS.captchaReset(); show('ko', 'Connexion impossible. Réessayez dans un instant, ou écrivez-nous à contact@slpstore.fr.'); })
       .then(function(){ sending = false; go.disabled = false; });
   });
 })();
