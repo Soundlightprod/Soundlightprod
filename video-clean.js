@@ -35,6 +35,9 @@
   function setup(f) {
     if (f._vc || skip(f)) return;
     f._vc = true;
+    // Le parent doit pouvoir lancer la lecture dans l'iframe (sinon le navigateur refuse le « play » envoyé par script)
+    var al = f.getAttribute('allow') || '';
+    if (!/autoplay/.test(al)) f.setAttribute('allow', ('autoplay; ' + al).trim());
     cleanSrc(f);
     var host = f.parentNode;
     if (!host) return;
@@ -53,8 +56,11 @@
       im.onerror = function () { var h = new Image(); h.onload = function () { if (poster) { ov.style.backgroundImage = 'url(' + h.src + ')'; ov.classList.add('vc-poster'); } }; h.src = 'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg'; };
       im.src = 'https://i.ytimg.com/vi/' + vid + '/maxresdefault.jpg';
     }
-    function paint() { ov.classList.toggle('vc-on', playing); if (playing && poster) dropPoster(); }
-    ov.addEventListener('click', function () { playing = !playing; cmd(f, playing ? 'playVideo' : 'pauseVideo'); paint(); });
+    function paint() { ov.classList.toggle('vc-on', playing); }
+    ov.addEventListener('click', function () {
+      playing = !playing; cmd(f, playing ? 'playVideo' : 'pauseVideo'); paint();
+      if (playing && poster) setTimeout(function () { if (playing && poster) dropPoster(); }, 4000); // secours : l'affiche est retirée quand la lecture est confirmée, sinon au bout de 4 s
+    });
     host.appendChild(ov);
     var host2 = host;
     if (host.requestFullscreen || host.webkitRequestFullscreen) {
@@ -68,7 +74,7 @@
       });
       host.appendChild(fs);
     }
-    var rec = { f: f, set: function (s) { playing = (s === 1 || s === 3); paint(); } };
+    var rec = { f: f, set: function (s) { playing = (s === 1 || s === 3); if (s === 1 && poster) dropPoster(); paint(); } };
     reg.push(rec);
     f.addEventListener('load', function () { listen(f); setTimeout(function () { listen(f); }, 600); setTimeout(function () { listen(f); }, 2000); });
     paint();
