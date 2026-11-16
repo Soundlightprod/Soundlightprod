@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PERSO-Famille — Agenda</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0c0b10; --ink-2:#17151e; --paper:#f5f2ec; --muted:#9a93a6; --amber:#ffb238; --pink:#ff4d7d; --violet:#8b5cf6; --blue:#2f9bff; --line:rgba(255,255,255,0.1); }
+  *{box-sizing:border-box;}
+  body{background:var(--ink); color:var(--paper); font-family:'Manrope',sans-serif; margin:0; padding:24px;}
+  body.embed{padding:0; background:transparent;}
+  .wrap{max-width:820px; margin:0 auto;}
+  h1{font-family:'Space Grotesk',sans-serif; font-size:1.5rem; margin:0 0 4px; background:linear-gradient(90deg,#2f9bff,#8b5cf6,#ff4d7d,#ffb238,#2f9bff); background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent; animation:hueSlide 8s linear infinite;}
+  @keyframes hueSlide{ to{ background-position:300% center; } }
+  @media (prefers-reduced-motion: reduce){ h1{ animation:none; } }
+  h2{font-family:'Space Grotesk',sans-serif; font-size:1.05rem; margin:30px 0 12px;}
+  .sub{color:var(--muted); font-size:.9rem; margin:0 0 22px;}
+  .top{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:6px;}
+  .btn{background:var(--paper); color:var(--ink); border:none; border-radius:100px; padding:10px 20px; font-weight:700; cursor:pointer; font-family:'Manrope',sans-serif; transition:transform .15s ease, box-shadow .15s ease;}
+  .btn:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.35);}
+  .btn-outline{background:none; border:1px solid var(--line); color:var(--paper); border-radius:100px; padding:8px 16px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:.85rem;}
+  .btn-danger{background:none; border:1px solid var(--pink); color:var(--pink); border-radius:100px; padding:10px 20px; cursor:pointer; font-family:'Manrope',sans-serif; font-weight:700;}
+  .login-box{max-width:340px; margin:90px auto; text-align:center;}
+  .login-box input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink-2); color:var(--paper); margin-bottom:12px; font-family:inherit; font-size:1rem;}
+  .login-box .btn{width:100%;}
+  .login-box label.rem{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:.82rem; margin:0 0 14px; text-align:left;}
+  .login-box label.rem input{width:auto; margin:0;}
+  .err{color:var(--pink); font-size:.85rem; min-height:1.2em; margin:0 0 10px;}
+  .agenda-nav{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+  .agenda-nav button{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:8px; padding:6px 14px; cursor:pointer; font-family:inherit; font-size:.9rem;}
+  .agenda-month{font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.05rem; text-transform:capitalize; min-width:150px; text-align:center;}
+  .agenda-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; margin-bottom:20px;}
+  .agenda-dow{text-align:center; font-family:'JetBrains Mono',monospace; font-size:.66rem; color:var(--muted); text-transform:uppercase; padding-bottom:6px;}
+  .agenda-day{min-width:0; min-height:84px; background:var(--ink-2); border:1px solid var(--line); border-radius:10px; padding:6px; display:flex; flex-direction:column; gap:3px; cursor:pointer;}
+  .agenda-day:hover{border-color:rgba(255,255,255,.35);}
+  .agenda-day.empty{background:transparent; border:none; cursor:default;}
+  .agenda-day.today{border-color:var(--amber);}
+  .agenda-daynum{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:.68rem;}
+  .agenda-day.today .agenda-daynum{color:var(--amber); font-weight:700;}
+  .item{border-radius:5px; padding:2px 6px; font-size:.64rem; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:var(--amber);}
+  .p-Marie{background:var(--pink);} .p-Merlyn{background:var(--violet); color:#fff;} .p-Nj{background:var(--blue); color:#fff;} .p-Tous{background:var(--amber);}
+  .more{color:var(--muted); font-size:.62rem; padding-left:2px;}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:14px; font-size:.8rem; color:var(--muted);}
+  .legend span{display:inline-flex; align-items:center; gap:6px;} .dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .card{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:16px 18px; margin-bottom:14px;}
+  .form-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+  .field{display:flex; flex-direction:column; gap:4px; flex:1 1 140px;}
+  .field.wide{flex:1 1 100%;}
+  .field label{font-size:.72rem; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .field input,.field select,.field textarea{padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:inherit; font-size:.95rem;}
+  .field textarea{min-height:70px; resize:vertical;}
+  .row-item{display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-top:1px solid var(--line);}
+  .row-item:first-child{border-top:none;}
+  .row-date{font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--muted); min-width:96px;}
+  .row-main{flex:1; min-width:0;} .row-main b{display:block;} .row-main small{color:var(--muted); display:block; margin-top:2px; white-space:pre-wrap; word-break:break-word;}
+  .tag{display:inline-block; border-radius:100px; padding:1px 9px; font-size:.68rem; font-weight:700; margin-left:6px; color:var(--ink);}
+  .muted{color:var(--muted); font-size:.85rem;}
+  @media (max-width:700px){ body{padding:14px;} .agenda-grid{gap:3px;} .agenda-day{min-height:58px; padding:3px; border-radius:8px;} .item{font-size:.52rem; padding:2px 3px;} .row-date{min-width:78px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loginView" class="login-box" style="display:none;">
+    <h1 style="font-size:1.6rem;">PERSO · Famille</h1>
+    <p class="sub">Agenda privé</p>
+    <input type="text" id="lgUser" placeholder="Identifiant" autocomplete="username" autocapitalize="none" spellcheck="false">
+    <input type="password" id="lgPwd" placeholder="Mot de passe" autocomplete="current-password">
+    <label class="rem"><input type="checkbox" id="lgRem" checked> Rester connecté sur cet appareil</label>
+    <div class="err" id="lgErr"></div>
+    <button class="btn" id="lgBtn" onclick="doLogin()">Se connecter</button>
+  </div>
+
+  <div id="appView" style="display:none;">
+    <div class="top" id="topBar">
+      <div><h1>PERSO · Famille</h1><p class="sub" id="who"></p></div>
+      <button class="btn-outline" id="logoutBtn" onclick="doLogout()">Déconnexion</button>
+    </div>
+
+    <div class="legend">
+      <span><i class="dot" style="background:var(--amber)"></i>Tous</span>
+      <span><i class="dot" style="background:var(--pink)"></i>Marie</span>
+      <span><i class="dot" style="background:var(--violet)"></i>Merlyn</span>
+      <span><i class="dot" style="background:var(--blue)"></i>Nj</span>
+    </div>
+    <div class="agenda-nav">
+      <button onclick="shiftMonth(-1)">‹</button>
+      <span class="agenda-month" id="monthLabel"></span>
+      <button onclick="shiftMonth(1)">›</button>
+      <button onclick="goToday()" style="margin-left:auto;">Aujourd'hui</button>
+    </div>
+    <div class="agenda-grid" id="grid"></div>
+
+    <div class="card" id="formCard">
+      <h2 style="margin:0 0 12px;" id="formTitle">Ajouter un événement</h2>
+      <div class="form-row">
+        <div class="field"><label>Date</label><input type="date" id="fDate"></div>
+        <div class="field"><label>Heure (facultatif)</label><input type="time" id="fHeure"></div>
+        <div class="field"><label>Pour</label>
+          <select id="fPour"><option>Tous</option><option>Marie</option><option>Merlyn</option><option>Nj</option></select>
+        </div>
+      </div>
+      <div class="form-row"><div class="field wide"><label>Titre</label><input type="text" id="fTitre" maxlength="120" autocomplete="off"></div></div>
+      <div class="form-row"><div class="field wide"><label>Note (facultatif)</label><textarea id="fNote" maxlength="1000"></textarea></div></div>
+      <div class="err" id="fErr"></div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" id="fSave" onclick="saveEvent()">Enregistrer</button>
+        <button class="btn-outline" id="fCancel" onclick="resetForm()" style="display:none;">Annuler la modification</button>
+        <button class="btn-danger" id="fDelete" onclick="deleteEvent()" style="display:none;">Supprimer</button>
+      </div>
+    </div>
+
+    <h2>À venir</h2>
+    <div class="card" id="upcoming"><span class="muted">Chargement…</span></div>
+  </div>
+</div>
+
+<script>
+  const EMBED = (function(){ try { return window.self !== window.top || /[?&]embed=1/.test(location.search); } catch(e){ return true; } })();
+  if (EMBED) document.body.classList.add('embed');
+  const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const JOURS = ['lun','mar','mer','jeu','ven','sam','dim'];
+  const esc = x => String(x == null ? '' : x).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const $ = id => document.getElementById(id);
+  const pad = n => String(n).padStart(2,'0');
+  const iso = d => d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+  const store = (k) => { try { return localStorage.getItem(k) || sessionStorage.getItem(k) || ''; } catch(e){ return ''; } };
+
+  let token = '', isAdminToken = false, events = [], editingId = null;
+  let view = new Date(); view.setDate(1);
+
+  // Jeton : d'abord la session famille (Marie), à défaut la session admin déjà ouverte (Nj, Merlyn)
+  function pickToken(){
+    const f = store('slp_famille_token'); if (f) return { t:f, admin:false };
+    const a = store('slp_admin_token'); if (a) return { t:a, admin:true };
+    return { t:'', admin:false };
+  }
+  async function api(path, opts){
+    opts = opts || {};
+    const headers = Object.assign({ Authorization: 'Bearer ' + token }, opts.body ? { 'Content-Type':'application/json' } : {});
+    const r = await fetch(path, { method: opts.method || 'GET', headers, body: opts.body ? JSON.stringify(opts.body) : undefined });
+    let data = null; try { data = await r.json(); } catch(e){}
+    if (r.status === 401 && token) { showLogin(); throw new Error('401'); }
+    if (!r.ok) throw new Error((data && data.error) || 'Erreur');
+    return data;
+  }
+
+  async function init(){
+    const p = pickToken(); token = p.t; isAdminToken = p.admin;
+    if (!token) return showLogin();
+    try {
+      const me = await api('/api/famille/me');
+      $('who').textContent = me.role === 'admin' ? 'Agenda partagé de la famille' : 'Bonjour ' + me.name + ' 👋';
+      $('loginView').style.display = 'none'; $('appView').style.display = 'block';
+      if (EMBED) $('topBar').style.display = 'none';
+      if (isAdminToken || me.role === 'admin') $('logoutBtn').style.display = 'none';
+      resetForm(); await loadEvents();
+    } catch(e){ if (e.message !== '401') showLogin(); }
+  }
+  function showLogin(){ $('appView').style.display = 'none'; $('loginView').style.display = 'block'; }
+
+  async function doLogin(){
+    $('lgErr').textContent = ''; $('lgBtn').disabled = true;
+    try {
+      const r = await fetch('/api/famille/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: $('lgUser').value, password: $('lgPwd').value }) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || 'Connexion impossible');
+      try { localStorage.removeItem('slp_famille_token'); sessionStorage.removeItem('slp_famille_token'); } catch(e){}
+      try { ($('lgRem').checked ? localStorage : sessionStorage).setItem('slp_famille_token', d.token); } catch(e){}
+      $('lgPwd').value = ''; await init();
+    } catch(e){ $('lgErr').textContent = e.message; }
+    $('lgBtn').disabled = false;
+  }
+  $('lgPwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  $('lgUser').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+  async function doLogout(){
+    try { await fetch('/api/famille/logout', { method:'POST', headers:{ Authorization:'Bearer ' + token } }); } catch(e){}
+    try { localStorage.removeItem('slp_famille_token'); sessionStorage.removeItem('slp_famille_token'); } catch(e){}
+    token = ''; showLogin();
+  }
+
+  async function loadEvents(){
+    try { events = await api('/api/famille/events'); } catch(e){ if (e.message === '401') return; events = []; }
+    renderGrid(); renderUpcoming();
+  }
+
+  function renderGrid(){
+    $('monthLabel').textContent = MOIS[view.getMonth()] + ' ' + view.getFullYear();
+    const g = $('grid'); g.innerHTML = '';
+    JOURS.forEach(j => { const d = document.createElement('div'); d.className = 'agenda-dow'; d.textContent = j; g.appendChild(d); });
+    const first = new Date(view.getFullYear(), view.getMonth(), 1);
+    const lead = (first.getDay() + 6) % 7;
+    for (let i = 0; i < lead; i++){ const d = document.createElement('div'); d.className = 'agenda-day empty'; g.appendChild(d); }
+    const days = new Date(view.getFullYear(), view.getMonth()+1, 0).getDate();
+    const today = iso(new Date());
+    for (let n = 1; n <= days; n++){
+      const ds = view.getFullYear() + '-' + pad(view.getMonth()+1) + '-' + pad(n);
+      const cell = document.createElement('div'); cell.className = 'agenda-day' + (ds === today ? ' today' : '');
+      const num = document.createElement('div'); num.className = 'agenda-daynum'; num.textContent = n; cell.appendChild(num);
+      const list = events.filter(e => e.date === ds);
+      list.slice(0,3).forEach(e => {
+        const it = document.createElement('div'); it.className = 'item p-' + (e.pour || 'Tous');
+        it.textContent = (e.heure ? e.heure + ' ' : '') + e.titre;
+        it.onclick = ev => { ev.stopPropagation(); editEvent(e.id); };
+        cell.appendChild(it);
+      });
+      if (list.length > 3){ const m = document.createElement('div'); m.className = 'more'; m.textContent = '+' + (list.length - 3) + ' autre' + (list.length - 3 > 1 ? 's' : ''); cell.appendChild(m); }
+      cell.onclick = () => { resetForm(); $('fDate').value = ds; $('formCard').scrollIntoView({ behavior:'smooth', block:'nearest' }); $('fTitre').focus(); };
+      g.appendChild(cell);
+    }
+  }
+  function renderUpcoming(){
+    const today = iso(new Date());
+    const list = events.filter(e => e.date >= today);
+    const box = $('upcoming');
+    if (!list.length){ box.innerHTML = '<span class="muted">Rien de prévu pour le moment. Touche un jour du calendrier pour ajouter un événement.</span>'; return; }
+    box.innerHTML = list.map(e => {
+      const d = new Date(e.date + 'T12:00:00');
+      const lbl = JOURS[(d.getDay()+6)%7] + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()].slice(0,4) + (MOIS[d.getMonth()].length > 4 ? '.' : '');
+      return '<div class="row-item"><div class="row-date">' + esc(lbl) + (e.heure ? '<br>' + esc(e.heure) : '') + '</div>'
+        + '<div class="row-main"><b>' + esc(e.titre) + '<span class="tag p-' + esc(e.pour || 'Tous') + '">' + esc(e.pour || 'Tous') + '</span></b>'
+        + (e.note ? '<small>' + esc(e.note) + '</small>' : '') + '</div>'
+        + '<button class="btn-outline" onclick="editEvent(' + Number(e.id) + ')">Modifier</button></div>';
+    }).join('');
+  }
+
+  function shiftMonth(n){ view = new Date(view.getFullYear(), view.getMonth() + n, 1); renderGrid(); }
+  function goToday(){ view = new Date(); view.setDate(1); renderGrid(); }
+
+  function resetForm(){
+    editingId = null; $('formTitle').textContent = 'Ajouter un événement';
+    $('fDate').value = iso(new Date()); $('fHeure').value = ''; $('fPour').value = 'Tous'; $('fTitre').value = ''; $('fNote').value = '';
+    $('fErr').textContent = ''; $('fCancel').style.display = 'none'; $('fDelete').style.display = 'none';
+  }
+  function editEvent(id){
+    const e = events.find(x => Number(x.id) === Number(id)); if (!e) return;
+    editingId = e.id; $('formTitle').textContent = 'Modifier l’événement';
+    $('fDate').value = e.date; $('fHeure').value = e.heure || ''; $('fPour').value = e.pour || 'Tous'; $('fTitre').value = e.titre; $('fNote').value = e.note || '';
+    $('fErr').textContent = ''; $('fCancel').style.display = ''; $('fDelete').style.display = '';
+    $('formCard').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+  async function saveEvent(){
+    $('fErr').textContent = '';
+    const body = { date: $('fDate').value, heure: $('fHeure').value || null, pour: $('fPour').value, titre: $('fTitre').value.trim(), note: $('fNote').value.trim() || null };
+    if (!body.date) { $('fErr').textContent = 'Choisis une date.'; return; }
+    if (!body.titre) { $('fErr').textContent = 'Écris un titre.'; return; }
+    $('fSave').disabled = true;
+    try {
+      if (editingId) await api('/api/famille/events/' + editingId, { method:'PUT', body });
+      else await api('/api/famille/events', { method:'POST', body });
+      const d = new Date(body.date + 'T12:00:00'); view = new Date(d.getFullYear(), d.getMonth(), 1);
+      resetForm(); await loadEvents();
+    } catch(e){ if (e.message !== '401') $('fErr').textContent = e.message; }
+    $('fSave').disabled = false;
+  }
+  async function deleteEvent(){
+    if (!editingId || !confirm('Supprimer cet événement ?')) return;
+    try { await api('/api/famille/events/' + editingId, { method:'DELETE' }); resetForm(); await loadEvents(); }
+    catch(e){ if (e.message !== '401') $('fErr').textContent = e.message; }
+  }
+  init();
+</script>
+</body>
+</html>

@@ -85,6 +85,166 @@ function snStr(v, max) {
   return t && t.length <= max ? t : null;
 }
 
+// ============ PERSO-Famille : agenda privé de la famille (Nj, Merlyn, Marie) ============
+// Cloisonnement : Marie n'a PAS accès à l'admin SLP. Elle se connecte avec son propre identifiant (table
+// famille_users, mot de passe haché PBKDF2) et reçoit un jeton de session qui n'est reconnu QUE par les routes
+// /api/famille/*. Toutes les routes de l'admin (isAdminForMeteo / requireAdmin) comparent le jeton au mot de passe
+// admin : un jeton famille y est donc toujours refusé. Les événements vivent dans leur propre table, jamais
+// mélangés à artist_agenda (agenda public, flux .ics, stats).
+let familleReady = false;
+async function ensureFamilleTables(env) {
+  if (familleReady) return;
+  await env.DB.batch([
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS famille_events (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT NOT NULL, heure TEXT, titre TEXT NOT NULL, note TEXT, pour TEXT, auteur TEXT, created_at TEXT NOT NULL DEFAULT (datetime('now')))"),
+    env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_famille_events_date ON famille_events(date)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS famille_users (username TEXT PRIMARY KEY, display_name TEXT NOT NULL, pass_hash TEXT NOT NULL, pass_salt TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL DEFAULT (datetime('now')))"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS famille_sessions (token_hash TEXT PRIMARY KEY, username TEXT NOT NULL, expires_at INTEGER NOT NULL)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS famille_attempts (k TEXT PRIMARY KEY, n INTEGER NOT NULL, first_at INTEGER NOT NULL)"),
+  ]);
+  familleReady = true;
+}
+
+const FAMILLE_POUR = ["Tous", "Marie", "Merlyn", "Nj"];
+const FAMILLE_WINDOW_MS = 15 * 60 * 1000;
+const FAMILLE_MAX_FAILS = 8;
+
+async function familleAuth(request, env) {
+  const token = (request.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "").trim();
+  if (!token) return null;
+  if (requireAdmin(request, env)) return { role: "admin", name: "Admin" };
+  if (/^[0-9a-f]{64}$/.test(token)) {
+    const th = snHex(await crypto.subtle.digest("SHA-256", SN_ENC.encode(token)));
+    const s = await env.DB.prepare("SELECT s.username, u.display_name FROM famille_sessions s JOIN famille_users u ON u.username = s.username WHERE s.token_hash = ? AND s.expires_at > ? AND u.active = 1").bind(th, Date.now()).first();
+    if (s) return { role: "membre", name: s.display_name, username: s.username };
+  }
+  if (await isAdminForMeteo(request, env)) return { role: "admin", name: "Admin" };
+  return null;
+}
+
+function familleSameHash(a, b) {
+  if (a.length !== b.length) return false;
+  let d = 0;
+  for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return d === 0;
+}
+
+function familleEventFields(b) {
+  const date = typeof b.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(b.date) ? b.date : null;
+  const heure = typeof b.heure === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(b.heure) ? b.heure : null;
+  const titre = snStr(b.titre, 120);
+  const note = snStr(b.note, 1000);
+  const pour = FAMILLE_POUR.includes(b.pour) ? b.pour : "Tous";
+  return { date, heure, titre, note, pour };
+}
+
+async function familleHandler(request, env, url, origin) {
+  await ensureFamilleTables(env);
+  const m = request.method;
+  const path = url.pathname;
+  let match;
+
+  // --- Gestion des comptes famille : réservée à l'admin SLP (Nj, Merlyn) ---
+  if (path.startsWith("/api/admin/famille/")) {
+    if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+    if (path === "/api/admin/famille/users" && m === "GET") {
+      const { results } = await env.DB.prepare("SELECT username, display_name, active, created_at FROM famille_users ORDER BY created_at").all();
+      return json(results, 200, origin);
+    }
+    // Crée un compte, ou réinitialise le mot de passe d'un compte existant. Le mot de passe n'est renvoyé qu'ici, une seule fois.
+    if (path === "/api/admin/famille/users" && m === "POST") {
+      const b = await request.json().catch(() => ({}));
+      const username = String(b.username || "").trim().toLowerCase();
+      if (!/^[a-z0-9._-]{2,30}$/.test(username)) return json({ error: "Identifiant : 2 à 30 caractères (lettres, chiffres, . _ -)" }, 400, origin);
+      const display = snStr(b.display_name, 40) || username;
+      const password = typeof b.password === "string" && b.password ? b.password : snGeneratePassword();
+      if (password.length < 10) return json({ error: "Mot de passe : 10 caractères minimum" }, 400, origin);
+      const { hash, salt } = await snHashPassword(password);
+      await env.DB.prepare("INSERT INTO famille_users (username, display_name, pass_hash, pass_salt, active) VALUES (?, ?, ?, ?, 1) ON CONFLICT(username) DO UPDATE SET display_name = excluded.display_name, pass_hash = excluded.pass_hash, pass_salt = excluded.pass_salt, active = 1").bind(username, display, hash, salt).run();
+      await env.DB.prepare("DELETE FROM famille_sessions WHERE username = ?").bind(username).run();
+      await env.DB.prepare("DELETE FROM famille_attempts WHERE k = ?").bind(`u|${username}`).run();
+      return json({ ok: true, username, password }, 200, origin);
+    }
+    if ((match = path.match(/^\/api\/admin\/famille\/users\/([a-z0-9._-]+)\/active$/)) && m === "POST") {
+      const b = await request.json().catch(() => ({}));
+      await env.DB.prepare("UPDATE famille_users SET active = ? WHERE username = ?").bind(b.active ? 1 : 0, match[1]).run();
+      if (!b.active) await env.DB.prepare("DELETE FROM famille_sessions WHERE username = ?").bind(match[1]).run();
+      return json({ ok: true }, 200, origin);
+    }
+    return json({ error: "Introuvable" }, 404, origin);
+  }
+
+  // --- Connexion de Marie (et de tout autre compte famille) ---
+  if (path === "/api/famille/login" && m === "POST") {
+    const b = await request.json().catch(() => ({}));
+    const username = String(b.username || "").trim().toLowerCase().slice(0, 30);
+    const password = String(b.password || "").slice(0, 200);
+    const ip = request.headers.get("CF-Connecting-IP") || "?";
+    const keys = [`u|${username}`, `ip|${ip}`];
+    const now = Date.now();
+    for (const k of keys) {
+      const r = await env.DB.prepare("SELECT n, first_at FROM famille_attempts WHERE k = ?").bind(k).first();
+      if (r && now - r.first_at < FAMILLE_WINDOW_MS && r.n >= FAMILLE_MAX_FAILS) return json({ error: "Trop de tentatives. Réessaie dans quelques minutes." }, 429, origin);
+    }
+    const u = username ? await env.DB.prepare("SELECT username, display_name, pass_hash, pass_salt, active FROM famille_users WHERE username = ?").bind(username).first() : null;
+    // Le calcul du hash est fait même si le compte n'existe pas (pas de différence de durée selon l'identifiant)
+    const salt = u ? Uint8Array.from(atob(u.pass_salt), (c) => c.charCodeAt(0)) : new Uint8Array(16);
+    const calc = snB64(await snPbkdf2(password, salt));
+    if (!u || !u.active || !familleSameHash(calc, u.pass_hash)) {
+      for (const k of keys) {
+        const r = await env.DB.prepare("SELECT n, first_at FROM famille_attempts WHERE k = ?").bind(k).first();
+        if (!r || now - r.first_at >= FAMILLE_WINDOW_MS) await env.DB.prepare("INSERT INTO famille_attempts (k, n, first_at) VALUES (?, 1, ?) ON CONFLICT(k) DO UPDATE SET n = 1, first_at = excluded.first_at").bind(k, now).run();
+        else await env.DB.prepare("UPDATE famille_attempts SET n = n + 1 WHERE k = ?").bind(k).run();
+      }
+      return json({ error: "Identifiant ou mot de passe incorrect" }, 401, origin);
+    }
+    await env.DB.prepare("DELETE FROM famille_attempts WHERE k IN (?, ?)").bind(keys[0], keys[1]).run();
+    await env.DB.prepare("DELETE FROM famille_sessions WHERE expires_at < ?").bind(now).run();
+    const token = snHex(crypto.getRandomValues(new Uint8Array(32)));
+    const th = snHex(await crypto.subtle.digest("SHA-256", SN_ENC.encode(token)));
+    await env.DB.prepare("INSERT INTO famille_sessions (token_hash, username, expires_at) VALUES (?, ?, ?)").bind(th, u.username, now + 30 * 24 * 3600 * 1000).run();
+    return json({ token, name: u.display_name }, 200, origin);
+  }
+
+  const who = await familleAuth(request, env);
+  if (!who) return json({ error: "Non autorisé" }, 401, origin);
+
+  if (path === "/api/famille/me" && m === "GET") return json({ role: who.role, name: who.name }, 200, origin);
+
+  if (path === "/api/famille/logout" && m === "POST") {
+    const token = (request.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "").trim();
+    if (/^[0-9a-f]{64}$/.test(token)) {
+      const th = snHex(await crypto.subtle.digest("SHA-256", SN_ENC.encode(token)));
+      await env.DB.prepare("DELETE FROM famille_sessions WHERE token_hash = ?").bind(th).run();
+    }
+    return json({ ok: true }, 200, origin);
+  }
+
+  // --- Agenda famille ---
+  if (path === "/api/famille/events" && m === "GET") {
+    const { results } = await env.DB.prepare("SELECT id, date, heure, titre, note, pour, auteur FROM famille_events WHERE date >= date('now', '-92 days') ORDER BY date, COALESCE(heure, ''), id").all();
+    return json(results, 200, origin);
+  }
+  if (path === "/api/famille/events" && m === "POST") {
+    const f = familleEventFields(await request.json().catch(() => ({})));
+    if (!f.date) return json({ error: "Date requise" }, 400, origin);
+    if (!f.titre) return json({ error: "Titre requis (120 caractères max)" }, 400, origin);
+    const r = await env.DB.prepare("INSERT INTO famille_events (date, heure, titre, note, pour, auteur) VALUES (?, ?, ?, ?, ?, ?)").bind(f.date, f.heure, f.titre, f.note, f.pour, who.name).run();
+    return json({ ok: true, id: r.meta && r.meta.last_row_id }, 200, origin);
+  }
+  if ((match = path.match(/^\/api\/famille\/events\/(\d+)$/)) && m === "PUT") {
+    const f = familleEventFields(await request.json().catch(() => ({})));
+    if (!f.date) return json({ error: "Date requise" }, 400, origin);
+    if (!f.titre) return json({ error: "Titre requis (120 caractères max)" }, 400, origin);
+    await env.DB.prepare("UPDATE famille_events SET date = ?, heure = ?, titre = ?, note = ?, pour = ? WHERE id = ?").bind(f.date, f.heure, f.titre, f.note, f.pour, match[1]).run();
+    return json({ ok: true }, 200, origin);
+  }
+  if ((match = path.match(/^\/api\/famille\/events\/(\d+)$/)) && m === "DELETE") {
+    await env.DB.prepare("DELETE FROM famille_events WHERE id = ?").bind(match[1]).run();
+    return json({ ok: true }, 200, origin);
+  }
+  return json({ error: "Introuvable" }, 404, origin);
+}
+
 async function supernovaAdmin(request, env, url, origin) {
   if (!env.SUPERNOVA_DB) return json({ error: "Base Supernova non reliée" }, 500, origin);
   const db = env.SUPERNOVA_DB;
@@ -2254,6 +2414,11 @@ export default {
       // ============ ADMIN ============
 
       // ============ SUPERNOVA (membres + accès direct) ============
+      // PERSO-Famille : agenda privé famille (comptes séparés de l'admin, voir familleHandler)
+      if ((url.pathname.startsWith("/api/famille/") || url.pathname.startsWith("/api/admin/famille/")) && env.DB) {
+        return await familleHandler(request, env, url, origin);
+      }
+
       if (url.pathname.startsWith("/api/admin/supernova/")) {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         return await supernovaAdmin(request, env, url, origin);
