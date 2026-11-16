@@ -1330,7 +1330,17 @@ export default {
     }
 
     const domainRedirect = routeDomain(request, url);
-    if (domainRedirect) return domainRedirect;
+    if (domainRedirect) {
+      // Suivi de l'ancienne adresse soundlightprod.store : on compte chaque passage par la redirection pour savoir quand elle n'est plus utilisée.
+      if (env.DB && url.hostname.toLowerCase().endsWith(OLD_STORE_HOST) && request.method === "GET" && ctx && ctx.waitUntil) {
+        const ua = request.headers.get("User-Agent") || ""; const ref = (request.headers.get("Referer") || "").slice(0, 200) || null;
+        ctx.waitUntil((async () => { try {
+          await env.DB.prepare("CREATE TABLE IF NOT EXISTS store_redirects (id INTEGER PRIMARY KEY AUTOINCREMENT, visited_at TEXT DEFAULT (datetime('now')), path TEXT, referrer TEXT, is_bot INTEGER DEFAULT 0)").run();
+          await env.DB.prepare("INSERT INTO store_redirects (path, referrer, is_bot) VALUES (?, ?, ?)").bind(url.pathname.slice(0, 200), ref, BOT_UA_RE.test(ua) || !ua ? 1 : 0).run();
+        } catch (e) { /* ne bloque jamais la redirection */ } })());
+      }
+      return domainRedirect;
+    }
 
     if (url.pathname.startsWith("/api/") && env.DB) { try { await ensureEventSchema(env); } catch (e) { /* ne bloque jamais une requête */ } }
 
@@ -2523,6 +2533,7 @@ export default {
           by_network: (await env.DB.prepare(`SELECT COALESCE(network, 'Inconnu') as label, COUNT(*) as total FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY network ORDER BY total DESC LIMIT 50`).bind(cutoff, cutoff).all()).results,
           by_device: (await env.DB.prepare(`SELECT COALESCE(device, 'Inconnu') as label, COUNT(*) as total FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY device ORDER BY total DESC`).bind(cutoff, cutoff).all()).results,
           by_lang: (await env.DB.prepare(`SELECT COALESCE(lang, 'inconnu') as label, COUNT(*) as total, COUNT(DISTINCT session_id) as visiteurs FROM page_visits WHERE lang IS NOT NULL AND (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY COALESCE(lang, 'inconnu') ORDER BY total DESC`).bind(cutoff, cutoff).all()).results,
+          store_redirects: await (async () => { try { return await env.DB.prepare("SELECT COUNT(*) AS total, COALESCE(SUM(CASE WHEN is_bot = 0 THEN 1 ELSE 0 END), 0) AS humains, MAX(visited_at) AS derniere, MAX(CASE WHEN is_bot = 0 THEN visited_at END) AS derniere_humain FROM store_redirects WHERE (? IS NULL OR visited_at >= ?)").bind(cutoff, cutoff).first(); } catch (e) { return null; } })(),
           by_domain: (await env.DB.prepare(`SELECT COALESCE(domaine, 'Inconnu') as label, COUNT(*) as total FROM page_visits WHERE domaine IS NOT NULL AND (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY domaine ORDER BY total DESC LIMIT 20`).bind(cutoff, cutoff).all()).results,
           by_lang_place: (await env.DB.prepare(`SELECT COALESCE(lang, 'inconnu') as lang, COALESCE(domaine, 'inconnu') as domaine, COALESCE(country, 'Inconnu') as country, COALESCE(city, 'Inconnu') as city, COUNT(*) as total, COUNT(DISTINCT session_id) as visiteurs FROM page_visits WHERE lang IS NOT NULL AND (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY COALESCE(lang, 'inconnu'), domaine, country, city ORDER BY total DESC LIMIT 60`).bind(cutoff, cutoff).all()).results,
           by_referrer: (await env.DB.prepare(`SELECT COALESCE(referrer, 'Accès direct / inconnu') as label, COUNT(*) as total FROM page_visits WHERE (? IS NULL OR visited_at >= ?) AND ` + siteWhere(url) + ` GROUP BY referrer ORDER BY total DESC LIMIT 30`).bind(cutoff, cutoff).all()).results,
