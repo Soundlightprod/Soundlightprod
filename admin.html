@@ -3352,7 +3352,8 @@
 
   function renderDispoSummary(){
     const container = document.getElementById('dispoSummaryGrid');
-    const data = window.dispoData || [];
+    // Les indisponibilités de Supernova restent dans l'espace Supernova : elles n'apparaissent pas dans l'admin SLP
+    const data = (window.dispoData || []).filter(d => !(d.artist_slug === 'supernova' && d.type === 'indisponible'));
     const todayStr = new Date().toISOString().slice(0,10);
 
     const cardFor = (slug, label, color) => {
@@ -3402,7 +3403,7 @@
       const tbody = document.querySelector('#dispoTable tbody');
       if (!data.length){ document.getElementById('dispoEmpty').style.display='block'; tbody.innerHTML=''; renderDispoCalendar(); renderDispoSummary(); renderAgenda(); renderPublicUpcoming(); renderHistory(); return; }
       document.getElementById('dispoEmpty').style.display='none';
-      tbody.innerHTML = data.map(d => `
+      tbody.innerHTML = data.filter(d => !(d.artist_slug === 'supernova' && d.type === 'indisponible')).map(d => `
         <tr>
           <td>${d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug}</td>
           <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
