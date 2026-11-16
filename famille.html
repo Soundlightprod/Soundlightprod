@@ -39,8 +39,8 @@
   .agenda-day.today{border-color:var(--amber);}
   .agenda-daynum{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:.68rem;}
   .agenda-day.today .agenda-daynum{color:var(--amber); font-weight:700;}
-  .item{border-radius:5px; padding:2px 6px; font-size:.64rem; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:var(--amber);}
-  .p-Marie{background:var(--pink);} .p-Merlyn{background:var(--violet); color:#fff;} .p-Nj{background:var(--blue); color:#fff;} .p-Tous{background:var(--amber);}
+  .item{border-radius:5px; padding:2px 6px; font-size:.64rem; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:#f1ece2;}
+  .a-Marie{background:#3ecf6e; color:#06240f;} .a-Nous{background:#f1ece2; color:#0c0b10;}
   .more{color:var(--muted); font-size:.62rem; padding-left:2px;}
   .legend{display:flex; flex-wrap:wrap; gap:14px; margin-bottom:14px; font-size:.8rem; color:var(--muted);}
   .legend span{display:inline-flex; align-items:center; gap:6px;} .dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
@@ -79,10 +79,8 @@
     </div>
 
     <div class="legend">
-      <span><i class="dot" style="background:var(--amber)"></i>Tous</span>
-      <span><i class="dot" style="background:var(--pink)"></i>Marie</span>
-      <span><i class="dot" style="background:var(--violet)"></i>Merlyn</span>
-      <span><i class="dot" style="background:var(--blue)"></i>Nj</span>
+      <span><i class="dot" style="background:#3ecf6e"></i>Ajouté par Marie</span>
+      <span><i class="dot" style="background:#f1ece2"></i>Ajouté par Nj &amp; Merlyn</span>
     </div>
     <div class="agenda-nav">
       <button onclick="shiftMonth(-1)">‹</button>
@@ -201,7 +199,7 @@
       const num = document.createElement('div'); num.className = 'agenda-daynum'; num.textContent = n; cell.appendChild(num);
       const list = events.filter(e => e.date === ds);
       list.slice(0,3).forEach(e => {
-        const it = document.createElement('div'); it.className = 'item p-' + (e.pour || 'Tous');
+        const it = document.createElement('div'); it.className = 'item a-' + (e.auteur === 'Marie' ? 'Marie' : 'Nous');
         it.textContent = (e.heure ? e.heure + ' ' : '') + e.titre;
         it.onclick = ev => { ev.stopPropagation(); editEvent(e.id); };
         cell.appendChild(it);
@@ -220,7 +218,7 @@
       const d = new Date(e.date + 'T12:00:00');
       const lbl = JOURS[(d.getDay()+6)%7] + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()].slice(0,4) + (MOIS[d.getMonth()].length > 4 ? '.' : '');
       return '<div class="row-item"><div class="row-date">' + esc(lbl) + (e.heure ? '<br>' + esc(e.heure) : '') + '</div>'
-        + '<div class="row-main"><b>' + esc(e.titre) + '<span class="tag p-' + esc(e.pour || 'Tous') + '">' + esc(e.pour || 'Tous') + '</span></b>'
+        + '<div class="row-main"><b>' + esc(e.titre) + '<span class="tag a-' + (e.auteur === 'Marie' ? 'Marie' : 'Nous') + '">' + (e.pour && e.pour !== 'Tous' ? 'pour ' + esc(e.pour) : (e.auteur === 'Marie' ? 'Marie' : 'Nj &amp; Merlyn')) + '</span></b>'
         + (e.note ? '<small>' + esc(e.note) + '</small>' : '') + '</div>'
         + '<button class="btn-outline" onclick="editEvent(' + Number(e.id) + ')">Modifier</button></div>';
     }).join('');

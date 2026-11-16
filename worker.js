@@ -111,13 +111,13 @@ const FAMILLE_MAX_FAILS = 8;
 async function familleAuth(request, env) {
   const token = (request.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "").trim();
   if (!token) return null;
-  if (requireAdmin(request, env)) return { role: "admin", name: "Admin" };
+  if (requireAdmin(request, env)) return { role: "admin", name: "Nous" };
   if (/^[0-9a-f]{64}$/.test(token)) {
     const th = snHex(await crypto.subtle.digest("SHA-256", SN_ENC.encode(token)));
     const s = await env.DB.prepare("SELECT s.username, u.display_name FROM famille_sessions s JOIN famille_users u ON u.username = s.username WHERE s.token_hash = ? AND s.expires_at > ? AND u.active = 1").bind(th, Date.now()).first();
     if (s) return { role: "membre", name: s.display_name, username: s.username };
   }
-  if (await isAdminForMeteo(request, env)) return { role: "admin", name: "Admin" };
+  if (await isAdminForMeteo(request, env)) return { role: "admin", name: "Nous" };
   return null;
 }
 
@@ -169,6 +169,29 @@ async function familleHandler(request, env, url, origin) {
       await env.DB.prepare("UPDATE famille_users SET active = ? WHERE username = ?").bind(b.active ? 1 : 0, match[1]).run();
       if (!b.active) await env.DB.prepare("DELETE FROM famille_sessions WHERE username = ?").bind(match[1]).run();
       return json({ ok: true }, 200, origin);
+    }
+    // Import en masse (ex. depuis TimeTree). Ignore les doublons (même date + titre + heure) ; un événement sur plusieurs jours est étalé jour par jour.
+    if (path === "/api/admin/famille/import" && m === "POST") {
+      const b = await request.json().catch(() => ({}));
+      const list = Array.isArray(b.events) ? b.events.slice(0, 2000) : [];
+      const stmts = []; let skipped = 0;
+      for (const e of list) {
+        const f = familleEventFields(e);
+        if (!f.date || !f.titre) { skipped++; continue; }
+        const auteur = e.auteur === "Marie" ? "Marie" : "Nous";
+        const fin = typeof e.date_fin === "string" && /^\d{4}-\d{2}-\d{2}$/.test(e.date_fin) && e.date_fin > f.date ? e.date_fin : f.date;
+        const d = new Date(f.date + "T12:00:00Z"); const last = new Date(fin + "T12:00:00Z");
+        for (let i = 0; i < 62 && d <= last; i++, d.setUTCDate(d.getUTCDate() + 1)) {
+          const day = d.toISOString().slice(0, 10);
+          stmts.push(env.DB.prepare("INSERT INTO famille_events (date, heure, titre, note, pour, auteur) SELECT ?1, ?2, ?3, ?4, ?5, ?6 WHERE NOT EXISTS (SELECT 1 FROM famille_events WHERE date = ?1 AND titre = ?3 AND COALESCE(heure, '') = COALESCE(?2, ''))").bind(day, f.heure, f.titre, f.note, f.pour, auteur));
+        }
+      }
+      let added = 0;
+      for (let i = 0; i < stmts.length; i += 80) {
+        const res = await env.DB.batch(stmts.slice(i, i + 80));
+        res.forEach((r) => { added += (r.meta && r.meta.changes) || 0; });
+      }
+      return json({ ok: true, received: list.length, rows: stmts.length, added, duplicates: stmts.length - added, skipped }, 200, origin);
     }
     return json({ error: "Introuvable" }, 404, origin);
   }
