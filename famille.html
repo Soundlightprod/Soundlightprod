@@ -38,6 +38,16 @@
   .err{color:var(--pink); font-size:.85rem; min-height:1.2em; margin:0 0 10px;}
   .agenda-nav{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
   .agenda-nav button{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:8px; padding:6px 14px; cursor:pointer; font-family:inherit; font-size:.9rem;}
+  .agenda-views{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .agenda-views button{background:var(--ink-2); color:var(--muted); border:1px solid var(--line); border-radius:100px; padding:6px 14px; cursor:pointer; font-family:inherit; font-size:.85rem;}
+  .agenda-views button.on{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
+  .agenda-nav{flex-wrap:wrap;}
+  .agenda-grid.as-list{display:flex; flex-direction:column; gap:8px;}
+  .agenda-day.lday{min-height:56px; gap:6px; padding:8px 10px;}
+  .lhead{font-size:.82rem; font-weight:700; text-transform:capitalize;} .agenda-day.today .lhead{color:var(--amber);}
+  .lempty{font-size:.74rem; color:var(--muted); opacity:.6;}
+  .agenda-grid.as-list .item{font-size:.82rem; padding:5px 8px; white-space:normal; overflow:visible;}
+  @media (min-width:900px){ .wrap.wide{max-width:1100px;} .agenda-grid.as-list.vsem{display:grid; grid-template-columns:repeat(7,minmax(0,1fr));} .agenda-grid.as-list.vsem .agenda-day.lday{min-height:130px;} .agenda-grid.as-list.vsem .item{font-size:.68rem; padding:3px 6px;} }
   .agenda-month{font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.05rem; text-transform:capitalize; min-width:150px; text-align:center;}
   .agenda-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; margin-bottom:20px;}
   .agenda-dow{text-align:center; font-family:'JetBrains Mono',monospace; font-size:.66rem; color:var(--muted); text-transform:uppercase; padding-bottom:6px;}
@@ -90,10 +100,16 @@
       <span><i class="dot" style="background:#3ecf6e"></i>Ajouté par Marie</span>
       <span><i class="dot" style="background:#f1ece2"></i>Ajouté par Nj &amp; Merlyn</span>
     </div>
+    <div class="agenda-views" id="views">
+      <button data-v="month" onclick="setView('month')">Mois</button>
+      <button data-v="sem" onclick="setView('sem')">Semaine</button>
+      <button data-v="jour" onclick="setView('jour')">Jour</button>
+      <button data-v="recap" onclick="setView('recap')">Récap</button>
+    </div>
     <div class="agenda-nav">
-      <button onclick="shiftMonth(-1)">‹</button>
+      <button onclick="shiftView(-1)" aria-label="Précédent">‹</button>
       <span class="agenda-month" id="monthLabel"></span>
-      <button onclick="shiftMonth(1)">›</button>
+      <button onclick="shiftView(1)" aria-label="Suivant">›</button>
       <button onclick="goToday()" style="margin-left:auto;">Aujourd'hui</button>
     </div>
     <div class="agenda-grid" id="grid"></div>
@@ -134,7 +150,8 @@
   const store = (k) => { try { return localStorage.getItem(k) || sessionStorage.getItem(k) || ''; } catch(e){ return ''; } };
 
   let token = '', isAdminToken = false, events = [], editingId = null;
-  let view = new Date(); view.setDate(1);
+  let view = new Date(); // jour de référence ; à l'ouverture : la semaine en cours
+  let vmode = 'sem';
 
   // Jeton : d'abord la session famille (Marie), à défaut la session admin déjà ouverte (Nj, Merlyn)
   function pickToken(){
@@ -192,29 +209,68 @@
     renderGrid(); renderUpcoming();
   }
 
+  function addCell(g, ds, today, list, mode){
+    const cell = document.createElement('div'); cell.className = 'agenda-day' + (mode ? ' lday' : '') + (ds === today ? ' today' : '');
+    if (mode){
+      const d = new Date(ds + 'T12:00:00');
+      const h = document.createElement('div'); h.className = 'lhead'; h.textContent = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' }); cell.appendChild(h);
+    } else {
+      const num = document.createElement('div'); num.className = 'agenda-daynum'; num.textContent = Number(ds.slice(8)); cell.appendChild(num);
+    }
+    const shown = mode ? list : list.slice(0,3);
+    shown.forEach(e => {
+      const it = document.createElement('div'); it.className = 'item a-' + (e.auteur === 'Marie' ? 'Marie' : 'Nous');
+      it.textContent = (e.heure ? e.heure + ' ' : '') + e.titre + (mode && e.pour && e.pour !== 'Tous' ? ' (' + e.pour + ')' : '');
+      it.onclick = ev => { ev.stopPropagation(); editEvent(e.id); };
+      cell.appendChild(it);
+    });
+    if (mode && !list.length){ const m = document.createElement('div'); m.className = 'lempty'; m.textContent = 'Rien de prévu'; cell.appendChild(m); }
+    if (!mode && list.length > 3){ const m = document.createElement('div'); m.className = 'more'; m.textContent = '+' + (list.length - 3) + ' autre' + (list.length - 3 > 1 ? 's' : ''); cell.appendChild(m); }
+    cell.onclick = () => { resetForm(); $('fDate').value = ds; $('formCard').scrollIntoView({ behavior:'smooth', block:'nearest' }); $('fTitre').focus(); };
+    g.appendChild(cell);
+  }
+  function setView(v){ vmode = v; renderGrid(); }
   function renderGrid(){
-    $('monthLabel').textContent = MOIS[view.getMonth()] + ' ' + view.getFullYear();
+    document.querySelectorAll('#views button').forEach(b => b.classList.toggle('on', b.dataset.v === vmode));
+    const wrap = document.querySelector('.wrap'); if (wrap) wrap.classList.toggle('wide', vmode === 'sem');
     const g = $('grid'); g.innerHTML = '';
+    const today = iso(new Date());
+    const y = view.getFullYear(), m = view.getMonth();
+    if (vmode !== 'month'){
+      let days = [];
+      if (vmode === 'recap'){
+        $('monthLabel').textContent = MOIS[m] + ' ' + y;
+        const n = new Date(y, m + 1, 0).getDate();
+        for (let i = 1; i <= n; i++) days.push(new Date(y, m, i));
+      } else if (vmode === 'jour'){
+        const d = new Date(y, m, view.getDate()); days = [d];
+        $('monthLabel').textContent = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+      } else {
+        const start = new Date(y, m, view.getDate() - ((view.getDay() + 6) % 7));
+        for (let i = 0; i < 7; i++) days.push(new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
+        const f1 = days[0].toLocaleDateString('fr-FR', { day:'numeric', month: days[0].getMonth() === days[6].getMonth() ? undefined : 'short' });
+        $('monthLabel').textContent = f1 + ' – ' + days[6].toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+      }
+      g.className = 'agenda-grid as-list v' + vmode;
+      let shown = 0;
+      days.forEach(d => {
+        const ds = iso(d); const list = events.filter(e => e.date === ds);
+        if (vmode === 'recap' && !list.length) return;
+        shown++; addCell(g, ds, today, list, true);
+      });
+      if (vmode === 'recap' && !shown){ const m2 = document.createElement('div'); m2.className = 'lempty'; m2.style.padding = '14px 4px'; m2.textContent = 'Rien de prévu ce mois-ci.'; g.appendChild(m2); }
+      return;
+    }
+    g.className = 'agenda-grid';
+    $('monthLabel').textContent = MOIS[m] + ' ' + y;
     JOURS.forEach(j => { const d = document.createElement('div'); d.className = 'agenda-dow'; d.textContent = j; g.appendChild(d); });
-    const first = new Date(view.getFullYear(), view.getMonth(), 1);
+    const first = new Date(y, m, 1);
     const lead = (first.getDay() + 6) % 7;
     for (let i = 0; i < lead; i++){ const d = document.createElement('div'); d.className = 'agenda-day empty'; g.appendChild(d); }
-    const days = new Date(view.getFullYear(), view.getMonth()+1, 0).getDate();
-    const today = iso(new Date());
+    const days = new Date(y, m + 1, 0).getDate();
     for (let n = 1; n <= days; n++){
-      const ds = view.getFullYear() + '-' + pad(view.getMonth()+1) + '-' + pad(n);
-      const cell = document.createElement('div'); cell.className = 'agenda-day' + (ds === today ? ' today' : '');
-      const num = document.createElement('div'); num.className = 'agenda-daynum'; num.textContent = n; cell.appendChild(num);
-      const list = events.filter(e => e.date === ds);
-      list.slice(0,3).forEach(e => {
-        const it = document.createElement('div'); it.className = 'item a-' + (e.auteur === 'Marie' ? 'Marie' : 'Nous');
-        it.textContent = (e.heure ? e.heure + ' ' : '') + e.titre;
-        it.onclick = ev => { ev.stopPropagation(); editEvent(e.id); };
-        cell.appendChild(it);
-      });
-      if (list.length > 3){ const m = document.createElement('div'); m.className = 'more'; m.textContent = '+' + (list.length - 3) + ' autre' + (list.length - 3 > 1 ? 's' : ''); cell.appendChild(m); }
-      cell.onclick = () => { resetForm(); $('fDate').value = ds; $('formCard').scrollIntoView({ behavior:'smooth', block:'nearest' }); $('fTitre').focus(); };
-      g.appendChild(cell);
+      const ds = y + '-' + pad(m + 1) + '-' + pad(n);
+      addCell(g, ds, today, events.filter(e => e.date === ds), false);
     }
   }
   function renderUpcoming(){
@@ -232,8 +288,12 @@
     }).join('');
   }
 
-  function shiftMonth(n){ view = new Date(view.getFullYear(), view.getMonth() + n, 1); renderGrid(); }
-  function goToday(){ view = new Date(); view.setDate(1); renderGrid(); }
+  function shiftView(n){
+    if (vmode === 'month' || vmode === 'recap') view = new Date(view.getFullYear(), view.getMonth() + n, 1);
+    else view = new Date(view.getFullYear(), view.getMonth(), view.getDate() + n * (vmode === 'jour' ? 1 : 7));
+    renderGrid();
+  }
+  function goToday(){ view = new Date(); renderGrid(); }
 
   function resetForm(){
     editingId = null; $('formTitle').textContent = 'Ajouter un événement';
@@ -256,7 +316,7 @@
     try {
       if (editingId) await api('/api/famille/events/' + editingId, { method:'PUT', body });
       else await api('/api/famille/events', { method:'POST', body });
-      const d = new Date(body.date + 'T12:00:00'); view = new Date(d.getFullYear(), d.getMonth(), 1);
+      const d = new Date(body.date + 'T12:00:00'); view = new Date(d.getFullYear(), d.getMonth(), d.getDate());
       resetForm(); await loadEvents();
     } catch(e){ if (e.message !== '401') $('fErr').textContent = e.message; }
     $('fSave').disabled = false;
