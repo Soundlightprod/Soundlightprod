@@ -127,7 +127,7 @@
     <img src="slp-logo-complet.png" alt="SLP" style="height:170px; margin:0 auto; width:auto; display:block;">
   </div>
   <img class="artist-photo" id="loginPhoto" src="" alt="" style="display:none;">
-  <p id="welcomeMsg" style="color:var(--gold); font-size:0.9rem; font-weight:600; margin-bottom:2px;">Bienvenue chez SLP 👋</p>
+  <p id="welcomeMsg" style="color:var(--gold); font-size:0.9rem; font-weight:600; margin-bottom:2px;">Bienvenue chez SLP</p>
   <h1 id="loginTitle">Mon agenda</h1>
   <p class="sub" style="margin-bottom:20px;">Connectez-vous pour accéder à vos dates.</p>
   <input type="password" id="pwd" placeholder="Mot de passe" autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false">
@@ -154,7 +154,7 @@
     <summary>Comment ça marche ?</summary>
     <h4>Lire le calendrier</h4>
     <ul>
-      <li>🎤 = un concert · 🚫 = une indisponibilité</li>
+      <li>Concert · Indisponibilité (grisée)</li>
       <li>Fond plein = date <strong>validée</strong> (confirmée par SLP)</li>
       <li>Contour en pointillés avec un « ? » = date en <strong>option</strong>, pas encore confirmée</li>
       <li>Clique sur une date de concert pour ouvrir sa feuille de route</li>
@@ -181,9 +181,9 @@
     <button onclick="shiftMonth(1)">Mois suiv. →</button>
   </div>
   <div class="agenda-grid" id="grid"></div>
-  <p class="sub" style="margin-top:-10px;">🎤 plein = validé · 🎤? en pointillés = option (pas encore confirmée) · 🎤 bleu = date reprise depuis une de tes indisponibilités</p>
+  <p class="sub" style="margin-top:-10px;">plein = validé · en pointillés = option (pas encore confirmée) · bleu = date reprise depuis une de tes indisponibilités</p>
 
-  <h2>🗓 Ajouter une indisponibilité</h2>
+  <h2>Ajouter une indisponibilité</h2>
   <div id="conflictBox"></div>
   <div class="form-row">
     <div class="field-group">
@@ -198,7 +198,7 @@
     <button class="btn" onclick="addIndispo()">Ajouter</button>
   </div>
 
-  <h2>📋 Toutes mes dates</h2>
+  <h2>Toutes mes dates</h2>
   <table>
     <thead><tr><th>Date</th><th>Type</th><th>Statut</th><th>Détail</th><th></th></tr></thead>
     <tbody id="listBody"></tbody>
@@ -216,7 +216,7 @@
     <div class="modal-toolbar">
       <strong style="color:var(--paper); font-family:'Space Grotesk',sans-serif;">Feuille de route</strong>
       <div>
-        <button class="btn" onclick="window.print()">🖨 Imprimer / Enregistrer en PDF</button>
+        <button class="btn" onclick="window.print()">Imprimer / Enregistrer en PDF</button>
         <button class="btn-no" onclick="closeRoadmap()">Fermer</button>
       </div>
     </div>
@@ -239,8 +239,8 @@
   let TOKEN = ARTIST_SLUG ? (localStorage.getItem('slp_band_token_' + ARTIST_SLUG) || sessionStorage.getItem('slp_band_token_' + ARTIST_SLUG)) : null;
   let entries = [];
   const ROADMAP_TYPES = ['concert', 'cabaret', 'dj', 'animation', 'karaoke'];
-  const TYPE_ICONS_BAND = { concert:'🎤', cabaret:'🎭', dj:'🎧', animation:'🎉', karaoke:'🎙️', indisponible:'🚫' };
-  const TYPE_LABELS_BAND = { concert:'🎤 Concert', cabaret:'🎭 Cabaret', dj:'🎧 DJ', animation:'🎉 Animation', karaoke:'🎙️ Karaoké', indisponible:'🚫 Indisponible' };
+  const TYPE_ICONS_BAND = { concert:'', cabaret:'', dj:'', animation:'', karaoke:'', indisponible:'' };
+  const TYPE_LABELS_BAND = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', animation:'Animation', karaoke:'Karaoké', indisponible:'Indisponible' };
   let calDate = new Date();
   calDate.setDate(1);
 
@@ -310,7 +310,7 @@
     if (!ARTIST_SLUG){ showError(); return; }
     if (!TOKEN){
       document.getElementById('loginTitle').textContent = 'Mon agenda — ' + labelFor(ARTIST_SLUG);
-      document.getElementById('welcomeMsg').textContent = 'Bienvenue chez SLP, ' + labelFor(ARTIST_SLUG) + ' 👋';
+      document.getElementById('welcomeMsg').textContent = 'Bienvenue chez SLP, ' + labelFor(ARTIST_SLUG);
       setPhoto('loginPhoto', ARTIST_SLUG);
       document.getElementById('loginBox').style.display = 'block';
       return;
@@ -323,7 +323,7 @@
         sessionStorage.removeItem('slp_band_token_' + ARTIST_SLUG);
         TOKEN = null;
         document.getElementById('loginTitle').textContent = 'Mon agenda — ' + labelFor(ARTIST_SLUG);
-      document.getElementById('welcomeMsg').textContent = 'Bienvenue chez SLP, ' + labelFor(ARTIST_SLUG) + ' 👋';
+      document.getElementById('welcomeMsg').textContent = 'Bienvenue chez SLP, ' + labelFor(ARTIST_SLUG);
         setPhoto('loginPhoto', ARTIST_SLUG);
         document.getElementById('loginBox').style.display = 'block';
         return;
@@ -367,7 +367,7 @@
       const clickAttr = concertEntry ? ` onclick="openRoadmap(${concertEntry.source_actu_id}, '${dateStr}')"` : '';
       html += `<div class="agenda-day${isToday ? ' today' : ''}${concertEntry ? ' has-concert' : ''}"${clickAttr}>
         <div class="agenda-daynum">${day}</div>
-        ${dayEntries.map(e => `<div class="agenda-item${e.type === 'indisponible' ? ' indisponible' : ''}${e.status === 'option' ? ' option' : ''}${e.requalified ? ' requalified' : ''}" title="${escapeAttr(e.label || '')}${[e.venue_name, e.venue_city].filter(Boolean).length ? ' — ' + escapeAttr([e.venue_name, e.venue_city].filter(Boolean).join(', ')) : ''}${e.requalified ? ' (requalifié en concert)' : ''}">${TYPE_ICONS_BAND[e.type] || '🎤'}${e.status === 'option' ? '?' : ''}${e.venue_city ? ' ' + escapeAttr(e.venue_city) : ''}</div>`).join('')}
+        ${dayEntries.map(e => `<div class="agenda-item${e.type === 'indisponible' ? ' indisponible' : ''}${e.status === 'option' ? ' option' : ''}${e.requalified ? ' requalified' : ''}" title="${escapeAttr(e.label || '')}${[e.venue_name, e.venue_city].filter(Boolean).length ? ' — ' + escapeAttr([e.venue_name, e.venue_city].filter(Boolean).join(', ')) : ''}${e.requalified ? ' (requalifié en concert)' : ''}">${TYPE_LABELS_BAND[e.type] || ''}${e.status === 'option' ? ' (option)' : ''}${e.venue_city ? ' ' + escapeAttr(e.venue_city) : ''}</div>`).join('')}
       </div>`;
     }
     grid.innerHTML = html;
@@ -382,8 +382,8 @@
       <tr>
         <td>${e.date}</td>
         <td>${TYPE_LABELS_BAND[e.type] || e.type}</td>
-        <td>${e.status === 'option' ? '🟡 Option' : '🟢 Validée'}</td>
-        <td style="color:var(--muted);">${e.label || '—'}${[e.venue_name, e.venue_city].filter(Boolean).length ? `<br><span style="color:var(--gold);">📍 ${escapeHtml([e.venue_name, e.venue_city].filter(Boolean).join(', '))}</span>` : ''}</td>
+        <td>${e.status === 'option' ? 'Option' : 'Validée'}</td>
+        <td style="color:var(--muted);">${e.label || '—'}${[e.venue_name, e.venue_city].filter(Boolean).length ? `<br><span style="color:var(--gold);">${escapeHtml([e.venue_name, e.venue_city].filter(Boolean).join(', '))}</span>` : ''}</td>
         <td>
           ${ROADMAP_TYPES.includes(e.type) && e.source_actu_id ? `<button class="btn-link" onclick="openRoadmap(${e.source_actu_id}, '${e.date}')">Feuille de route</button>` : ''}
           ${e.type === 'indisponible' ? `<button class="btn-no" onclick="removeIndispo(${e.id})">Supprimer</button>` : ''}

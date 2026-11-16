@@ -234,8 +234,8 @@
         const label = e.guest_name || ARTIST_LABELS[e.artist_slug] || e.artist_slug;
         const photo = e.photo_url ? `<img src="${e.photo_url}" alt="" loading="lazy" decoding="async">` : '';
         const meta = [
-          e.event_time ? `🕐 ${escapeHtml(e.event_time)}` : '',
-          [e.venue_name, e.venue_city].filter(Boolean).length ? `📍 ${escapeHtml([e.venue_name, e.venue_city].filter(Boolean).join(', '))}` : '',
+          e.event_time ? `${escapeHtml(e.event_time)}` : '',
+          [e.venue_name, e.venue_city].filter(Boolean).length ? `${escapeHtml([e.venue_name, e.venue_city].filter(Boolean).join(', '))}` : '',
         ].filter(Boolean).join('  ·  ');
         const tag = hasPage ? 'a' : 'div';
         const hrefAttr = hasPage ? `href="${page}"` : '';

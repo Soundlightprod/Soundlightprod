@@ -458,7 +458,7 @@
   <div class="tabs">
     <button class="tab-btn active" id="tabBtn-planning" onclick="switchTab('planning')">1. 📅 Planning SLP</button>
     <button class="tab-btn" id="tabBtn-events" onclick="switchTab('events')">2. 🗓 Événements à remplir</button>
-    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">3. 📅 Agenda Diffusé en ligne</button>
+    <button class="tab-btn" id="tabBtn-agenda" onclick="switchTab('agenda')">3. Agenda Diffusé en ligne</button>
     <button class="tab-btn" id="tabBtn-overview" onclick="switchTab('overview')">4. 🔭 Résumé par artiste</button>
     <button class="tab-btn" id="tabBtn-groupview" onclick="switchTab('groupview')">5. 👀 Vue groupe</button>
     <button class="tab-btn" id="tabBtn-history" onclick="switchTab('history')">6. 🕰 Historique</button>
@@ -514,19 +514,19 @@
         <option value="tribute-barry-white">Tribute Barry White</option>
         <option value="bim-bam-boom">Bim Bam Boom</option>
         <option value="clement-blouin">Clément Blouin</option>
-        <option value="animation">🎉 Animation</option>
-        <option value="presta-technique">🔧 Prestation technique</option>
-        <option value="_guest">👤 Invité (pas de fiche sur le site)</option>
+        <option value="animation">Animation</option>
+        <option value="presta-technique">Prestation technique</option>
+        <option value="_guest">Invité (pas de fiche sur le site)</option>
       </select>
       <select id="evtType" onchange="onEventTypeChange()">
-        <option value="concert">🎤 Concert</option>
-        <option value="cabaret">🎭 Cabaret</option>
-        <option value="dj">🎧 DJ</option>
-        <option value="animation">🎉 Animation</option>
-        <option value="karaoke">🎙️ Karaoké</option>
-        <option value="indisponible">🚫 Indisponibilité</option>
-        <option value="location">📦 Location / prêt matériel</option>
-        <option value="actu">📣 Actu libre</option>
+        <option value="concert">Concert</option>
+        <option value="cabaret">Cabaret</option>
+        <option value="dj">DJ</option>
+        <option value="animation">Animation</option>
+        <option value="karaoke">Karaoké</option>
+        <option value="indisponible">Indisponibilité</option>
+        <option value="location">Location / prêt matériel</option>
+        <option value="actu">Actu libre</option>
       </select>
     </div>
     <div class="form-row" id="evtGuestNameRow" style="display:none;">
@@ -557,8 +557,8 @@
       <div class="field-group" id="evtStatusGroup">
         <label>Statut</label>
         <select id="evtStatus">
-          <option value="option">🟡 Option</option>
-          <option value="validee">🟢 Validée</option>
+          <option value="option">Option</option>
+          <option value="validee">Validée</option>
         </select>
       </div>
       <div class="field-group" id="evtStartGroup">
@@ -826,7 +826,7 @@
       <button onclick="shiftGvMonth(1)">Mois suiv. →</button>
     </div>
     <div class="agenda-grid" id="gvGrid"></div>
-    <p style="color:var(--muted); font-size:0.8rem; margin-top:-10px; margin-bottom:24px;">🎤 plein = validé · 🎤┄ en pointillés = option (pas encore confirmée) · 🚫 = indisponible</p>
+    <p style="color:var(--muted); font-size:0.8rem; margin-top:-10px; margin-bottom:24px;">plein = validé · en pointillés = option (pas encore confirmée) · grisé = indisponible</p>
 
     <h3>Toutes ses dates</h3>
     <table id="gvTable">
@@ -2437,7 +2437,7 @@
 
   const ARTIST_LABELS = { 'alchimie':'Alchimie', 'cache-candy':'Cache Candy', 'the-fine-allies':'The Fine Allies', 'noon-coverband':'NooN Coverband', 'panache':'Panache', 'supernova':'Supernova', 'voice-of-freedom':'Voice of Freedom', 'the-best-abba-tribute':'Tribute ABBA', 'calo2-0':'Tribute Calogero', 'tribute-matmatah':'Tribute Matmatah', 'tribute-celine-dion':'Tribute Céline Dion', 'tribute-kool-and-the-gang':'Tribute Kool & the Gang', 'tribute-bee-gees':'Tribute Bee Gees', 'tribute-phil-collins':'Tribute Phil Collins', 'tribute-balavoine':'Tribute Balavoine', 'tribute-barry-white':'Tribute Barry White', 'bim-bam-boom':'Bim Bam Boom', 'clement-blouin':'Clément Blouin', 'animation':'Animation', 'presta-technique':'Prestation technique' };
   const ARTIST_COLORS = { 'alchimie':'#8b5cf6', 'cache-candy':'#ffb238', 'the-fine-allies':'#2f9bff', 'noon-coverband':'#ff4d7d', 'panache':'#6ee7a0', 'supernova':'#ff3d81', 'voice-of-freedom':'#cda754', 'the-best-abba-tribute':'#14b8a6', 'calo2-0':'#e2352c', 'tribute-matmatah':'#4fb8ff', 'tribute-celine-dion':'#fbc608', 'tribute-kool-and-the-gang':'#ffb238', 'tribute-bee-gees':'#22c55e', 'tribute-phil-collins':'#a855f7', 'tribute-balavoine':'#94a3b8', 'tribute-barry-white':'#d4a24c', 'bim-bam-boom':'#f472b6', 'clement-blouin':'#34d399', 'animation':'#f97316', 'presta-technique':'#9a93a6' };
-  const TYPE_ICONS = { concert:'🎤', cabaret:'🎭', dj:'🎧', animation:'🎉', karaoke:'🎙️', indisponible:'🚫', location:'📦', actu:'📣' };
+  const TYPE_ICONS = { concert:'', cabaret:'', dj:'', animation:'', karaoke:'', indisponible:'', location:'', actu:'' };
   const ROADMAP_TYPES = ['concert', 'cabaret', 'dj', 'animation', 'karaoke'];
   // Types qui bloquent seulement une date dans l'agenda (jamais publics, pas d'actu ni de feuille de route)
   const BLOCK_TYPES = ['indisponible', 'location'];
@@ -2497,7 +2497,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''}">
         <div class="agenda-daynum">${day}</div>
-        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}${entryVenue(a) ? ' — ' + escapeAttr(entryVenue(a)) : ''}">${TYPE_ICONS[a.type] || '📣'} ${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)}${typeTag(a)}${a.venue_city ? ' — ' + escapeAttr(a.venue_city) : ''}</div>`).join('')}
+        ${dayActus.slice(0,3).map(a => `<div class="agenda-item" style="background:${ARTIST_COLORS[a.artist_slug] || '#999'};" title="${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)} — ${escapeAttr(a.text)}${entryVenue(a) ? ' — ' + escapeAttr(entryVenue(a)) : ''}">${TYPE_ICONS[a.type] || ''} ${escapeAttr(a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug)}${typeTag(a)}${a.venue_city ? ' — ' + escapeAttr(a.venue_city) : ''}</div>`).join('')}
         ${dayActus.length > 3 ? `<div class="agenda-more">+${dayActus.length - 3}</div>` : ''}
       </div>`;
     }
@@ -2537,7 +2537,7 @@
         const scheduled = a.publish_at && a.publish_at > today;
         return `
         <tr style="${expired ? 'opacity:0.5;' : ''}">
-          <td>${TYPE_ICONS[a.type] || '📣'}</td>
+          <td>${DISPO_TYPE_LABELS[a.type] || a.type}</td>
           <td>${a.photo_url ? `<img src="${a.photo_url}" style="width:44px; height:44px; object-fit:cover; border-radius:6px;">` : '—'}</td>
           <td>${a.guest_name || ARTIST_LABELS[a.artist_slug] || a.artist_slug}</td>
           <td style="max-width:260px;">${a.text}</td>
@@ -3257,7 +3257,7 @@
     showToast('Actualité supprimée');
   }
 
-  const DISPO_TYPE_LABELS = { concert:'🎤 Concert', cabaret:'🎭 Cabaret', dj:'🎧 DJ', animation:'🎉 Animation', karaoke:'🎙️ Karaoké', indisponible:'🚫 Indisponible', location:'📦 Location / prêt matériel' };
+  const DISPO_TYPE_LABELS = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', animation:'Animation', karaoke:'Karaoké', indisponible:'Indisponible', location:'Location / prêt matériel' };
   const DISPO_TYPE_PLAIN = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', animation:'Animation', karaoke:'Karaoké', indisponible:'Indisponible', location:'Location / prêt matériel' };
   let dispoDate = new Date();
   dispoDate.setDate(1);
@@ -3317,7 +3317,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''} gv-clickable" onclick="openAddEventModal('${dateStr}')">
         <div class="agenda-daynum">${day}</div>
-        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt" onclick="event.stopPropagation(); editDispo(${d.id})" title="Modifier">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || '🎤'} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${typeTag(d)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span>${d.status === 'option' ? `<button class="di-ok" title="Valider l'option" onclick="event.stopPropagation(); quickValidate(${d.id})">✓</button>` : ''}<button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
+        ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt" onclick="event.stopPropagation(); editDispo(${d.id})" title="Modifier">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || ''} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${typeTag(d)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span>${d.status === 'option' ? `<button class="di-ok" title="Valider l'option" onclick="event.stopPropagation(); quickValidate(${d.id})">✓</button>` : ''}<button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
       </div>`;
     }
 
@@ -3366,7 +3366,7 @@
           <div class="dispo-summary-list">
             ${ranges.length ? ranges.map(r => `
               <div class="dispo-summary-row">
-                <span>${TYPE_ICONS[r.type] || '🎤'} ${r.label || DISPO_TYPE_PLAIN[r.type] || r.type}</span>
+                <span>${TYPE_ICONS[r.type] || ''} ${r.label || DISPO_TYPE_PLAIN[r.type] || r.type}</span>
                 <span class="range">${formatShortDate(r.start)}${r.end !== r.start ? ' → ' + formatShortDate(r.end) : ''}</span>
               </div>
             `).join('') : '<div class="dispo-summary-empty">Aucune date à venir</div>'}
@@ -3406,14 +3406,14 @@
         <tr>
           <td>${d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug}</td>
           <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
-          <td><button class="btn-no" style="background:${d.status === 'validee' ? '#6ee7a0' : 'var(--amber)'}; color:var(--ink);" onclick="toggleDispoStatus(${d.id}, '${d.status === 'validee' ? 'option' : 'validee'}')">${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</button></td>
+          <td><button class="btn-no" style="background:${d.status === 'validee' ? '#6ee7a0' : 'var(--amber)'}; color:var(--ink);" onclick="toggleDispoStatus(${d.id}, '${d.status === 'validee' ? 'option' : 'validee'}')">${d.status === 'validee' ? 'Validée' : 'Option'}</button></td>
           <td>${d.date}</td>
           <td>${d.publish_at || '—'}</td>
           <td>${d.expires_at || '—'}</td>
           <td style="max-width:220px; color:var(--muted); font-size:0.82rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
           <td class="row-actions">
             ${ROADMAP_TYPES.includes(d.type) && d.source_actu_id ? `<button class="btn-info" onclick="previewRoadmap(${d.source_actu_id})">Feuille de route</button>` : ''}
-            <button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>${d.type === 'indisponible' ? `<button class="btn-info" onclick="requalifyToConcert(${d.id})">🔁 Requalifier en concert</button>` : ''}<button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button>
+            <button class="btn-yes" onclick="editDispo(${d.id})">Modifier</button>${d.type === 'indisponible' ? `<button class="btn-info" onclick="requalifyToConcert(${d.id})">Requalifier en concert</button>` : ''}<button class="btn-no" onclick="deleteDispo(${d.id})">Supprimer</button>
           </td>
         </tr>
       `).join('');
@@ -3919,7 +3919,7 @@
     }
   }
 
-  const AGENDA_ACTIONS = { ouverture:'📖 A ouvert son agenda', connexion:'🔑 Connexion', ajout:'➕ A ajouté une date', suppression:'🗑 A supprimé une date', feuille:'📄 A consulté une feuille de route' };
+  const AGENDA_ACTIONS = { ouverture:'A ouvert son agenda', connexion:'Connexion', ajout:'A ajouté une date', suppression:'A supprimé une date', feuille:'A consulté une feuille de route' };
 
   async function loadGroupVisits(artistSlug){
     try {
@@ -3983,7 +3983,7 @@
       const clickAttr = concertEntry ? ` onclick="previewRoadmap(${concertEntry.source_actu_id})"` : '';
       html += `<div class="agenda-day${isToday ? ' today' : ''}${concertEntry ? ' gv-clickable' : ''}"${clickAttr}>
         <div class="agenda-daynum">${day}</div>
-        ${dayEntries.map(e => `<div class="gv-item${e.type === 'indisponible' ? ' indisponible' : ''}${e.status === 'option' ? ' option' : ''}" title="${escapeAttr(e.label || '')}${entryVenue(e) ? ' — ' + escapeAttr(entryVenue(e)) : ''}">${TYPE_ICONS[e.type] || '🎤'}${e.status === 'option' ? '?' : ''}${e.venue_city ? ' ' + escapeAttr(e.venue_city) : ''}</div>`).join('')}
+        ${dayEntries.map(e => `<div class="gv-item${e.type === 'indisponible' ? ' indisponible' : ''}${e.status === 'option' ? ' option' : ''}" title="${escapeAttr(e.label || '')}${entryVenue(e) ? ' — ' + escapeAttr(entryVenue(e)) : ''}">${DISPO_TYPE_LABELS[e.type] || ''}${e.status === 'option' ? ' (option)' : ''}${e.venue_city ? ' ' + escapeAttr(e.venue_city) : ''}</div>`).join('')}
       </div>`;
     }
     grid.innerHTML = html;
@@ -3997,7 +3997,7 @@
       <tr>
         <td>${e.date}</td>
         <td>${DISPO_TYPE_LABELS[e.type] || e.type}</td>
-        <td>${e.status === 'option' ? '🟡 Option' : '🟢 Validée'}</td>
+        <td>${e.status === 'option' ? 'Option' : 'Validée'}</td>
         <td style="color:var(--muted); font-size:0.85rem;">${e.label || '—'}${entryVenue(e) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(e)}</span>` : ''}</td>
         <td>${ROADMAP_TYPES.includes(e.type) && e.source_actu_id ? `<button class="btn-info" onclick="previewRoadmap(${e.source_actu_id})">Feuille de route</button>` : ''}</td>
       </tr>
@@ -4045,7 +4045,7 @@
                 <td>${d.date.split('-').reverse().join('/')}</td>
                 <td>${entryLabel(d)}</td>
                 <td>${DISPO_TYPE_LABELS[d.type] || d.type}</td>
-                <td>${d.status === 'validee' ? '🟢 Validée' : '🟡 Option'}</td>
+                <td>${d.status === 'validee' ? 'Validée' : 'Option'}</td>
                 <td style="max-width:260px; color:var(--muted); font-size:0.85rem;">${d.label || '—'}${entryVenue(d) ? `<br><span style="color:var(--gold);">📍 ${entryVenue(d)}</span>` : ''}</td>
               </tr>
             `).join('')}
