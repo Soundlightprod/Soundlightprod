@@ -91,8 +91,7 @@
   .agenda-grid.as-list .dispo-item{font-size:.8rem; padding:5px 8px;}
   .agenda-grid.as-list .dispo-item .di-txt{white-space:normal; overflow:visible;}
   .agenda-recap-month{font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-top:6px;}
-  @media (min-width:700px){ .agenda-grid.as-list.v3j{display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important;} }
-  @media (min-width:900px){ .agenda-grid.as-list.vsem, .agenda-grid.as-list.vquinz{display:grid !important; grid-template-columns:repeat(7,minmax(0,1fr)) !important;} .agenda-grid.as-list.vsem .agenda-day.lday, .agenda-grid.as-list.vquinz .agenda-day.lday{min-height:130px !important;} .agenda-grid.as-list.vsem .dispo-item, .agenda-grid.as-list.vquinz .dispo-item{font-size:.68rem; padding:3px 6px;} }
+  @media (min-width:900px){ .agenda-grid.as-list.vsem{display:grid !important; grid-template-columns:repeat(7,minmax(0,1fr)) !important;} .agenda-grid.as-list.vsem .agenda-day.lday{min-height:130px !important;} .agenda-grid.as-list.vsem .dispo-item{font-size:.68rem; padding:3px 6px;} }
   .agenda-nav{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
   .agenda-nav button{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:8px; padding:6px 14px; cursor:pointer; font-family:'Manrope',sans-serif; font-size:0.9rem;}
   .agenda-nav button:hover{border-color:rgba(255,255,255,0.3);}
@@ -496,9 +495,8 @@
 
     <div class="agenda-views" id="dispoViews">
       <button data-v="month" onclick="setDispoView('month')">Mois</button>
-      <button data-v="quinz" onclick="setDispoView('quinz')">Quinzaine</button>
       <button data-v="sem" onclick="setDispoView('sem')">Semaine</button>
-      <button data-v="3j" onclick="setDispoView('3j')">3 jours</button>
+      <button data-v="jour" onclick="setDispoView('jour')">Jour</button>
       <button data-v="recap" onclick="setDispoView('recap')">Récap</button>
     </div>
     <div class="agenda-nav">
@@ -3411,7 +3409,7 @@
   const DISPO_TYPE_PLAIN = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', animation:'Animation', karaoke:'Karaoké', indisponible:'Indisponible', location:'Location / prêt matériel' };
   let dispoDate = new Date();
   let dispoView = 'month';
-  try { const v = localStorage.getItem('slp_planning_view'); if (['month','quinz','sem','3j','recap'].includes(v)) dispoView = v; } catch(e){}
+  try { const v = localStorage.getItem('slp_planning_view'); if (['month','sem','jour','recap'].includes(v)) dispoView = v; } catch(e){}
   const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   function setDispoView(v){
     dispoView = v;
@@ -3430,7 +3428,7 @@
     if (dispoView === 'month' || dispoView === 'recap'){
       dispoDate = new Date(dispoDate.getFullYear(), dispoDate.getMonth() + dir, 1);
     } else {
-      const step = dispoView === '3j' ? 3 : dispoView === 'sem' ? 7 : 14;
+      const step = dispoView === 'jour' ? 1 : 7;
       dispoDate = new Date(dispoDate.getFullYear(), dispoDate.getMonth(), dispoDate.getDate() + dir * step);
     }
     renderDispoCalendar();
@@ -3479,12 +3477,15 @@
         const n = new Date(year, month + 1, 0).getDate();
         for (let i = 1; i <= n; i++) days.push(new Date(year, month, i));
       } else {
-        const count = dispoView === '3j' ? 3 : dispoView === 'sem' ? 7 : 14;
-        const start = dispoView === '3j' ? new Date(year, month, dispoDate.getDate())
+        const count = dispoView === 'jour' ? 1 : 7;
+        const start = dispoView === 'jour' ? new Date(year, month, dispoDate.getDate())
           : new Date(year, month, dispoDate.getDate() - ((dispoDate.getDay() + 6) % 7));
         for (let i = 0; i < count; i++) days.push(new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
-        const f1 = days[0].toLocaleDateString('fr-FR', { day:'numeric', month: days[0].getMonth() === days[count-1].getMonth() ? undefined : 'short' });
-        label.textContent = f1 + ' – ' + days[count-1].toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+        if (count === 1) label.textContent = days[0].toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+        else {
+          const f1 = days[0].toLocaleDateString('fr-FR', { day:'numeric', month: days[0].getMonth() === days[count-1].getMonth() ? undefined : 'short' });
+          label.textContent = f1 + ' – ' + days[count-1].toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+        }
       }
       let html = '';
       let shown = 0;
