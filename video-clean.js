@@ -10,6 +10,7 @@
   var st = document.createElement('style');
   st.textContent =
     '.vc-ov{position:absolute;inset:0;z-index:3;border:0;margin:0;padding:0;background:transparent;cursor:pointer;display:block;width:100%;height:100%;font:inherit;}' +
+    '.vc-ov.vc-poster{background-color:#0c0a14;background-size:cover;background-position:center;}' +
     '.vc-ov:focus-visible{outline:3px solid #ffb238;outline-offset:-3px;}' +
     '.vc-play{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:rgba(12,10,20,.82);color:#f1ece2;display:flex;align-items:center;justify-content:center;font-size:30px;padding-left:5px;box-shadow:0 8px 30px rgba(0,0,0,.5);transition:transform .15s ease,opacity .2s ease;}' +
     '.vc-ov:hover .vc-play{transform:scale(1.08);}' +
@@ -43,7 +44,16 @@
     var ov = document.createElement('button');
     ov.type = 'button'; ov.className = 'vc-ov'; ov.setAttribute('aria-label', 'Lecture / pause de la vidéo');
     ov.innerHTML = '<span class="vc-play" aria-hidden="true">▶</span>';
-    function paint() { ov.classList.toggle('vc-on', playing); }
+    // Avant la première lecture : affiche de la vidéo par-dessus, pour masquer l'écran d'accueil de YouTube (titre, « Regarder sur YouTube »)
+    var vid = (f.src.match(/\/embed\/([A-Za-z0-9_-]{6,20})/) || [])[1], poster = !playing && !!vid;
+    function dropPoster() { poster = false; ov.classList.remove('vc-poster'); ov.style.backgroundImage = ''; }
+    if (poster) {
+      var im = new Image();
+      im.onload = function () { if (poster) { ov.style.backgroundImage = 'url(' + im.src + ')'; ov.classList.add('vc-poster'); } };
+      im.onerror = function () { var h = new Image(); h.onload = function () { if (poster) { ov.style.backgroundImage = 'url(' + h.src + ')'; ov.classList.add('vc-poster'); } }; h.src = 'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg'; };
+      im.src = 'https://i.ytimg.com/vi/' + vid + '/maxresdefault.jpg';
+    }
+    function paint() { ov.classList.toggle('vc-on', playing); if (playing && poster) dropPoster(); }
     ov.addEventListener('click', function () { playing = !playing; cmd(f, playing ? 'playVideo' : 'pauseVideo'); paint(); });
     host.appendChild(ov);
     var host2 = host;
