@@ -1258,7 +1258,7 @@
       <p class="vz-note" style="margin:0 0 12px;">Adresse de connexion à lui donner : <strong id="famUrl"></strong></p>
       <div class="form-row" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
         <div class="field-group"><label>Nom affiché</label><input type="text" id="famName" value="Marie" maxlength="40" autocomplete="off"></div>
-        <div class="field-group"><label>Identifiant</label><input type="text" id="famUser" value="marie" maxlength="30" autocomplete="off" autocapitalize="none"></div>
+        <div class="field-group"><label>Identifiant</label><input type="text" id="famUser" value="Marie" maxlength="30" autocomplete="off" autocapitalize="none"></div>
         <div class="field-group"><label>Mot de passe (vide = en générer un)</label><input type="text" id="famPwd" maxlength="60" autocomplete="off"></div>
         <button class="btn" onclick="famSaveUser()">Créer / réinitialiser</button>
       </div>
@@ -2335,6 +2335,7 @@
   }
 
   // ---------- PERSO-Famille ----------
+  const famCap = x => String(x || '').charAt(0).toUpperCase() + String(x || '').slice(1);
   async function famApi(path, method, body){
     const r = await fetch(path, { method: method || 'GET', headers: Object.assign({ Authorization: `Bearer ${token}` }, body ? { 'Content-Type':'application/json' } : {}), body: body ? JSON.stringify(body) : undefined });
     const d = await r.json().catch(() => ({}));
@@ -2348,7 +2349,7 @@
     try {
       const users = await famApi('/api/admin/famille/users');
       box.innerHTML = users.length ? users.map(u => `<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);">
-          <strong>${snEsc(u.display_name)}</strong> <span style="color:var(--muted);">identifiant : ${snEsc(u.username)}</span>
+          <strong>${snEsc(u.display_name)}</strong> <span style="color:var(--muted);">identifiant : ${snEsc(famCap(u.username))}</span>
           <span style="color:${u.active ? '#4ade80' : 'var(--pink)'};">${u.active ? 'accès actif' : 'accès coupé'}</span>
           <button class="btn-outline" style="margin-left:auto;" onclick="famToggle('${snEsc(u.username)}', ${u.active ? 0 : 1})">${u.active ? 'Couper l\u2019accès' : 'Rétablir l\u2019accès'}</button></div>`).join('')
         : '<span class="vz-note">Aucun compte famille pour le moment.</span>';
@@ -2359,7 +2360,7 @@
     try {
       const d = await famApi('/api/admin/famille/users', 'POST', { username: document.getElementById('famUser').value, display_name: document.getElementById('famName').value, password: document.getElementById('famPwd').value });
       out.innerHTML = `<div style="background:var(--ink); border:1px solid var(--line); border-radius:12px; padding:12px 14px;">
-        <strong>Accès prêt</strong><br><span style="color:var(--muted);">Identifiant : ${snEsc(d.username)}</span><br>
+        <strong>Accès prêt</strong><br><span style="color:var(--muted);">Identifiant : ${snEsc(famCap(d.username))}</span><br>
         Mot de passe : <code style="font-size:1.05rem;">${snEsc(d.password)}</code><br>
         <span class="vz-note">Note-le maintenant : il n'est plus affiché ensuite (seule une version chiffrée est conservée). En cas d'oubli, clique de nouveau sur « Créer / réinitialiser ».</span></div>`;
       document.getElementById('famPwd').value = '';
