@@ -821,7 +821,7 @@ const STORE_SITE = "https://slpstore.fr";
 const OLD_STORE_HOST = "soundlightprod.store"; // redirigé (301) vers STORE_SITE, même chemin
 const isStoreHost = (h) => h === "slpstore.fr" || h === "www.slpstore.fr";
 // Pages HTML servies sur le .store (le reste du site redirige vers le .fr)
-const STORE_PAGES = /^\/(boutique|boutique-merci|cgv-boutique|contact-boutique|mentions-legales)(\.html)?$/;
+const STORE_PAGES = /^\/(boutique|boutique-merci|cgv-boutique|contact-boutique|mentions-legales|mentions-legales-boutique)(\.html)?$/;
 
 function redirect(to, status = 301) {
   return new Response(null, { status, headers: { Location: to, "Cache-Control": status === 302 ? "no-store" : "public, max-age=3600" } });
@@ -2314,12 +2314,12 @@ export default {
         // Scanners de liens (antivirus, filtres anti-spam) : sessions d'une seule page, mentions légales ou CGV boutique, sans provenance
         // externe, arrivées par grappes (une autre session du même genre dans les 5 minutes). Marquées is_bot = 2, comme les rafales.
         // Une visite isolée (lecture humaine, lien d'un moteur de recherche) n'est jamais touchée.
-        if (!vp.isBot && !vp.referrer && session_id && (artist_slug === "mentions-legales" || artist_slug === "cgv-boutique")) {
+        if (!vp.isBot && !vp.referrer && session_id && (artist_slug === "mentions-legales" || artist_slug === "mentions-legales-boutique" || artist_slug === "cgv-boutique")) {
           try {
             const own = await env.DB.prepare("SELECT COUNT(*) AS n FROM page_visits WHERE session_id = ?").bind(session_id).first();
             if (own && own.n === 1) {
               const nb = (await env.DB.prepare(
-                "SELECT p.session_id FROM page_visits p WHERE p.session_id <> ? AND p.artist_slug IN ('mentions-legales', 'cgv-boutique') AND p.referrer IS NULL AND p.is_bot IN (0, 2) AND p.visited_at >= datetime('now', '-5 minutes') AND (SELECT COUNT(*) FROM page_visits q WHERE q.session_id = p.session_id) = 1"
+                "SELECT p.session_id FROM page_visits p WHERE p.session_id <> ? AND p.artist_slug IN ('mentions-legales', 'mentions-legales-boutique', 'cgv-boutique') AND p.referrer IS NULL AND p.is_bot IN (0, 2) AND p.visited_at >= datetime('now', '-5 minutes') AND (SELECT COUNT(*) FROM page_visits q WHERE q.session_id = p.session_id) = 1"
               ).bind(session_id).all()).results || [];
               if (nb.length) {
                 const ids = [session_id, ...nb.map((r) => r.session_id)];

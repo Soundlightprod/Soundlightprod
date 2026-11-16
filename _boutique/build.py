@@ -505,7 +505,7 @@ def page(p, products, tpl):
     return f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
-<script src="https://soundlightprod.fr/consent.js" data-legal="https://soundlightprod.fr/mentions-legales"></script><meta charset="UTF-8">
+<script src="https://soundlightprod.fr/consent.js" data-legal="/mentions-legales-boutique"></script><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
