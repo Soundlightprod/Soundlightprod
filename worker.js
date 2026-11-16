@@ -100,8 +100,27 @@ async function ensureFamilleTables(env) {
     env.DB.prepare("CREATE TABLE IF NOT EXISTS famille_users (username TEXT PRIMARY KEY, display_name TEXT NOT NULL, pass_hash TEXT NOT NULL, pass_salt TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL DEFAULT (datetime('now')))"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS famille_sessions (token_hash TEXT PRIMARY KEY, username TEXT NOT NULL, expires_at INTEGER NOT NULL)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS famille_attempts (k TEXT PRIMARY KEY, n INTEGER NOT NULL, first_at INTEGER NOT NULL)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS famille_settings (k TEXT PRIMARY KEY, v TEXT NOT NULL)"),
   ]);
   familleReady = true;
+}
+
+// Adresse secrète de la page famille : /famille-xxxxxxxxxxxx, tirée au hasard et gardée en base (jamais dans le code GitHub).
+// L'ancienne adresse /famille n'existe plus : elle répond « introuvable ».
+const FAMILLE_SLUG_RE = /^famille-[a-z0-9]{12}$/;
+function familleNewSlug() {
+  const a = "abcdefghijklmnopqrstuvwxyz0123456789";
+  return "famille-" + [...crypto.getRandomValues(new Uint8Array(12))].map((x) => a[x % a.length]).join("");
+}
+async function familleSlug(env, regenerate) {
+  await ensureFamilleTables(env);
+  if (!regenerate) {
+    const r = await env.DB.prepare("SELECT v FROM famille_settings WHERE k = 'slug'").first();
+    if (r && FAMILLE_SLUG_RE.test(r.v)) return r.v;
+  }
+  const slug = familleNewSlug();
+  await env.DB.prepare("INSERT INTO famille_settings (k, v) VALUES ('slug', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(slug).run();
+  return slug;
 }
 
 const FAMILLE_POUR = ["Tous", "Marie", "Merlyn", "Nj"];
@@ -170,6 +189,8 @@ async function familleHandler(request, env, url, origin) {
       if (!b.active) await env.DB.prepare("DELETE FROM famille_sessions WHERE username = ?").bind(match[1]).run();
       return json({ ok: true }, 200, origin);
     }
+    if (path === "/api/admin/famille/address" && m === "GET") return json({ path: "/" + (await familleSlug(env, false)) }, 200, origin);
+    if (path === "/api/admin/famille/address/regenerate" && m === "POST") return json({ path: "/" + (await familleSlug(env, true)) }, 200, origin);
     // Import en masse (ex. depuis TimeTree). Ignore les doublons (même date + titre + heure) ; un événement sur plusieurs jours est étalé jour par jour.
     if (path === "/api/admin/famille/import" && m === "POST") {
       const b = await request.json().catch(() => ({}));
@@ -2548,12 +2569,16 @@ export default {
       }
 
       if (!url.pathname.startsWith("/api/")) {
-        // PERSO-Famille : page privée. Jamais indexée (en-tête noindex, absente des plans du site et de robots.txt, aucun lien public),
-        // sans les scripts publics du site (chat, bandeau cookies, suivi des visites) et réservée à soundlightprod.fr.
-        if (/^\/famille(\.html)?\/?$/i.test(url.pathname)) {
+        // PERSO-Famille : page privée, servie UNIQUEMENT à son adresse secrète (voir familleSlug). Les anciennes adresses /famille
+        // et /famille.html répondent « introuvable ». Jamais indexée (noindex), absente des plans du site, de robots.txt et de tout lien
+        // public, sans les scripts publics du site (chat, bandeau cookies, suivi des visites), sans cache, et réservée à soundlightprod.fr.
+        if (/^\/famille(\.html)?\/?$/i.test(url.pathname) || /^\/famille-[a-z0-9]{12}\/?$/i.test(url.pathname)) {
+          const notFound = () => new Response("Not found", { status: 404, headers: { "X-Robots-Tag": "noindex", "Cache-Control": "no-store" } });
           const h = url.hostname.toLowerCase();
-          if (h !== "soundlightprod.fr" && h !== "www.soundlightprod.fr") return new Response("Not found", { status: 404, headers: { "X-Robots-Tag": "noindex" } });
-          const r = await env.ASSETS.fetch(request);
+          if (h !== "soundlightprod.fr" && h !== "www.soundlightprod.fr") return notFound();
+          const asked = url.pathname.replace(/^\/|\/$/g, "");
+          if (!FAMILLE_SLUG_RE.test(asked) || !env.DB || asked !== (await familleSlug(env, false))) return notFound();
+          const r = await env.ASSETS.fetch(new Request(new URL("/famille" + url.search, url.origin), request));
           const out = new Response(r.body, r);
           out.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet, noimageindex");
           out.headers.set("Cache-Control", "private, no-store");

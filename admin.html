@@ -1252,13 +1252,16 @@
     <p class="vz-sub">Agenda privé de la famille, séparé du planning SLP. Toi et Merlyn y accédez d'ici ; Marie a son propre identifiant et ne voit que cette page, jamais le reste de l'admin.</p>
     <div class="vz-card">
       <div class="vz-card-h"><h3>Agenda famille</h3>
-        <button class="btn-outline" onclick="window.open('famille.html','_blank')">Ouvrir en plein écran ↗</button>
+        <button class="btn-outline" onclick="famOpen()">Ouvrir en plein écran ↗</button>
       </div>
       <iframe id="famFrame" title="Agenda famille" style="width:100%; height:1180px; border:0; background:transparent;" loading="lazy"></iframe>
     </div>
     <div class="vz-card">
       <div class="vz-card-h"><h3>Accès de Marie</h3></div>
-      <p class="vz-note" style="margin:0 0 12px;">Adresse de connexion à lui donner : <strong id="famUrl"></strong></p>
+      <p class="vz-note" style="margin:0 0 6px;">Adresse secrète à lui donner (connue de vous trois uniquement, introuvable autrement) :</p>
+      <p style="margin:0 0 12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;"><strong id="famUrl" style="word-break:break-all;"></strong>
+        <button class="btn-outline" onclick="famCopy()">Copier</button>
+        <button class="btn-outline" onclick="famRegen()">Changer l'adresse</button></p>
       <div class="form-row" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
         <div class="field-group"><label>Nom affiché</label><input type="text" id="famName" value="Marie" maxlength="40" autocomplete="off"></div>
         <div class="field-group"><label>Identifiant</label><input type="text" id="famUser" value="Marie" maxlength="30" autocomplete="off" autocapitalize="none"></div>
@@ -2347,8 +2350,11 @@
     return d;
   }
   async function famLoad(){
-    const f = document.getElementById('famFrame'); if (f && !f.getAttribute('src')) f.setAttribute('src', 'famille.html?embed=1');
-    document.getElementById('famUrl').textContent = location.origin + '/famille.html';
+    try {
+      const a = await famApi('/api/admin/famille/address'); window.famPath = a.path;
+      const f = document.getElementById('famFrame'); if (f && !f.getAttribute('src')) f.setAttribute('src', a.path + '?embed=1');
+      document.getElementById('famUrl').textContent = location.origin + a.path;
+    } catch(e){ document.getElementById('famUrl').textContent = 'indisponible : ' + e.message; }
     const box = document.getElementById('famUsers');
     try {
       const users = await famApi('/api/admin/famille/users');
@@ -2358,6 +2364,16 @@
           <button class="btn-outline" style="margin-left:auto;" onclick="famToggle('${snEsc(u.username)}', ${u.active ? 0 : 1})">${u.active ? 'Couper l\u2019accès' : 'Rétablir l\u2019accès'}</button></div>`).join('')
         : '<span class="vz-note">Aucun compte famille pour le moment.</span>';
     } catch(e){ box.innerHTML = '<span class="vz-note">' + snEsc(e.message) + '</span>'; }
+  }
+  function famOpen(){ if (window.famPath) window.open(window.famPath, '_blank'); }
+  async function famCopy(){ try { await navigator.clipboard.writeText(location.origin + window.famPath); document.getElementById('famSecret').innerHTML = '<span class="vz-note">Adresse copiée.</span>'; } catch(e){} }
+  async function famRegen(){
+    if (!confirm('Changer l\u2019adresse ? L\u2019ancienne ne fonctionnera plus : il faudra donner la nouvelle à Marie.')) return;
+    try { const a = await famApi('/api/admin/famille/address/regenerate', 'POST'); window.famPath = a.path;
+      document.getElementById('famUrl').textContent = location.origin + a.path;
+      const f = document.getElementById('famFrame'); if (f) f.setAttribute('src', a.path + '?embed=1');
+      document.getElementById('famSecret').innerHTML = '<span class="vz-note">Nouvelle adresse créée. L\u2019ancienne ne marche plus.</span>';
+    } catch(e){ document.getElementById('famSecret').innerHTML = '<span style="color:var(--pink);">' + snEsc(e.message) + '</span>'; }
   }
   async function famSaveUser(){
     const out = document.getElementById('famSecret');
