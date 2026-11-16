@@ -41,7 +41,8 @@
   var A0 = function () { var m = window.matchMedia && matchMedia('(max-width:960px)').matches;
     if (!m && aim !== null && !isNaN(aim)) return aim;
     var v = parseFloat(hero.getAttribute(m && hero.hasAttribute('data-angle-m') ? 'data-angle-m' : 'data-angle')); return isNaN(v) ? 238 : v; };
-  var target = null, cur = A0(), t0 = performance.now();
+  var START = 189; // à l'ouverture, le faisceau part presque à la verticale (légèrement vers la gauche) puis vient éclairer le titre
+  var target = null, cur = reduce ? A0() : START, t0 = performance.now();
   hero.addEventListener('pointermove', function (e) {
     var hr = hero.getBoundingClientRect();
     var a = Math.atan2(e.clientY - hr.top - c.y, e.clientX - hr.left - c.x) * 180 / Math.PI + 90;
@@ -51,7 +52,7 @@
   function tick(now) {
     var goal = target !== null ? target : (reduce ? A0() : A0() + (aim !== null ? 5 : 9) * Math.sin((now - t0) / 1150));
     var d = ((goal - cur + 540) % 360) - 180;
-    cur += d * 0.12;
+    cur += d * ((target === null && now - t0 < 2600) ? 0.03 : 0.12);
     hero.style.setProperty('--fa', cur.toFixed(2) + 'deg');
     apex(cur);
     requestAnimationFrame(tick);
