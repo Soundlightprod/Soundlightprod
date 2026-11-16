@@ -8,7 +8,7 @@
     if (localStorage.getItem("slp_admin_token") || localStorage.getItem("slp_notrack")) return;
   } catch (e) {}
 
-  var frames = [].slice.call(document.querySelectorAll('iframe[src*="youtube.com/embed/"], iframe[src*="youtube-nocookie.com/embed/"]')).filter(function (f) { return !f.hasAttribute("data-notrack"); }); // l'autoplay muet de l'accueil n'est pas une vraie lecture
+  var frames = [].slice.call(document.querySelectorAll('iframe[src*="youtube.com/embed/"], iframe[src*="youtube-nocookie.com/embed/"]'));
   if (!frames.length) return;
 
   function sid() {
@@ -57,8 +57,11 @@
     frames.forEach(function (f) {
       var id = f.getAttribute("data-slp-video");
       if (!id) return;
-      var timer = null, player;
+      var timer = null, player, muteWatch = null;
+      // Vidéo en autoplay muet (accueil) : ne compte comme lecture qu'à partir du moment où le visiteur active le son
+      var engaged = !f.hasAttribute("data-notrack");
       function tick() {
+        if (!engaged) return;
         try {
           var d = player.getDuration(), t = player.getCurrentTime();
           if (!d) return;
@@ -72,9 +75,22 @@
         events: {
           onStateChange: function (e) {
             if (e.data === YT.PlayerState.PLAYING) {
+              if (!engaged) {
+                if (!muteWatch) muteWatch = setInterval(function () {
+                  try {
+                    if (player.isMuted && !player.isMuted()) {
+                      engaged = true; clearInterval(muteWatch); muteWatch = null;
+                      send(id, "play");
+                      if (!timer) timer = setInterval(tick, 5000);
+                    }
+                  } catch (err) {}
+                }, 1000);
+                return;
+              }
               send(id, "play");
               if (!timer) timer = setInterval(tick, 5000);
             } else {
+              if (muteWatch) { clearInterval(muteWatch); muteWatch = null; }
               if (timer) { clearInterval(timer); timer = null; }
               tick();
               if (e.data === YT.PlayerState.ENDED) send(id, "fin");
