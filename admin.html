@@ -1282,8 +1282,16 @@
         <li>Dans Scriptable : « + » (nouveau script), coller, nommer « Famille ».</li>
         <li>Écran d'accueil : appui long &rarr; « + » &rarr; Scriptable &rarr; ajouter le widget &rarr; le modifier &rarr; Script : « Famille ».</li>
       </ol>
+      <p style="margin:14px 0 6px;"><strong>Widget Android</strong> (prochains événements en texte)</p>
+      <ol class="vz-note" style="margin:0 0 12px; padding-left:18px; line-height:1.6;">
+        <li>Installer l'appli gratuite <strong>KWGT</strong> (Kustom Widget Maker, Play Store).</li>
+        <li>Ici, cliquer sur « Copier l'adresse du widget Android ».</li>
+        <li>Écran d'accueil : appui long &rarr; Widgets &rarr; KWGT &rarr; ajouter un widget, le modifier, y ajouter un objet Texte.</li>
+        <li>Dans le texte, choisir la formule et saisir : <code>$wg("adresse copiée", txt)$</code> (remplacer « adresse copiée » par l'adresse), puis régler la mise à jour automatique toutes les 15 min.</li>
+      </ol>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn" onclick="famWidgetCopy()">Copier le script du widget</button>
+        <button class="btn" onclick="famWidgetAndroid()">Copier l'adresse du widget Android</button>
         <button class="btn-outline" onclick="famWidgetRegen()">Changer la clé du widget</button>
       </div>
       <div id="famWidgetMsg" style="margin-top:12px;"></div>
@@ -2396,6 +2404,12 @@
     const out = document.getElementById('famWidgetMsg');
     try { const d = await famApi('/api/admin/famille/widget'); await navigator.clipboard.writeText(d.script);
       out.innerHTML = '<span class="vz-note">Script copié : colle-le dans Scriptable. Le script contient la clé du widget : ne le diffuse qu\u2019à Merlyn et Marie.</span>';
+    } catch(e){ out.innerHTML = '<span style="color:var(--pink);">' + snEsc(e.message) + '</span>'; }
+  }
+  async function famWidgetAndroid(){
+    const out = document.getElementById('famWidgetMsg');
+    try { const d = await famApi('/api/admin/famille/widget'); await navigator.clipboard.writeText(d.text_url);
+      out.innerHTML = '<span class="vz-note">Adresse copiée : colle-la dans la formule KWGT. Elle contient la clé du widget : ne la diffuse qu\u2019à Merlyn et Marie.</span>';
     } catch(e){ out.innerHTML = '<span style="color:var(--pink);">' + snEsc(e.message) + '</span>'; }
   }
   async function famWidgetRegen(){
