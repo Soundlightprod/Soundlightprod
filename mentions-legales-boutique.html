@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentions légales — Boutique SLP</title>
+<meta name="robots" content="noindex, follow">
+<style>
+  :root{ --ink:#0c0a14; --ink-2:#17142a; --paper:#f7f5f0; --muted:#a9a4bc; --amber:#fc8024; --line:rgba(255,255,255,0.1); }
+  *{box-sizing:border-box;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans',sans-serif; line-height:1.7; margin:0;}
+  .wrap{max-width:760px; margin:0 auto; padding:80px 24px 100px;}
+  h1{font-family:'League Spartan',sans-serif; font-size:2rem; margin-bottom:8px;}
+  .back{color:var(--amber); text-decoration:none; font-size:0.85rem; font-family:'DM Mono',monospace;}
+  h2{font-family:'League Spartan',sans-serif; font-size:1.15rem; margin:36px 0 12px; color:var(--amber);}
+  p, li{color:var(--muted); font-size:0.94rem;}
+  a{color:var(--paper);}
+  section{border-top:1px solid var(--line); padding-top:10px;}
+</style>
+
+
+
+
+
+
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0A14">
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="back">← Retour à la boutique</a>
+  <h1>Mentions légales — Boutique</h1>
+
+  <section>
+    <h2>Éditeur du site</h2>
+    <p>
+      Boutique SLP, exploitée par SLP — Sound Light Prod<br>
+      SARL au capital de 2 500 €<br>
+      RCS Paris 130 415 045<br>
+      SIRET : 130 415 045 00017<br>
+      Licences d'entrepreneur de spectacles n° 2 et 3 : en cours d'attribution<br>
+      Code APE : 9001Z<br>
+      Siège social : 173 rue de Courcelles, 75017 Paris<br>
+      Email : <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a><br>
+      Téléphone : 06 31 94 96 53
+    </p>
+  </section>
+
+  <section>
+    <h2>Hébergement</h2>
+    <p>
+      Site hébergé par Cloudflare, Inc.<br>
+      101 Townsend Street, San Francisco, CA 94107, États-Unis
+    </p>
+  </section>
+
+  <section>
+    <h2>Propriété intellectuelle</h2>
+    <p>L'ensemble des contenus présents sur ce site (textes, images, logos, graphismes) est la propriété de SLP ou de ses partenaires, sauf mention contraire, et ne peut être reproduit sans autorisation préalable.</p>
+  </section>
+
+  <section>
+    <h2>Données personnelles</h2>
+    <p>Les informations recueillies lors d'une commande ou d'une demande de contact (nom, email, adresse de livraison, téléphone) sont utilisées exclusivement pour traiter votre commande, la livrer et assurer le service après-vente ; elles ne sont jamais cédées à des tiers à des fins commerciales. Le paiement par carte est réalisé sur la page sécurisée de notre prestataire Stripe : nous ne voyons ni ne conservons votre numéro de carte. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données, à exercer par email à <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>. Les conditions de vente sont consultables dans nos <a href="/cgv-boutique">CGV</a>.</p>
+  </section>
+
+  <section>
+    <h2>Cookies</h2>
+    <p>La boutique n'utilise aucun cookie publicitaire. Elle compte les visites de façon anonyme (pages vues, provenance, ville approximative déduite de l'adresse IP, type d'appareil), sans identifier les personnes ; l'adresse IP n'est pas conservée en clair. Si vous cliquez sur « Accepter » dans le bandeau, un identifiant aléatoire est enregistré dans votre navigateur (stockage local, sans cookie) pendant 13 mois maximum, pour reconnaître vos retours. Il n'est partagé avec aucun tiers. Vous pouvez refuser ou changer d'avis à tout moment avec le lien « Mesure d'audience » en bas de page ; votre choix est conservé 6 mois. Le panier d'achat utilise des cookies et un stockage techniques indispensables, et le chat garde un jeton technique pour reprendre une conversation en cours.</p>
+  </section>
+</div>
+</body>
+<script>
+(function(){
+  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
+  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
+  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
+  if (localStorage.getItem('slp_admin_token')) return;
+  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  (function(){try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("slp_notrack","1");if(/[?&]notrack=0/.test(location.search))localStorage.removeItem("slp_notrack");if(localStorage.getItem("slp_notrack"))return Promise.resolve();}catch(e){}return fetch.apply(window,arguments);})("https://soundlightprod.fr/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_slug: "mentions-legales-boutique", session_id: sid, ref:(function(){try{var q=new URLSearchParams(location.search),s=q.get("utm_source")||(q.get("utm_medium")==="email"?"email":"");if(s){var c=(q.get("utm_campaign")||"").toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,50);return "https://emailing-"+s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")+(c?"."+c:"")+"/";}}catch(e){}return document.referrer;})() })
+  }).catch(function(){});
+})();
+</script>
+</html>
