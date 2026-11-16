@@ -255,7 +255,7 @@ async function familleHandler(request, env, url, origin) {
       const key = await familleWidgetKey(env, m === "POST");
       const slug = await familleSlug(env, false);
       const api = `${url.origin}/api/famille/widget?key=${key}`;
-      return json({ script: familleWidgetScript(api, `${url.origin}/${slug}/`) }, 200, origin);
+      return json({ script: familleWidgetScript(api, `${url.origin}/${slug}/`), text_url: api + "&format=text" }, 200, origin);
     }
     if (path === "/api/admin/famille/address" && m === "GET") return json({ path: "/" + (await familleSlug(env, false)) }, 200, origin);
     if (path === "/api/admin/famille/address/regenerate" && m === "POST") return json({ path: "/" + (await familleSlug(env, true)) }, 200, origin);
@@ -323,6 +323,19 @@ async function familleHandler(request, env, url, origin) {
     if (!familleSameHash(key, await familleWidgetKey(env, false))) return json({ error: "Non autorisé" }, 401, origin);
     const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris" }).format(new Date());
     const { results } = await env.DB.prepare("SELECT date, heure, titre, pour, auteur FROM famille_events WHERE date >= ? ORDER BY date, COALESCE(heure, ''), id LIMIT 20").bind(today).all();
+    if (url.searchParams.get("format") === "text") {
+      // Version texte brute pour les widgets Android (KWGT, Tasker…) : une ligne par événement
+      const d0 = new Date(today + "T12:00:00Z");
+      const lab = (d) => {
+        const n = Math.round((new Date(d + "T12:00:00Z") - d0) / 86400000);
+        if (n === 0) return "Auj.";
+        if (n === 1) return "Dem.";
+        return new Intl.DateTimeFormat("fr-FR", { weekday: "short", day: "numeric", timeZone: "UTC" }).format(new Date(d + "T12:00:00Z")).replace(/\.$/, "");
+      };
+      const lim = Math.min(Math.max(parseInt(url.searchParams.get("n") || "6", 10) || 6, 1), 20);
+      const txt = results.slice(0, lim).map((e) => `${lab(e.date)}${e.heure ? " " + e.heure : ""} · ${e.titre}${e.pour && e.pour !== "Tous" ? " (" + e.pour + ")" : ""}`).join("\n") || "Rien de prévu";
+      return new Response(txt, { status: 200, headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow", "Referrer-Policy": "no-referrer", ...cors(origin) } });
+    }
     return json({ today, events: results }, 200, origin);
   }
 
