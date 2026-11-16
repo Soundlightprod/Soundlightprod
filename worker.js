@@ -22,7 +22,7 @@ const SHIPPING_COUNTRIES = ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT"];
 // Sites frères (Book My Band, CS Animations, boutique) : ils envoient leurs visites à /api/track-visit,
 // et Book My Band envoie ses demandes de réservation à /api/contact (mêmes protections anti-spam que SLP).
 // Cette autorisation CORS ne vaut que pour ces deux routes.
-const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store"];
+const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store", "https://slpstore.fr", "https://www.slpstore.fr"];
 function resolveOrigin(request, env) {
   const requestOrigin = request.headers.get("Origin") || "";
   try { if (SIBLING_ORIGINS.includes(requestOrigin) && ["/api/track-visit", "/api/contact", "/api/captcha"].includes(new URL(request.url).pathname)) return requestOrigin; } catch (e) {}
@@ -778,7 +778,7 @@ function withVideoTracking(resp, url) {
 
 function domainFromRequest(request) { try { const o = request.headers.get("Origin") || request.headers.get("Referer") || ""; return o ? new URL(o).hostname.toLowerCase().replace(/^www\./, "").slice(0, 60) : null; } catch (e) { return null; } }
 function langFromReferer(request) { try { const m = new URL(request.headers.get("Referer") || "").pathname.match(/^\/(en|es|it)(\/|$)/); return m ? m[1] : "fr"; } catch (e) { return "fr"; } }
-function siteFromRequest(request, body) { const o = (request.headers.get("Origin") || request.headers.get("Referer") || "").toLowerCase(); if (o.includes("soundlightprod.store")) return "store"; if (o.includes("bookmyband")) return "bmb"; if (o.includes("csanimations")) return "csa"; if (o.includes("soundlightprod")) return "slp"; return ["slp", "bmb", "csa", "store"].includes(body && body.site) ? body.site : "slp"; } // Profil anonyme d'une visite : réseau (opérateur / organisation), appareil, provenance, robot ou non.
+function siteFromRequest(request, body) { const o = (request.headers.get("Origin") || request.headers.get("Referer") || "").toLowerCase(); if (o.includes("slpstore.fr") || o.includes("soundlightprod.store")) return "store"; if (o.includes("bookmyband")) return "bmb"; if (o.includes("csanimations")) return "csa"; if (o.includes("soundlightprod")) return "slp"; return ["slp", "bmb", "csa", "store"].includes(body && body.site) ? body.site : "slp"; } // Profil anonyme d'une visite : réseau (opérateur / organisation), appareil, provenance, robot ou non.
 const HOSTING_RE = /amazon|aws|google|microsoft|azure|apple|meta platforms|facebook|digitalocean|ovh|hetzner|linode|akamai connected|oracle|alibaba|tencent|huawei cloud|contabo|scaleway|online s\.a\.s|vultr|choopa|leaseweb|m247|datacamp|hostinger|godaddy|cogent|hurricane electric|zscaler|censys|shodan|clouvider|g-core|gcore|constant company|psychz|colocrossing|servers\.com|hostroyale|packethub|tzulo|internet utilities|chiron|elisteka|wookra|palo alto/i;
 const BOT_UA_RE = /bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|embedly|whatsapp|python|curl|wget|httpclient|go-http|axios|node-fetch|phantom|puppeteer|playwright|selenium/i;
 function visitProfile(request, body, cf) {
@@ -812,12 +812,14 @@ const FR_SITE = "https://soundlightprod.fr";
 const INTL_SITE = "https://soundlightprod.com";
 const INTL_LANGS = ["en", "es", "it"];
 
-// Boutique sur soundlightprod.store
+// Boutique sur slpstore.fr (ancienne adresse soundlightprod.store : redirection 301 vers slpstore.fr)
 //   "off"   : le .store renvoie vers la boutique du .fr (état historique)
 //   "serve" : le .store sert la boutique, non indexée (robots.txt interdit tout) ; le .fr ne change pas
 //   "main"  : le .store est le domaine principal de la boutique ; /boutique et /produits/* du .fr redirigent (301) vers lui
 const STORE_MODE = "main";
-const STORE_SITE = "https://soundlightprod.store";
+const STORE_SITE = "https://slpstore.fr";
+const OLD_STORE_HOST = "soundlightprod.store"; // redirigé (301) vers STORE_SITE, même chemin
+const isStoreHost = (h) => h === "slpstore.fr" || h === "www.slpstore.fr";
 // Pages HTML servies sur le .store (le reste du site redirige vers le .fr)
 const STORE_PAGES = /^\/(boutique|boutique-merci|cgv-boutique|contact-boutique|mentions-legales)(\.html)?$/;
 
@@ -850,8 +852,11 @@ function routeDomain(request, url) {
   const path = url.pathname;
   const isApi = path.startsWith("/api/");
 
-  // .store (et www.) → boutique
-  if (host.endsWith("soundlightprod.store")) {
+  // Ancienne adresse soundlightprod.store (et www.) → slpstore.fr, même chemin (301). L'API reste servie (anciennes pages en cache).
+  if (host.endsWith(OLD_STORE_HOST) && !isApi) return redirect(`${STORE_SITE}${path}${url.search}`);
+
+  // slpstore.fr (et www.) → boutique
+  if (isStoreHost(host)) {
     if (STORE_MODE === "off") return redirect(`${FR_SITE}/boutique.html`);
     if (host.startsWith("www.")) return redirect(`${STORE_SITE}${path}${url.search}`);
     const renamedTo = isApi ? null : renamedProductPath(path);
@@ -973,7 +978,7 @@ async function meteoData(env) {
   const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
   const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, contactClics, contactPages, contactDemandes, videoSite] = await Promise.all([
     q("SELECT cree_le, moment, titre, resume_json, actions_json, texte, html FROM rapports ORDER BY id DESC LIMIT 1"),
-    q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique .store')),
+    q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique')),
        v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, ${notTest("visited_at")} AS vrai FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
        SELECT s.site, s.nom,
          COUNT(DISTINCT CASE WHEN v.vrai AND v.jour = t.today THEN v.session_id END) AS aujourdhui,
@@ -1318,7 +1323,7 @@ export default {
     // ============ DOMAINES & LANGUES ============
     // soundlightprod.fr    : site français (racine)
     // soundlightprod.com   : versions anglaise (/en/), espagnole (/es/) et italienne (/it/) uniquement
-    // soundlightprod.store : boutique (voir STORE_MODE)
+    // slpstore.fr : boutique (voir STORE_MODE) ; soundlightprod.store redirige vers elle
     // Validation Google Search Console (fichiers de vérification, servis tels quels sur .fr et .com)
     if (/^\/google[0-9a-f]{16}\.html$/.test(url.pathname)) {
       return new Response(`google-site-verification: ${url.pathname.slice(1)}`, { headers: { "Content-Type": "text/html; charset=utf-8" } });
@@ -1329,8 +1334,8 @@ export default {
 
     if (url.pathname.startsWith("/api/") && env.DB) { try { await ensureEventSchema(env); } catch (e) { /* ne bloque jamais une requête */ } }
 
-    // .store : la racine affiche la boutique, /sitemap.xml sert le sitemap de la boutique
-    if (STORE_MODE !== "off" && url.hostname.toLowerCase().endsWith("soundlightprod.store") && request.method === "GET") {
+    // slpstore.fr : la racine affiche la boutique, /sitemap.xml sert le sitemap de la boutique
+    if (STORE_MODE !== "off" && isStoreHost(url.hostname.toLowerCase()) && request.method === "GET") {
       const rewrite = url.pathname === "/" ? "/boutique" : url.pathname === "/sitemap.xml" ? "/sitemap-store.xml" : null;
       if (rewrite) return env.ASSETS.fetch(new Request(new URL(rewrite + url.search, url.origin), request));
     }
@@ -1475,7 +1480,7 @@ export default {
 
         // Retour de paiement : sur le domaine d'où vient le client (.fr ou .store), sinon SITE_ORIGIN
         const reqOrigin = request.headers.get("Origin") || "";
-        const returnBase = /^https:\/\/(www\.)?soundlightprod\.(fr|store)$/.test(reqOrigin) ? reqOrigin.replace("://www.", "://") : env.SITE_ORIGIN;
+        const returnBase = /^https:\/\/(www\.)?(soundlightprod\.(fr|store)|slpstore\.fr)$/.test(reqOrigin) ? reqOrigin.replace("://www.", "://") : env.SITE_ORIGIN;
         const session = await stripeRequest(env, "checkout/sessions", {
           mode: "payment",
           payment_method_types: ["card"],

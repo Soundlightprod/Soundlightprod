@@ -5,7 +5,7 @@
 (function () {
   if (window.__slpChat) return; window.__slpChat = 1;
   var path = location.pathname;
-  if (/^\/(admin|mon-agenda|boutique|cgv-boutique|produits|galerie-produits|_)/.test(path) || /soundlightprod\.store$/.test(location.hostname)) return;
+  if (/^\/(admin|mon-agenda|boutique|cgv-boutique|produits|galerie-produits|_)/.test(path) || /(^|\.)(slpstore\.fr|slpstore\.fr)$/.test(location.hostname)) return;
 
   // Anti-spam : délai depuis le chargement + jeton Turnstile (antispam.js, chargé ici si la page ne l'a pas déjà)
   var T0 = Date.now();

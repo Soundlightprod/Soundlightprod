@@ -15,7 +15,7 @@ import urllib.parse
 import datetime, html, json, pathlib, re, sys, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SITE = 'https://soundlightprod.store'   # domaine de la boutique
+SITE = 'https://slpstore.fr'   # domaine de la boutique
 ORG = 'https://soundlightprod.fr'       # site de l'entreprise
 API = 'https://slp-api.raspy-silence-d4c7.workers.dev/api/products'
 CATS = {'son': 'Son', 'lumiere': 'Lumière', 'effets': 'Effets', 'consommables': 'Consommables'}
