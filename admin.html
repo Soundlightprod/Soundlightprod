@@ -3866,7 +3866,14 @@
       renderList('#breakdownDeviceTable', data.by_device, 'device');
       renderList('#breakdownReferrerTable', data.by_referrer, 'referrer');
       const strip2 = document.getElementById('langStrip');
-      if (strip2) strip2.innerHTML = (data.by_lang || []).map(r => `${langLabel(r.label)} : <b>${r.visiteurs}</b> visiteur(s)`).join(' &nbsp;·&nbsp; ') + ((data.by_domain || []).length ? '<br>' + data.by_domain.map(r => `${domLabel(r.label) || 'domaine inconnu'} : <b>${r.total}</b>`).join(' &nbsp;·&nbsp; ') : '');
+      const sr = data.store_redirects;
+      const siteSel = (typeof currentVisitsSite !== 'undefined' ? currentVisitsSite : '');
+      const redirLine = (sr && (siteSel === 'store' || !siteSel || siteSel === 'all'))
+        ? '<br>Ancienne adresse <b>soundlightprod.store</b> (redirigée vers slpstore.fr) : <b>' + (sr.humains || 0) + '</b> passage(s) de visiteurs sur la période'
+          + ((sr.total || 0) - (sr.humains || 0) > 0 ? ' (+ ' + ((sr.total || 0) - (sr.humains || 0)) + ' robots)' : '')
+          + (sr.derniere_humain ? ' · dernier : ' + parisDT(sr.derniere_humain) : ' · aucun visiteur')
+        : '';
+      if (strip2) strip2.innerHTML = (data.by_lang || []).map(r => `${langLabel(r.label)} : <b>${r.visiteurs}</b> visiteur(s)`).join(' &nbsp;·&nbsp; ') + ((data.by_domain || []).length ? '<br>' + data.by_domain.map(r => `${domLabel(r.label) || 'domaine inconnu'} : <b>${r.total}</b>`).join(' &nbsp;·&nbsp; ') : '') + redirLine;
       const lp = document.querySelector('#breakdownLangPlaceTable tbody');
       if (lp) lp.innerHTML = (data.by_lang_place || []).length ? data.by_lang_place.map(r => `<tr style="cursor:default"><td>${langDom(r.lang, r.domaine)}</td><td>${[r.city, r.country].filter(x => x && x !== 'Inconnu').join(', ') || 'Lieu inconnu'}</td><td>${r.total}</td></tr>`).join('') : '<tr><td class="vz-note" style="cursor:default">Aucune donnée</td><td></td><td></td></tr>';
       // Résumé réseaux sociaux (Facebook / Instagram / TikTok), toutes lignes de provenance confondues
