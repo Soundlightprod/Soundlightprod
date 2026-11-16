@@ -3408,12 +3408,10 @@
   const DISPO_TYPE_LABELS = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', animation:'Animation', karaoke:'Karaoké', indisponible:'Indisponible', location:'Location / prêt matériel' };
   const DISPO_TYPE_PLAIN = { concert:'Concert', cabaret:'Cabaret', dj:'DJ', animation:'Animation', karaoke:'Karaoké', indisponible:'Indisponible', location:'Location / prêt matériel' };
   let dispoDate = new Date();
-  let dispoView = 'month';
-  try { const v = localStorage.getItem('slp_planning_view'); if (['month','sem','jour','recap'].includes(v)) dispoView = v; } catch(e){}
+  let dispoView = 'sem'; // à l'ouverture : toujours la semaine en cours
   const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   function setDispoView(v){
     dispoView = v;
-    try { localStorage.setItem('slp_planning_view', v); } catch(e){}
     renderDispoCalendar();
   }
   function dispoToday(){ dispoDate = new Date(); renderDispoCalendar(); }
