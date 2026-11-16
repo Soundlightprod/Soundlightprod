@@ -8,7 +8,7 @@
     if (localStorage.getItem("slp_admin_token") || localStorage.getItem("slp_notrack")) return;
   } catch (e) {}
 
-  var frames = [].slice.call(document.querySelectorAll('iframe[src*="youtube.com/embed/"], iframe[src*="youtube-nocookie.com/embed/"]'));
+  var frames = [].slice.call(document.querySelectorAll('iframe[src*="youtube.com/embed/"], iframe[src*="youtube-nocookie.com/embed/"]')).filter(function (f) { return !f.hasAttribute("data-notrack"); }); // l'autoplay muet de l'accueil n'est pas une vraie lecture
   if (!frames.length) return;
 
   function sid() {
