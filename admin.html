@@ -95,6 +95,9 @@
   @media (max-width:700px){ .agenda-grid{gap:3px;} .agenda-day{min-height:60px; padding:4px;} .agenda-item{font-size:0.58rem;} }
 
   .dispo-item{border-radius:5px; padding:2px 6px; font-size:0.64rem; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink); font-weight:700;}
+  .dispo-item.fam{background:transparent !important; color:var(--fc) !important; border:1.5px dashed var(--fc); box-shadow:none !important; font-weight:600 !important;}
+  .dispo-item.fam .di-txt{font-style:italic;}
+  .fam-legend{border:1px dashed var(--line); border-radius:100px; padding:1px 10px 1px 8px;}
   .dispo-item.indisponible{background:repeating-linear-gradient(45deg, currentColor 0 4px, rgba(0,0,0,0.25) 4px 8px) !important; color:var(--ink) !important; opacity:0.85;}
   .conflict-msg{background:rgba(255,77,125,0.12); border:1px solid var(--pink); color:var(--pink); border-radius:10px; padding:10px 14px; font-size:0.84rem; margin-bottom:16px;}
 
@@ -3331,7 +3334,7 @@
   function renderDispoLegend(){
     document.getElementById('dispoLegend').innerHTML = Object.keys(ARTIST_LABELS).map(slug => `
       <span><span class="agenda-dot" style="background:${ARTIST_COLORS[slug]};"></span>${ARTIST_LABELS[slug]}</span>
-    `).join('') + `<span><span class="agenda-dot" style="background:#ff7ab6;"></span>🏠 PERSO-Famille</span>`;
+    `).join('') + `<span class="fam-legend"><span class="agenda-dot" style="background:#3ecf6e;"></span>🏠 PERSO-Famille · Marie</span><span class="fam-legend"><span class="agenda-dot" style="background:#f1ece2;"></span>🏠 PERSO-Famille · Nj &amp; Merlyn</span>`;
   }
 
   function shiftDispoMonth(delta){
@@ -3384,7 +3387,7 @@
       const isToday = dateStr === todayStr;
       html += `<div class="agenda-day${isToday ? ' today' : ''} gv-clickable" onclick="openAddEventModal('${dateStr}')">
         <div class="agenda-daynum">${day}</div>
-        ${dayFam.map(f => { const c = FAM_COLORS[f.pour] || FAM_COLORS.Tous; return `<div class="dispo-item" style="background:${c[0]}; color:${c[1]};" title="PERSO-Famille — ${escapeAttr(f.titre)}${f.heure ? ' — ' + escapeAttr(f.heure) : ''}${f.pour ? ' — ' + escapeAttr(f.pour) : ''}${f.note ? ' — ' + escapeAttr(f.note) : ''}"><span class="di-txt" onclick="event.stopPropagation(); switchTab('famille')" title="Ouvrir PERSO-Famille">🏠 ${f.heure ? escapeAttr(f.heure) + ' ' : ''}${escapeAttr(f.titre)}</span></div>`; }).join('')}
+        ${dayFam.map(f => { const who = f.auteur === 'Marie' ? 'Marie' : 'Nous'; return `<div class="dispo-item fam" style="--fc:${FAM_COLORS[who]};" title="PERSO-Famille — ${escapeAttr(f.titre)}${f.heure ? ' — ' + escapeAttr(f.heure) : ''}${f.pour && f.pour !== 'Tous' ? ' — pour ' + escapeAttr(f.pour) : ''} — ajouté par ${who === 'Marie' ? 'Marie' : 'Nj et Merlyn'}${f.note ? ' — ' + escapeAttr(f.note) : ''}"><span class="di-txt" onclick="event.stopPropagation(); switchTab('famille')" title="Ouvrir PERSO-Famille">🏠 ${f.heure ? escapeAttr(f.heure) + ' ' : ''}${escapeAttr(f.titre)}</span></div>`; }).join('')}
         ${dayEntries.map(d => `<div class="dispo-item${d.type === 'indisponible' ? ' indisponible' : ''}" style="background:${ARTIST_COLORS[d.artist_slug] || '#999'};" title="${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)} — ${escapeAttr(DISPO_TYPE_LABELS[d.type] || d.type)}${d.label ? ' — ' + escapeAttr(d.label) : ''}${entryVenue(d) ? ' — ' + escapeAttr(entryVenue(d)) : ''}"><span class="di-txt" onclick="event.stopPropagation(); editDispo(${d.id})" title="Modifier">${d.status === 'option' ? '<b class="di-opt">OPTION</b> ' : ''}${TYPE_ICONS[d.type] || ''} ${escapeAttr(d.guest_name || ARTIST_LABELS[d.artist_slug] || d.artist_slug)}${typeTag(d)}${d.venue_city ? ' — ' + escapeAttr(d.venue_city) : ''}</span>${d.status === 'option' ? `<button class="di-ok" title="Valider l'option" onclick="event.stopPropagation(); quickValidate(${d.id})">✓</button>` : ''}<button class="di-del" title="Supprimer" onclick="event.stopPropagation(); quickDeleteDispo(${d.id})">✕</button></div>`).join('')}
       </div>`;
     }
@@ -3463,7 +3466,7 @@
   }
 
   // PERSO-Famille : affichée dans le planning général, mais gardée à part (jamais mélangée aux données SLP)
-  const FAM_COLORS = { Tous:['#ffb238','#0c0b10'], Marie:['#ff4d7d','#fff'], Merlyn:['#8b5cf6','#fff'], Nj:['#2f9bff','#fff'] };
+  const FAM_COLORS = { Marie:'#3ecf6e', Nous:'#f1ece2' }; // vert = ajouté par Marie ; ivoire = ajouté par Nj & Merlyn (teinte absente du planning SLP)
   async function loadFamilleCal(){
     try {
       const res = await fetch('/api/famille/events', { headers:{ Authorization:`Bearer ${token}` } });
