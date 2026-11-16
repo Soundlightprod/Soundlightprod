@@ -942,6 +942,7 @@
       <div>
         <h2 style="margin:0;">Rapport du jour</h2>
         <p class="vz-sub">Le dernier rapport écrit par Claude (vers 8h, 14h, 17h, 20h et 23h), tous sites ensemble.</p>
+        <p class="vz-note" id="mtSousTitre" style="margin:4px 0 0;"></p>
       </div>
       <button class="btn-outline" onclick="loadMeteo()">↻ Actualiser</button>
     </div>
@@ -953,7 +954,6 @@
     <div class="vz-grid2" id="mtRapRow">
       <div class="vz-card">
         <div class="vz-card-h"><h3 id="mtRapTitre">Le rapport en bref</h3></div>
-        <p class="vz-note" id="mtSousTitre" style="margin:0 0 8px;"></p>
         <ul class="mt-notes" id="mtResume"><li>Chargement…</li></ul>
       </div>
       <div class="vz-card">
@@ -2081,6 +2081,8 @@
       const full = rap && rap.texte ? rap.texte.replace(/\*\*/g, '') : '';
       document.getElementById('mtFullWrap').style.display = full ? '' : 'none';
       mtAfficherVisuel(rap && rap.html ? rap.html : '');
+      // Le rapport visuel contient déjà le résumé et les actions : on n'affiche les cartes « en bref » / « à faire » que s'il n'y a pas de rapport visuel
+      { const row = document.getElementById('mtRapRow'); if (row) row.style.display = (rap && rap.html) ? 'none' : ''; }
       document.getElementById('mtFull').textContent = full;
       // chaque bloc s'affiche même si un autre plante
       const essai = (f) => { try { f(); } catch (err) { console.error('Stats :', err); } };
