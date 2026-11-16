@@ -1271,6 +1271,23 @@
       <div id="famSecret" style="margin-top:14px;"></div>
       <div id="famUsers" style="margin-top:14px; font-size:.9rem;"></div>
     </div>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Sur les téléphones</h3></div>
+      <p style="margin:0 0 6px;"><strong>Appli sur l'écran d'accueil</strong></p>
+      <p class="vz-note" style="margin:0 0 14px;">Ouvrir l'adresse secrète dans Safari (iPhone) ou Chrome (Android), puis Partager &rarr; « Sur l'écran d'accueil » (Android : menu &rarr; « Installer l'application »). L'icône 🏠 s'ouvre ensuite comme une vraie appli, sans barre d'adresse ; la connexion est gardée.</p>
+      <p style="margin:0 0 6px;"><strong>Widget iPhone</strong> (prochains événements, vert = Marie, ivoire = vous)</p>
+      <ol class="vz-note" style="margin:0 0 12px; padding-left:18px; line-height:1.6;">
+        <li>Installer l'appli gratuite <strong>Scriptable</strong> (App Store).</li>
+        <li>Ici, cliquer sur « Copier le script du widget ».</li>
+        <li>Dans Scriptable : « + » (nouveau script), coller, nommer « Famille ».</li>
+        <li>Écran d'accueil : appui long &rarr; « + » &rarr; Scriptable &rarr; ajouter le widget &rarr; le modifier &rarr; Script : « Famille ».</li>
+      </ol>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" onclick="famWidgetCopy()">Copier le script du widget</button>
+        <button class="btn-outline" onclick="famWidgetRegen()">Changer la clé du widget</button>
+      </div>
+      <div id="famWidgetMsg" style="margin-top:12px;"></div>
+    </div>
   </div>
 
   <!-- ============ ONGLET 11 : CHAT EN DIRECT ============ -->
@@ -2353,7 +2370,7 @@
     try {
       const a = await famApi('/api/admin/famille/address'); window.famPath = a.path;
       const f = document.getElementById('famFrame'); if (f && !f.getAttribute('src')) f.setAttribute('src', a.path + '?embed=1');
-      document.getElementById('famUrl').textContent = location.origin + a.path;
+      document.getElementById('famUrl').textContent = location.origin + a.path + '/';
     } catch(e){ document.getElementById('famUrl').textContent = 'indisponible : ' + e.message; }
     const box = document.getElementById('famUsers');
     try {
@@ -2365,15 +2382,27 @@
         : '<span class="vz-note">Aucun compte famille pour le moment.</span>';
     } catch(e){ box.innerHTML = '<span class="vz-note">' + snEsc(e.message) + '</span>'; }
   }
-  function famOpen(){ if (window.famPath) window.open(window.famPath, '_blank'); }
-  async function famCopy(){ try { await navigator.clipboard.writeText(location.origin + window.famPath); document.getElementById('famSecret').innerHTML = '<span class="vz-note">Adresse copiée.</span>'; } catch(e){} }
+  function famOpen(){ if (window.famPath) window.open(window.famPath + '/', '_blank'); }
+  async function famCopy(){ try { await navigator.clipboard.writeText(location.origin + window.famPath + '/'); document.getElementById('famSecret').innerHTML = '<span class="vz-note">Adresse copiée.</span>'; } catch(e){} }
   async function famRegen(){
     if (!confirm('Changer l\u2019adresse ? L\u2019ancienne ne fonctionnera plus : il faudra donner la nouvelle à Marie.')) return;
     try { const a = await famApi('/api/admin/famille/address/regenerate', 'POST'); window.famPath = a.path;
-      document.getElementById('famUrl').textContent = location.origin + a.path;
+      document.getElementById('famUrl').textContent = location.origin + a.path + '/';
       const f = document.getElementById('famFrame'); if (f) f.setAttribute('src', a.path + '?embed=1');
       document.getElementById('famSecret').innerHTML = '<span class="vz-note">Nouvelle adresse créée. L\u2019ancienne ne marche plus.</span>';
     } catch(e){ document.getElementById('famSecret').innerHTML = '<span style="color:var(--pink);">' + snEsc(e.message) + '</span>'; }
+  }
+  async function famWidgetCopy(){
+    const out = document.getElementById('famWidgetMsg');
+    try { const d = await famApi('/api/admin/famille/widget'); await navigator.clipboard.writeText(d.script);
+      out.innerHTML = '<span class="vz-note">Script copié : colle-le dans Scriptable. Le script contient la clé du widget : ne le diffuse qu\u2019à Merlyn et Marie.</span>';
+    } catch(e){ out.innerHTML = '<span style="color:var(--pink);">' + snEsc(e.message) + '</span>'; }
+  }
+  async function famWidgetRegen(){
+    if (!confirm('Changer la clé ? Les widgets déjà installés cesseront de fonctionner jusqu\u2019à ce que tu recopies le nouveau script dessus.')) return;
+    try { await famApi('/api/admin/famille/widget/regenerate', 'POST');
+      document.getElementById('famWidgetMsg').innerHTML = '<span class="vz-note">Nouvelle clé créée. Clique sur « Copier le script du widget » pour récupérer le nouveau script.</span>';
+    } catch(e){ document.getElementById('famWidgetMsg').innerHTML = '<span style="color:var(--pink);">' + snEsc(e.message) + '</span>'; }
   }
   async function famSaveUser(){
     const out = document.getElementById('famSecret');

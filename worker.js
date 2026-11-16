@@ -123,6 +123,68 @@ async function familleSlug(env, regenerate) {
   return slug;
 }
 
+// Clé du widget (iPhone, appli Scriptable) : lecture seule des prochains événements, sans mot de passe. Gardée en base, modifiable depuis l'admin.
+async function familleWidgetKey(env, regenerate) {
+  await ensureFamilleTables(env);
+  if (!regenerate) {
+    const r = await env.DB.prepare("SELECT v FROM famille_settings WHERE k = 'widget_key'").first();
+    if (r && /^[a-z0-9]{24}$/.test(r.v)) return r.v;
+  }
+  const a = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const key = [...crypto.getRandomValues(new Uint8Array(24))].map((x) => a[x % a.length]).join("");
+  await env.DB.prepare("INSERT INTO famille_settings (k, v) VALUES ('widget_key', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(key).run();
+  return key;
+}
+function familleWidgetScript(api, page) {
+  return `// Widget « Famille » pour Scriptable (iPhone). Lecture seule : prochains événements de l'agenda famille.
+// Vert = ajouté par Marie, ivoire = ajouté par Nj et Merlyn. Toucher le widget ouvre l'agenda.
+const API = ${JSON.stringify(api)};
+const PAGE = ${JSON.stringify(page)};
+const GREEN = new Color("#3ecf6e"), IVORY = new Color("#f1ece2"), MUTED = new Color("#9a93a6");
+let events = [], today = "", ok = true;
+try {
+  const j = await new Request(API).loadJSON();
+  events = Array.isArray(j.events) ? j.events : [];
+  today = j.today || "";
+} catch (e) { ok = false; }
+
+const fam = config.widgetFamily || "medium";
+const max = fam === "small" ? 3 : fam === "large" ? 11 : 5;
+const iso = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const parse = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d, 12); };
+const df = new DateFormatter(); df.locale = "fr_FR"; df.dateFormat = "EEE d";
+const tomorrow = today ? iso(new Date(parse(today).getTime() + 86400000)) : "";
+const label = (d) => d === today ? "Auj." : d === tomorrow ? "Dem." : df.string(parse(d)).replace(".", "");
+
+const w = new ListWidget();
+w.backgroundColor = new Color("#0c0b10");
+w.setPadding(12, 14, 12, 14);
+w.url = PAGE;
+w.refreshAfterDate = new Date(Date.now() + 15 * 60 * 1000);
+
+const head = w.addText("🏠 Famille");
+head.font = Font.boldSystemFont(13);
+head.textColor = IVORY;
+w.addSpacer(6);
+
+if (!ok) {
+  const t = w.addText("Connexion impossible"); t.font = Font.systemFont(12); t.textColor = MUTED;
+} else if (!events.length) {
+  const t = w.addText("Rien de prévu"); t.font = Font.systemFont(12); t.textColor = MUTED;
+} else {
+  events.slice(0, max).forEach((e, i) => {
+    if (i) w.addSpacer(3);
+    const when = label(e.date) + (e.heure ? " " + e.heure : "");
+    const line = w.addStack(); line.layoutVertically();
+    const a = line.addText(when); a.font = Font.systemFont(10); a.textColor = MUTED; a.lineLimit = 1;
+    const b = line.addText(e.titre); b.font = Font.semiboldSystemFont(12); b.textColor = e.auteur === "Marie" ? GREEN : IVORY; b.lineLimit = 1;
+  });
+}
+if (config.runsInWidget) Script.setWidget(w); else await w.presentMedium();
+Script.complete();
+`;
+}
+
 const FAMILLE_POUR = ["Tous", "Marie", "Merlyn", "Nj"];
 const FAMILLE_WINDOW_MS = 15 * 60 * 1000;
 const FAMILLE_MAX_FAILS = 8;
@@ -189,6 +251,12 @@ async function familleHandler(request, env, url, origin) {
       if (!b.active) await env.DB.prepare("DELETE FROM famille_sessions WHERE username = ?").bind(match[1]).run();
       return json({ ok: true }, 200, origin);
     }
+    if ((path === "/api/admin/famille/widget" && m === "GET") || (path === "/api/admin/famille/widget/regenerate" && m === "POST")) {
+      const key = await familleWidgetKey(env, m === "POST");
+      const slug = await familleSlug(env, false);
+      const api = `${url.origin}/api/famille/widget?key=${key}`;
+      return json({ script: familleWidgetScript(api, `${url.origin}/${slug}/`) }, 200, origin);
+    }
     if (path === "/api/admin/famille/address" && m === "GET") return json({ path: "/" + (await familleSlug(env, false)) }, 200, origin);
     if (path === "/api/admin/famille/address/regenerate" && m === "POST") return json({ path: "/" + (await familleSlug(env, true)) }, 200, origin);
     // Import en masse (ex. depuis TimeTree). Ignore les doublons (même date + titre + heure) ; un événement sur plusieurs jours est étalé jour par jour.
@@ -247,6 +315,15 @@ async function familleHandler(request, env, url, origin) {
     const th = snHex(await crypto.subtle.digest("SHA-256", SN_ENC.encode(token)));
     await env.DB.prepare("INSERT INTO famille_sessions (token_hash, username, expires_at) VALUES (?, ?, ?)").bind(th, u.username, now + 30 * 24 * 3600 * 1000).run();
     return json({ token, name: u.display_name }, 200, origin);
+  }
+
+  // Flux du widget : lecture seule des prochains événements, protégé par une clé longue (pas de mot de passe sur le téléphone)
+  if (path === "/api/famille/widget" && m === "GET") {
+    const key = url.searchParams.get("key") || "";
+    if (!familleSameHash(key, await familleWidgetKey(env, false))) return json({ error: "Non autorisé" }, 401, origin);
+    const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris" }).format(new Date());
+    const { results } = await env.DB.prepare("SELECT date, heure, titre, pour, auteur FROM famille_events WHERE date >= ? ORDER BY date, COALESCE(heure, ''), id LIMIT 20").bind(today).all();
+    return json({ today, events: results }, 200, origin);
   }
 
   const who = await familleAuth(request, env);
@@ -2572,17 +2649,35 @@ export default {
         // PERSO-Famille : page privée, servie UNIQUEMENT à son adresse secrète (voir familleSlug). Les anciennes adresses /famille
         // et /famille.html répondent « introuvable ». Jamais indexée (noindex), absente des plans du site, de robots.txt et de tout lien
         // public, sans les scripts publics du site (chat, bandeau cookies, suivi des visites), sans cache, et réservée à soundlightprod.fr.
-        if (/^\/famille(\.html)?\/?$/i.test(url.pathname) || /^\/famille-[a-z0-9]{12}\/?$/i.test(url.pathname)) {
+        const famOld = /^\/famille(\.html)?\/?$/i.test(url.pathname);
+        const famNew = url.pathname.match(/^\/(famille-[a-z0-9]{12})(\/manifest\.webmanifest|\/sw\.js|\/)?$/i);
+        if (famOld || famNew) {
           const notFound = () => new Response("Not found", { status: 404, headers: { "X-Robots-Tag": "noindex", "Cache-Control": "no-store" } });
           const h = url.hostname.toLowerCase();
           if (h !== "soundlightprod.fr" && h !== "www.soundlightprod.fr") return notFound();
-          const asked = url.pathname.replace(/^\/|\/$/g, "");
-          if (!FAMILLE_SLUG_RE.test(asked) || !env.DB || asked !== (await familleSlug(env, false))) return notFound();
+          const asked = famNew ? famNew[1] : "";
+          if (!famNew || !FAMILLE_SLUG_RE.test(asked) || !env.DB || asked !== (await familleSlug(env, false))) return notFound();
+          const priv = { "X-Robots-Tag": "noindex, nofollow, noarchive, nosnippet, noimageindex", "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" };
+          const sub = famNew[2] || "";
+          if (sub === "") return new Response(null, { status: 302, headers: { ...priv, Location: `${url.origin}/${asked}/${url.search}` } });
+          if (sub === "/manifest.webmanifest") {
+            const manifest = {
+              name: "Famille", short_name: "Famille", description: "Agenda privé de la famille", lang: "fr",
+              start_url: `/${asked}/`, scope: `/${asked}/`, display: "standalone", background_color: "#0c0b10", theme_color: "#0c0b10",
+              icons: [
+                { src: "/perso-icon-192.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
+                { src: "/perso-icon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" },
+              ],
+            };
+            return new Response(JSON.stringify(manifest), { headers: { ...priv, "Content-Type": "application/manifest+json; charset=utf-8" } });
+          }
+          if (sub === "/sw.js") {
+            // Service worker minimal (appli installable) : aucune mise en cache, les données restent toujours chargées en direct
+            return new Response("self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',(e)=>e.waitUntil(self.clients.claim()));self.addEventListener('fetch',()=>{});", { headers: { ...priv, "Content-Type": "application/javascript; charset=utf-8" } });
+          }
           const r = await env.ASSETS.fetch(new Request(new URL("/famille" + url.search, url.origin), request));
           const out = new Response(r.body, r);
-          out.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet, noimageindex");
-          out.headers.set("Cache-Control", "private, no-store");
-          out.headers.set("Referrer-Policy", "no-referrer");
+          Object.entries(priv).forEach(([k, v]) => out.headers.set(k, v));
           return out;
         }
         // /clement-Blouin (avec majuscule) sert la même page que /clement-blouin
