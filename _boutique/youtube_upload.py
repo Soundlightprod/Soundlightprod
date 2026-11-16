@@ -15,7 +15,7 @@ YT_FILE = HERE / 'videos_youtube.json'
 SRC_FILE = HERE / 'videos_fournisseur.json'
 CDN = 'https://shopcdnalpha.grainajz.com/'
 API = 'https://slp-api.raspy-silence-d4c7.workers.dev/api/products'
-STORE = 'https://soundlightprod.store/produits/'
+STORE = 'https://slpstore.fr/produits/'
 PRIVACY = 'unlisted'   # comme les vidéos déjà en ligne (non répertoriées, visibles sur les fiches)
 
 
