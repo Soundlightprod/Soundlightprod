@@ -252,12 +252,20 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.com/es/">
-<style id="bas-photos">
-.step{display:flex;flex-direction:column}
-.step img{order:-1;width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:14px}
-.faq-banner{display:block;width:100%;height:220px;object-fit:cover;border-radius:18px;margin:0 0 20px}
+<style id="bas-premium">
+.section-sub{color:var(--muted);font-size:1.02rem;line-height:1.55;margin:12px auto 0;max-width:52ch}
+section.how .steps .steps{gap:24px}
+section.how .steps .step{display:flex !important;flex-direction:column;padding:0 !important;overflow:hidden !important;border-radius:20px !important;background:var(--ink-2) !important;border:1px solid var(--hair) !important;border-top:1px solid var(--hair) !important}
+section.how .steps .step::before{position:absolute;top:14px;left:14px;z-index:2;margin:0;width:42px !important;height:42px !important;display:flex !important;align-items:center !important;justify-content:center !important;line-height:1 !important;padding:0 !important;box-sizing:border-box;border-radius:50%;background:rgba(12,10,20,.78) !important;-webkit-background-clip:border-box;background-clip:border-box;color:var(--gold-soft) !important;-webkit-text-fill-color:var(--gold-soft);font-size:1rem !important;font-weight:700;border:1px solid rgba(230,194,126,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+section.how .steps .step img{display:block;width:100% !important;height:190px !important;object-fit:cover;margin:0;border-radius:0;order:-1}
+section.how .steps .step h3{font-size:1.2rem;line-height:1.25;margin:0;padding:22px 24px 8px !important}
+section.how .steps .step p{font-size:.96rem;line-height:1.6;padding:0 24px 26px !important;color:var(--muted)}
 .cta-band{background-image:linear-gradient(rgba(10,8,20,.80),rgba(10,8,20,.90)),url(/images/abba-photo-1-1200.webp) !important;background-size:cover !important;background-position:center !important}
-@media (max-width:760px){.step img{height:130px}.faq-banner{height:150px}}
+.cta-band .wrap.tight{padding-top:64px;padding-bottom:64px}
+.cta-band h2{font-size:clamp(1.9rem,4vw,2.8rem)}
+section.how .steps{grid-template-columns:repeat(4,1fr) !important}
+@media (max-width:980px){section.how .steps{grid-template-columns:repeat(2,1fr) !important}}
+@media (max-width:560px){section.how .steps{grid-template-columns:1fr !important}}
 </style>
 </head>
 <body>
