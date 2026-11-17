@@ -297,7 +297,7 @@
 
 <section class="about" id="about">
   <div class="wrap">
-    <div class="about-grid"><div class="about-copy"><div class="section-head"><span class="label">Who we are</span><h2><b>Show producer</b> and distributor</h2></div><p class="about-lead">Sound Light Prod selects, produces and books shows for town halls, festival committees, associations, companies and private clients. Our team brings 20 years of experience in entertainment, sound and lighting, and 10 years in distributing and producing shows: we know what makes a great show, and what it takes to make it run smoothly. We book shows throughout Europe and in Canada.</p></div><figure class="about-photo"><div class="ap-clip is-video" data-yt="CSD4xiWCw0I" data-title="SLP Sound Light Prod — presentation video"><img src="https://i.ytimg.com/vi/CSD4xiWCw0I/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async"><button class="ap-play" type="button" aria-label="Play the SLP presentation video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button></div></figure></div>
+    <div class="about-grid"><div class="about-copy"><div class="section-head"><span class="label">Who we are</span><h2><b>Show producer</b> and distributor</h2></div><p class="about-lead">Sound Light Prod selects, produces and books shows for town halls, festival committees, associations, companies and private clients. Our team brings 20 years of experience in entertainment, sound and lighting, and 10 years in distributing and producing shows: we know what makes a great show, and what it takes to make it run smoothly. We book shows throughout Europe and in Canada.</p></div><figure class="about-photo"><div class="ap-clip is-video" data-yt="CSD4xiWCw0I" data-title="SLP Sound Light Prod — presentation video"><img src="https://i.ytimg.com/vi/CSD4xiWCw0I/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async"><button class="ap-play" type="button" aria-label="Play the SLP presentation video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button><button type="button" class="ap-sound" aria-pressed="false">🔇 Turn sound on</button></div></figure></div>
     <ul class="about-stats"><li><strong>20 years</strong><span>of experience in entertainment, sound and lighting</span></li><li><strong>10 years</strong><span>in distributing and producing shows</span></li><li><strong>24 h</strong><span>to receive your quote</span></li></ul>
   </div>
 </section>
@@ -638,13 +638,20 @@
 <script>
 (function(){
   var c=document.querySelector('.ap-clip.is-video');if(!c)return;
-  var b=c.querySelector('.ap-play');if(!b)return;
-  b.addEventListener('click',function(){
-    var f=document.createElement('iframe');
-    f.src='https://www.youtube-nocookie.com/embed/'+c.getAttribute('data-yt')+'?autoplay=1&rel=0&modestbranding=1&playsinline=1';
-    f.title=c.getAttribute('data-title');f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');
-    c.innerHTML='';c.appendChild(f);
-  });
+  var id=c.getAttribute('data-yt'),title=c.getAttribute('data-title'),btn=c.querySelector('.ap-play'),snd=c.querySelector('.ap-sound');
+  var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches,f=null,on=false;
+  function build(auto){
+    if(f)return;f=document.createElement('iframe');
+    f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&mute='+(auto?1:0)+'&loop=1&playlist='+id+'&controls=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+    f.title=title;f.allow='autoplay; encrypted-media; picture-in-picture';f.setAttribute('loading','lazy');
+    f.addEventListener('load',function(){c.classList.add('live');});
+    c.appendChild(f);
+  }
+  if(rm){c.classList.add('manual');btn.addEventListener('click',function(){build(false);c.classList.add('live');btn.style.display='none';});return;}
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){build(true);io.disconnect();}},{rootMargin:'200px'});io.observe(c);}else{build(true);}
+  function cmd(fn,args){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(e){}}
+  snd.addEventListener('click',function(){on=!on;if(on){cmd('unMute');cmd('setVolume',[100]);cmd('playVideo');}else{cmd('mute');}
+    snd.textContent=on?'🔊 Turn sound off':'🔇 Turn sound on';snd.setAttribute('aria-pressed',on?'true':'false');});
 })();
 </script>
 </body>
@@ -754,5 +761,14 @@ html,body{overflow-x:clip}
 .ap-clip:hover .ap-play,.ap-play:focus-visible{transform:scale(1.08); background:linear-gradient(135deg,#fc8024,#ff0953); border-color:transparent; box-shadow:0 16px 36px -12px rgba(255,9,83,.6);}
 .ap-play:focus-visible{outline:3px solid var(--gold); outline-offset:4px;}
 @media (max-width:760px){ .hero .cta-row .btn-primary{display:none;} .hero .cta-row .btn-ghost{background:var(--paper); color:var(--ink); box-shadow:none; border-color:transparent;} }
+
+/* vidéo « Qui sommes-nous » : lecture auto, muette, sans interface YouTube */
+.ap-clip.is-video iframe{pointer-events:none; opacity:0; transition:opacity .6s;}
+.ap-clip.is-video.live iframe{opacity:1;}
+.ap-clip.is-video .ap-play{display:none;}
+.ap-clip.is-video.manual .ap-play{display:grid;}
+.ap-sound{position:absolute; right:12px; bottom:12px; z-index:3; border:0; border-radius:100px; padding:7px 14px; font:700 .8rem/1 'Manrope','Instrument Sans',sans-serif; cursor:pointer; background:rgba(12,10,20,.78); color:var(--paper); backdrop-filter:blur(6px); transition:transform .15s;}
+.ap-sound:hover{transform:scale(1.05);}
+.ap-clip.is-video:not(.live) .ap-sound{display:none;}
 </style>
 </html>
