@@ -382,8 +382,8 @@ section.how .steps .step p{font-size:.96rem;line-height:1.6;padding:0 24px 26px 
 <style id="pm-home">
 /* ===== Accueil « Premium spectaculaire » (préfixe pm-) ===== */
 body.pm-home{--pm-gold:#e6c27e;--pm-ink3:#110e1f;--pm-hair:rgba(255,255,255,.1);--pm-brand:linear-gradient(90deg,#3259be,#8c3290 35%,#ff0953 65%,#fc8024 85%,#fbc608)}
-body.pm-home header{position:fixed;left:0;right:0;top:0;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;transition:background .35s,border-color .35s}
-body.pm-home header.pm-solid,body.pm-home header.menu-open{background:rgba(12,10,20,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+body.pm-home header{position:fixed;left:0;right:0;top:0;background:transparent !important;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;transition:background .35s,border-color .35s}body.pm-home header::after{opacity:0;transition:opacity .35s}body.pm-home header.pm-solid::after,body.pm-home header.menu-open::after{opacity:.9}body.pm-home header:not(.pm-solid):not(.menu-open){background:linear-gradient(180deg,rgba(12,10,20,.55),transparent) !important}
+body.pm-home header.pm-solid,body.pm-home header.menu-open{background:rgba(12,10,20,.9) !important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
 body.pm-home nav a{color:rgba(247,245,240,.88)}
 body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 .pm{--pm-pad:clamp(20px,4vw,72px)}
