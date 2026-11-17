@@ -2398,7 +2398,7 @@ export default {
         ).all();
 
         const ARTIST_LABELS = {
-          "alchimie": "Alchimie", "cache-candy": "Cache Candy", "the-fine-allies": "The Fine Allies",
+          "alchimie": "Alchimie", "tekila-the-band": "Tékila The Band", "cache-candy": "Cache Candy", "the-fine-allies": "The Fine Allies",
           "noon-coverband": "NooN Coverband", "panache": "Panache", "supernova": "Supernova", "voice-of-freedom": "Voice of Freedom",
           "presta-technique": "Prestation technique",
         };
