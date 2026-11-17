@@ -689,6 +689,16 @@ body{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
 @media (min-width:900px){ .univ-grid{grid-template-columns:repeat(3,1fr) !important;} }
 .univ-grid .n{color:var(--gold-soft) !important; letter-spacing:.22em;}
 .univ-grid a{padding:24px 24px !important;}
+
+/* Moins de cadres : mise en page épurée, filets fins à la place des cartes */
+.step,.about-stats li,.univ-grid a,.faq-list details{background:none !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;}
+.about-stats li,.step,.univ-grid a{border-top:1px solid rgba(230,194,126,.35) !important; padding:20px 4px 6px !important;}
+.univ-grid{gap:6px 40px !important;}
+.univ-grid a:hover,.step:hover,.about-stats li:hover{transform:none; border-top-color:var(--gold-soft) !important; box-shadow:none;}
+.univ-grid a:hover strong{color:var(--gold-soft);}
+.faq-list{gap:0 !important;}
+.faq-list details{border-bottom:1px solid var(--hair) !important; padding:0 4px !important;}
+.faq-list details[open]{border-bottom-color:rgba(230,194,126,.4) !important;}
 @media (prefers-reduced-motion:reduce){ .step,.about-stats li,.univ-grid a,.show-card,.btn{transition:none;} .univ-grid a:hover,.step:hover,.about-stats li:hover,.show-card:hover,.btn:hover{transform:none;} }
 </style>
 </html>
