@@ -20,12 +20,12 @@ import { handleCrm, crmReminderMessage, crmIngestSiteRequest, crmIngestChat } fr
 const SHIPPING_COUNTRIES = ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT"];
 
 // Sites frères (Book My Band, CS Animations, boutique) : ils envoient leurs visites à /api/track-visit,
-// et Book My Band envoie ses demandes de réservation à /api/contact (mêmes protections anti-spam que SLP).
-// Cette autorisation CORS ne vaut que pour ces deux routes.
+// et Book My Band et SLP Digital envoient leurs demandes à /api/contact (mêmes protections anti-spam que SLP) et leurs clics de contact à /api/contact-event.
+// Cette autorisation CORS ne vaut que pour ces routes.
 const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store", "https://slpstore.fr", "https://www.slpstore.fr", "https://slpdigital.fr", "https://www.slpdigital.fr"];
 function resolveOrigin(request, env) {
   const requestOrigin = request.headers.get("Origin") || "";
-  try { if (SIBLING_ORIGINS.includes(requestOrigin) && ["/api/track-visit", "/api/contact", "/api/captcha"].includes(new URL(request.url).pathname)) return requestOrigin; } catch (e) {}
+  try { if (SIBLING_ORIGINS.includes(requestOrigin) && ["/api/track-visit", "/api/contact", "/api/captcha", "/api/contact-event"].includes(new URL(request.url).pathname)) return requestOrigin; } catch (e) {}
   const allowed = (env.ALLOWED_ORIGINS || env.SITE_ORIGIN || "").split(",").map((s) => s.trim());
   return allowed.includes(requestOrigin) ? requestOrigin : (env.SITE_ORIGIN || allowed[0] || "*");
 }
