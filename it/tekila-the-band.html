@@ -266,7 +266,7 @@
 .tk-stage{perspective:1400px;}
 .tk-card{position:relative;transform-style:preserve-3d;transform:rotateY(-11deg) rotateX(4deg);transition:transform .5s cubic-bezier(.2,.7,.2,1);will-change:transform;}
 .tk-card .frame{position:relative;border-radius:22px;padding:2px;background:linear-gradient(135deg,#ffd08a,#ff7a1a 40%,#ff0953 75%,#1fbf75);box-shadow:0 60px 90px -40px rgba(0,0,0,.9),0 0 90px -20px rgba(255,122,26,.55);}
-.tk-card .video16x9{border-radius:20px;overflow:hidden;background:#000;}
+.tk-card .tk-photo{border-radius:20px;overflow:hidden;background:#000;}.tk-card .tk-photo img{display:block;width:100%;height:auto;}
 .tk-card .glass{position:absolute;inset:0;border-radius:22px;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.18),transparent 32%);mix-blend-mode:screen;}
 .tk-refl{position:absolute;left:4%;right:4%;top:100%;height:44%;margin-top:14px;border-radius:18px;background:url(/images/tekila-scene-480.webp) center/cover;transform:scaleY(-1);opacity:.22;filter:blur(3px);-webkit-mask-image:linear-gradient(to top,#000,transparent 70%);mask-image:linear-gradient(to top,#000,transparent 70%);}
 .tk-badge{position:absolute;right:-14px;bottom:26px;transform:translateZ(60px);padding:12px 18px;border-radius:14px;background:rgba(12,10,20,.82);backdrop-filter:blur(8px);border:1px solid rgba(230,194,126,.5);font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#e6c27e;box-shadow:0 20px 40px -20px #000;}
@@ -358,9 +358,9 @@
     <h1 class="tk-h1"><span class="g">Tékila</span><span class="o">The Band</span></h1><p class="tk-sub">Latino / Reggae</p>
     <p class="tk-lead">I grandi classici latini e reggae, di ieri e di oggi: una serata che si scalda dalla prima all&rsquo;ultima nota.</p>
     <ul class="tk-facts"><li><strong>2001</strong><span>sul palco dal</span></li><li><strong>≈ 100</strong><span>date all&rsquo;anno</span></li><li><strong>3 voci</strong><span>e polistrumentisti</span></li></ul>
-    <div class="tk-cta"><a href="contact?artiste=tekila-the-band&amp;nom=T%C3%A9kila%20The%20Band#contact-form" class="btn btn-primary" data-contact="devis">Richiedi un preventivo per questo spettacolo</a><a href="#extrait" class="btn btn-ghost">Guarda un altro estratto</a></div>
+    <div class="tk-cta"><a href="contact?artiste=tekila-the-band&amp;nom=T%C3%A9kila%20The%20Band#contact-form" class="btn btn-primary" data-contact="devis">Richiedi un preventivo per questo spettacolo</a></div>
   </div>
-  <div class="tk-stage"><div class="tk-card" id="tkCard"><div class="frame"><div class="video16x9"><iframe src="https://www.youtube-nocookie.com/embed/mQJ0TETQiUA" title="Tékila The Band, estratto dal vivo" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="glass"></div></div><div class="tk-refl" aria-hidden="true"></div><span class="tk-badge">Duo · Trio · Quartetto</span></div></div>
+  <div class="tk-stage"><div class="tk-card" id="tkCard"><div class="frame"><div class="tk-photo"><img src="/images/tekila-gang-800.webp" width="611" height="459" alt="I quattro musicisti di Tékila The Band" decoding="async"></div><div class="glass"></div></div><div class="tk-refl" aria-hidden="true"></div><span class="tk-badge">Duo · Trio · Quartetto</span></div></div>
 </div></div></section>
 
 <section class="tk-sec"><div class="tk-wrap">
@@ -394,10 +394,6 @@
   </div>
 </div></section>
 
-<section class="tk-sec extrait" id="extrait"><div class="tk-wrap">
-  <h2 class="tk-title"><small>Guarda</small>Il gruppo dal vivo</h2>
-  <div class="tk-vid"><div class="video16x9"><iframe id="videoFrame" src="https://www.youtube-nocookie.com/embed/4xwzWlFdu9I" title="Tékila The Band, estratto dal vivo" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>
-</div></section>
 
 <section class="tk-sec"><div class="tk-wrap">
   <h2 class="tk-title"><small>Referenze</small>Hanno scelto di fidarsi</h2>
