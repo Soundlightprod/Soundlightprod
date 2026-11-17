@@ -18,7 +18,7 @@
 
   // page du site -> identifiant artiste dans l'agenda
   var SLUG = {
-    'alchimie': 'alchimie', 'cache-candy': 'cache-candy', 'the-fine-allies': 'the-fine-allies',
+    'alchimie': 'alchimie', 'tekila-the-band': 'tekila-the-band', 'cache-candy': 'cache-candy', 'the-fine-allies': 'the-fine-allies',
     'noon-coverband': 'noon-coverband', 'panache': 'panache', 'bim-bam-boom': 'bim-bam-boom',
     'clement-blouin': 'clement-blouin', 'voice-of-freedom': 'voice-of-freedom',
     'tribute-abba': 'the-best-abba-tribute', 'tribute-calogero': 'calo2-0',
@@ -28,7 +28,7 @@
     'tribute-barry-white': 'tribute-barry-white'
   };
   var LABEL = {
-    'alchimie': 'Alchimie', 'cache-candy': 'Cache Candy', 'the-fine-allies': 'The Fine Allies',
+    'alchimie': 'Alchimie', 'tekila-the-band': 'Tékila The Band', 'cache-candy': 'Cache Candy', 'the-fine-allies': 'The Fine Allies',
     'noon-coverband': 'NooN Coverband', 'panache': 'Panache', 'bim-bam-boom': 'Bim Bam Boom',
     'clement-blouin': 'Clément Blouin', 'voice-of-freedom': 'Voice of Freedom',
     'the-best-abba-tribute': 'Tribute ABBA', 'calo2-0': 'Tribute Calogero', 'tribute-matmatah': 'Tribute Matmatah',
