@@ -37,7 +37,7 @@ h3{font-weight:800; letter-spacing:-0.01em; line-height:1.1;}
 /* ---------- En-tête & logo ---------- */
 header{background:rgba(12,10,20,0.88) !important; border-bottom:0 !important;}
 header::after{content:''; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--spectre); opacity:.9;}
-.brand img,header .brand img{height:38px !important; width:auto !important; border-radius:0 !important;}
+.brand img,header .brand img{height:52px !important; width:auto !important; border-radius:0 !important;}
 nav a{font-family:'Instrument Sans',sans-serif; font-weight:600;}
 nav a.current{color:#fff; position:relative;}
 nav a.current::after{content:''; position:absolute; left:50%; bottom:-9px; width:6px; height:6px; margin-left:-3px; border-radius:50%; background:#fff; box-shadow:0 0 8px #fff;}
@@ -152,7 +152,7 @@ footer::before{content:''; position:absolute; left:0; right:0; top:0; height:4px
   -webkit-background-clip:text; background-clip:text;}
 .feux h1.rot .beamtxt .ph:not(.on):not(.out){visibility:hidden;}
 /* Menu : reste sur une ligne entre tablette et petit écran */
-@media (min-width:961px){ nav ul{gap:14px !important; flex-wrap:nowrap !important;} nav a{font-size:.8rem !important; white-space:nowrap;} .brand img{height:32px !important;} .lang-switch{margin-left:10px !important;} .nav-wrap{padding-left:16px !important; padding-right:16px !important; gap:12px;} }
+@media (min-width:961px){ nav ul{gap:14px !important; flex-wrap:nowrap !important;} nav a{font-size:.8rem !important; white-space:nowrap;} .brand img{height:50px !important;} .lang-switch{margin-left:10px !important;} .nav-wrap{padding-left:16px !important; padding-right:16px !important; gap:12px;} }
 @media (min-width:961px) and (max-width:1100px){ nav ul{gap:10px !important;} nav a{font-size:.74rem !important; letter-spacing:0 !important;} }
 @media (min-width:961px) and (max-width:1010px){ nav ul{gap:8px !important;} nav a{font-size:.7rem !important;} .lang-switch a{padding:4px 5px !important;} }
 
