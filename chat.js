@@ -11,7 +11,7 @@
   var T0 = Date.now();
   function asDt() { return window.slpAS ? window.slpAS.dt() : Date.now() - T0; }
   function asTok() { return window.slpAS ? window.slpAS.token() : ''; }
-  if (!window.slpAS) { try { var asS = document.createElement('script'); asS.src = '/antispam.js'; asS.async = true; document.head.appendChild(asS); } catch (e) {} }
+  if (!window.slpAS) { try { var asS = document.createElement('script'); asS.src = '/antispam.js'; asS.async = true; asS.onload = function () { if (box && box.classList.contains('on') && window.slpAS && window.slpAS.need) window.slpAS.need(); }; document.head.appendChild(asS); } catch (e) {} }
 
   var L = (path.match(/^\/(en|es|it)(\/|$)/) || [, 'fr'])[1];
   var T = {
@@ -300,6 +300,7 @@
   function toggle(on) {
     box.classList.toggle('on', on); tip.style.display = 'none';
     if (on) refreshStatus();
+    if (on && window.slpAS && window.slpAS.need) window.slpAS.need();
     if (on && !opened) { opened = true; track('chat'); if (tok) { say(t.hello); live(true); } else menu(true); }
     if (on && tok) { tip.textContent = t.teaser; poll(); }
     btn.setAttribute('aria-expanded', on ? 'true' : 'false');
