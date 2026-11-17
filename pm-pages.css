@@ -172,3 +172,11 @@ body.pm-inner .klb-hero{padding-top:110px}
 .pm-js .pm-rv{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
 .pm-js .pm-rv.pm-in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.pm-js .pm-rv{opacity:1;transform:none;transition:none}}
+
+/* Logo néon de NooN comme visuel de hero (pas de photo haute définition disponible) */
+.fiche-hero.pm-cine.pm-logo .fiche-photo{background:#000}
+.fiche-hero.pm-cine.pm-logo .fiche-photo img{object-fit:contain;object-position:82% 45%;mix-blend-mode:screen}
+.fiche-hero.pm-cine.pm-logo::before{background:linear-gradient(180deg,rgba(12,10,20,.5) 0,rgba(12,10,20,0) 30%,rgba(12,10,20,.5) 70%,var(--ink) 100%),linear-gradient(90deg,rgba(12,10,20,.92),transparent 60%)}
+.pm-slide.pm-logo{background:#000}
+.pm-slide.pm-logo img{object-fit:contain;object-position:82% 45%;mix-blend-mode:screen}
+@media (max-width:900px){.fiche-hero.pm-cine.pm-logo .fiche-photo img,.pm-slide.pm-logo img{object-position:50% 8%}}
