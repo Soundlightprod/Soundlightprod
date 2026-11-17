@@ -243,9 +243,10 @@
 .cta-band .wrap.tight{padding-top:64px !important;padding-bottom:64px !important}
 .cta-band h2{font-size:clamp(1.9rem,4vw,2.8rem) !important}
 </style>
-<link rel="stylesheet" href="/pm-pages.css?v=3">
+<link rel="stylesheet" href="/pm-pages.css?v=4">
+<script src="/pm-pages.js?v=1" defer></script>
 </head>
-<body>
+<body class="pm-inner">
 
 <header>
   <div class="nav-wrap">
@@ -391,13 +392,6 @@
 <script id="annuaire-js">(function(){var r=document.getElementById('annuaire');if(!r)return;var b=r.querySelectorAll('.chip'),l=r.querySelectorAll('.names-list li');
 b.forEach(function(x){x.addEventListener('click',function(){b.forEach(function(y){y.setAttribute('aria-pressed',y===x?'true':'false')});var g=x.getAttribute('data-g');
 l.forEach(function(li){li.hidden=!(g==='all'||li.getAttribute('data-g')===g)});});});})();</script>
-<script>
-(function(){var d=document,h=d.documentElement;h.classList.add('pm-js');var $$=function(s){return [].slice.call(d.querySelectorAll(s))};
-var sl=$$('.pm-slide'),dt=$$('.pm-dots i'),i=0;
-if(sl.length>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches){setInterval(function(){sl[i].classList.remove('on');dt[i]&&dt[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');dt[i]&&dt[i].classList.add('on')},6500)}
-var els=$$('.pm-rv');if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('pm-in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(el){io.observe(el)})}else{els.forEach(function(el){el.classList.add('pm-in')})}
-})();
-</script>
 </body>
 <script>
 (function(){

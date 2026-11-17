@@ -5,6 +5,159 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Note legali — SLP Sound Light Prod</title>
 <meta name="robots" content="noindex, follow">
+<!-- pm-legal --><style>
+  :root{
+    --ink: #0c0a14; --ink-2: #17142a;
+    --paper: #f7f5f0; --muted: #a9a4bc;
+    --gold: #fbc608;
+    --violet: #8c3290; --blue: #3259be; --amber: #fc8024; --pink: #ff0953;
+    --line: rgba(255,255,255,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; line-height:1.6; overflow-x:hidden;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;} }
+  .label{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+
+  header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:none; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px clamp(24px,3.5vw,72px);}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{height:58px; width:58px; display:block; border-radius:50%;}
+  .brand-text{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; color:var(--paper);}
+  nav ul{list-style:none; display:flex; gap:26px; flex-wrap:wrap;}
+  nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; letter-spacing:0.01em; transition:color 0.2s ease;}
+  nav a:hover, nav a.current{color:var(--paper);}
+  @media (max-width:960px){ nav ul{display:none;} }
+
+  .page-hero{position:relative; padding:110px 24px 60px; overflow:hidden;}
+  .hero-blocks{position:absolute; inset:0; z-index:0;}
+  .hb{position:absolute; opacity:0.4; filter:blur(2px);}
+  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-25vw; left:-10vw;}
+  .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--amber), transparent 70%); top:-10vw; right:-10vw;}
+  .page-hero-inner{position:relative; z-index:2; max-width:700px;}
+  .page-hero .label{display:block; margin-bottom:20px;}
+  .page-hero h1{font-size:clamp(2.4rem, 6vw, 4.2rem); margin-bottom:22px;}
+  .page-hero p{color:var(--muted); font-size:1.1rem; max-width:560px;}
+
+  section{position:relative; z-index:2;}
+  .wrap{max-width:1040px; margin:0 auto; padding:20px 24px 100px;}
+
+  .contact-grid{display:grid; grid-template-columns:1fr 1.3fr; gap:20px;}
+  @media (max-width:760px){ .contact-grid{grid-template-columns:1fr;} }
+
+  .contact-info, .contact-form{background:var(--ink-2); border:1px solid var(--line); border-radius:20px; padding:42px 36px;}
+  .contact-info h2{font-size:1.5rem; margin-bottom:26px;}
+  .info-block{margin-bottom:24px;}
+  .info-block:last-child{margin-bottom:0;}
+  .info-block .label{display:block; margin-bottom:8px;}
+  .info-block a, .info-block p{color:var(--paper); text-decoration:none; font-size:0.98rem;}
+  .info-block a:hover{color:var(--amber);}
+
+  .contact-form h2{font-size:1.5rem; margin-bottom:8px;}
+  .contact-form > p{color:var(--muted); font-size:0.9rem; margin-bottom:30px;}
+  .field{margin-bottom:20px;}
+  .field label{display:block; font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--amber); margin-bottom:8px;}
+  .field input, .field select, .field textarea{
+    width:100%; background:var(--ink); border:1px solid var(--line); color:var(--paper);
+    padding:13px 16px; font-family:'Instrument Sans', sans-serif; font-size:0.95rem; border-radius:10px; outline:none; transition:border-color 0.2s ease;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--amber);}
+  .field textarea{resize:vertical; min-height:120px;}
+  .row-2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:480px){ .row-2{grid-template-columns:1fr;} }
+  .btn-submit{
+    width:100%; padding:16px; background:var(--paper); color:var(--ink); border:none;
+    font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.95rem;
+    border-radius:100px; cursor:pointer; transition:all 0.25s ease;
+  }
+  .btn-submit:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(247,245,240,0.15);}
+  .quick{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px;}
+  .quick a{display:inline-flex; align-items:center; gap:10px; padding:15px 22px; border-radius:100px; font-weight:700; font-size:1rem; text-decoration:none; min-height:52px;}
+  .quick .q-call{background:var(--amber); color:#14121a;}
+  .quick .q-wa{background:#25d366; color:#08260f;}
+  .quick .q-mail{border:1px solid var(--line); color:var(--paper);}
+  .quick .q-chat{background:linear-gradient(90deg,#FF0953,#FC8024 55%,#FBC608); color:#0C0A14;}
+  .q-note{margin-top:12px; color:var(--muted); font-size:.88rem;}
+  .quick svg{width:20px; height:20px; flex:none;}
+  .trust{display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:18px; color:var(--muted); font-size:.88rem;}
+  .trust span::before{content:'✓ '; color:var(--amber); font-weight:700;}
+  @media (max-width:560px){ .quick a{flex:1 1 100%; justify-content:center;} }
+  .contact-form{order:-1;} @media (min-width:761px){ .contact-form{order:0;} }
+  .opt{color:var(--muted); text-transform:none; letter-spacing:0;}
+  .hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+  .form-msg{margin-top:14px; font-size:.92rem; text-align:center;} .form-msg.err{color:var(--pink);}
+  .merci{text-align:center; padding:30px 0;} .merci h3{font-size:1.5rem; margin-bottom:10px;} .merci p{color:var(--muted);}
+  .form-note{color:var(--muted); font-size:0.78rem; margin-top:16px; text-align:center;}
+
+  footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
+  .footer-wrap{max-width:none; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-brand{max-width:320px; display:flex; gap:12px;}
+  .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
+  .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand p{color:var(--muted); font-size:0.85rem;}
+  .footer-col h4{font-family:'DM Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px; transition:color 0.2s ease;}
+  .footer-col a:hover{color:var(--paper);}
+  .social-row{display:flex; gap:10px;}
+  .social-icon{
+    display:flex; align-items:center; justify-content:center;
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    background:rgba(255,255,255,0.06); color:var(--muted);
+    transition:background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .social-icon svg{width:18px; height:18px;}
+  .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
+  .legal{max-width:none; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
+
+  /* Menu mobile (burger) */
+  .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
+  .burger span{display:block; width:20px; height:2px; background:var(--paper); border-radius:2px; transition:transform .25s ease, opacity .25s ease;}
+  header.menu-open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  header.menu-open .burger span:nth-child(2){opacity:0;}
+  header.menu-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  @media (max-width:960px){
+    .burger{display:flex;}
+    .nav-wrap{position:relative; flex-wrap:nowrap;}
+    .nav-wrap .lang-switch{margin-left:auto;}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0a14 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav li{border-bottom:1px solid var(--line);}
+    header.menu-open nav li:last-child{border-bottom:0;}
+    header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
+  }
+</style><style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style><style id="devis-css">
+  .page-hero.compact{padding:44px 24px 8px;}
+  .page-hero.compact .hero-blocks{opacity:.6}
+  .page-hero.compact h1{font-size:clamp(1.9rem,5vw,3rem); margin-bottom:12px;}
+  .page-hero.compact p{font-size:1rem; margin:0;}
+  .page-hero.compact .label{margin-bottom:12px;}
+  .contact-grid{grid-template-columns:1.35fr 1fr; align-items:start;}
+  @media (max-width:760px){ .contact-grid{grid-template-columns:1fr;} .wrap{padding-top:16px;} .contact-info,.contact-form{padding:28px 20px;} }
+  .contact-form{order:0 !important; scroll-margin-top:96px;}
+  .contact-form:focus{outline:none}
+  .contact-form .lead{color:var(--muted); font-size:.92rem; margin-bottom:20px;}
+  .sel{background:var(--ink); border:1px solid var(--line); border-left:3px solid var(--amber); border-radius:12px; padding:14px 16px; margin-bottom:22px;}
+  .sel-line{display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px;}
+  .sel-line .label{flex:0 0 100%;}
+  .sel-line strong{font-family:'League Spartan',sans-serif; font-size:1.25rem; letter-spacing:-.01em;}
+  .linkbtn{background:none; border:0; color:var(--amber); font:inherit; font-weight:700; font-size:.9rem; text-decoration:underline; cursor:pointer; padding:10px 4px; min-height:44px;}
+  .sel .field{margin:12px 0 0;}
+  .field .err{color:#ff7a99; font-size:.85rem; margin-top:6px;}
+  .field [aria-invalid="true"]{border-color:#ff7a99;}
+  .field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible,.btn-submit:focus-visible,.linkbtn:focus-visible,.quick a:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  details.more{margin:4px 0 22px; border:1px solid var(--line); border-radius:12px; padding:0 16px;}
+  details.more summary{cursor:pointer; padding:14px 0; font-weight:700; color:var(--paper); min-height:44px;}
+  details.more[open] summary{border-bottom:1px solid var(--line); margin-bottom:16px;}
+  details.more .field:last-child{margin-bottom:18px;}
+  .field input,.field select,.field textarea{font-size:16px;}
+  .form-msg{margin-top:14px; font-size:.95rem; text-align:center;} .form-msg.err{color:#ff7a99;}
+  .form-msg a{color:inherit; text-decoration:underline;}
+  .merci:focus{outline:none} .merci .ref{display:inline-block; margin:6px 0 14px; padding:6px 14px; border:1px dashed var(--amber); border-radius:100px; font-family:'DM Mono',monospace; letter-spacing:.06em;}
+  .contact-info .quick{margin-top:0; margin-bottom:18px;} .contact-info .q-note{margin:-6px 0 22px;}
+  .contact-info h2{font-size:1.25rem;}
+  .form-note a{color:inherit;}
+  .btn-submit[disabled]{opacity:.7; cursor:progress;}
+</style>
 <style>
   :root{ --ink:#0c0a14; --ink-2:#17142a; --paper:#f7f5f0; --muted:#a9a4bc; --amber:#fc8024; --line:rgba(255,255,255,0.1); }
   *{box-sizing:border-box;}
@@ -36,12 +189,31 @@
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0C0A14">
-<link rel="stylesheet" href="/pm-pages.css?v=1">
+<style>body.pm-inner .page-hero{border-top:0}.lg{max-width:860px;margin:0 auto;padding:30px 24px 90px}.lg section{border-top:1px solid var(--line);padding-top:10px}.lg h2{color:var(--pm-gold,#e6c27e)}</style>
+<link rel="stylesheet" href="/pm-pages.css?v=4">
+<script src="/pm-pages.js?v=1" defer></script>
 </head>
-<body>
-<div class="wrap">
-  <a href="./" class="back">← Torna al sito</a>
-  <h1>Note legali</h1>
+<body class="pm-inner">
+<header>
+  <div class="nav-wrap">
+    <a href="./" class="brand">
+      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="./">Home</a></li>
+        <li><a href="artistes">Artisti e spettacoli</a></li>
+        <li><a href="galerie">Galleria</a></li>
+        <li><a href="son-lumiere">Audio e luci</a></li>
+        <li><a href="contact" class="nav-cta current">Contatti</a></li>
+      </ul>
+    </nav>
+    <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/contact" hreflang="fr" lang="fr" data-contact="devis">FR</a><a href="https://soundlightprod.com/en/contact" hreflang="en" lang="en" data-contact="devis">EN</a><a href="https://soundlightprod.com/es/contact" hreflang="es" lang="es" data-contact="devis">ES</a><a href="https://soundlightprod.com/it/contact" hreflang="it" lang="it" class="on" aria-current="true" data-contact="devis">IT</a></div>
+    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<section class="page-hero pm-cinepage"><div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div><div class="page-hero-inner"><span class="label">Informazioni legali</span><h1>Note legali</h1></div></section>
+<div class="lg">
 
   <section>
     <h2>Editore del sito</h2>
@@ -82,21 +254,38 @@
     <p>Questo sito non utilizza cookie pubblicitari e non installa cookie di tracciamento. Conta le visite in forma anonima (pagine viste, provenienza, città approssimativa dedotta dall'indirizzo IP, tipo di dispositivo) senza identificare le persone; l'indirizzo IP non viene conservato in chiaro. Se clicchi su «Accetta» nel banner, nel tuo browser viene salvato un identificativo casuale (archiviazione locale, senza cookie) per al massimo 13 mesi: lo usiamo solo per riconoscere i tuoi ritorni e, se ci contatti, per capire cosa ti ha interessato. Non è condiviso con terzi. Puoi rifiutare o cambiare idea in qualsiasi momento con il link «Misurazione del pubblico» in fondo a ogni pagina; la tua scelta viene conservata 6 mesi. La chat del sito conserva un token tecnico nel tuo browser per riprendere una conversazione in corso.</p>
   </section>
 </div>
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
+      <div>
+        <h3>Sound Light Prod</h3>
+        <p>Gestione di eventi e artisti, audio e luci, in Francia e in Europa.</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigazione</h4>
+      <a href="./">Home</a>
+      <a href="artistes">Artisti e spettacoli</a>
+      <a href="son-lumiere">Audio e luci</a>
+      <a href="galerie">Galleria</a>
+      <a href="contact">Contatti</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contatti</h4>
+      <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653" data-contact="appel">+33 6 31 94 96 53</a>
+    </div>
+    <div class="footer-col">
+      <h4>Seguiteci</h4>
+      <div class="social-row">
+        <a href="https://www.facebook.com/SoundlightP" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.8 8.6h1.9V5.9h-2.2c-2.3 0-3.7 1.5-3.7 3.8v1.6H7.6v2.8h2.2V21h3v-6.9h2.4l.4-2.8h-2.8V9.9c0-.8.3-1.3 1-1.3z"/></svg></a>
+        <a href="https://www.instagram.com/slp_france/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://www.youtube.com/channel/UC6dZffs_G3DbbZPNEhjisLg" target="_blank" rel="noopener" class="social-icon" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><polygon points="10 9.2 15.8 12 10 14.8" fill="currentColor" stroke="none"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <p class="legal">Sound Light Prod è un marchio di SLP · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 · Licenze di imprenditore di spettacoli (categorie 2 e 3): in corso di assegnazione — © 2026 · <a href="mentions-legales" style="color:inherit;">Note legali</a></p>
+</footer>
 </body>
-<script>
-(function(){
-  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
-  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
-  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
-  if (localStorage.getItem('slp_admin_token')) return;
-  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
-  var sid = sessionStorage.getItem('slp_visit_sid');
-  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
-  (function(){try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("slp_notrack","1");if(/[?&]notrack=0/.test(location.search))localStorage.removeItem("slp_notrack");if(localStorage.getItem("slp_notrack"))return Promise.resolve();}catch(e){}return fetch.apply(window,arguments);})("/api/track-visit", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ lang: "it", artist_slug: "mentions-legales", session_id: sid, ref:(function(){try{var q=new URLSearchParams(location.search),s=q.get("utm_source")||(q.get("utm_medium")==="email"?"email":"");if(s){var c=(q.get("utm_campaign")||"").toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,50);return "https://emailing-"+s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")+(c?"."+c:"")+"/";}}catch(e){}return document.referrer;})() })
-  }).catch(function(){});
-})();
-</script>
 </html>
