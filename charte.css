@@ -160,3 +160,10 @@ footer::before{content:''; position:absolute; left:0; right:0; top:0; height:4px
 @media (min-width:1180px){ nav ul{gap:28px !important;} nav a{font-size:.86rem !important;} .nav-wrap{padding-left:28px !important; padding-right:28px !important;} }
 @media (min-width:961px){ nav ul{align-items:center;} nav a.nav-cta{color:var(--noir) !important; background:var(--chaud); padding:9px 18px; border-radius:100px; font-weight:700;} nav a.nav-cta:hover{filter:brightness(1.08);} nav a.nav-cta.current::after{display:none;} }
 @media (min-width:1011px) and (max-width:1179px){ nav ul{gap:18px !important;} nav a{font-size:.8rem !important;} }
+
+/* Accroche d'en-tête, entre le logo et le menu */
+.brand::after{content:'Notre objectif : votre satisfaction'; display:none; margin-left:6px; font-family:'Instrument Sans',sans-serif; font-style:italic; font-weight:500; font-size:.86rem; line-height:1.2; color:rgba(247,245,240,.78); white-space:nowrap;}
+html[lang^="en"] .brand::after{content:'Our goal: your satisfaction';}
+html[lang^="es"] .brand::after{content:'Nuestro objetivo: su satisfacción';}
+html[lang^="it"] .brand::after{content:'Il nostro obiettivo: la vostra soddisfazione';}
+@media (min-width:1360px){ .brand::after{display:block;} }
