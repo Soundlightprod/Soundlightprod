@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tékila The Band – live Latin reggae band for hire | Sound Light Prod</title>
+<meta name="description" content="Tékila The Band, Latin / reggae band available as a duo, trio or quartet, booked through SLP for your events across France and Europe.">
+<meta name="keywords" content="Latin band, reggae band, live Latin reggae band, Tékila The Band, cover band, duo trio quartet, party entertainment">
+<style>
+  :root{
+    --ink: #0c0a14; --ink-2: #17142a;
+    --paper: #f7f5f0; --muted: #a9a4bc;
+    --gold: #fbc608;
+    --violet: #8c3290; --blue: #3259be; --amber: #fc8024; --pink: #ff0953;
+    --line: rgba(255,255,255,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; line-height:1.6; overflow-x:hidden;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;} }
+  .label{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+
+  header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:none; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px clamp(24px,3.5vw,72px);}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{height:58px; width:58px; display:block; border-radius:50%;}
+  nav ul{list-style:none; display:flex; gap:26px; flex-wrap:wrap;}
+  nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; letter-spacing:0.01em; transition:color 0.2s ease;}
+  nav a:hover, nav a.current{color:var(--paper);}
+  @media (max-width:960px){ nav ul{display:none;} }
+
+  .page-hero{position:relative; padding:110px 24px 60px; overflow:hidden;}
+  .hero-blocks{position:absolute; inset:0; z-index:0;}
+  .hb{position:absolute; opacity:0.4; filter:blur(2px);}
+  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--blue), transparent 70%); top:-25vw; left:-10vw;}
+  .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--violet), transparent 70%); top:-10vw; right:-10vw;}
+  .page-hero-inner{position:relative; z-index:2; max-width:800px;}
+  /* Silhouette néon de l'artiste (tirée de sa photo) */
+  .hero-art{position:absolute; right:clamp(8px,5vw,90px); bottom:0; height:min(92%,500px); width:min(48vw,620px); z-index:1; pointer-events:none;}
+  .hero-art img{position:absolute; right:0; bottom:0; max-height:100%; max-width:100%; filter:drop-shadow(0 0 12px var(--glow)); animation:artSway 6s ease-in-out infinite; transform-origin:bottom center;}
+  .hero-art .spark{position:absolute; color:#fff; font-size:16px; line-height:1; text-shadow:0 0 10px #fff, 0 0 20px var(--glow); animation:twinkle 2.4s ease-in-out infinite;}
+  .hero-art .s1{right:8%; top:4%;} .hero-art .s2{right:62%; top:18%; font-size:11px; animation-delay:-.8s;} .hero-art .s3{right:-2%; top:38%; font-size:13px; animation-delay:-1.6s;}
+  @keyframes artSway{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-.8deg)}}
+  @keyframes twinkle{0%,100%{opacity:.15; transform:scale(.6)}50%{opacity:1; transform:scale(1.15)}}
+  @media (max-width:900px){ .hero-art{opacity:.28; width:70vw; right:-30px;} }
+  .breadcrumb{display:block; margin-bottom:20px; color:var(--muted); font-size:0.85rem;}
+  .breadcrumb a{color:var(--muted); text-decoration:none;}
+  .breadcrumb a:hover{color:var(--paper);}
+  .page-hero h1{font-size:clamp(2.4rem, 6vw, 4.2rem); margin-bottom:18px;}
+  .page-hero p{color:var(--muted); font-size:1.1rem; max-width:600px;}
+  .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:22px;}
+  .tag{font-family:'DM Mono', monospace; font-size:0.72rem; color:var(--paper); box-shadow:inset 0 0 0 1px var(--line); padding:7px 14px; border-radius:20px;}
+
+  section{position:relative; z-index:2;}
+  .wrap{max-width:none; margin:0 auto; padding:80px clamp(24px,3.5vw,72px);}
+  .wrap.tight{padding-top:40px; padding-bottom:40px;}
+  .wrap.narrow{max-width:900px;}
+  .section-head{max-width:680px; margin-bottom:40px;}
+  .section-head .label{margin-bottom:16px; display:block;}
+  .section-head h2{font-size:clamp(1.8rem, 4vw, 2.6rem);}
+
+  .bio-wrap{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:44px; align-items:center;}
+  @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr; text-align:center;} }
+  .logo-frame{background:var(--ink-2); border:1px solid var(--line); border-radius:20px; padding:26px; display:flex; align-items:center; justify-content:center; aspect-ratio:1;}
+  .logo-frame img{max-width:100%; max-height:100%; object-fit:contain; border-radius:50%;}
+  .bio-text p{color:var(--muted); font-size:1.02rem; margin-bottom:16px;}
+  .bio-text p:last-child{margin-bottom:0;}
+
+  .members-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px;}
+  .member-card{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:20px 22px;}
+  .member-card .name{font-family:'League Spartan', sans-serif; font-weight:700; color:var(--paper); font-size:1.02rem; margin-bottom:4px;}
+  .member-card .role{color:var(--amber); font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase;}
+  .member-note{color:var(--muted); font-size:0.82rem; font-style:italic; margin-top:16px;}
+
+  .banner-photo{
+    background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px);
+    border:2px dashed rgba(255,255,255,0.15); border-radius:16px; aspect-ratio:21/8;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color:var(--muted); text-align:center; padding:20px;
+  }
+  .banner-photo .icon{font-size:2rem; margin-bottom:8px; opacity:0.6;}
+  .banner-photo .txt{font-size:0.82rem; font-weight:500;}
+
+
+  .venues-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;}
+  .venue-card{background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:16px 20px; font-size:0.92rem; color:var(--paper);}
+
+  .video-wrap{position:relative; width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);}
+  .video-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+
+  .info-strip{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--ink-2);}
+  .info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:30px;}
+  .info-item{display:flex; gap:14px; align-items:flex-start;}
+  .info-item .mark{color:var(--amber); font-family:'DM Mono', monospace; font-size:0.95rem; flex-shrink:0;}
+  .info-item p{color:var(--paper); font-size:0.93rem;}
+
+  .links-row{display:flex; flex-wrap:wrap; gap:14px;}
+  .link-pill{display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); color:var(--paper); text-decoration:none; font-size:0.88rem; font-weight:600; transition:all 0.2s ease;}
+  .link-pill:hover{box-shadow:inset 0 0 0 1.5px var(--paper); transform:translateY(-2px);}
+
+  .cta-band{text-align:center; background:linear-gradient(135deg, var(--ink-2) 0%, var(--ink) 100%); border-top:1px solid var(--line);}
+  .cta-band h2{font-size:clamp(2.2rem, 5.5vw, 3.4rem); margin-bottom:20px;}
+  .cta-band p{color:var(--muted); font-size:1.05rem; margin-bottom:36px;}
+  .cta-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:16px 30px; font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.95rem; text-decoration:none; border-radius:100px; transition:all 0.25s ease;}
+  .btn-primary{background:var(--paper); color:var(--ink);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(247,245,240,0.15);}
+  .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25);}
+  .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
+  .footer-wrap{max-width:none; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-brand{max-width:320px; display:flex; gap:12px;}
+  .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
+  .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand p{color:var(--muted); font-size:0.85rem;}
+  .footer-col h4{font-family:'DM Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px; transition:color 0.2s ease;}
+  .footer-col a:hover{color:var(--paper);}
+  .social-row{display:flex; gap:10px;}
+  .social-icon{
+    display:flex; align-items:center; justify-content:center;
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    background:rgba(255,255,255,0.06); color:var(--muted);
+    transition:background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .social-icon svg{width:18px; height:18px;}
+  .social-icon:hover{background:var(--gold); color:var(--ink); transform:translateY(-2px);}
+  .legal{max-width:none; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center; letter-spacing:0.02em;}
+
+  .actus-list{display:flex; flex-direction:column; gap:14px;}
+  .actu-item{position:relative; background:linear-gradient(120deg, var(--ink-2), rgba(255,255,255,.02)); border:1px solid var(--line); border-radius:18px; padding:0; display:flex; align-items:stretch; overflow:hidden; min-height:128px;}
+  .actu-item::before{content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:linear-gradient(180deg,#FF0953,#FC8024 55%,#FBC608);}
+  .actu-cal{flex:0 0 118px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:18px 10px; border-right:1px dashed var(--line); background:rgba(255,255,255,.03); text-align:center;}
+  .actu-cal .wd{font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
+  .actu-cal .dd{font-family:'League Spartan',sans-serif; font-weight:800; font-size:2.9rem; line-height:1; color:var(--paper);}
+  .actu-cal .mm{font-family:'DM Mono',monospace; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:#FC8024; font-weight:600;}
+  .actu-item .actu-body{flex:1; min-width:0; padding:20px 26px; display:flex; flex-direction:column; justify-content:center; gap:8px;}
+  .actu-item .actu-date{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:.1em; color:var(--amber); text-transform:uppercase; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .actu-item .actu-date .soon{background:linear-gradient(90deg,#FF0953,#FC8024); color:#fff; border-radius:100px; padding:3px 10px; font-size:.66rem; letter-spacing:.08em;}
+  .actu-item p{color:var(--paper); font-size:1.18rem; font-weight:700; line-height:1.3; margin:0;}
+  .actu-item .actu-meta{color:var(--muted); font-size:0.9rem; font-weight:400; margin:0; display:flex; flex-wrap:wrap; gap:6px 18px;}
+  .actu-item>img{width:190px; height:auto; min-height:128px; object-fit:cover; flex-shrink:0; border-radius:0; display:block;}
+  @media (max-width:640px){ .actu-cal{flex-basis:84px;} .actu-cal .dd{font-size:2.1rem;} .actu-item .actu-body{padding:16px 18px;} .actu-item p{font-size:1rem;} .actu-item>img{display:none;} }
+  .lightbox-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:300; align-items:center; justify-content:center; padding:24px; cursor:zoom-out;}
+  .lightbox-overlay.open{display:flex;}
+  .lightbox-overlay img{max-width:100%; max-height:100%; border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+  .event-card img, .actu-item img{cursor:zoom-in;}
+
+  /* Menu mobile (burger) */
+  .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
+  .burger span{display:block; width:20px; height:2px; background:var(--paper); border-radius:2px; transition:transform .25s ease, opacity .25s ease;}
+  header.menu-open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  header.menu-open .burger span:nth-child(2){opacity:0;}
+  header.menu-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  @media (max-width:960px){
+    .burger{display:flex;}
+    .nav-wrap{position:relative; flex-wrap:nowrap;}
+    .nav-wrap .lang-switch{margin-left:auto;}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0a14 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav li{border-bottom:1px solid var(--line);}
+    header.menu-open nav li:last-child{border-bottom:0;}
+    header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
+  }
+  /* bio-wide */
+  .bio-wrap{align-items:stretch !important; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important; gap:56px !important;}
+  .bio-wrap .logo-frame{aspect-ratio:4/3; height:auto; align-self:center;}
+  .bio-wrap .logo-frame.ph-frame{position:relative; aspect-ratio:auto; min-height:340px; align-self:stretch; padding:0;}
+  .bio-wrap .logo-frame.ph-frame img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .bio-text{align-self:center;}
+  @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr !important; gap:28px !important;} .bio-wrap .logo-frame.ph-frame{min-height:0; aspect-ratio:4/3;} }
+
+.tk-h1-logo{line-height:1}
+.tk-h1-logo .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.tk-logo{display:block;width:100%;max-width:560px;height:auto;filter:drop-shadow(0 10px 30px rgba(255,122,26,.35));}
+.tk .tk-h1.tk-h1-logo .o{font-size:clamp(1.3rem,3.2vw,2.3rem);letter-spacing:.12em;margin-top:.55em;white-space:nowrap;}
+</style>
+
+
+
+
+
+<!-- i18n:start -->
+<link rel="alternate" hreflang="fr" href="https://soundlightprod.fr/tekila-the-band">
+<link rel="alternate" hreflang="en" href="https://soundlightprod.com/en/tekila-the-band">
+<link rel="alternate" hreflang="es" href="https://soundlightprod.com/es/tekila-the-band">
+<link rel="alternate" hreflang="it" href="https://soundlightprod.com/it/tekila-the-band">
+<link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/tekila-the-band">
+<style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
+<!-- i18n:end -->
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0A14">
+<link rel="canonical" href="https://soundlightprod.com/en/tekila-the-band">
+<style id="fiche-v2">
+/* Fiche spectacle v2  */
+.fiche-hero{position:relative; padding:96px 24px 26px;}
+.fiche-hero-inner>*{min-width:0;}
+.fiche-hero-inner{max-width:none; margin:0 auto; display:grid; grid-template-columns:1.05fr .95fr; grid-template-areas:"text photo" "resume photo"; column-gap:44px; row-gap:18px; align-items:start;}
+.fiche-text{grid-area:text;} .fiche-photo{grid-area:photo; margin:0; border-radius:20px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,.45); aspect-ratio:3/2; background:var(--ink-2); align-self:center;}
+.fiche-photo img{display:block; width:100%; height:100%; object-fit:cover;}
+.fiche-resume{grid-area:resume;}
+.fiche-text .breadcrumb{display:block; margin-bottom:14px; color:var(--muted); font-size:.85rem;} .fiche-text .breadcrumb a{color:var(--muted); text-decoration:none;}
+.fiche-text .label{display:block; margin-bottom:10px;}
+.fiche-text h1{font-size:clamp(2.1rem,5vw,3.4rem); line-height:1.02; margin-bottom:12px;}
+.promesse{color:var(--paper); font-size:1.05rem; line-height:1.5; max-width:46ch;}
+.resume{list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0; margin:0 0 18px;}
+.resume li{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:12px 12px 12px; display:flex; flex-direction:column; gap:2px;}
+.resume strong{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.55rem; line-height:1; color:var(--gold);}
+.resume span{font-size:.82rem; color:var(--muted); line-height:1.35;}
+.fiche-actions{display:flex; flex-wrap:wrap; gap:12px;}
+.fiche-actions .btn{min-height:52px; padding:0 24px; justify-content:center; font-size:1rem;}
+.fiche-note{margin-top:12px; font-size:.85rem; color:var(--muted);}
+@media (max-width:900px){
+  .fiche-hero{padding:88px 20px 18px;}
+  .fiche-hero-inner{grid-template-columns:minmax(0,1fr); grid-template-areas:"text" "photo" "resume"; row-gap:16px;}
+  .fiche-actions .btn{flex:1 1 100%;}
+  .resume{grid-template-columns:1fr 1fr 1fr; gap:8px;} .resume li{padding:10px 9px;} .resume strong{font-size:1.3rem;} .resume span{font-size:.74rem;}
+}
+.video16x9{position:relative; aspect-ratio:16/9; border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#000;}
+.video16x9 iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+.video-tabs{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:12px;}
+.video-tabs button{min-height:44px; padding:0 18px; border-radius:100px; background:transparent; color:var(--paper); border:1.5px solid rgba(255,255,255,.25); font:inherit; font-weight:700; cursor:pointer;}
+.video-tabs button[aria-pressed="true"]{background:var(--paper); color:var(--ink);}
+.video-tabs button:focus-visible,.video-alt:focus-visible,.fiche-actions .btn:focus-visible,.gal a:focus-visible,.show-card:focus-visible,summary:focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+.video-alt{color:var(--muted); font-size:.9rem; margin-left:auto; padding:10px 4px;}
+.gal{list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+@media (max-width:600px){ .gal{grid-template-columns:1fr 1fr;} }
+.gal a{display:block; aspect-ratio:3/2; border-radius:12px; overflow:hidden; background:var(--ink-2);} .gal img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s;} .gal a:hover img{transform:scale(1.05);}
+.gal-more{margin-top:12px;} .gal-more summary,.bio-more summary{cursor:pointer; font-weight:700; padding:12px 0; min-height:44px; color:var(--amber);} .gal-more .gal{margin-top:6px;}
+.bio-text p{color:var(--paper); line-height:1.6; margin-bottom:12px; max-width:70ch;} .bio-more p{margin-top:12px;}
+.show-grid{list-style:none; padding:0; margin:0; display:grid; gap:14px; grid-template-columns:repeat(3,1fr);} @media (max-width:600px){ .show-grid{grid-template-columns:1fr 1fr;} .show-grid li:last-child{grid-column:1/-1;} .show-grid li:last-child .show-card{aspect-ratio:16/9;} }
+.show-card{position:relative; display:flex; flex-direction:column; border-radius:18px; overflow:hidden; border:1px solid var(--line); text-decoration:none; color:var(--paper); background:var(--ink-2);}
+.show-card img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+.show-card .shade{position:absolute; inset:0; background:linear-gradient(180deg,rgba(12,10,20,0) 18%,rgba(12,10,20,.82) 52%,rgba(12,10,20,.98) 100%);}
+.show-card .info{position:absolute; left:0; right:0; bottom:0; padding:14px; display:flex; flex-direction:column; gap:4px;}
+.show-card .tag{font-family:'DM Mono',monospace; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold);} .show-card strong{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.15rem; line-height:1.1;} .show-card .go{font-size:.82rem; font-weight:700; margin-top:2px;}
+:target{scroll-margin-top:96px;} html{scroll-padding-top:96px;}
+.show-card img{position:static !important; display:block; width:100%; height:auto !important; aspect-ratio:3/2; object-fit:cover;} .show-card .shade{display:none;} .show-card .info{position:static !important; padding:12px 14px 14px;}
+.extra-sec .info-grid{margin-top:4px;}
+</style><style>.fiche-photo{aspect-ratio:1800/1005 !important; align-self:center;}</style>
+<style>.tag-excl{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px 10px;padding:3px 10px;border-radius:100px;background:var(--gold);color:var(--ink);font-weight:700;font-size:.78rem;vertical-align:middle}</style><style id="sim-tag">.show-card .tag{border:0 !important; background:none !important; padding:0 !important; box-shadow:none !important; height:auto !important; min-height:0 !important; display:block !important;}</style>
+<style id="tk-premium">
+.tk{--tk-a:#ff7a1a;--tk-b:#ff0953;--tk-g:#1fbf75;--tk-y:#fbc608;}
+.tk-hero{position:relative;overflow:hidden;padding:clamp(70px,9vw,120px) 0 clamp(60px,8vw,100px);isolation:isolate;background:radial-gradient(1200px 600px at 78% 20%,rgba(255,122,26,.28),transparent 60%),radial-gradient(900px 560px at 8% 90%,rgba(31,191,117,.16),transparent 60%),radial-gradient(800px 500px at 50% 0%,rgba(255,9,83,.18),transparent 60%),#0a0812;}
+.tk-hero::before,.tk-hero::after{content:'';position:absolute;z-index:-1;width:140%;height:140%;left:-20%;top:-30%;background:conic-gradient(from 200deg at 80% 0%,transparent 0 30%,rgba(255,200,120,.16) 36%,transparent 42% 100%);animation:tk-sweep 14s ease-in-out infinite alternate;pointer-events:none;}
+.tk-hero::after{background:conic-gradient(from 150deg at 15% 0%,transparent 0 30%,rgba(255,9,83,.14) 35%,transparent 41% 100%);animation-duration:19s;animation-direction:alternate-reverse;}
+@keyframes tk-sweep{from{transform:rotate(-6deg)}to{transform:rotate(7deg)}}
+.tk-wrap{max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,48px);}
+.tk-grid{display:grid;grid-template-columns:1.02fr 1fr;gap:clamp(28px,5vw,72px);align-items:center;}
+.tk-crumb{display:inline-block;margin-bottom:22px;font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.14em;color:rgba(247,245,240,.6);text-decoration:none;}
+.tk-kicker{display:block;font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.34em;text-transform:uppercase;color:#e6c27e;margin-bottom:14px;}
+.tk-h1{margin:0;font-family:'League Spartan',sans-serif;font-weight:900;line-height:.9;font-size:clamp(3.2rem,9vw,7.2rem);letter-spacing:-.01em;text-transform:uppercase;}
+.tk-h1 .g{display:block;background:linear-gradient(100deg,#ffd08a 0%,#ff7a1a 35%,#ff0953 70%,#c4166d 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding:.16em 0 .06em;margin-top:-.1em;}
+.tk-h1 .o{display:block;color:transparent;-webkit-text-stroke:1.5px rgba(247,245,240,.85);font-size:.62em;letter-spacing:.14em;margin-top:.1em;}
+.tk-lead{margin:26px 0 0;max-width:520px;font-size:clamp(1.02rem,1.5vw,1.2rem);line-height:1.6;color:rgba(247,245,240,.82);}
+.tk-facts{display:flex;flex-wrap:wrap;gap:12px 34px;margin:30px 0 0;padding:0;list-style:none;}
+.tk-facts li{min-width:110px;padding-left:14px;border-left:2px solid rgba(230,194,126,.55);}
+.tk-facts strong{display:block;font-family:'League Spartan',sans-serif;font-weight:800;font-size:1.9rem;line-height:1;color:#fff;}
+.tk-facts span{display:block;margin-top:5px;font-size:.8rem;letter-spacing:.04em;color:rgba(247,245,240,.62);}
+.tk-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px;}
+.tk-stage{perspective:1400px;}
+.tk-card{position:relative;transform-style:preserve-3d;transform:rotateY(-11deg) rotateX(4deg);transition:transform .5s cubic-bezier(.2,.7,.2,1);will-change:transform;}
+.tk-card .frame{position:relative;border-radius:22px;padding:2px;background:linear-gradient(135deg,#ffd08a,#ff7a1a 40%,#ff0953 75%,#1fbf75);box-shadow:0 60px 90px -40px rgba(0,0,0,.9),0 0 90px -20px rgba(255,122,26,.55);}
+.tk-card .video16x9{border-radius:20px;overflow:hidden;background:#000;}
+.tk-card .glass{position:absolute;inset:0;border-radius:22px;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.18),transparent 32%);mix-blend-mode:screen;}
+.tk-refl{position:absolute;left:4%;right:4%;top:100%;height:44%;margin-top:14px;border-radius:18px;background:url(/images/tekila-scene-480.webp) center/cover;transform:scaleY(-1);opacity:.22;filter:blur(3px);-webkit-mask-image:linear-gradient(to top,#000,transparent 70%);mask-image:linear-gradient(to top,#000,transparent 70%);}
+.tk-badge{position:absolute;right:-14px;bottom:26px;transform:translateZ(60px);padding:12px 18px;border-radius:14px;background:rgba(12,10,20,.82);backdrop-filter:blur(8px);border:1px solid rgba(230,194,126,.5);font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#e6c27e;box-shadow:0 20px 40px -20px #000;}
+.tk-sec{position:relative;padding:clamp(60px,8vw,104px) 0;}
+.tk-sec::before{content:'';position:absolute;top:0;left:50%;width:min(1100px,86%);height:1px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,rgba(230,194,126,.45),transparent);}
+.tk-title{margin:0 0 clamp(26px,4vw,48px);font-family:'League Spartan',sans-serif;font-weight:900;text-transform:uppercase;font-size:clamp(1.7rem,4vw,2.9rem);line-height:1.02;letter-spacing:.01em;}
+.tk-title small{display:block;margin-bottom:12px;font-family:'DM Mono',monospace;font-weight:500;font-size:.72rem;letter-spacing:.34em;color:#e6c27e;}
+.tk-formats{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;perspective:1200px;}
+.tk-fmt{position:relative;padding:34px 28px 30px;border-radius:20px;background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.1);transform-style:preserve-3d;transition:transform .45s cubic-bezier(.2,.7,.2,1),border-color .3s,box-shadow .3s;overflow:hidden;}
+.tk-fmt::after{content:'';position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,var(--c),transparent 65%);opacity:.55;}
+.tk-fmt .n{font-family:'League Spartan',sans-serif;font-weight:900;font-size:4.4rem;line-height:.9;color:transparent;-webkit-text-stroke:1.5px var(--c);transform:translateZ(40px);}
+.tk-fmt h3{margin:16px 0 8px;font-size:1.5rem;text-transform:uppercase;letter-spacing:.04em;transform:translateZ(30px);}
+.tk-fmt p{margin:0;color:rgba(247,245,240,.74);line-height:1.55;}
+.tk-fmt:hover{border-color:var(--c);box-shadow:0 40px 70px -35px var(--c);}
+.tk-split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,70px);align-items:start;}
+.tk-chips{display:flex;flex-wrap:wrap;gap:10px;margin:0;padding:0;list-style:none;}
+.tk-chips li{padding:9px 16px;border-radius:100px;border:1px solid rgba(230,194,126,.45);font-size:.92rem;color:#f4e6c6;background:rgba(230,194,126,.06);}
+.tk-chips li.v{border-color:rgba(255,9,83,.6);background:rgba(255,9,83,.1);color:#ffd0dc;}
+.tk-songs{margin:0;padding:0;list-style:none;}
+.tk-songs li{display:flex;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1);font-family:'League Spartan',sans-serif;font-weight:800;font-size:clamp(1.15rem,2.4vw,1.7rem);text-transform:uppercase;letter-spacing:.02em;}
+.tk-songs li i{font-style:normal;font-family:'DM Mono',monospace;font-size:.72rem;color:#e6c27e;letter-spacing:.2em;}
+.tk-songs li.more{color:rgba(247,245,240,.55);font-size:1rem;font-weight:600;}
+.tk-proof{display:flex;flex-wrap:wrap;gap:14px 44px;align-items:center;margin:0;padding:0;list-style:none;}
+.tk-proof li{font-family:'League Spartan',sans-serif;font-weight:800;font-size:clamp(1.05rem,2vw,1.5rem);letter-spacing:.08em;text-transform:uppercase;color:rgba(247,245,240,.5);transition:color .3s;}
+.tk-proof li:hover{color:#fff;}
+.tk-quote{margin:46px 0 0;padding-left:26px;border-left:3px solid var(--tk-a);max-width:760px;}
+.tk-quote p{margin:0;font-family:'League Spartan',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,2.1rem);line-height:1.2;}
+.tk-quote cite{display:block;margin-top:12px;font-style:normal;font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:#e6c27e;}
+.tk-vid{max-width:960px;margin:0 auto;}
+.tk-vid .video16x9{border-radius:20px;overflow:hidden;box-shadow:0 50px 80px -40px rgba(0,0,0,.9),0 0 0 1px rgba(230,194,126,.3);}
+@media (max-width:900px){.tk-grid,.tk-split{grid-template-columns:1fr;}.tk-formats{grid-template-columns:1fr;}.tk-card{transform:rotateY(-5deg) rotateX(2deg);}.tk-badge{right:8px;}}
+@media (prefers-reduced-motion:reduce){.tk-hero::before,.tk-hero::after{animation:none}.tk-card,.tk-fmt{transition:none}}
+.tk-bg{position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(10,8,18,.55),rgba(10,8,18,.9) 80%),url(/images/tekila-scene-800.webp) center 100%/auto 175%;opacity:.5;filter:blur(2px) saturate(1.15);transform:scale(1.04);}
+.tk-mosaic{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:clamp(120px,15vw,210px);gap:14px;perspective:1400px;margin:0;padding:0;list-style:none;}
+.tk-mosaic li{position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1);}
+.tk-mosaic li:nth-child(1){grid-column:span 4;grid-row:span 2;}
+.tk-mosaic li:nth-child(2){grid-column:span 2;grid-row:span 2;}
+.tk-mosaic li:nth-child(3){grid-column:span 2;}
+.tk-mosaic li:nth-child(4){grid-column:span 2;}
+.tk-mosaic li:nth-child(5){grid-column:span 2;}
+.tk-mosaic a{display:block;position:absolute;inset:0;border-radius:18px;overflow:hidden;box-shadow:0 30px 50px -28px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.1);}
+.tk-mosaic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .4s;}
+.tk-mosaic a::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(10,8,18,.55));pointer-events:none;}
+.tk-mosaic li:hover{transform:translateZ(30px) rotateX(2deg);}
+.tk-mosaic li:hover img{transform:scale(1.06);}
+@media (max-width:760px){.tk-mosaic{grid-template-columns:repeat(2,1fr);grid-auto-rows:150px;}.tk-mosaic li:nth-child(n){grid-column:span 1;grid-row:span 1;}.tk-mosaic li:nth-child(1){grid-column:span 2;grid-row:span 2;}}
+.tk-player{max-width:860px;margin:0;padding:0;list-style:none;border-top:1px solid rgba(255,255,255,.1);}
+.tk-trk{display:grid;grid-template-columns:56px 1fr auto;gap:6px 18px;align-items:center;padding:16px 4px;border-bottom:1px solid rgba(255,255,255,.1);}
+.tk-play{grid-row:span 2;width:52px;height:52px;border-radius:50%;border:1px solid rgba(230,194,126,.6);background:rgba(230,194,126,.08);color:#f4e6c6;cursor:pointer;display:grid;place-items:center;transition:background .25s,transform .25s,box-shadow .25s;}
+.tk-play:hover{background:linear-gradient(135deg,#ff7a1a,#ff0953);border-color:transparent;color:#fff;transform:scale(1.06);box-shadow:0 14px 30px -12px rgba(255,9,83,.7);}
+.tk-play svg{width:20px;height:20px;fill:currentColor;}
+.tk-play .pa{display:none;}.tk-trk.on .tk-play .pl{display:none;}.tk-trk.on .tk-play .pa{display:block;}
+.tk-trk.on .tk-play{background:linear-gradient(135deg,#ff7a1a,#ff0953);border-color:transparent;color:#fff;}
+.tk-trk .nm{font-family:'League Spartan',sans-serif;font-weight:800;font-size:clamp(1.05rem,2.2vw,1.45rem);text-transform:uppercase;letter-spacing:.03em;}
+.tk-trk .by{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:#e6c27e;}
+.tk-trk .tm{font-family:'DM Mono',monospace;font-size:.78rem;color:rgba(247,245,240,.6);grid-row:span 2;}
+.tk-bar{grid-column:2/4;height:4px;border-radius:4px;background:rgba(255,255,255,.12);cursor:pointer;overflow:hidden;}
+.tk-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd08a,#ff7a1a,#ff0953);}
+.tk-note{margin:18px 0 0;font-size:.85rem;color:rgba(247,245,240,.55);}
+.tk-sub{margin:14px 0 0;font-family:'League Spartan',sans-serif;font-weight:800;font-size:clamp(1.2rem,2.6vw,1.9rem);letter-spacing:.2em;text-transform:uppercase;color:#f4e6c6;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a href="./" class="brand">
+      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="./">Home</a></li>
+        <li><a href="artistes" class="current">Artists &amp; Shows</a></li>
+        <li><a href="galerie">Gallery</a></li>
+        <li><a href="son-lumiere">Sound &amp; light</a></li>
+        <li><a href="contact" class="nav-cta">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/tekila-the-band" hreflang="fr" lang="fr">FR</a><a href="https://soundlightprod.com/en/tekila-the-band" hreflang="en" lang="en" class="on" aria-current="true">EN</a><a href="https://soundlightprod.com/es/tekila-the-band" hreflang="es" lang="es">ES</a><a href="https://soundlightprod.com/it/tekila-the-band" hreflang="it" lang="it">IT</a></div>
+    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="tk">
+<section class="tk-hero" id="top"><div class="tk-bg" aria-hidden="true"></div><div class="tk-wrap"><div class="tk-grid">
+  <div>
+    <a class="tk-crumb" href="groupes-de-reprises">← Cover bands</a>
+    <span class="tk-kicker">Live band</span>
+    <h1 class="tk-h1"><span class="g">Tékila</span><span class="o">The Band</span></h1><p class="tk-sub">Latino / Reggae</p>
+    <p class="tk-lead">The great Latin and reggae standards, past and present: an evening that heats up from the first note to the last.</p>
+    <ul class="tk-facts"><li><strong>2001</strong><span>on stage since</span></li><li><strong>≈ 100</strong><span>shows a year</span></li><li><strong>3 voices</strong><span>and multi-instrumentalists</span></li></ul>
+    <div class="tk-cta"><a href="contact?artiste=tekila-the-band&amp;nom=T%C3%A9kila%20The%20Band#contact-form" class="btn btn-primary" data-contact="devis">Get a quote for this show</a><a href="#extrait" class="btn btn-ghost">Watch another clip</a></div>
+  </div>
+  <div class="tk-stage"><div class="tk-card" id="tkCard"><div class="frame"><div class="video16x9"><iframe src="https://www.youtube-nocookie.com/embed/mQJ0TETQiUA" title="Tékila The Band, live clip" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="glass"></div></div><div class="tk-refl" aria-hidden="true"></div><span class="tk-badge">Duo · Trio · Quartet</span></div></div>
+</div></div></section>
+
+<section class="tk-sec"><div class="tk-wrap">
+  <h2 class="tk-title"><small>Gallery</small>On stage and behind the scenes</h2>
+  <ul class="tk-mosaic"><li><a href="/images/tekila-scene-full.webp"><img src="/images/tekila-scene-800.webp" srcset="/images/tekila-scene-480.webp 480w, /images/tekila-scene-800.webp 800w" sizes="(max-width:760px) 50vw, 40vw" alt="Tékila The Band in concert: guitar, keyboard and percussion under green spotlights" loading="lazy" decoding="async"></a></li><li><a href="/images/tekila-bridge-full.webp"><img src="/images/tekila-bridge-800.webp" srcset="/images/tekila-bridge-480.webp 480w, /images/tekila-bridge-800.webp 800w" sizes="(max-width:760px) 50vw, 40vw" alt="A Tékila The Band musician walking with his guitar by the water (black and white)" loading="lazy" decoding="async"></a></li><li><a href="/images/tekila-gang-full.webp"><img src="/images/tekila-gang-800.webp" srcset="/images/tekila-gang-480.webp 480w, /images/tekila-gang-800.webp 800w" sizes="(max-width:760px) 50vw, 40vw" alt="The four musicians of Tékila The Band" loading="lazy" decoding="async"></a></li><li><a href="/images/tekila-violet-full.webp"><img src="/images/tekila-violet-800.webp" srcset="/images/tekila-violet-480.webp 480w, /images/tekila-violet-800.webp 800w" sizes="(max-width:760px) 50vw, 40vw" alt="Tékila The Band portrait, purple mood" loading="lazy" decoding="async"></a></li><li><a href="/images/tekila-percu-full.webp"><img src="/images/tekila-percu-800.webp" srcset="/images/tekila-percu-480.webp 480w, /images/tekila-percu-800.webp 800w" sizes="(max-width:760px) 50vw, 40vw" alt="Tékila The Band's percussionist with his tambourine" loading="lazy" decoding="async"></a></li></ul>
+</div></section>
+
+<section class="tk-sec"><div class="tk-wrap">
+  <h2 class="tk-title"><small>Formats</small>The right size for your evening</h2>
+  <div class="tk-formats" id="tkFormats">
+    <div class="tk-fmt" style="--c:#ffb238"><div class="n">2</div><h3>Duo</h3><p>The intimate format, ideal for a warm atmosphere close to the audience.</p></div>
+    <div class="tk-fmt" style="--c:#ff0953"><div class="n">3</div><h3>Trio</h3><p>A balanced format: more depth, more colour, more energy.</p></div>
+    <div class="tk-fmt" style="--c:#1fbf75"><div class="n">4</div><h3>Quartet</h3><p>The fullest format, for a real Latin / reggae party.</p></div>
+  </div>
+</div></section>
+
+<section class="tk-sec" id="ecouter"><div class="tk-wrap">
+  <h2 class="tk-title"><small>Listen</small>Five tracks, in excerpts</h2>
+  <ul class="tk-player" id="tkPlayer"><li class="tk-trk" data-src="https://music.wixstatic.com/mp3/34925f_b9e25bbaa8864b5d9e4306035f3f0bc4.mp3"><button class="tk-play" type="button" aria-label="Play Chan Chan"><svg class="pl" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="pa" viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><span class="nm">Chan Chan</span><span class="tm">0:00</span><span class="by">Tékila The Band</span><div class="tk-bar" role="progressbar" aria-label="Progress"><i></i></div></li><li class="tk-trk" data-src="https://music.wixstatic.com/mp3/34925f_3f4c764fef6e4ac993ca6a04b8eb17b5.mp3"><button class="tk-play" type="button" aria-label="Play Samba Régina"><svg class="pl" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="pa" viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><span class="nm">Samba Régina</span><span class="tm">0:00</span><span class="by">Tékila The Band</span><div class="tk-bar" role="progressbar" aria-label="Progress"><i></i></div></li><li class="tk-trk" data-src="https://music.wixstatic.com/mp3/34925f_619fcc1ea5304b16b6e7663b0f4ef1f6.mp3"><button class="tk-play" type="button" aria-label="Play Monsieur William"><svg class="pl" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="pa" viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><span class="nm">Monsieur William</span><span class="tm">0:00</span><span class="by">Tékila The Band</span><div class="tk-bar" role="progressbar" aria-label="Progress"><i></i></div></li><li class="tk-trk" data-src="https://music.wixstatic.com/mp3/34925f_914e9c4e74254f068f095a9d00aca8c0.mp3"><button class="tk-play" type="button" aria-label="Play Hasta Siempre"><svg class="pl" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="pa" viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><span class="nm">Hasta Siempre</span><span class="tm">0:00</span><span class="by">Tékila The Band</span><div class="tk-bar" role="progressbar" aria-label="Progress"><i></i></div></li><li class="tk-trk" data-src="https://music.wixstatic.com/mp3/34925f_8162555cd69e47c48dc0a9b0d26074d1.mp3"><button class="tk-play" type="button" aria-label="Play I Shot the Sheriff"><svg class="pl" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="pa" viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button><span class="nm">I Shot the Sheriff</span><span class="tm">0:00</span><span class="by">Tékila The Band</span><div class="tk-bar" role="progressbar" aria-label="Progress"><i></i></div></li></ul>
+  <p class="tk-note">Recordings by the band, to give you an idea of their sound.</p>
+</div></section>
+
+<section class="tk-sec"><div class="tk-wrap tk-split">
+  <div>
+    <h2 class="tk-title"><small>The sound</small>Versatile musicians</h2>
+    <ul class="tk-chips"><li class="v">Three voices: a lead vocal and two backing voices</li><li>Electro-acoustic guitars</li><li>Electric guitars</li><li>Talk-box</li><li>Saxophone</li><li>Harmonica</li><li>Accordéon</li><li>Piano</li></ul>
+  </div>
+  <div>
+    <h2 class="tk-title"><small>Repertoire</small>Songs everyone knows</h2>
+    <ul class="tk-songs"><li><i>01</i>Chan Chan</li><li><i>02</i>Samba Régina</li><li><i>03</i>Monsieur William</li><li><i>04</i>Hasta Siempre</li><li><i>05</i>I Shot the Sheriff</li><li class="more"><i>···</i>and many other standards</li></ul>
+  </div>
+</div></section>
+
+<section class="tk-sec extrait" id="extrait"><div class="tk-wrap">
+  <h2 class="tk-title"><small>Watch</small>The band live</h2>
+  <div class="tk-vid"><div class="video16x9"><iframe id="videoFrame" src="https://www.youtube-nocookie.com/embed/4xwzWlFdu9I" title="Tékila The Band, live clip" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>
+</div></section>
+
+<section class="tk-sec"><div class="tk-wrap">
+  <h2 class="tk-title"><small>References</small>They trusted them</h2>
+  <ul class="tk-proof"><li>Canal +</li><li>Universal Music</li><li>Sony Entertainment</li><li>France Télévisions</li><li>Havana Club</li><li>Groupe Partouche</li></ul>
+  <blockquote class="tk-quote"><p>&ldquo;The Latin &amp; reggae combo not to be missed under any circumstances&rdquo;</p><cite>FAST Magazine</cite></blockquote>
+</div></section>
+</main>
+<script>
+(function(){
+  var rows=[].slice.call(document.querySelectorAll('#tkPlayer .tk-trk')),a=new Audio(),cur=null;a.preload='none';
+  function fmt(t){t=Math.max(0,Math.floor(t||0));return Math.floor(t/60)+':'+('0'+t%60).slice(-2);}
+  function reset(r){if(!r)return;r.classList.remove('on');r.querySelector('i').style.width='0';r.querySelector('.tm').textContent='0:00';}
+  rows.forEach(function(r){
+    r.querySelector('.tk-play').addEventListener('click',function(){
+      if(cur===r){ if(a.paused)a.play();else{a.pause();r.classList.remove('on');} return; }
+      reset(cur);cur=r;a.src=r.getAttribute('data-src');a.play().catch(function(){});r.classList.add('on');
+    });
+    r.querySelector('.tk-bar').addEventListener('click',function(e){ if(cur!==r||!a.duration)return; var b=this.getBoundingClientRect(); a.currentTime=a.duration*((e.clientX-b.left)/b.width); });
+  });
+  a.addEventListener('timeupdate',function(){ if(!cur||!a.duration)return; cur.querySelector('i').style.width=(a.currentTime/a.duration*100)+'%'; cur.querySelector('.tm').textContent=fmt(a.currentTime)+' / '+fmt(a.duration); });
+  a.addEventListener('ended',function(){ var i=rows.indexOf(cur); reset(cur); cur=null; if(rows[i+1]) rows[i+1].querySelector('.tk-play').click(); });
+  a.addEventListener('pause',function(){ if(cur&&!a.ended)cur.classList.remove('on'); });
+  a.addEventListener('play',function(){ if(cur)cur.classList.add('on'); });
+})();
+</script>
+<script>
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!matchMedia('(hover:hover)').matches)return;
+  var c=document.getElementById('tkCard');
+  if(c){var st=c.parentNode;st.addEventListener('mousemove',function(e){var r=st.getBoundingClientRect();var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform='rotateY('+(-11+x*14)+'deg) rotateX('+(4-y*10)+'deg)';});st.addEventListener('mouseleave',function(){c.style.transform='';});}
+  document.querySelectorAll('.tk-fmt').forEach(function(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform='rotateY('+(x*14)+'deg) rotateX('+(-y*14)+'deg) translateZ(10px)';});el.addEventListener('mouseleave',function(){el.style.transform='';});});
+})();
+</script>
+<section id="actus-section" style="display:none;">
+  <div class="wrap tight narrow">
+    <div class="section-head">
+      <span class="label">Actualités</span>
+      <h2>Quoi de neuf</h2>
+    </div>
+    <div class="actus-list" id="actus-list"></div>
+  </div>
+</section>
+
+
+
+<section class="cta-band">
+  <div class="wrap tight">
+    <span class="label">Want to book them?</span>
+    <h2>Book Tékila The Band<br>for your event</h2>
+    <p>A show selected and approved by SLP. We advise you, support you and coordinate all the logistics of your event. Quick first reply; detailed quote once we have checked your dates and needs.</p>
+    <div class="cta-row">
+      <a href="contact?artiste=tekila-the-band&amp;nom=T%C3%A9kila%20The%20Band#contact-form" class="btn btn-primary" data-contact="devis">Get a quote</a>
+      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>06 31 94 96 53</a>
+      <a href="https://wa.me/33631949653?text=Hello%2C%20I%27m%20contacting%20you%20about%20T%C3%A9kila%20The%20Band%20%28SLP%20website%29%3A%20" target="_blank" rel="noopener" class="btn btn-ghost cta-wa" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
+    </div>
+  </div>
+</section>
+<section><div class="wrap tight narrow"><div class="section-head"><span class="label">Also discover</span><h2>Similar shows</h2></div><ul class="show-grid three"><li><a class="show-card" href="noon-coverband"><img src="/images/noon-photo-1-480.webp" srcset="/images/noon-photo-1-480.webp 480w" sizes="(max-width:600px) 46vw, 300px" width="800" height="1043" alt="NooN Coverband on stage" loading="lazy" decoding="async"><span class="info"><span class="tag">Cover band</span><strong>NooN Coverband</strong><span class="go">View the show →</span></span></a></li><li><a class="show-card" href="the-fine-allies"><img src="/images/fine-allies-photo-1-800.webp" srcset="/images/fine-allies-photo-1-480.webp 480w, /images/fine-allies-photo-1-800.webp 800w, /images/fine-allies-photo-1-1200.webp 1200w" sizes="(max-width:600px) 46vw, 300px" width="800" height="532" alt="The Fine Allies on stage" loading="lazy" decoding="async"><span class="info"><span class="tag">Cover band</span><strong>The Fine Allies</strong><span class="go">View the show →</span></span></a></li></ul></div></section>
+
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
+      <div>
+        <h3>Sound Light Prod</h3>
+        <p>Event and artist management, sound and lighting, in France and Europe.</p>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <a href="./">Home</a>
+      <a href="artistes">Artists &amp; Shows</a>
+      <a href="son-lumiere">Sound &amp; light</a>
+      <a href="galerie">Gallery</a>
+      <a href="contact">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
+      <a href="tel:+33631949653" data-contact="appel">+33 6 31 94 96 53</a>
+    </div>
+    <div class="footer-col">
+      <h4>Follow us</h4>
+      <div class="social-row">
+        <a href="https://www.facebook.com/SoundlightP" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.8 8.6h1.9V5.9h-2.2c-2.3 0-3.7 1.5-3.7 3.8v1.6H7.6v2.8h2.2V21h3v-6.9h2.4l.4-2.8h-2.8V9.9c0-.8.3-1.3 1-1.3z"/></svg></a>
+        <a href="https://www.instagram.com/slp_france/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="https://www.youtube.com/channel/UC6dZffs_G3DbbZPNEhjisLg" target="_blank" rel="noopener" class="social-icon" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><polygon points="10 9.2 15.8 12 10 14.8" fill="currentColor" stroke="none"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <p class="legal">Sound Light Prod is a brand of SLP · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 · Live entertainment operator licences (categories 2 and 3): being issued — © 2026 · <a href="mentions-legales" style="color:inherit;">Legal notice</a></p>
+</footer>
+
+<script>
+(function(){
+  const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+  const ARTIST_SLUG = "tekila-the-band";
+
+  function formatDate(iso){
+    try {
+      const d = new Date(iso.slice(0,10) + 'T00:00:00');
+      return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
+    } catch(e){ return ''; }
+  }
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  fetch(`${API_BASE}/api/actualites?artist=${ARTIST_SLUG}`)
+    .then(r => r.ok ? r.json() : [])
+    .then(items => {
+      if (!items || !items.length) return;
+      const list = document.getElementById('actus-list');
+      if (!list) return;
+      list.innerHTML = items.map(a => {
+        const icon = { concert:'🎤', cabaret:'🎭', dj:'🎧' }[a.type] || '📣';
+        const dateLabel = a.event_date
+          ? formatDate(a.event_date) + (a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + formatDate(a.event_end_date) : '')
+          : formatDate(a.created_at);
+        const photo = a.photo_url ? `<img src="${a.photo_url}" alt="" loading="lazy" decoding="async">` : '';
+        const _lang = (document.documentElement.lang || 'fr').slice(0,2);
+        const _loc = { fr:'fr-FR', en:'en-GB', es:'es-ES', it:'it-IT' }[_lang] || 'fr-FR';
+        const _d = new Date(((a.event_date || a.created_at || '') + '').slice(0,10) + 'T12:00:00');
+        const _ok = !isNaN(_d);
+        const _days = _ok ? Math.round((_d - new Date(new Date().toDateString() + ' 12:00')) / 864e5) : null;
+        const _T = { fr:['Ce soir','Demain','Dans %d jours'], en:['Tonight','Tomorrow','In %d days'], es:['Esta noche','Mañana','En %d días'], it:['Stasera','Domani','Tra %d giorni'] }[_lang] || ['Ce soir','Demain','Dans %d jours'];
+        const _soon = a.event_date && _days !== null && _days >= 0 && _days <= 60 ? (_days === 0 ? _T[0] : _days === 1 ? _T[1] : _T[2].replace('%d', _days)) : '';
+        const _type = ({ fr:{concert:'Concert', cabaret:'Cabaret', dj:'Soirée DJ'}, en:{concert:'Concert', cabaret:'Cabaret', dj:'DJ night'}, es:{concert:'Concierto', cabaret:'Cabaret', dj:'Noche DJ'}, it:{concert:'Concerto', cabaret:'Cabaret', dj:'Serata DJ'} }[_lang] || {})[a.type] || '';
+        const cal = _ok ? `<div class="actu-cal"><span class="wd">${_d.toLocaleDateString(_loc,{weekday:'short'}).replace('.','')}</span><span class="dd">${_d.getDate()}</span><span class="mm">${_d.toLocaleDateString(_loc,{month:'short'}).replace('.','')}${a.event_end_date && a.event_end_date !== a.event_date ? ' → ' + formatDate(a.event_end_date) : ''}</span></div>` : '';
+        const meta = [
+          a.event_time ? `<span>🕐 ${escapeHtml(a.event_time)}</span>` : '',
+          [a.venue_name, a.venue_city].filter(Boolean).length ? `<span>📍 ${escapeHtml([a.venue_name, a.venue_city].filter(Boolean).join(', '))}</span>` : '',
+        ].filter(Boolean).join('');
+        return `
+          <div class="actu-item">
+            ${cal}
+            <div class="actu-body">
+              <span class="actu-date">${icon} ${_type || dateLabel}${_soon ? `<span class="soon">${_soon}</span>` : ''}</span>
+              <p>${escapeHtml(a.text)}</p>
+              ${meta ? `<p class="actu-meta">${meta}</p>` : ''}
+            </div>
+            ${photo}
+          </div>
+        `;
+      }).join('');
+      document.getElementById('actus-section').style.display = 'block';
+    })
+    .catch(()=>{});
+})();
+</script>
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="">
+</div>
+<!-- cta-contact:start (boutons de contact + suivi des clics) -->
+<style>
+  .cta-row .btn svg{vertical-align:-3px; margin-right:6px;}
+  .cta-wa{color:#25d366 !important;}
+  .ctabar{position:fixed; left:10px; right:10px; bottom:10px; z-index:250; display:none; gap:8px; padding:8px; border-radius:18px; background:rgba(12,11,16,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.12); box-shadow:0 10px 30px rgba(0,0,0,.4); transform:translateY(130%); transition:transform .3s ease;}
+  .ctabar.on{transform:none;}
+  .ctabar a{flex:1; display:flex; align-items:center; justify-content:center; gap:6px; min-height:46px; border-radius:12px; font-weight:700; font-size:.9rem; text-decoration:none; white-space:nowrap;}
+  .ctabar .b1{flex:1.6; background:#f7f5f0; color:#0c0b10;} .ctabar .b2{background:rgba(255,255,255,.08); color:#f7f5f0;} .ctabar .b3{background:#25d366; color:#08260f;}
+  @media (max-width:760px){ .ctabar{display:flex;} body{padding-bottom:76px;} }
+  @media (prefers-reduced-motion: reduce){ .ctabar{transition:none;} }
+</style>
+<nav class="ctabar" aria-label="Contact"><a class="b1" href="contact?artiste=tekila-the-band&amp;nom=T%C3%A9kila%20The%20Band#contact-form" data-contact="devis">Get a quote</a><a class="b2" href="tel:+33631949653" aria-label="Call" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Call</a><a class="b3" href="https://wa.me/33631949653?text=Hello%2C%20I%27m%20contacting%20you%20about%20T%C3%A9kila%20The%20Band%20%28SLP%20website%29%3A%20" target="_blank" rel="noopener" aria-label="WhatsApp" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg></a></nav>
+<script>
+(function(){
+  var slug = "en/tekila-the-band";
+  var bar = document.querySelector('.ctabar');
+  if (bar){
+    var band = document.querySelector('.cta-band'), bandVisible = false;
+    var upd = function(){ bar.classList.toggle('on', window.scrollY > 500 && !bandVisible); };
+    if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
+    window.addEventListener('scroll', upd, { passive:true }); upd();
+  }
+})();
+</script>
+<!-- cta-contact:end -->
+</body>
+<script>
+(function(){
+  window.openLightbox = function(src){
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxOverlay').classList.add('open');
+  };
+  window.closeLightbox = function(){
+    document.getElementById('lightboxOverlay').classList.remove('open');
+  };
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('.event-card img, .actu-item img');
+    if (!img) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openLightbox(img.src);
+  });
+})();
+</script>
+<script>
+(function(){
+  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
+  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
+  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
+  if (localStorage.getItem('slp_admin_token')) return;
+  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  (function(){try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("slp_notrack","1");if(/[?&]notrack=0/.test(location.search))localStorage.removeItem("slp_notrack");if(localStorage.getItem("slp_notrack"))return Promise.resolve();}catch(e){}return fetch.apply(window,arguments);})("/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ lang: "en", artist_slug: "tekila-the-band", session_id: sid, ref:(function(){try{var q=new URLSearchParams(location.search),s=q.get("utm_source")||(q.get("utm_medium")==="email"?"email":"");if(s){var c=(q.get("utm_campaign")||"").toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,50);return "https://emailing-"+s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")+(c?"."+c:"")+"/";}}catch(e){}return document.referrer;})() })
+  }).catch(function(){});
+})();
+</script>
+<script>
+document.querySelectorAll('.gal a, .tk-mosaic a').forEach(function(a){
+  a.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openLightbox(a.getAttribute('href')); });
+});
+</script>
+<style>
+/* artist-compact:start */
+  .page-hero{padding-top:96px; padding-bottom:34px;}
+  .page-hero h1{font-size:clamp(1.9rem,4vw,2.7rem); margin-bottom:12px;}
+  .page-hero p{font-size:1rem;}
+  .wrap.tight{padding-top:20px; padding-bottom:20px;}
+  .section-head{margin-bottom:18px;}
+  .section-head .label{margin-bottom:8px;}
+  .section-head h2{font-size:clamp(1.25rem,2.4vw,1.65rem);}
+  .bio-wrap{gap:34px !important; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) !important; align-items:center !important;}
+  .bio-wrap .logo-frame{aspect-ratio:4/3 !important; height:auto; max-height:300px; padding:18px; align-self:center !important;}
+  .bio-wrap .logo-frame.ph-frame{min-height:0 !important; padding:0 !important; position:relative;}
+  @media (max-width:700px){ .bio-wrap{grid-template-columns:1fr !important; gap:20px !important;} .bio-wrap .logo-frame{max-width:100%; max-height:240px;} .photo-grid{grid-template-columns:repeat(2,1fr);} .photo-grid a.wide{grid-column:span 2;} }
+  .bio-text p{font-size:.95rem; line-height:1.55; margin-bottom:12px;}
+  .members-grid{gap:12px;}
+  .video-wrap, .wrap.narrow > div[style*="aspect-ratio:16/9"]{max-width:640px;}
+  .video-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;}
+  .video-grid .video-wrap{max-width:none;}
+  .photo-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; height:auto;}
+  .photo-grid a{display:block; border-radius:12px; overflow:hidden; aspect-ratio:1/1; background:var(--ink-2); cursor:zoom-in;}
+  .photo-grid img{width:100%; height:100%; object-fit:cover; object-position:center 25%; display:block; transition:transform .4s ease;}
+  .photo-grid a:hover img{transform:scale(1.05);}
+  .photo-grid a.wide{grid-column:span 2; aspect-ratio:2/1;}
+  .photo-grid a.poster img{object-fit:contain; background:#0a0a0c;}
+  .banner-photo{max-width:380px !important; margin-left:auto !important; margin-right:auto !important;}
+  .single-photo{max-width:520px; margin-left:auto; margin-right:auto;}
+  .venue-card{padding:12px 16px;}
+  .info-grid{gap:18px;}
+  .cta-band .wrap.tight{padding-top:40px; padding-bottom:44px;}
+  .cta-band h2{font-size:clamp(1.6rem,3.6vw,2.3rem); margin-bottom:12px;}
+  .cta-band p{font-size:.98rem; margin-bottom:22px;}
+/* artist-compact:end */
+</style>
+</html>
