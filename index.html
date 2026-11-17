@@ -650,5 +650,45 @@ html,body{overflow-x:clip}
 .about-pledges{display:flex; flex-wrap:wrap; gap:10px 22px; margin:0; padding:0; list-style:none; font-weight:600; font-size:.92rem;}
 .about-pledges li::before{content:'\2713'; margin-right:8px; color:var(--amber);}
 @media (max-width:760px){ .about-stats{grid-template-columns:1fr;} }
+
+/* ================= HAUT DE GAMME : finitions ================= */
+:root{--gold-soft:#e6c27e; --hair:rgba(255,255,255,.09);}
+body{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+/* filets fins entre les sections */
+.selection,.about,.how,.univers,.faq-home{position:relative;}
+.about::before,.how::before,.univers::before,.faq-home::before{content:''; position:absolute; top:0; left:50%; width:min(1200px,86%); height:1px; transform:translateX(-50%); background:linear-gradient(90deg,transparent,rgba(230,194,126,.45),transparent);}
+/* respiration */
+.about .wrap{padding-top:76px; padding-bottom:36px;}
+.how .wrap{padding-top:76px; padding-bottom:40px;}
+.univers .wrap,.faq-home .wrap{padding-top:76px;}
+/* petits titres : filet doré à la place du point, lettrage espacé */
+.section-head .label,.label{letter-spacing:.3em; color:var(--gold-soft); font-size:.72rem;}
+.label::before{width:30px; height:1px; border-radius:0; background:var(--gold-soft); box-shadow:none; margin-right:14px; vertical-align:middle;}
+.section-head h2{letter-spacing:.03em;}
+/* cartes : verre sombre, bord fin, relief discret */
+.step,.about-stats li,.univ-grid a,.faq-list details{background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.012)) !important; border:1px solid var(--hair) !important; border-radius:16px; box-shadow:0 22px 44px -28px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.06); transition:transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s, box-shadow .35s;}
+.univ-grid a:hover,.step:hover,.about-stats li:hover{transform:translateY(-4px); border-color:rgba(230,194,126,.5) !important; box-shadow:0 30px 56px -26px rgba(0,0,0,.95), 0 0 0 1px rgba(230,194,126,.08);}
+.show-card{border-color:var(--hair); box-shadow:0 26px 50px -30px rgba(0,0,0,.95); transition:transform .4s cubic-bezier(.2,.7,.2,1), border-color .3s;}
+.show-card:hover{transform:translateY(-5px); border-color:rgba(230,194,126,.6);}
+/* chiffres clés en or */
+.about-stats strong{background:linear-gradient(135deg,#f8e8bf,#d9a441 60%,#b9822a) !important; -webkit-background-clip:text !important; background-clip:text !important; color:transparent !important; letter-spacing:.01em;}
+.about-pledges li::before{color:var(--gold-soft);}
+/* numéros d'étapes */
+.how .step::before{background:linear-gradient(135deg,#f8e8bf,#d9a441); -webkit-background-clip:text; background-clip:text; color:transparent !important;}
+/* FAQ : chevron fin au lieu du triangle */
+.faq-list summary{list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px; letter-spacing:.01em;}
+.faq-list summary::-webkit-details-marker{display:none;}
+.faq-list summary::after{content:'+'; font-weight:300; font-size:1.5rem; line-height:1; color:var(--gold-soft); transition:transform .3s;}
+.faq-list details[open] summary::after{transform:rotate(45deg);}
+.faq-list details[open]{border-color:rgba(230,194,126,.35) !important;}
+/* boutons : relief et lueur discrète */
+.btn{transition:transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s, background .3s;}
+.btn-primary{box-shadow:0 10px 30px -12px rgba(255,255,255,.35);}
+.btn:hover{transform:translateY(-2px);}
+.btn-ghost,.btn-secondary{border-color:rgba(255,255,255,.28) !important;}
+@media (min-width:900px){ .univ-grid{grid-template-columns:repeat(3,1fr) !important;} }
+.univ-grid .n{color:var(--gold-soft) !important; letter-spacing:.22em;}
+.univ-grid a{padding:24px 24px !important;}
+@media (prefers-reduced-motion:reduce){ .step,.about-stats li,.univ-grid a,.show-card,.btn{transition:none;} .univ-grid a:hover,.step:hover,.about-stats li:hover,.show-card:hover,.btn:hover{transform:none;} }
 </style>
 </html>
