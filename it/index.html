@@ -651,7 +651,7 @@
   if('IntersectionObserver' in window){var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){build(true);io.disconnect();}},{rootMargin:'200px'});io.observe(c);}else{build(true);}
   function cmd(fn,args){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(e){}}
   snd.addEventListener('click',function(){on=!on;if(on){cmd('unMute');cmd('setVolume',[100]);cmd('playVideo');}else{cmd('mute');}
-    snd.textContent=on?'🔊 Disattiva l\'audio':'🔇 Attiva l'audio';snd.setAttribute('aria-pressed',on?'true':'false');});
+    snd.textContent=on?'🔊 Disattiva l\'audio':'🔇 Attiva l\'audio';snd.setAttribute('aria-pressed',on?'true':'false');});
 })();
 </script>
 </body>
