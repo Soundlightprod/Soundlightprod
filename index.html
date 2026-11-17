@@ -357,12 +357,27 @@ html{scroll-padding-top:96px;}
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.fr/">
 <meta property="og:type" content="website"><meta property="og:title" content="Sound Light Prod : tributes, magie, groupes live, DJ, son &amp; lumière"><meta property="og:description" content="Tributes 100 % live, cabaret, magie, groupes de reprises, DJ, son et lumière pour mairies, comités des fêtes et galas. Devis gratuit, partout en France."><meta property="og:url" content="https://soundlightprod.fr/"><meta property="og:image" content="https://soundlightprod.fr/abba-photo-1.jpg"><script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://soundlightprod.fr/#org", "name": "SLP Sound Light Prod", "url": "https://soundlightprod.fr/", "logo": "https://soundlightprod.fr/slp-logo-complet.png", "telephone": "+33631949653", "areaServed": "FR", "description": "Tributes, spectacles cabaret, groupes de reprises, DJ, son et lumière pour mairies, comités des fêtes et soirées privées."}, {"@type": "WebSite", "name": "SLP Sound Light Prod", "url": "https://soundlightprod.fr/", "publisher": {"@id": "https://soundlightprod.fr/#org"}}]}</script>
-<style id="bas-photos">
-.step{display:flex;flex-direction:column}
-.step img{order:-1;width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:14px}
-.faq-banner{display:block;width:100%;height:220px;object-fit:cover;border-radius:18px;margin:0 0 20px}
+<style id="bas-premium">
+section.how .section-head,section.faq-home .section-head{display:block !important;text-align:center;margin:0 auto 34px;max-width:720px}
+section.how .section-head .label,section.faq-home .section-head .label{display:block;margin-bottom:12px;color:var(--gold-soft)}
+section.how .section-head h2,section.faq-home .section-head h2{font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.15;margin:0}
+.section-sub{color:var(--muted);font-size:1.02rem;line-height:1.55;margin:12px auto 0;max-width:52ch}
+.how .wrap,.faq-home .wrap{padding-top:72px;padding-bottom:36px}
+section.how .steps .steps{gap:24px}
+section.how .steps .step{display:flex !important;flex-direction:column;padding:0 !important;overflow:hidden !important;border-radius:20px !important;background:var(--ink-2) !important;border:1px solid var(--hair) !important;border-top:1px solid var(--hair) !important}
+section.how .steps .step::before{position:absolute;top:14px;left:14px;z-index:2;margin:0;width:42px !important;height:42px !important;display:flex !important;align-items:center !important;justify-content:center !important;line-height:1 !important;padding:0 !important;box-sizing:border-box;border-radius:50%;background:rgba(12,10,20,.78) !important;-webkit-background-clip:border-box;background-clip:border-box;color:var(--gold-soft) !important;-webkit-text-fill-color:var(--gold-soft);font-size:1rem !important;font-weight:700;border:1px solid rgba(230,194,126,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+section.how .steps .step img{display:block;width:100% !important;height:190px !important;object-fit:cover;margin:0;border-radius:0;order:-1}
+section.how .steps .step h3{font-size:1.2rem;line-height:1.25;margin:0;padding:22px 24px 8px !important}
+section.how .steps .step p{font-size:.96rem;line-height:1.6;padding:0 24px 26px !important;color:var(--muted)}
+.faq-grid{display:grid;grid-template-columns:5fr 7fr;gap:36px;align-items:stretch}
+.faq-photo{width:100%;height:100%;min-height:360px;object-fit:cover;object-position:62% center;border-radius:20px;border:1px solid var(--hair)}
+.faq-grid .faq-list{align-self:center}
+.faq-list summary{font-size:1.02rem}
 .cta-band{background-image:linear-gradient(rgba(10,8,20,.80),rgba(10,8,20,.90)),url(images/abba-photo-1-1200.webp) !important;background-size:cover !important;background-position:center !important}
-@media (max-width:760px){.step img{height:130px}.faq-banner{height:150px}}
+.cta-band .wrap.tight{padding-top:64px;padding-bottom:64px}
+.cta-band h2{font-size:clamp(1.9rem,4vw,2.8rem)}
+@media (max-width:900px){.faq-grid{grid-template-columns:1fr}.faq-photo{min-height:0;height:200px}}
+@media (max-width:760px){section.how .steps .step img{height:170px}.how .wrap,.faq-home .wrap{padding-top:52px}}
 </style>
 </head>
 <body>
@@ -433,10 +448,10 @@ html{scroll-padding-top:96px;}
 
 <section class="how" id="how">
   <div class="wrap">
-    <div class="section-head"><span class="label">Comment ça se passe</span><h2><b>Un accompagnement</b> en trois étapes</h2></div>
+    <div class="section-head"><span class="label">Comment ça se passe</span><h2><b>Un accompagnement</b> en trois étapes</h2><p class="section-sub">De votre premier message jusqu’au jour J, un seul interlocuteur.</p></div>
     <div class="steps">
       <div class="step"><img src="images/panache-photo-1-480.webp" width="480" height="270" alt="" loading="lazy" decoding="async"><h3>Vous décrivez votre projet</h3><p>Date, lieu, public, ambiance : un échange rapide suffit pour cerner votre besoin.</p></div>
-      <div class="step"><img src="images/calo-photo-1-480.webp" width="480" height="270" alt="" loading="lazy" decoding="async"><h3>Nous vous proposons une sélection et un devis</h3><p>Après vérification des disponibilités et de vos besoins, vous recevez une proposition claire et sans engagement. Elle précise ce qui est inclus et ce qui est facturé à part (technique, voyages, hôtels, restauration), avec une option forfait tout compris si vous le souhaitez.</p></div>
+      <div class="step"><img src="images/calo-photo-1-480.webp" width="480" height="270" alt="" loading="lazy" decoding="async"><h3>Vous recevez une sélection et un devis</h3><p>Après vérification des disponibilités, vous recevez une proposition claire et sans engagement. Elle détaille ce qui est inclus et ce qui est facturé à part (technique, voyages, hôtels, restauration). Un forfait tout compris est possible sur demande.</p></div>
       <div class="step"><img src="images/abba-photo-1-480.webp" width="480" height="270" alt="" loading="lazy" decoding="async"><h3>Nous coordonnons jusqu&rsquo;au jour J</h3><p>Contrats, planning, accueil des artistes : un seul interlocuteur du premier échange jusqu&rsquo;à la fin de votre événement.</p></div>
     </div>
   </div>
@@ -446,13 +461,15 @@ html{scroll-padding-top:96px;}
 <section class="faq-home" id="faq">
   <div class="wrap">
     <div class="section-head"><span class="label">Questions d&rsquo;organisateurs</span><h2><b>Avant de demander</b> un devis</h2></div>
-    <img class="faq-banner" src="images/kool-photo-1-1200.webp" width="1200" height="400" alt="" loading="lazy" decoding="async">
+    <div class="faq-grid">
+    <img class="faq-photo" src="images/calo-photo-1-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async">
     <div class="faq-list">
       <details><summary>Je n&rsquo;ai pas encore choisi d&rsquo;artiste</summary><p>Décrivez-nous votre événement (date, lieu, public, ambiance) : nous vous proposons une sélection adaptée. Vous pouvez aussi parcourir les <a href="#spectacles">spectacles</a> ou le <a href="artistes">catalogue complet</a>.</p></details>
       <details><summary>La date est-elle disponible ?</summary><p>Nous vérifions la disponibilité du spectacle après votre demande. Le devis détaillé vous est envoyé une fois la date et vos besoins vérifiés.</p></details>
       <details><summary>Que comprend la proposition ?</summary><p>Le devis est gratuit et sans engagement. Il précise ce qui est inclus et ce qui est facturé à part (technique, voyages, hôtels, restauration), pour que vous sachiez exactement ce que vous commandez. Si vous préférez un budget unique, nous pouvons aussi vous proposer un forfait tout compris, sur demande.</p></details>
       <details><summary>Que se passe-t-il si l&rsquo;artiste ne peut pas venir ?</summary><p>Le contrat prévoit le remplacement de l&rsquo;artiste en cas d&rsquo;annulation. Votre interlocuteur SLP s&rsquo;occupe de la solution, vous n&rsquo;avez pas à rechercher un autre spectacle vous-même.</p></details>
       <details><summary>Intervenez-vous près de chez nous ?</summary><p>Oui, nous travaillons partout en France et en Europe, avec mairies, comités des fêtes, entreprises, associations et particuliers.</p></details>
+    </div>
     </div>
   </div>
 </section>
