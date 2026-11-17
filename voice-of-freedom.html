@@ -195,6 +195,14 @@
 .cta-band .wrap.tight{padding-top:64px !important;padding-bottom:64px !important}
 .cta-band h2{font-size:clamp(1.9rem,4vw,2.8rem) !important}
 </style>
+<style id="un-seul-devis">
+@media (max-width:760px){
+.ctabar ~ * a[data-contact="devis"],body:has(.ctabar) a[data-contact="devis"]:not(.b1){display:none !important}
+body:has(.ctabar) .cta-band .cta-row{display:none !important}
+body:has(.ctabar) .cta-band .wrap.tight{padding-top:44px !important;padding-bottom:44px !important}
+body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
+}
+</style>
 </head>
 <body>
 
@@ -447,7 +455,7 @@
   var bar = document.querySelector('.ctabar');
   if (bar){
     var band = document.querySelector('.cta-band'), bandVisible = false;
-    var upd = function(){ bar.classList.toggle('on', window.scrollY > 500 && !bandVisible); };
+    var upd = function(){ bar.classList.toggle('on', window.scrollY > 500); };
     if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
     window.addEventListener('scroll', upd, { passive:true }); upd();
   }
