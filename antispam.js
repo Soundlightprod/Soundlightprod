@@ -71,8 +71,17 @@
     });
   }
   window.__slpTsReady = function () { if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount); };
-  var s = document.createElement('script');
-  s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__slpTsReady';
-  s.async = true; s.defer = true;
-  document.head.appendChild(s);
+  // Chargé à la demande : seulement sur une page avec formulaire, ou quand le visiteur ouvre le chat.
+  // Ainsi le contrôle Cloudflare n'apparaît jamais sur une simple page de consultation.
+  var started = false;
+  function startTs() {
+    if (started) return; started = true;
+    var s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__slpTsReady';
+    s.async = true; s.defer = true;
+    document.head.appendChild(s);
+  }
+  window.slpAS.need = startTs;
+  function auto() { if (document.getElementById('devis-form') || document.getElementById('f')) startTs(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', auto); else auto();
 })();
