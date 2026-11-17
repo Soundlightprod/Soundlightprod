@@ -300,7 +300,6 @@
     <div class="section-head"><span class="label">Chi siamo</span><h2>Produttore e distributore di spettacoli</h2></div>
     <p class="about-lead">Sound Light Prod seleziona, produce e distribuisce spettacoli per comuni, comitati festa, associazioni, aziende e privati. Il nostro team riunisce 20 anni di esperienza in animazione, sonorizzazione e illuminazione e 10 anni nella distribuzione e produzione di spettacoli: sappiamo cosa rende riuscito uno spettacolo e cosa serve perché tutto fili liscio. Distribuiamo spettacoli in tutta Europa e in Canada.</p>
     <ul class="about-stats"><li><strong>20 anni</strong><span>di esperienza in animazione, sonorizzazione e illuminazione</span></li><li><strong>10 anni</strong><span>nella distribuzione e produzione di spettacoli</span></li><li><strong>24 h</strong><span>per ricevere il preventivo</span></li></ul>
-    <ul class="about-pledges"><li>Spettacoli selezionati e approvati da SLP</li><li>Un unico interlocutore dall&rsquo;inizio alla fine</li><li>Sostituzione dell&rsquo;artista in caso di annullamento</li></ul>
   </div>
 </section>
 
@@ -688,6 +687,11 @@ html,body{overflow-x:clip}
 .about-stats span{display:block; margin-top:6px; font-size:.9rem; line-height:1.4; color:var(--muted);}
 .about-pledges{display:flex; flex-wrap:wrap; gap:10px 22px; margin:0; padding:0; list-style:none; font-weight:600; font-size:.92rem;}
 .about-pledges li::before{content:'\2713'; margin-right:8px; color:var(--amber);}
+.section-head h2,.about .section-head h2,.how .section-head h2{font-size:clamp(1.2rem,2.2vw,1.6rem);}
+.about-lead{font-size:.95rem;}
+.about-stats strong{font-size:clamp(1.5rem,3vw,2rem);}
+.about-stats span{font-size:.86rem;}
+.cta-band h2{font-size:clamp(1.4rem,3vw,2rem);}
 @media (max-width:760px){ .about-stats{grid-template-columns:1fr;} }
 </style>
 </html>

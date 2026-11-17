@@ -300,7 +300,6 @@
     <div class="section-head"><span class="label">Who we are</span><h2>Show producer and distributor</h2></div>
     <p class="about-lead">Sound Light Prod selects, produces and books shows for town halls, festival committees, associations, companies and private clients. Our team brings 20 years of experience in entertainment, sound and lighting, and 10 years in distributing and producing shows: we know what makes a great show, and what it takes to make it run smoothly. We book shows throughout Europe and in Canada.</p>
     <ul class="about-stats"><li><strong>20 years</strong><span>of experience in entertainment, sound and lighting</span></li><li><strong>10 years</strong><span>in distributing and producing shows</span></li><li><strong>24 h</strong><span>to receive your quote</span></li></ul>
-    <ul class="about-pledges"><li>Shows selected and approved by SLP</li><li>One point of contact from start to finish</li><li>Artist replacement in case of cancellation</li></ul>
   </div>
 </section>
 
@@ -688,6 +687,11 @@ html,body{overflow-x:clip}
 .about-stats span{display:block; margin-top:6px; font-size:.9rem; line-height:1.4; color:var(--muted);}
 .about-pledges{display:flex; flex-wrap:wrap; gap:10px 22px; margin:0; padding:0; list-style:none; font-weight:600; font-size:.92rem;}
 .about-pledges li::before{content:'\2713'; margin-right:8px; color:var(--amber);}
+.section-head h2,.about .section-head h2,.how .section-head h2{font-size:clamp(1.2rem,2.2vw,1.6rem);}
+.about-lead{font-size:.95rem;}
+.about-stats strong{font-size:clamp(1.5rem,3vw,2rem);}
+.about-stats span{font-size:.86rem;}
+.cta-band h2{font-size:clamp(1.4rem,3vw,2rem);}
 @media (max-width:760px){ .about-stats{grid-template-columns:1fr;} }
 </style>
 </html>
