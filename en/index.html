@@ -297,15 +297,14 @@
 
 <section class="about" id="about">
   <div class="wrap">
-    <div class="section-head"><span class="label">Who we are</span><h2>Show producer and distributor</h2></div>
-    <p class="about-lead">Sound Light Prod selects, produces and books shows for town halls, festival committees, associations, companies and private clients. Our team brings 20 years of experience in entertainment, sound and lighting, and 10 years in distributing and producing shows: we know what makes a great show, and what it takes to make it run smoothly. We book shows throughout Europe and in Canada.</p>
+    <div class="about-grid"><div class="about-copy"><div class="section-head"><span class="label">Who we are</span><h2><b>Show producer</b> and distributor</h2></div><p class="about-lead">Sound Light Prod selects, produces and books shows for town halls, festival committees, associations, companies and private clients. Our team brings 20 years of experience in entertainment, sound and lighting, and 10 years in distributing and producing shows: we know what makes a great show, and what it takes to make it run smoothly. We book shows throughout Europe and in Canada.</p></div><figure class="about-photo"><div class="ap-clip"><img src="/images/kool-photo-1-800.webp" srcset="/images/kool-photo-1-800.webp 800w, /images/kool-photo-1-1200.webp 1200w" sizes="(max-width:860px) 90vw, 480px" width="1200" height="676" alt="Kool &amp; the Gang tribute on stage in front of the audience" loading="lazy" decoding="async"></div></figure></div>
     <ul class="about-stats"><li><strong>20 years</strong><span>of experience in entertainment, sound and lighting</span></li><li><strong>10 years</strong><span>in distributing and producing shows</span></li><li><strong>24 h</strong><span>to receive your quote</span></li></ul>
   </div>
 </section>
 
 <section class="how" id="how">
   <div class="wrap">
-    <div class="section-head"><span class="label">How it works</span><h2>Simple, from the first call to the final encore</h2></div>
+    <div class="section-head"><span class="label">How it works</span><h2><b>Simple,</b> from the first call to the final encore</h2></div>
     <div class="steps"><div class="step"><h3>Tell us about your project</h3><p>Date, venue, audience, atmosphere: a quick chat is all it takes to understand your needs.</p></div><div class="step"><h3>We send you a proposal</h3><p>A selection of shows and a clear, no-obligation quote within a few days.</p></div><div class="step"><h3>We organise everything</h3><p>Contracts, schedule, technical set-up, artist hospitality: we coordinate every detail.</p></div><div class="step"><h3>On the day, we are there</h3><p>Set-up, soundcheck, show, load-out: you enjoy, we handle it.</p></div></div>
   </div>
 </section>
@@ -315,7 +314,7 @@
     <div class="artists-head">
       <div>
         <span class="label">Our artists</span>
-        <h2>Artists ready<br>to set your stage on fire</h2>
+        <h2><b>Artists ready</b><br>to set your stage on fire</h2>
       </div>
       <a href="artistes" class="btn btn-ghost">See all artists →</a>
     </div>
@@ -510,7 +509,7 @@
 
 <section id="spectacle">
   <div class="wrap">
-    <div class="section-head"><span class="label">What we do</span><h2>Quality shows, a complete service</h2></div>
+    <div class="section-head"><span class="label">What we do</span><h2><b>Quality shows,</b> a complete service</h2></div>
     <div class="metiers2">
       <article class="met">
         <div class="met-pic"><img src="/abba-photo-2.jpg" srcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="" loading="lazy"></div>
@@ -528,7 +527,7 @@
 
 <section>
   <div class="wrap">
-    <div class="section-head"><span class="label">Who we work with</span><h2>We work for you</h2></div>
+    <div class="section-head"><span class="label">Who we work with</span><h2><b>We work</b> for you</h2></div>
     <div class="publics"><div class="pub"><div class="glow"></div><h3>Town halls &amp; festival committees</h3><p>Organising your town's festivities? We offer shows that bring every generation together, with all the paperwork handled.</p><div class="chips"><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Music day</span></div></div><div class="pub"><div class="glow"></div><h3>Companies &amp; works councils</h3><p>Gala, annual party, seminar or opening: a tailor-made show to impress your guests and enhance your event.</p><div class="chips"><span>Galas</span><span>Corporate parties</span><span>Seminars</span><span>Openings</span></div></div><div class="pub"><div class="glow"></div><h3>Private clients &amp; associations</h3><p>Wedding, birthday, private party or one-off event: we adapt the package to your venue, your guests and your budget.</p><div class="chips"><span>Weddings</span><span>Private parties</span><span>Birthdays</span><span>One-off events</span></div></div></div>
   </div>
 </section>
@@ -611,6 +610,30 @@
 })();
 </script>
 <!-- cta-contact:end -->
+
+<script>
+(function(){
+  var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var st=document.querySelector('.af-stage');
+  if(st){
+    var sl=[].slice.call(st.querySelectorAll('.af-slide')),dots=st.querySelector('.af-dots'),i=0,t=null,paused=false;
+    sl.forEach(function(_,k){var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Spectacle '+(k+1));b.addEventListener('click',function(){go(k);});dots.appendChild(b);});
+    function go(n){i=(n+sl.length)%sl.length;sl.forEach(function(s,k){s.classList.toggle('on',k===i);s.setAttribute('aria-hidden',k===i?'false':'true');s.tabIndex=k===i?0:-1;});[].forEach.call(dots.children,function(d,k){d.setAttribute('aria-current',k===i?'true':'false');});}
+    function loop(){clearInterval(t);if(rm)return;t=setInterval(function(){if(!paused&&!document.hidden)go(i+1);},6000);}
+    st.querySelector('.af-prev').addEventListener('click',function(){go(i-1);loop();});
+    st.querySelector('.af-next').addEventListener('click',function(){go(i+1);loop();});
+    st.addEventListener('mouseenter',function(){paused=true;});st.addEventListener('mouseleave',function(){paused=false;});
+    st.addEventListener('focusin',function(){paused=true;});st.addEventListener('focusout',function(){paused=false;});
+    go(0);loop();
+  }
+  var ap=document.querySelector('.ap-clip');
+  if(ap&&!rm){
+    var im=ap.querySelector('img'),tick=false;
+    function upd(){tick=false;var r=ap.getBoundingClientRect(),h=innerHeight;if(r.bottom<0||r.top>h)return;var p=((r.top+r.height/2)-h/2)/h;im.style.setProperty('--py',(p*-46).toFixed(1)+'px');}
+    addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd);}},{passive:true});addEventListener('resize',upd);upd();
+  }
+})();
+</script>
 </body>
 <script>
 (function(){
@@ -693,5 +716,19 @@ html,body{overflow-x:clip}
 .about-stats span{font-size:.86rem;}
 .cta-band h2{font-size:clamp(1.4rem,3vw,2rem);}
 @media (max-width:760px){ .about-stats{grid-template-columns:1fr;} }
+
+:root{--gold-soft:#e6c27e;}
+/* ---- accueil : titres à deux graisses, photo cadrée (Qui sommes-nous) ---- */
+.section-head h2{font-weight:500; color:#cfc7b6;}
+.section-head h2 b{font-weight:800; color:var(--paper);}
+.section-head h2::after{content:''; display:block; width:56px; height:3px; border-radius:2px; background:var(--spectre); margin-top:14px;}
+.how .section-head h2::after{display:none;}
+.about-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:clamp(28px,5vw,72px); align-items:center; margin-bottom:34px;}
+.about-copy .section-head{margin-bottom:18px;} .about-copy .about-lead{margin:0;}
+.about-photo{position:relative; margin:0 18px 18px 0;}
+.about-photo::before{content:''; position:absolute; inset:18px -18px -18px 18px; border:1px solid var(--gold-soft); border-radius:20px; opacity:.7; pointer-events:none;}
+.ap-clip{position:relative; overflow:hidden; border-radius:20px; aspect-ratio:4/3; background:var(--ink-2); box-shadow:0 40px 70px -40px rgba(0,0,0,.95);}
+.ap-clip img{position:absolute; left:0; top:-9%; width:100%; height:118%; object-fit:cover; will-change:transform; transform:translate3d(0,var(--py,0px),0);}
+@media (max-width:860px){ .about-grid{grid-template-columns:1fr;} .about-photo{margin:0 14px 14px 0; order:2;} }
 </style>
 </html>
