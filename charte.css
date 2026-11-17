@@ -34,6 +34,8 @@ h3{font-weight:800; letter-spacing:-0.01em; line-height:1.1;}
 .accent,.hero h1 .accent{padding:.14em 0 .04em; -webkit-box-decoration-break:clone; box-decoration-break:clone; background:var(--spectre) !important; -webkit-background-clip:text !important; background-clip:text !important; color:transparent !important;}
 ::selection{background:var(--rouge); color:#fff;}
 
+@font-face{font-family:'Caveat';font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/caveat-latin-600-normal.woff2) format('woff2');}
+
 /* ---------- En-tête & logo ---------- */
 header{background:rgba(12,10,20,0.88) !important; border-bottom:0 !important;}
 header::after{content:''; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--spectre); opacity:.9;}
@@ -162,7 +164,7 @@ footer::before{content:''; position:absolute; left:0; right:0; top:0; height:4px
 @media (min-width:1011px) and (max-width:1179px){ nav ul{gap:18px !important;} nav a{font-size:.8rem !important;} }
 
 /* Accroche d'en-tête, entre le logo et le menu */
-.brand::after{content:'Notre objectif : votre satisfaction'; display:none; margin-left:6px; font-family:'Instrument Sans',sans-serif; font-style:italic; font-weight:500; font-size:.86rem; line-height:1.2; color:rgba(247,245,240,.78); white-space:nowrap;}
+.brand::after{content:'Notre objectif : votre satisfaction'; display:none; margin-left:6px; font-family:'Caveat','Segoe Script','Bradley Hand',cursive; font-style:normal; font-weight:600; font-size:1.6rem; line-height:1.1; color:rgba(247,245,240,.92); white-space:nowrap; transform:rotate(-2deg);}
 html[lang^="en"] .brand::after{content:'Our goal: your satisfaction';}
 html[lang^="es"] .brand::after{content:'Nuestro objetivo: su satisfacción';}
 html[lang^="it"] .brand::after{content:'Il nostro obiettivo: la vostra soddisfazione';}
