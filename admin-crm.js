@@ -8,7 +8,7 @@
   const OFFRE_ST = [['brouillon', 'Brouillon'], ['envoyee', 'Envoyée'], ['acceptee', 'Acceptée'], ['refusee', 'Refusée']];
   const DEVIS_ST = [['brouillon', 'Brouillon'], ['envoye', 'Envoyé'], ['accepte', 'Accepté'], ['refuse', 'Refusé']];
 
-  let all = [], vue = 'prospect', filtreEtape = '', q = '', ready = false, cur = null;
+  let all = [], marque = 'slp', vue = 'prospect', filtreEtape = '', q = '', ready = false, cur = null;
   const $ = (id) => document.getElementById(id);
   const ce = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const today = () => new Date().toISOString().slice(0, 10);
@@ -101,6 +101,7 @@
     t.innerHTML = `
       <h2>Prospects & clients</h2>
       <p class="vz-sub">Une seule base : tu suis chaque contact jusqu'au devis accepté, il devient alors client automatiquement. Export prêt à importer dans Brevo.</p>
+      <div class="crm-seg" id="crmMarque"></div>
       <div id="crmStats" class="crm-kpis"></div>
       <div class="crm-seg" id="crmSeg"></div>
       <div class="crm-bar">
@@ -122,8 +123,10 @@
     injectStyle();
   }
 
+  const isMarque = (c) => (c.marque || 'slp') === marque;
   function filtered() {
     return all.filter((c) => {
+      if (!isMarque(c)) return false;
       if (vue === 'relance') { if (c.statut === 'perdu' || !c.date_relance || c.date_relance > today()) return false; }
       else if (vue !== 'tous' && c.statut !== vue) return false;
       if (filtreEtape && c.etape !== filtreEtape) return false;
@@ -136,10 +139,14 @@
   }
 
   function render() {
-    const n = (f) => all.filter(f).length;
+    const pool = all.filter(isMarque);
+    const nSlp = all.length - all.filter((c) => c.marque === 'digital').length, nDig = all.length - nSlp;
+    $('crmMarque').innerHTML = [['slp', 'SLP Sound Light Prod', nSlp], ['digital', 'SLP Digital', nDig]].map(([k, l, c]) => `<button type="button" class="period-btn${marque === k ? ' on' : ''}" data-m="${k}">${l} (${c})</button>`).join('');
+    $('crmMarque').querySelectorAll('button').forEach((b) => (b.onclick = () => { marque = b.dataset.m; vue = 'prospect'; filtreEtape = ''; render(); }));
+    const n = (f) => pool.filter(f).length;
     const nLate = n((c) => c.statut !== 'perdu' && c.date_relance && c.date_relance <= today());
-    const ca = all.reduce((s, c) => s + (c.ca_accepte || 0), 0), enc = all.reduce((s, c) => s + (c.devis_en_cours || 0), 0);
-    const offEnc = all.reduce((s, c) => s + (c.offres_en_cours || 0), 0);
+    const ca = pool.reduce((s, c) => s + (c.ca_accepte || 0), 0), enc = pool.reduce((s, c) => s + (c.devis_en_cours || 0), 0);
+    const offEnc = pool.reduce((s, c) => s + (c.offres_en_cours || 0), 0);
     const kpi = (v, l) => `<div class="crm-kpi"><b>${v}</b><span>${l}</span></div>`;
     $('crmStats').innerHTML = kpi(n((c) => c.statut === 'prospect'), 'prospects') + kpi(n((c) => c.statut === 'client'), 'clients')
       + kpi(eur(offEnc) + ' <small>HT</small>', 'propositions en attente') + kpi(eur(enc) + ' <small>HT</small>', 'devis en attente') + kpi(eur(ca) + ' <small>HT</small>', 'devis acceptés');
@@ -202,6 +209,7 @@
       <div class="row">${fld('ville', 'Ville', c.ville)}${fld('code_postal', 'Code postal', c.code_postal)}</div>
       <div class="row">${fld('date_evenement', "Date de l'événement", c.date_evenement, 'date')}${fld('budget', 'Budget annoncé', c.budget)}</div>
       <div class="row">${fld('source', 'Source', c.source)}${fld('prochaine_action', 'Prochaine action', c.prochaine_action)}</div>
+      <div class="row one"><div><label>Marque</label><select id="cf_marque"><option value="slp"${(c.marque || marque) === 'slp' ? ' selected' : ''}>SLP Sound Light Prod</option><option value="digital"${(c.marque || marque) === 'digital' ? ' selected' : ''}>SLP Digital</option></select></div></div>
       ${c.statut === 'prospect' || !c.id ? `<div class="row one"><div><label>Étape</label><select id="cf_etape">${opt(ETAPES, c.etape)}</select></div></div>` : ''}
       <label style="display:block;margin:4px 0"><input type="checkbox" id="cf_priorite" style="width:auto"${c.priorite ? ' checked' : ''}> ⭐ Prioritaire</label>
       <label style="display:block;margin:4px 0"><input type="checkbox" id="cf_no_mailing" style="width:auto"${c.no_mailing ? ' checked' : ''}> Ne pas inclure dans les mailings (désinscrit / refus)</label>`;
@@ -218,7 +226,8 @@
   function readForm() {
     const g = (id) => { const el = $('cf_' + id); return el ? el.value : undefined; };
     const o = {};
-    ['organisation', 'categorie', 'prenom', 'nom', 'fonction', 'telephone', 'email', 'ville', 'code_postal', 'evenement', 'date_evenement', 'budget', 'source', 'prochaine_action', 'date_relance', 'notes', 'etape'].forEach((k) => { const v = g(k); if (v !== undefined) o[k] = v; });
+    ['organisation', 'categorie', 'prenom', 'nom', 'fonction', 'telephone', 'email', 'ville', 'code_postal', 'evenement', 'date_evenement', 'budget', 'source', 'prochaine_action', 'date_relance', 'notes', 'etape', 'marque'].forEach((k) => { const v = g(k); if (v !== undefined) o[k] = v; });
+    if (!o.marque) o.marque = marque;
     o.priorite = $('cf_priorite').checked ? 1 : 0;
     o.no_mailing = $('cf_no_mailing').checked ? 1 : 0;
     return o;
@@ -462,15 +471,15 @@
     };
     $('iGo').onclick = async () => {
       $('iMsg').textContent = 'Import en cours…'; let tot = { ajoutes: 0, doublons: 0, vides: 0 };
-      try { for (let i = 0; i < rows.length; i += 300) { const r = await api('/import', { method: 'POST', body: { rows: rows.slice(i, i + 300), statut: $('iStatut').value } }); tot.ajoutes += r.ajoutes; tot.doublons += r.doublons; tot.vides += r.vides; $('iMsg').textContent = `${i + 300 >= rows.length ? 'Terminé' : 'En cours'} : ${tot.ajoutes} ajoutés, ${tot.doublons} doublons ignorés.`; }
+      try { for (let i = 0; i < rows.length; i += 300) { const r = await api('/import', { method: 'POST', body: { rows: rows.slice(i, i + 300), statut: $('iStatut').value, marque } }); tot.ajoutes += r.ajoutes; tot.doublons += r.doublons; tot.vides += r.vides; $('iMsg').textContent = `${i + 300 >= rows.length ? 'Terminé' : 'En cours'} : ${tot.ajoutes} ajoutés, ${tot.doublons} doublons ignorés.`; }
         load(); } catch (e) { $('iMsg').textContent = e.message; }
     };
   }
 
   // ---- Export CSV pour Brevo ----
   function openExport() {
-    const depts = [...new Set(all.map((c) => c.departement).filter(Boolean))].sort();
-    modal(`<h3 style="margin-top:0">Export pour Brevo</h3>
+    const depts = [...new Set(all.filter(isMarque).map((c) => c.departement).filter(Boolean))].sort();
+    modal(`<h3 style="margin-top:0">Export pour Brevo : ${marque === 'digital' ? 'SLP Digital' : 'SLP Sound Light Prod'}</h3>
       <p class="vz-note">Génère un fichier CSV (EMAIL, PRENOM, NOM, ORGANISATION, CATEGORIE, DEPARTEMENT, CODE_POSTAL, CITY, SMS) à importer dans Brevo → Contacts → Importer, vers la liste de ton choix. Les contacts sans email, « perdus » ou marqués « ne pas inclure dans les mailings » sont exclus.</p>
       <div class="row"><div><label>Qui ?</label><select id="xSt"><option value="prospect">Prospects</option><option value="client">Clients</option><option value="all">Prospects + clients</option></select></div>
         <div><label>Étape (prospects)</label><select id="xEt"><option value="">Toutes</option>${opt(ETAPES, '')}</select></div></div>
@@ -480,7 +489,7 @@
       <div class="crm-bar"><button class="period-btn" style="background:var(--amber);color:#1b1300" type="button" id="xGo">⬇ Télécharger le CSV</button><button class="period-btn" type="button" onclick="crmClose()">Annuler</button></div>
       <div id="xMsg" class="vz-note"></div>`);
     $('xGo').onclick = async () => {
-      const p = new URLSearchParams(); p.set('statut', $('xSt').value);
+      const p = new URLSearchParams(); p.set('statut', $('xSt').value); p.set('marque', marque);
       if ($('xEt').value) p.set('etape', $('xEt').value); if ($('xDp').value) p.set('dept', $('xDp').value); if ($('xCt').value) p.set('categorie', $('xCt').value);
       if ($('xMark').checked) p.set('mark', '1');
       try {
