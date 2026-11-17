@@ -59,6 +59,8 @@ export async function ensureCrmSchema(env) {
   for (const col of ["evenement", "date_evenement", "complement"]) {
     try { await env.DB.prepare("ALTER TABLE crm_offres ADD COLUMN " + col + " TEXT").run(); } catch (e) { /* colonne déjà présente */ }
   }
+  // marque : « slp » (Sound Light Prod, Book My Band…) ou « digital » (SLP Digital) ; les deux ne se mélangent pas dans l'admin
+  try { await env.DB.prepare("ALTER TABLE crm_contacts ADD COLUMN marque TEXT NOT NULL DEFAULT 'slp'").run(); } catch (e) { /* colonne déjà présente */ }
   ready = true;
 }
 
@@ -94,6 +96,7 @@ function sanitize(b, partial) {
   put("date_relance", clean(b.date_relance, 10));
   put("priorite", b.priorite ? 1 : 0);
   put("no_mailing", b.no_mailing ? 1 : 0);
+  put("marque", b.marque === "digital" ? "digital" : "slp");
   if (partial) for (const k of Object.keys(o)) if (b[k] === undefined) delete o[k];
   return o;
 }
@@ -159,8 +162,8 @@ export async function crmIngestSiteRequest(env, r) {
   }
   const id = await insertContact(env, {
     statut: "prospect", etape: "nouveau", nom: clean(r.nom, 200), organisation: clean(r.organisme, 200), email, telephone: tel,
-    ville: clean(r.lieu, 200), source: "Site web", evenement: clean(r.type_evenement || r.sujet, 200), date_evenement: clean(r.date_event, 10),
-    notes: note.slice(0, 5000) || null, site_request_id: r.id, priorite: 1, date_relance: new Date().toISOString().slice(0, 10),
+    ville: clean(r.lieu, 200), source: r.site === "digital" ? "Site SLP Digital" : "Site web", evenement: clean(r.type_evenement || r.sujet, 200), date_evenement: clean(r.date_event, 10),
+    marque: r.site === "digital" ? "digital" : "slp", notes: note.slice(0, 5000) || null, site_request_id: r.id, priorite: 1, date_relance: new Date().toISOString().slice(0, 10),
     prochaine_action: "Rappeler / répondre à la demande du site",
   });
   await logEvent(env, id, "note", `Demande reçue via le site le ${r.cree_le}`);
@@ -207,7 +210,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
     const { results } = await env.DB.prepare(
       `SELECT c.id, c.statut, c.etape, c.organisation, c.categorie, c.prenom, c.nom, c.fonction, c.email, c.telephone, c.ville, c.code_postal,
               c.departement, c.source, c.evenement, c.date_evenement, c.priorite, c.prochaine_action, c.date_relance, c.no_mailing, c.brevo_le,
-              c.client_depuis, c.maj_le, c.cree_le,
+              c.client_depuis, c.maj_le, c.cree_le, c.marque,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'accepte') AS ca_accepte,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'envoye') AS devis_en_cours,
               (SELECT COALESCE(SUM(o.montant_ht),0) FROM crm_offres o WHERE o.contact_id = c.id AND o.statut = 'envoyee' AND o.id = (SELECT o2.id FROM crm_offres o2 WHERE o2.contact_id = o.contact_id AND o2.statut = 'envoyee' AND COALESCE(NULLIF(o2.evenement,''), 'id' || o2.id) = COALESCE(NULLIF(o.evenement,''), 'id' || o.id) ORDER BY COALESCE(o2.montant_ht,0) DESC, o2.id DESC LIMIT 1)) AS offres_en_cours,
@@ -242,7 +245,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
     const rows = Array.isArray(b.rows) ? b.rows.slice(0, 3000) : [];
     let ajoutes = 0, doublons = 0, vides = 0;
     for (const r of rows) {
-      const data = sanitize({ ...r, statut: b.statut === "client" ? "client" : "prospect" }, false);
+      const data = sanitize({ ...r, statut: b.statut === "client" ? "client" : "prospect", marque: b.marque }, false);
       if (!data.organisation && !data.nom && !data.prenom && !data.email && !data.telephone) { vides++; continue; }
       if (data.email && await env.DB.prepare("SELECT id FROM crm_contacts WHERE email = ?").bind(data.email).first()) { doublons++; continue; }
       if (!data.source) data.source = "Import";
@@ -256,7 +259,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
   // POST /import-site : crée des prospects à partir des demandes reçues par le formulaire du site (une seule fois chacune)
   if (path === "/import-site" && method === "POST") {
     let rows = [];
-    try { rows = (await env.DB.prepare("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message, artiste_nom, organisme, type_evenement, jauge, budget FROM contact_requests WHERE site IN ('slp','bmb') OR site IS NULL ORDER BY id").all()).results || []; }
+    try { rows = (await env.DB.prepare("SELECT id, site, cree_le, nom, email, telephone, sujet, date_event, lieu, message, artiste_nom, organisme, type_evenement, jauge, budget FROM contact_requests WHERE site IN ('slp','bmb','digital') OR site IS NULL ORDER BY id").all()).results || []; }
     catch (e) { rows = (await env.DB.prepare("SELECT id, cree_le, nom, email, telephone, sujet, date_event, lieu, message FROM contact_requests ORDER BY id").all()).results || []; }
     let ajoutes = 0, existants = 0;
     for (const r of rows) {
@@ -274,6 +277,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
     if (st === "prospect" || st === "client") { where.push("statut = ?"); params.push(st); }
     const et = url.searchParams.get("etape");
     if (et && ETAPES.includes(et)) { where.push("etape = ?"); params.push(et); }
+    if (url.searchParams.get("marque") === "digital") where.push("marque = 'digital'"); else if (url.searchParams.get("marque") === "slp") where.push("COALESCE(marque, 'slp') = 'slp'");
     const dept = url.searchParams.get("dept");
     if (dept) { where.push("departement = ?"); params.push(dept); }
     const cat = url.searchParams.get("categorie");
@@ -289,7 +293,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
         await env.DB.prepare(`UPDATE crm_contacts SET brevo_le = datetime('now') WHERE id IN (${chunk.join(",")})`).run();
       }
     }
-    const nom = `contacts-slp-${st || "tous"}-${new Date().toISOString().slice(0, 10)}.csv`;
+    const nom = `contacts-${url.searchParams.get("marque") === "digital" ? "slp-digital" : "slp"}-${st || "tous"}-${new Date().toISOString().slice(0, 10)}.csv`;
     return new Response("﻿" + lines.join("\r\n"), { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="${nom}"`, "X-Nb-Contacts": String((results || []).length), ...cors(origin) } });
   }
 
@@ -503,15 +507,22 @@ async function afterDevis(env, contactId, statut, ref) {
 export async function crmReminderMessage(env, today) {
   await ensureCrmSchema(env);
   const n = async (sql, ...p) => ((await env.DB.prepare(sql).bind(...p).first()) || {}).n || 0;
-  const relances = await n("SELECT COUNT(*) AS n FROM crm_contacts WHERE statut != 'perdu' AND date_relance IS NOT NULL AND date_relance != '' AND date_relance <= ?", today);
-  const aPreparer = await n("SELECT COUNT(*) AS n FROM crm_contacts c WHERE c.statut = 'prospect' AND c.etape = 'echange' AND NOT EXISTS (SELECT 1 FROM crm_devis d WHERE d.contact_id = c.id)");
-  const sansReponse = await n("SELECT COUNT(DISTINCT c.id) AS n FROM crm_contacts c JOIN crm_devis d ON d.contact_id = c.id WHERE c.statut = 'prospect' AND d.statut = 'envoye' AND d.date_envoi IS NOT NULL AND d.date_envoi <= date(?, '-7 days')", today);
-  const offresSansReponse = await n("SELECT COUNT(DISTINCT c.id) AS n FROM crm_contacts c JOIN crm_offres o ON o.contact_id = c.id WHERE c.statut = 'prospect' AND c.etape = 'proposition' AND o.statut = 'envoyee' AND o.date_envoi IS NOT NULL AND o.date_envoi <= date(?, '-7 days')", today);
-  const parts = [];
-  if (relances) parts.push(`${relances} relance${relances > 1 ? "s" : ""}`);
-  if (aPreparer) parts.push(`${aPreparer} devis à préparer`);
-  if (offresSansReponse) parts.push(`${offresSansReponse} proposition${offresSansReponse > 1 ? "s" : ""} sans réponse (7 j)`);
-  if (sansReponse) parts.push(`${sansReponse} devis sans réponse (7 j)`);
-  if (!parts.length) return null;
-  return { title: "👥 SLP — à faire aujourd'hui", body: parts.join(" · "), url: "/admin-contacts.html#relance" };
+  // Les deux marques (SLP et SLP Digital) sont comptées séparément : rien ne se mélange dans le rappel.
+  const parMarque = async (m) => {
+    const w = m === "digital" ? "c.marque = 'digital'" : "COALESCE(c.marque, 'slp') = 'slp'";
+    const relances = await n(`SELECT COUNT(*) AS n FROM crm_contacts c WHERE ${w} AND c.statut != 'perdu' AND c.date_relance IS NOT NULL AND c.date_relance != '' AND c.date_relance <= ?`, today);
+    const aPreparer = await n(`SELECT COUNT(*) AS n FROM crm_contacts c WHERE ${w} AND c.statut = 'prospect' AND c.etape = 'echange' AND NOT EXISTS (SELECT 1 FROM crm_devis d WHERE d.contact_id = c.id)`);
+    const sansReponse = await n(`SELECT COUNT(DISTINCT c.id) AS n FROM crm_contacts c JOIN crm_devis d ON d.contact_id = c.id WHERE ${w} AND c.statut = 'prospect' AND d.statut = 'envoye' AND d.date_envoi IS NOT NULL AND d.date_envoi <= date(?, '-7 days')`, today);
+    const offresSansReponse = await n(`SELECT COUNT(DISTINCT c.id) AS n FROM crm_contacts c JOIN crm_offres o ON o.contact_id = c.id WHERE ${w} AND c.statut = 'prospect' AND c.etape = 'proposition' AND o.statut = 'envoyee' AND o.date_envoi IS NOT NULL AND o.date_envoi <= date(?, '-7 days')`, today);
+    const parts = [];
+    if (relances) parts.push(`${relances} relance${relances > 1 ? "s" : ""}`);
+    if (aPreparer) parts.push(`${aPreparer} devis à préparer`);
+    if (offresSansReponse) parts.push(`${offresSansReponse} proposition${offresSansReponse > 1 ? "s" : ""} sans réponse (7 j)`);
+    if (sansReponse) parts.push(`${sansReponse} devis sans réponse (7 j)`);
+    return parts.join(" · ");
+  };
+  const slp = await parMarque("slp"), digital = await parMarque("digital");
+  if (!slp && !digital) return null;
+  const body = [slp && (digital ? "SLP : " + slp : slp), digital && "SLP Digital : " + digital].filter(Boolean).join(" | ");
+  return { title: "👥 SLP — à faire aujourd'hui", body, url: "/admin-contacts.html#relance" };
 }
