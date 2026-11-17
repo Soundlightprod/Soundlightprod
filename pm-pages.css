@@ -140,3 +140,35 @@ body>section:not(.fiche-hero):not(.page-hero):not(.cta-band) .wrap{padding-top:c
 @media (max-width:720px){.pm-ugrid .pm-tile{flex:0 0 82%;min-height:420px}.pm-hero.pm-page .pm-hero-in{padding-top:110px}}
 .pm-tile::after{background:linear-gradient(180deg,rgba(12,10,20,.05) 15%,rgba(12,10,20,.9) 82%)}
 .pm .annuaire .wrap{max-width:1320px;padding-left:var(--pm-pad);padding-right:var(--pm-pad)}
+
+/* ===== Toutes les pages intérieures : bandeau transparent sur le hero, comme l'accueil ===== */
+body.pm-inner header{position:fixed;left:0;right:0;top:0;background:transparent !important;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;transition:background .35s,border-color .35s}
+body.pm-inner header::after{opacity:0;transition:opacity .35s}
+body.pm-inner header.pm-solid,body.pm-inner header.menu-open{background:rgba(12,10,20,.9) !important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+body.pm-inner header.pm-solid::after,body.pm-inner header.menu-open::after{opacity:.9}
+body.pm-inner header:not(.pm-solid):not(.menu-open){background:linear-gradient(180deg,rgba(12,10,20,.6),transparent) !important}
+body.pm-inner nav a{color:rgba(247,245,240,.9)}
+body.pm-inner nav a:hover,body.pm-inner nav a.current{color:#fff}
+body.pm-inner .page-hero,body.pm-inner .fiche-hero:not(.pm-cine){padding-top:150px}
+body.pm-inner .tk-hero{padding-top:150px}
+body.pm-inner .klb-hero{padding-top:110px}
+/* page-hero avec photo plein cadre */
+.pm-cinepage{position:relative;isolation:isolate;overflow:hidden}
+.pm-cinepage.pm-has-slides{min-height:min(66svh,640px);display:flex;align-items:flex-end}
+.pm-cinepage.pm-has-slides.compact{min-height:min(44svh,420px)}
+.pm-cinepage .pm-slides{position:absolute;inset:0;z-index:-2}
+.pm-cinepage .pm-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease}
+.pm-cinepage .pm-slide.on{opacity:1}
+.pm-cinepage .pm-slide img{width:100%;height:100%;object-fit:cover;object-position:50% 35%;transform:scale(1.06);transition:transform 9s linear}
+.pm-cinepage .pm-slide.on img{transform:scale(1)}
+.pm-cinepage.pm-has-slides::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(12,10,20,.6) 0,rgba(12,10,20,.2) 28%,rgba(12,10,20,.62) 64%,var(--ink) 100%),linear-gradient(90deg,rgba(12,10,20,.78),transparent 72%)}
+.pm-cinepage.pm-has-slides .hero-blocks,.pm-cinepage.pm-has-slides .hero-art,.pm-cinepage.pm-has-slides .hero-divas,.pm-cinepage.pm-has-slides .hero-frieze,.pm-cinepage.pm-has-slides .sl-beams{display:none}
+.pm-cinepage.pm-has-slides .page-hero-inner{position:relative;width:100%}
+.pm-cinepage .pm-dots{position:absolute;left:0;right:0;bottom:22px;display:flex;gap:8px;justify-content:flex-end;padding:0 clamp(20px,4vw,72px)}
+.pm-cinepage .pm-dots i{width:28px;height:2px;background:rgba(247,245,240,.3)}.pm-cinepage .pm-dots i.on{background:var(--pm-gold)}
+@media (prefers-reduced-motion:reduce){.pm-cinepage .pm-slide img{transform:none!important;transition:none}.pm-cinepage .pm-slide{transition:none}}
+@media (max-width:720px){.pm-cinepage .pm-dots{display:none}body.pm-inner .page-hero,body.pm-inner .fiche-hero:not(.pm-cine){padding-top:120px}}
+/* apparition douce (activée par pm-pages.js) */
+.pm-js .pm-rv{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.pm-js .pm-rv.pm-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.pm-js .pm-rv{opacity:1;transform:none;transition:none}}
