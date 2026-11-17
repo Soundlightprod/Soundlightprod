@@ -297,7 +297,7 @@
 
 <section class="about" id="about">
   <div class="wrap">
-    <div class="about-grid"><div class="about-copy"><div class="section-head"><span class="label">Quiénes somos</span><h2><b>Productor y distribuidor</b> de espectáculos</h2></div><p class="about-lead">Sound Light Prod selecciona, produce y distribuye espectáculos para ayuntamientos, comités de fiestas, asociaciones, empresas y particulares. Nuestro equipo reúne 20 años de experiencia en animación, sonorización e iluminación y 10 años en distribución y producción de espectáculos: sabemos qué hace bueno un espectáculo y qué hace falta para que todo salga bien. Distribuimos espectáculos por toda Europa y en Canadá.</p></div><figure class="about-photo"><div class="ap-clip"><img src="/images/phil-collins-photo-1-800.webp" srcset="/images/phil-collins-photo-1-800.webp 800w, /images/phil-collins-photo-1-1200.webp 1200w" sizes="(max-width:860px) 90vw, 480px" width="1200" height="675" alt="Tributo a Phil Collins en el escenario ante el público" loading="lazy" decoding="async"></div></figure></div>
+    <div class="about-grid"><div class="about-copy"><div class="section-head"><span class="label">Quiénes somos</span><h2><b>Productor y distribuidor</b> de espectáculos</h2></div><p class="about-lead">Sound Light Prod selecciona, produce y distribuye espectáculos para ayuntamientos, comités de fiestas, asociaciones, empresas y particulares. Nuestro equipo reúne 20 años de experiencia en animación, sonorización e iluminación y 10 años en distribución y producción de espectáculos: sabemos qué hace bueno un espectáculo y qué hace falta para que todo salga bien. Distribuimos espectáculos por toda Europa y en Canadá.</p></div><figure class="about-photo"><div class="ap-clip is-video" data-yt="CSD4xiWCw0I" data-title="SLP Sound Light Prod — vídeo de presentación"><img src="https://i.ytimg.com/vi/CSD4xiWCw0I/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async"><button class="ap-play" type="button" aria-label="Reproducir el vídeo de presentación de SLP"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button></div></figure></div>
     <ul class="about-stats"><li><strong>20 años</strong><span>de experiencia en animación, sonorización e iluminación</span></li><li><strong>10 años</strong><span>en distribución y producción de espectáculos</span></li><li><strong>24 h</strong><span>para recibir su presupuesto</span></li></ul>
   </div>
 </section>
@@ -634,6 +634,19 @@
   }
 })();
 </script>
+
+<script>
+(function(){
+  var c=document.querySelector('.ap-clip.is-video');if(!c)return;
+  var b=c.querySelector('.ap-play');if(!b)return;
+  b.addEventListener('click',function(){
+    var f=document.createElement('iframe');
+    f.src='https://www.youtube-nocookie.com/embed/'+c.getAttribute('data-yt')+'?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+    f.title=c.getAttribute('data-title');f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');
+    c.innerHTML='';c.appendChild(f);
+  });
+})();
+</script>
 </body>
 <script>
 (function(){
@@ -730,5 +743,16 @@ html,body{overflow-x:clip}
 .ap-clip{position:relative; overflow:hidden; border-radius:20px; aspect-ratio:4/3; background:var(--ink-2); box-shadow:0 40px 70px -40px rgba(0,0,0,.95);}
 .ap-clip img{position:absolute; left:0; top:-9%; width:100%; height:118%; object-fit:cover; will-change:transform; transform:translate3d(0,var(--py,0px),0);}
 @media (max-width:860px){ .about-grid{grid-template-columns:1fr;} .about-photo{margin:0 14px 14px 0; order:2;} }
+
+/* vidéo de présentation (Qui sommes-nous) + mobile : accroche moins insistante */
+.ap-clip.is-video{aspect-ratio:16/9; background:#000;}
+.ap-clip.is-video img{top:0; height:100%; transform:none; object-fit:cover; opacity:.85; transition:opacity .3s, transform .6s;}
+.ap-clip.is-video:hover img{opacity:1; transform:scale(1.03);}
+.ap-clip.is-video iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+.ap-play{position:absolute; left:50%; top:50%; width:76px; height:76px; margin:-38px 0 0 -38px; border-radius:50%; border:2px solid var(--gold-soft); background:rgba(12,10,20,.72); backdrop-filter:blur(6px); cursor:pointer; display:grid; place-items:center; transition:transform .25s, background .25s, box-shadow .25s;}
+.ap-play svg{width:28px; height:28px; fill:var(--paper); margin-left:4px;}
+.ap-clip:hover .ap-play,.ap-play:focus-visible{transform:scale(1.08); background:linear-gradient(135deg,#fc8024,#ff0953); border-color:transparent; box-shadow:0 16px 36px -12px rgba(255,9,83,.6);}
+.ap-play:focus-visible{outline:3px solid var(--gold); outline-offset:4px;}
+@media (max-width:760px){ .hero .cta-row .btn-primary{display:none;} .hero .cta-row .btn-ghost{background:var(--paper); color:var(--ink); box-shadow:none; border-color:transparent;} }
 </style>
 </html>
