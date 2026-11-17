@@ -484,6 +484,7 @@
     <button class="tab-btn" id="tabBtn-devices" onclick="switchTab('devices')">10. 📱 Mes appareils</button>
     <button class="tab-btn" id="tabBtn-chat" onclick="switchTab('chat')">11. 💬 Chat <span id="chatBadge" style="display:none;background:#FF0953;color:#fff;border-radius:10px;padding:0 7px;font-size:.75rem;margin-left:4px;"></span></button>
     <button class="tab-btn" id="tabBtn-supernova" onclick="switchTab('supernova')">12. 🌠 Supernova</button>
+    <button class="tab-btn" id="tabBtn-bambino" onclick="switchTab('bambino')">15. 🎭 Bambino</button>
     <button class="tab-btn" id="tabBtn-crm" onclick="switchTab('crm')">13. 👥 Prospects &amp; clients</button>
     <button class="tab-btn" id="tabBtn-famille" onclick="switchTab('famille')">14. 👨‍👩‍👧 PERSO-Famille</button>
   </div>
@@ -1265,6 +1266,21 @@
     <div class="vz-card">
       <div class="vz-card-h"><h3>Membres</h3><button class="btn-outline" onclick="snLoad()">Actualiser</button></div>
       <div id="snList" style="font-size:.9rem;">Chargement…</div>
+    </div>
+  </div>
+
+  <!-- ============ ONGLET 15 : BAMBINO (espace privé du cabaret) ============ -->
+  <div class="tab-content" id="tab-bambino">
+    <h2>Cabaret Bambino</h2>
+    <p class="vz-sub">Espace privé de l'équipe du cabaret : chat, agenda, feuilles de route, documents. Tu y entres d'ici directement, sans te réidentifier ; la gestion des comptes se fait dans son onglet Admin.</p>
+    <div class="vz-card">
+      <div class="vz-card-h"><h3>Espace Bambino</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn-outline" onclick="bbEmbed(true)">Recharger</button>
+          <button class="btn-outline" onclick="bbOpen()">Ouvrir dans un nouvel onglet ↗</button>
+        </div>
+      </div>
+      <div id="bbFrameWrap"><p class="vz-note">Chargement…</p></div>
     </div>
   </div>
 
@@ -2099,7 +2115,7 @@
   // ---------- Navigation par rubriques ----------
   const NAV_GROUPS = [
     { id:'planning', ico:'📅', nom:'Planning & agenda', c:'var(--violet)', tabs:['planning','events','agenda','history'] },
-    { id:'groupes',  ico:'🎸', nom:'Groupes',           c:'var(--blue)',   tabs:['overview','groupview','supernova'] },
+    { id:'groupes',  ico:'🎸', nom:'Groupes',           c:'var(--blue)',   tabs:['overview','groupview','supernova','bambino'] },
     { id:'clients',  ico:'👥', nom:'Clients',           c:'var(--pink)',   tabs:['crm','orders','chat'] },
     { id:'stats',    ico:'📊', nom:'Stats & visites',   c:'var(--amber)',  tabs:['visits'] },
     { id:'famille',  ico:'👨‍👩‍👧', nom:'PERSO-Famille',     c:'var(--pink)',   tabs:['famille'] },
@@ -2151,6 +2167,7 @@
     if (name === 'groupview') renderGroupView();
     if (name === 'crm' && window.crmOpen) crmOpen();
     if (name === 'supernova') { snEmbed(); snLoad(); }
+    if (name === 'bambino') bbEmbed();
     if (name === 'famille') famLoad();
     if (name === 'planning' && window.loadFamilleCal) loadFamilleCal();
     if (name === 'chat') { chatLoadSettings(); chatStartPolling(); try { history.replaceState(null,'','#chat'); } catch(e){} }
@@ -2160,6 +2177,37 @@
     }
   }
 
+
+  // ---------- Bambino (espace privé du cabaret) ----------
+  async function bbSso(){
+    const r = await fetch('/api/admin/bambino/sso', { method:'POST', headers:{ Authorization: `Bearer ${token}` } });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || 'Erreur');
+    return d;
+  }
+  let bbFrameLoaded = false;
+  async function bbEmbed(force){
+    const wrap = document.getElementById('bbFrameWrap');
+    if (!wrap || (bbFrameLoaded && !force)) return;
+    bbFrameLoaded = false;
+    wrap.innerHTML = '<p class="vz-note">Chargement…</p>';
+    try {
+      const d = await bbSso();
+      const f = document.createElement('iframe');
+      f.src = d.url; f.title = 'Cabaret Bambino';
+      f.allow = 'autoplay; fullscreen; clipboard-write; encrypted-media; picture-in-picture';
+      f.style.cssText = 'width:100%; height:80vh; min-height:540px; border:1px solid var(--line); border-radius:14px; background:#12060b;';
+      wrap.replaceChildren(f);
+      bbFrameLoaded = true;
+    } catch(e){ wrap.textContent = e.message; }
+  }
+  async function bbOpen(){
+    const w = window.open('', '_blank');
+    try {
+      const d = await bbSso();
+      if (w) w.location.href = d.url; else location.href = d.url;
+    } catch(e){ if (w) w.close(); showToast(e.message); }
+  }
 
   // ---------- Supernova (espace privé des musiciens) ----------
   const snEsc = x => String(x == null ? '' : x).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

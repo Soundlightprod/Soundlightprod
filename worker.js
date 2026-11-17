@@ -2569,6 +2569,18 @@ export default {
         return await familleHandler(request, env, url, origin);
       }
 
+      // Accès direct au Cabaret Bambino (jeton à usage unique, valable 2 minutes), comme Supernova
+      if (url.pathname === "/api/admin/bambino/sso" && request.method === "POST") {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        if (!env.BAMBINO_DB) return json({ error: "Base Bambino non reliée" }, 500, origin);
+        const sa = await env.BAMBINO_DB.prepare("SELECT id FROM users WHERE role = 'super' AND active = 1 ORDER BY id LIMIT 1").first();
+        if (!sa) return json({ error: "Aucun compte super-admin Bambino actif" }, 404, origin);
+        const tk = snHex(crypto.getRandomValues(new Uint8Array(32)));
+        const th = snHex(await crypto.subtle.digest("SHA-256", SN_ENC.encode(tk)));
+        await env.BAMBINO_DB.prepare("INSERT INTO sso_tokens (token_hash, user_id, expires_at) VALUES (?, ?, ?)").bind(th, sa.id, Date.now() + 120000).run();
+        return json({ url: `https://bambino.soundlightprod.fr/sso?t=${tk}`, embed: true }, 200, origin);
+      }
+
       if (url.pathname.startsWith("/api/admin/supernova/")) {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         return await supernovaAdmin(request, env, url, origin);
