@@ -295,6 +295,15 @@
   <div class="bandeau chaud"><div class="defile"><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Weddings</span><span>Private parties</span><span>Festivals</span><span>Galas</span><span>One-off events</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Weddings</span><span>Private parties</span><span>Festivals</span><span>Galas</span><span>One-off events</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivities</span><span>Food markets</span><span>Cultural seasons</span><span>Weddings</span><span>Private parties</span><span>Festivals</span><span>Galas</span><span>One-off events</span></div></div>
 </div>
 
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="section-head"><span class="label">Who we are</span><h2>Show producer and distributor</h2></div>
+    <p class="about-lead">SLP Sound Light Prod selects, produces and books shows for town halls, festival committees, associations, companies and private clients. Our team brings about 20 years of stage lighting experience and 10 years of producing and distributing shows: we know what makes a great show, and what it takes to make it run smoothly.</p>
+    <ul class="about-stats"><li><strong>20 years</strong><span>of stage and lighting experience</span></li><li><strong>10 years</strong><span>of producing and distributing shows</span></li><li><strong>24 h</strong><span>to receive your quote</span></li></ul>
+    <ul class="about-pledges"><li>Shows selected and approved by SLP</li><li>One point of contact from start to finish</li><li>Artist replacement in case of cancellation</li></ul>
+  </div>
+</section>
+
 <section class="how" id="how">
   <div class="wrap">
     <div class="section-head"><span class="label">How it works</span><h2>Simple, from the first call to the final encore</h2></div>
@@ -668,5 +677,17 @@ html,body{overflow-x:clip}
 @media (max-width:560px){.how .steps{grid-template-columns:1fr}}
 /* how-compact:end */
 /* home-compact:end */
+
+/* QUI SOMMES-NOUS */
+.about .wrap{padding-top:44px; padding-bottom:20px;}
+.about .section-head h2{font-size:clamp(1.4rem,2.8vw,2rem);}
+.about-lead{max-width:760px; color:var(--muted); line-height:1.6; margin:0 0 22px;}
+.about-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 18px; padding:0; list-style:none;}
+.about-stats li{padding:18px 20px; border-radius:18px; background:var(--ink-2); border:1px solid var(--line);}
+.about-stats strong{display:block; font-size:clamp(1.8rem,4vw,2.5rem); line-height:1.1; background:var(--spectre); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.about-stats span{display:block; margin-top:6px; font-size:.9rem; line-height:1.4; color:var(--muted);}
+.about-pledges{display:flex; flex-wrap:wrap; gap:10px 22px; margin:0; padding:0; list-style:none; font-weight:600; font-size:.92rem;}
+.about-pledges li::before{content:'\2713'; margin-right:8px; color:var(--amber);}
+@media (max-width:760px){ .about-stats{grid-template-columns:1fr;} }
 </style>
 </html>

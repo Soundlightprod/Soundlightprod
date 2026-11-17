@@ -411,6 +411,15 @@ html{scroll-padding-top:96px;}
 <!-- RÉALISATIONS : section volontairement absente. En attente de trois cas documentés par SLP (événement, lieu, année, rôle de SLP,
      visuel et retour du responsable autorisés). Voir la liste des contenus attendus. Ne rien publier d'inventé. -->
 
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="section-head"><span class="label">Qui sommes-nous</span><h2>Producteur et diffuseur de spectacles</h2></div>
+    <p class="about-lead">SLP Sound Light Prod sélectionne, produit et diffuse des spectacles pour les mairies, comités des fêtes, associations, entreprises et particuliers. Notre équipe réunit environ 20 ans d&rsquo;expérience de la lumière de scène et 10 ans de production et de diffusion de spectacles : nous savons ce qui fait un bon spectacle, et ce qu&rsquo;il faut pour qu&rsquo;il se passe bien.</p>
+    <ul class="about-stats"><li><strong>20 ans</strong><span>d&rsquo;expérience de la scène et de la lumière</span></li><li><strong>10 ans</strong><span>de production et de diffusion de spectacles</span></li><li><strong>24 h</strong><span>pour recevoir votre devis</span></li></ul>
+    <ul class="about-pledges"><li>Spectacles sélectionnés et approuvés par SLP</li><li>Un seul interlocuteur de A à Z</li><li>Remplacement de l&rsquo;artiste en cas d&rsquo;annulation</li></ul>
+  </div>
+</section>
+
 <section class="how" id="how">
   <div class="wrap">
     <div class="section-head"><span class="label">Comment ça se passe</span><h2>Un accompagnement en trois étapes</h2></div>
@@ -629,5 +638,17 @@ html,body{overflow-x:clip}
 @media (max-width:560px){.how .steps{grid-template-columns:1fr}}
 /* how-compact:end */
 /* home-compact:end */
+
+/* QUI SOMMES-NOUS */
+.about .wrap{padding-top:44px; padding-bottom:20px;}
+.about .section-head h2{font-size:clamp(1.4rem,2.8vw,2rem);}
+.about-lead{max-width:760px; color:var(--muted); line-height:1.6; margin:0 0 22px;}
+.about-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 18px; padding:0; list-style:none;}
+.about-stats li{padding:18px 20px; border-radius:18px; background:var(--ink-2); border:1px solid var(--line);}
+.about-stats strong{display:block; font-size:clamp(1.8rem,4vw,2.5rem); line-height:1.1; background:var(--spectre); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.about-stats span{display:block; margin-top:6px; font-size:.9rem; line-height:1.4; color:var(--muted);}
+.about-pledges{display:flex; flex-wrap:wrap; gap:10px 22px; margin:0; padding:0; list-style:none; font-weight:600; font-size:.92rem;}
+.about-pledges li::before{content:'\2713'; margin-right:8px; color:var(--amber);}
+@media (max-width:760px){ .about-stats{grid-template-columns:1fr;} }
 </style>
 </html>
