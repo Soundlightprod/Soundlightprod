@@ -1,0 +1,59 @@
+/* Style « Premium spectaculaire » des pages intérieures SLP (hors accueil, déjà traité, et hors boutique/admin).
+   Chargé en dernier : surcharge légère des styles de page, sans toucher au contenu ni au référencement. */
+:root{--pm-gold:#e6c27e;--pm-hair:rgba(255,255,255,.1);--pm-brand:linear-gradient(90deg,#3259be,#8c3290 35%,#ff0953 65%,#fc8024 85%,#fbc608)}
+
+/* Typographie : titres League Spartan 900 en capitales, étiquettes mono dorées */
+.label{color:var(--pm-gold) !important;letter-spacing:.22em}
+h1,.section-head h2,.cta-band h2{font-weight:900;text-transform:uppercase;letter-spacing:-.012em}
+.section-head h2{font-size:clamp(1.5rem,3vw,2.35rem);line-height:1.02}
+.section-head{margin-bottom:22px}
+.page-hero h1,.fiche-text h1{font-size:clamp(2.2rem,5.2vw,4.4rem);line-height:.96}
+.page-hero p,.promesse{font-size:clamp(1.02rem,1.4vw,1.2rem)}
+.gal-more summary,.bio-more summary{color:var(--pm-gold)}
+.info-item .mark{color:var(--pm-gold)}
+
+/* Respiration entre les sections */
+body>section:not(.fiche-hero):not(.page-hero):not(.cta-band) .wrap{padding-top:clamp(28px,4vw,56px);padding-bottom:clamp(36px,5vw,72px)}
+
+/* Boutons en pilule, plus soignés */
+.btn{min-height:50px;letter-spacing:.06em;text-transform:uppercase;font-size:.82rem}
+.btn-primary:hover{background:var(--pm-gold)}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--pm-gold);color:var(--pm-gold)}
+
+/* Cartes spectacles : survol et ombre */
+.show-card,.artist-card,.card{transition:transform .35s,border-color .35s,box-shadow .35s}
+.show-card:hover{transform:translateY(-5px);border-color:rgba(230,194,126,.5);box-shadow:0 22px 50px rgba(0,0,0,.45)}
+.show-card img{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.show-card:hover img{transform:scale(1.05)}
+
+/* Bandeaux, FAQ, listes */
+.faq-it{border-radius:14px;transition:border-color .25s}
+.faq-it[open],.faq-it:hover{border-color:rgba(230,194,126,.4)}
+.faq-it summary::after{color:var(--pm-gold)}
+.cta-band{border-top:3px solid transparent;border-image:var(--pm-brand) 1}
+.cta-band h2 em,.page-hero h1 em,.fiche-text h1 em{font-style:normal;color:var(--pm-gold)}
+.resume strong{color:var(--pm-gold)}
+.resume li{border-radius:16px}
+.video16x9{border-radius:20px;box-shadow:0 26px 70px rgba(0,0,0,.5)}
+.gal a{border-radius:14px}
+.gal a::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--pm-hair);pointer-events:none}
+.gal a{position:relative}
+
+/* Hero des fiches avec photo cinématographique plein cadre (photos haute définition uniquement) */
+.fiche-hero.pm-cine{min-height:min(86svh,820px);display:flex;align-items:flex-end;isolation:isolate;overflow:hidden;padding-top:140px;padding-bottom:36px}
+.fiche-hero.pm-cine .fiche-hero-inner{width:100%;grid-template-columns:minmax(0,1fr);grid-template-areas:"text" "resume";row-gap:26px}
+.fiche-hero.pm-cine .fiche-photo{position:absolute;inset:0;height:100%;align-self:stretch;z-index:-2;margin:0;border:0;border-radius:0;box-shadow:none;aspect-ratio:auto;background:var(--ink)}
+.fiche-hero.pm-cine .fiche-photo img{object-position:50% 30%}
+.fiche-hero.pm-cine::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(12,10,20,.6) 0,rgba(12,10,20,.15) 26%,rgba(12,10,20,.55) 62%,var(--ink) 100%),linear-gradient(90deg,rgba(12,10,20,.78),transparent 72%)}
+.fiche-hero.pm-cine .fiche-text,.fiche-hero.pm-cine .fiche-resume{max-width:760px}
+.fiche-hero.pm-cine .resume li{background:rgba(23,20,42,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.fiche-hero.pm-cine .fiche-text .breadcrumb a{color:rgba(247,245,240,.8)}
+/* Hero des fiches sans plein cadre : photo encadrée plus grande, filet de marque */
+.fiche-hero:not(.pm-cine) .fiche-photo{border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+@media (max-width:900px){
+  .fiche-hero.pm-cine{min-height:0;padding-top:210px;padding-bottom:24px}
+  .fiche-hero.pm-cine .fiche-photo img{object-position:50% 52%}
+  .fiche-hero.pm-cine::before{background:linear-gradient(180deg,rgba(12,10,20,.35) 0,rgba(12,10,20,.1) 22%,rgba(12,10,20,.72) 48%,var(--ink) 78%)}
+  .btn{font-size:.78rem}
+}
+@media (prefers-reduced-motion:reduce){.show-card,.show-card img{transition:none}}
