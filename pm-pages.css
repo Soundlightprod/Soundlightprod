@@ -57,3 +57,86 @@ body>section:not(.fiche-hero):not(.page-hero):not(.cta-band) .wrap{padding-top:c
   .btn{font-size:.78rem}
 }
 @media (prefers-reduced-motion:reduce){.show-card,.show-card img{transition:none}}
+/* Composants partagés (hero plein cadre, tuiles univers) — repris de la page d'accueil */
+.pm{--pm-pad:clamp(20px,4vw,72px)}
+.pm-wrap{max-width:1320px;margin:0 auto;padding:0 var(--pm-pad)}
+.pm-label{font:400 .74rem/1 'DM Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--pm-gold)}
+.pm-h2{font:900 clamp(2rem,4.6vw,3.9rem)/.98 'League Spartan',sans-serif;text-transform:uppercase;letter-spacing:-.01em;color:var(--paper)}
+.pm-h2 em{font-style:normal;color:var(--pm-gold)}
+.pm-lead{color:var(--muted);font-size:1.08rem;max-width:60ch}
+.pm-btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 28px;border-radius:999px;font:700 .86rem/1 'Instrument Sans',sans-serif;letter-spacing:.09em;text-transform:uppercase;border:1px solid transparent;text-decoration:none;transition:transform .25s,background .25s,color .25s,border-color .25s}
+.pm-btn-p{background:var(--paper);color:var(--ink)}
+.pm-btn-p:hover{background:var(--pm-gold);transform:translateY(-2px)}
+.pm-btn-g{border-color:rgba(247,245,240,.45);color:var(--paper)}
+.pm-btn-g:hover{border-color:var(--pm-gold);color:var(--pm-gold)}
+.pm-ar{transition:transform .25s}.pm-btn:hover .pm-ar,.pm-more:hover .pm-ar,.pm-card:hover .pm-ar{transform:translateX(4px)}
+.pm-sec{position:relative;padding:clamp(72px,10vw,150px) 0}
+.pm-head{display:grid;gap:18px;margin-bottom:clamp(32px,5vw,64px)}
+.pm-rule{height:3px;background:var(--pm-brand)}
+.pm :focus-visible{outline:2px solid var(--pm-gold);outline-offset:3px;border-radius:4px}
+/* hero */
+.pm-hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden;isolation:isolate}
+.pm-slides{position:absolute;inset:0;z-index:-2}
+.pm-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease}
+.pm-slide.on{opacity:1}
+.pm-slide img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 9s linear}
+.pm-slide.on img{transform:scale(1)}
+.pm-hero::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(12,10,20,.62) 0,rgba(12,10,20,.2) 28%,rgba(12,10,20,.55) 62%,var(--ink) 100%),linear-gradient(90deg,rgba(12,10,20,.78),transparent 70%)}
+.pm-hero-in{padding-bottom:clamp(64px,9vh,110px);padding-top:140px;width:100%}
+.pm-hero h1{font:900 clamp(2.3rem,5.4vw,5.6rem)/.95 'League Spartan',sans-serif;text-transform:uppercase;letter-spacing:-.015em;color:var(--paper)}
+.pm-hero h1 span{display:block}.pm-hero h1 span+span{color:var(--pm-gold)}
+.pm-hero .pm-sub{margin:28px 0 38px;max-width:46ch;font-size:clamp(1.05rem,1.5vw,1.28rem);color:rgba(247,245,240,.9)}
+.pm-cta{display:flex;flex-wrap:wrap;gap:14px}
+.pm-dots{position:absolute;left:0;right:0;bottom:24px;display:flex;gap:8px;justify-content:flex-end;padding:0 var(--pm-pad)}
+.pm-dots i{width:28px;height:2px;background:rgba(247,245,240,.3)}.pm-dots i.on{background:var(--pm-gold)}
+/* univers */
+.pm-ugrid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.pm-tile{position:relative;overflow:hidden;border-radius:20px;min-height:400px;display:flex;align-items:flex-end;isolation:isolate;border:1px solid var(--pm-hair);color:var(--paper);text-decoration:none}
+.pm-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.pm-tile::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 35%,rgba(12,10,20,.88))}
+.pm-tile:hover img{transform:scale(1.05)}
+.pm-cap{padding:30px 32px;display:flex;justify-content:space-between;align-items:flex-end;width:100%;gap:16px}
+.pm-tile h3{font:900 clamp(1.8rem,3.2vw,2.9rem)/1 'League Spartan',sans-serif;text-transform:uppercase;color:var(--paper)}
+.pm-go{width:48px;height:48px;border-radius:50%;border:1px solid rgba(247,245,240,.5);display:grid;place-items:center;flex:none;transition:background .3s,color .3s}
+.pm-tile:hover .pm-go{background:var(--pm-gold);color:var(--ink);border-color:var(--pm-gold)}
+.pm-ugrid .pm-tile{grid-column:span 6}.pm-ugrid .pm-tile:nth-child(4n+1),.pm-ugrid .pm-tile:nth-child(4n+4){grid-column:span 7}.pm-ugrid .pm-tile:nth-child(4n+2),.pm-ugrid .pm-tile:nth-child(4n+3){grid-column:span 5}
+/* reveal */
+.pm-js .pm-rv{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.pm-js .pm-rv.pm-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.pm-js .pm-rv{opacity:1;transform:none;transition:none}.pm-slide img{transform:none!important;transition:none}.pm-slide{transition:none}.pm-tile img,.pm-ph img,.pm-g img{transition:none}}
+@media (max-width:1100px){
+  .pm-cards{grid-template-columns:repeat(2,1fr)}
+  .pm-exp-grid{grid-template-columns:1fr}.pm-exp{min-height:400px}
+  .pm-prog-grid,.pm-c-grid,.pm-vid{grid-template-columns:1fr}
+  .pm-prog .pm-pimg{aspect-ratio:16/10}
+}
+@media (max-width:720px){
+  .pm-hero-in{padding-top:110px}
+  .pm-cta .pm-btn{width:100%;justify-content:center}
+  .pm-dots{display:none}
+  .pm-ugrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 calc(var(--pm-pad)*-1);padding:0 var(--pm-pad) 14px;-webkit-overflow-scrolling:touch}
+  .pm-tile{flex:0 0 80%;scroll-snap-align:center;min-height:440px}
+  .pm-cards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 calc(var(--pm-pad)*-1);padding:0 var(--pm-pad) 14px}
+  .pm-card{flex:0 0 72%;scroll-snap-align:center}
+  .pm-chips{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(var(--pm-pad)*-1) 26px;padding:0 var(--pm-pad)}.pm-chip{flex:none}
+  .pm-figs{grid-template-columns:1fr}.pm-fig{padding:22px 0;border-bottom:1px solid var(--pm-hair)}
+  .pm-gal{grid-template-columns:repeat(2,1fr);grid-auto-rows:130px}
+  .pm-g1,.pm-g6{grid-column:span 2;grid-row:span 2}.pm-g2,.pm-g3,.pm-g4,.pm-g5{grid-column:span 1;grid-row:span 1}
+}
+
+.pm-tile{min-height:360px}
+.pm-tile .pm-cap{align-items:flex-end}
+.pm-tile .pm-meta{display:grid;gap:6px;max-width:34em}
+.pm-tile .pm-count{font:400 .7rem/1 'DM Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--pm-gold)}
+.pm-tile p{color:rgba(247,245,240,.86);font-size:.98rem}
+.pm-tile .pm-names{color:rgba(247,245,240,.62);font-size:.8rem;line-height:1.4}
+.pm-tile.pm-art{background:linear-gradient(145deg,#3259be,#8c3290 60%,#ff0953)}
+.pm-tile.pm-art img{object-fit:contain;padding:28px 28px 90px;opacity:.95}
+.pm-tile.pm-art::after{background:linear-gradient(180deg,transparent 40%,rgba(12,10,20,.55))}
+.pm-hero.pm-page{min-height:min(74svh,700px)}
+.pm-hero.pm-page .pm-hero-in{padding-top:150px;padding-bottom:clamp(48px,7vh,84px)}
+.pm-hero.pm-page h1{font-size:clamp(2.1rem,5vw,4.6rem)}
+.pm-hero.pm-page .pm-sub{max-width:62ch}
+@media (max-width:720px){.pm-ugrid .pm-tile{flex:0 0 82%;min-height:420px}.pm-hero.pm-page .pm-hero-in{padding-top:110px}}
+.pm-tile::after{background:linear-gradient(180deg,rgba(12,10,20,.05) 15%,rgba(12,10,20,.9) 82%)}
+.pm .annuaire .wrap{max-width:1320px;padding-left:var(--pm-pad);padding-right:var(--pm-pad)}
