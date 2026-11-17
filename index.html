@@ -379,8 +379,150 @@ section.how .steps .step p{font-size:.96rem;line-height:1.6;padding:0 24px 26px 
 @media (max-width:900px){.faq-grid{grid-template-columns:1fr}.faq-photo{min-height:0;height:200px}}
 @media (max-width:760px){section.how .steps .step img{height:170px}.how .wrap,.faq-home .wrap{padding-top:52px}}
 </style>
+<style id="pm-home">
+/* ===== Accueil « Premium spectaculaire » (préfixe pm-) ===== */
+body.pm-home{--pm-gold:#e6c27e;--pm-ink3:#110e1f;--pm-hair:rgba(255,255,255,.1);--pm-brand:linear-gradient(90deg,#3259be,#8c3290 35%,#ff0953 65%,#fc8024 85%,#fbc608)}
+body.pm-home header{position:fixed;left:0;right:0;top:0;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;transition:background .35s,border-color .35s}
+body.pm-home header.pm-solid,body.pm-home header.menu-open{background:rgba(12,10,20,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+body.pm-home nav a{color:rgba(247,245,240,.88)}
+body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
+.pm{--pm-pad:clamp(20px,4vw,72px)}
+.pm-wrap{max-width:1320px;margin:0 auto;padding:0 var(--pm-pad)}
+.pm-label{font:400 .74rem/1 'DM Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--pm-gold)}
+.pm-h2{font:900 clamp(2rem,4.6vw,3.9rem)/.98 'League Spartan',sans-serif;text-transform:uppercase;letter-spacing:-.01em;color:var(--paper)}
+.pm-h2 em{font-style:normal;color:var(--pm-gold)}
+.pm-lead{color:var(--muted);font-size:1.08rem;max-width:60ch}
+.pm-btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 28px;border-radius:999px;font:700 .86rem/1 'Instrument Sans',sans-serif;letter-spacing:.09em;text-transform:uppercase;border:1px solid transparent;text-decoration:none;transition:transform .25s,background .25s,color .25s,border-color .25s}
+.pm-btn-p{background:var(--paper);color:var(--ink)}
+.pm-btn-p:hover{background:var(--pm-gold);transform:translateY(-2px)}
+.pm-btn-g{border-color:rgba(247,245,240,.45);color:var(--paper)}
+.pm-btn-g:hover{border-color:var(--pm-gold);color:var(--pm-gold)}
+.pm-ar{transition:transform .25s}.pm-btn:hover .pm-ar,.pm-more:hover .pm-ar,.pm-card:hover .pm-ar{transform:translateX(4px)}
+.pm-sec{position:relative;padding:clamp(72px,10vw,150px) 0}
+.pm-head{display:grid;gap:18px;margin-bottom:clamp(32px,5vw,64px)}
+.pm-rule{height:3px;background:var(--pm-brand)}
+.pm :focus-visible{outline:2px solid var(--pm-gold);outline-offset:3px;border-radius:4px}
+/* hero */
+.pm-hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden;isolation:isolate}
+.pm-slides{position:absolute;inset:0;z-index:-2}
+.pm-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease}
+.pm-slide.on{opacity:1}
+.pm-slide img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 9s linear}
+.pm-slide.on img{transform:scale(1)}
+.pm-hero::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(12,10,20,.62) 0,rgba(12,10,20,.2) 28%,rgba(12,10,20,.55) 62%,var(--ink) 100%),linear-gradient(90deg,rgba(12,10,20,.78),transparent 70%)}
+.pm-hero-in{padding-bottom:clamp(64px,9vh,110px);padding-top:140px;width:100%}
+.pm-hero h1{font:900 clamp(2.3rem,5.4vw,5.6rem)/.95 'League Spartan',sans-serif;text-transform:uppercase;letter-spacing:-.015em;color:var(--paper)}
+.pm-hero h1 span{display:block}.pm-hero h1 span+span{color:var(--pm-gold)}
+.pm-hero .pm-sub{margin:28px 0 38px;max-width:46ch;font-size:clamp(1.05rem,1.5vw,1.28rem);color:rgba(247,245,240,.9)}
+.pm-cta{display:flex;flex-wrap:wrap;gap:14px}
+.pm-dots{position:absolute;left:0;right:0;bottom:24px;display:flex;gap:8px;justify-content:flex-end;padding:0 var(--pm-pad)}
+.pm-dots i{width:28px;height:2px;background:rgba(247,245,240,.3)}.pm-dots i.on{background:var(--pm-gold)}
+/* univers */
+.pm-ugrid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.pm-tile{position:relative;overflow:hidden;border-radius:20px;min-height:400px;display:flex;align-items:flex-end;isolation:isolate;border:1px solid var(--pm-hair);color:var(--paper);text-decoration:none}
+.pm-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.pm-tile::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 35%,rgba(12,10,20,.88))}
+.pm-tile:hover img{transform:scale(1.05)}
+.pm-cap{padding:30px 32px;display:flex;justify-content:space-between;align-items:flex-end;width:100%;gap:16px}
+.pm-tile h3{font:900 clamp(1.8rem,3.2vw,2.9rem)/1 'League Spartan',sans-serif;text-transform:uppercase;color:var(--paper)}
+.pm-go{width:48px;height:48px;border-radius:50%;border:1px solid rgba(247,245,240,.5);display:grid;place-items:center;flex:none;transition:background .3s,color .3s}
+.pm-tile:hover .pm-go{background:var(--pm-gold);color:var(--ink);border-color:var(--pm-gold)}
+.pm-t1{grid-column:span 7}.pm-t2{grid-column:span 5}.pm-t3{grid-column:span 5}.pm-t4{grid-column:span 7}
+/* spectacles */
+.pm-chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:34px}
+.pm-chip{min-height:44px;padding:0 20px;border-radius:999px;background:transparent;border:1px solid var(--pm-hair);color:var(--muted);font:600 .78rem/1 'Instrument Sans',sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .25s}
+.pm-chip:hover{color:var(--paper);border-color:rgba(255,255,255,.35)}
+.pm-chip[aria-pressed=true]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.pm-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.pm-card{display:flex;flex-direction:column;border-radius:18px;overflow:hidden;background:var(--ink-2);border:1px solid var(--pm-hair);transition:transform .35s,border-color .35s;color:var(--paper);text-decoration:none}
+.pm-card:hover{transform:translateY(-6px);border-color:rgba(230,194,126,.5)}
+.pm-ph{aspect-ratio:4/5;overflow:hidden}
+.pm-ph img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.pm-card:hover .pm-ph img{transform:scale(1.06)}
+.pm-tx{padding:20px 22px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
+.pm-cat{font:400 .68rem/1 'DM Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--pm-gold)}
+.pm-card h3{font:900 1.35rem/1.05 'League Spartan',sans-serif;text-transform:uppercase;color:var(--paper)}
+.pm-card p{color:var(--muted);font-size:.92rem;line-height:1.5}
+.pm-more{margin-top:auto;padding-top:10px;font:700 .78rem/1 'Instrument Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;gap:8px;align-items:center}
+.pm-note{font-size:.78rem;color:var(--muted)}
+.pm-card[hidden]{display:none}
+@media (min-width:1280px){.pm-cards{grid-template-columns:repeat(5,1fr);gap:18px}.pm-tx{padding:18px 18px 22px}.pm-card h3{font-size:1.15rem}}
+/* expertise */
+.pm-expertise{background:var(--pm-ink3)}
+.pm-exp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.pm-exp{position:relative;border-radius:20px;overflow:hidden;min-height:520px;display:flex;align-items:flex-end;isolation:isolate;border:1px solid var(--pm-hair)}
+.pm-exp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.pm-exp::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(12,10,20,.1) 20%,rgba(12,10,20,.92) 80%)}
+.pm-exp .pm-tx{padding:32px}
+.pm-n{font:900 .95rem/1 'League Spartan',sans-serif;color:var(--pm-gold);letter-spacing:.14em}
+.pm-exp h3{font:900 1.7rem/1.02 'League Spartan',sans-serif;text-transform:uppercase;margin:12px 0 10px;color:var(--paper)}
+.pm-exp p{color:rgba(247,245,240,.82);font-size:.98rem}
+.pm-figs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(40px,6vw,76px);border-top:1px solid var(--pm-hair)}
+.pm-fig{padding:30px 0 0}
+.pm-fig b{display:block;font:900 clamp(2.6rem,6vw,4.8rem)/1 'League Spartan',sans-serif;color:var(--pm-gold)}
+.pm-fig span{color:var(--muted);font-size:.95rem}
+.pm-vid{margin-top:clamp(48px,7vw,96px);display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(28px,5vw,80px);align-items:center}
+.pm-vid .about-photo{margin:0 18px 18px 0}
+/* galerie */
+.pm-gal{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:150px;gap:14px}
+.pm-g{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--pm-hair);margin:0}
+.pm-g img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.pm-g:hover img{transform:scale(1.05)}
+.pm-g figcaption{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 14px;background:linear-gradient(transparent,rgba(12,10,20,.85));font:400 .68rem/1.3 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase}
+.pm-g1{grid-column:span 5;grid-row:span 3}.pm-g2{grid-column:span 4;grid-row:span 2}.pm-g3{grid-column:span 3;grid-row:span 2}.pm-g4{grid-column:span 4}.pm-g5{grid-column:span 3}.pm-g6{grid-column:span 12;grid-row:span 3}
+.pm-gal-more{margin-top:30px}
+/* programmateurs */
+.pm-prog{background:var(--pm-ink3);overflow:hidden}
+.pm-prog-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,6vw,90px);align-items:center}
+.pm-prog ul{list-style:none;margin:30px 0 38px}
+.pm-prog li{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--pm-hair);font-weight:500}
+.pm-prog li::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--pm-gold);margin-top:9px;flex:none}
+.pm-prog .pm-pimg{border-radius:22px;overflow:hidden;aspect-ratio:4/5;border:1px solid var(--pm-hair)}
+.pm-prog .pm-pimg img{width:100%;height:100%;object-fit:cover}
+/* faq */
+.pm-faq-list{display:grid;gap:12px;max-width:900px;margin:0 auto}
+.pm-faq-list details{border:1px solid var(--pm-hair);border-radius:14px;background:var(--ink-2);padding:0 20px}
+.pm-faq-list summary{cursor:pointer;padding:18px 0;font-weight:700;min-height:52px;list-style-position:inside}
+.pm-faq-list details p{color:var(--muted);padding:0 0 18px;line-height:1.6}
+.pm-faq-list details p a{color:var(--pm-gold)}
+.pm-center{text-align:center;justify-items:center}
+/* contact */
+.pm-contact{background:radial-gradient(ellipse at 85% 0,rgba(140,50,144,.22),transparent 55%),radial-gradient(ellipse at 5% 100%,rgba(50,89,190,.22),transparent 55%),var(--ink)}
+.pm-c-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,90px);align-items:center}
+.pm-parcours{display:grid;gap:16px}
+.pm-parc{background:var(--ink-2);border:1px solid var(--pm-hair);border-radius:20px;padding:26px 28px}
+.pm-parc h3{font:900 1.35rem/1.1 'League Spartan',sans-serif;text-transform:uppercase;margin-bottom:8px;color:var(--paper)}
+.pm-parc p{color:var(--muted)}
+.pm-direct{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.pm-direct a{display:inline-flex;align-items:center;min-height:52px;padding:0 22px;border-radius:14px;border:1px solid var(--pm-hair);font-weight:600;color:var(--paper);text-decoration:none;transition:border-color .25s,background .25s}
+.pm-direct a:hover{border-color:var(--pm-gold);background:rgba(255,255,255,.03)}
+/* reveal */
+.pm-js .pm-rv{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.pm-js .pm-rv.pm-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.pm-js .pm-rv{opacity:1;transform:none;transition:none}.pm-slide img{transform:none!important;transition:none}.pm-slide{transition:none}.pm-tile img,.pm-ph img,.pm-g img{transition:none}}
+@media (max-width:1100px){
+  .pm-cards{grid-template-columns:repeat(2,1fr)}
+  .pm-exp-grid{grid-template-columns:1fr}.pm-exp{min-height:400px}
+  .pm-prog-grid,.pm-c-grid,.pm-vid{grid-template-columns:1fr}
+  .pm-prog .pm-pimg{aspect-ratio:16/10}
+}
+@media (max-width:720px){
+  .pm-hero-in{padding-top:110px}
+  .pm-cta .pm-btn{width:100%;justify-content:center}
+  .pm-dots{display:none}
+  .pm-ugrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 calc(var(--pm-pad)*-1);padding:0 var(--pm-pad) 14px;-webkit-overflow-scrolling:touch}
+  .pm-tile{flex:0 0 80%;scroll-snap-align:center;min-height:440px}
+  .pm-cards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 calc(var(--pm-pad)*-1);padding:0 var(--pm-pad) 14px}
+  .pm-card{flex:0 0 72%;scroll-snap-align:center}
+  .pm-chips{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(var(--pm-pad)*-1) 26px;padding:0 var(--pm-pad)}.pm-chip{flex:none}
+  .pm-figs{grid-template-columns:1fr}.pm-fig{padding:22px 0;border-bottom:1px solid var(--pm-hair)}
+  .pm-gal{grid-template-columns:repeat(2,1fr);grid-auto-rows:130px}
+  .pm-g1,.pm-g6{grid-column:span 2;grid-row:span 2}.pm-g2,.pm-g3,.pm-g4,.pm-g5{grid-column:span 1;grid-row:span 1}
+}
+</style>
+<link rel="preload" as="image" href="/images/abba-photo-2-1200.webp" imagesrcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 </head>
-<body>
+<body class="pm-home">
 
 <header>
   <div class="nav-wrap">
@@ -402,93 +544,80 @@ section.how .steps .step p{font-size:.96rem;line-height:1.6;padding:0 24px 26px 
   </div>
 </header>
 
-<section class="hero feux hero-v2" id="top" data-angle="260" data-angle-m="128" data-aim="-4">
-  <div class="feux-halo" aria-hidden="true"></div><div class="feux-dot" aria-hidden="true"></div><div class="feux-light" aria-hidden="true"></div>
-  <div class="hero-inner">
-    <div class="hero-text">
-      <h1 class="rot"><span class="ph on">Produire des spectacles<br><span class="accent">avec passion.</span></span><span class="ph">Révéler des artistes<br><span class="accent">qui font vibrer.</span></span></h1>
-      <p class="hero-lead">Tributes, cabaret, magie et groupes live. SLP vous accompagne, de votre demande au jour J.</p>
-      <div class="cta-row">
-        <a href="contact" class="btn btn-primary" data-contact="devis">Demander un devis</a>
-        <a href="artistes" class="btn btn-ghost">Voir les spectacles</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="selection" id="spectacles">
-  <div class="wrap">
-    <div class="section-head"><span class="label">Les spectacles</span><h2><b>Une sélection</b> pour vos événements</h2></div>
-    <ul class="cat-chips" aria-label="Choisir un univers"><li><a href="tributes">Tributes</a></li><li><a href="cabaret">Cabaret</a></li><li><a href="magie">Magie</a></li><li><a href="groupes-de-reprises">Groupes de reprises</a></li><li><a href="cache-candy">Cache Candy</a></li><li><a href="dj">DJ</a></li></ul>
-    <details class="tlinks-fold"><summary>Voir tous nos tributes</summary><p><a href="tribute-abba">Tribute ABBA</a> · <a href="tribute-calogero">Tribute Calogero</a> · <a href="tribute-bee-gees">Tribute Bee Gees</a> · <a href="tribute-phil-collins">Tribute Phil Collins</a> · <a href="tribute-kool-and-the-gang">Tribute Kool &amp; the Gang</a> · <a href="tribute-matmatah">Tribute Matmatah</a> · <a href="tribute-celine-dion">Tribute Céline Dion</a> · <a href="tribute-balavoine">Tribute Balavoine</a> · <a href="tribute-barry-white">Tribute Barry White</a></p></details>
-    <div class="af-stage" aria-roledescription="carousel" aria-label="Nos spectacles">
-      <a class="af-slide" href="tribute-abba"><img src="images/abba-photo-1-1200.webp" alt="" width="1200" height="600" loading="eager" decoding="async"><span class="af-info"><span class="af-tag">Tribute · Pop</span><strong>Tribute ABBA</strong><span class="af-meta">6 musiciens dont deux chanteuses · 2 h de concert</span><span class="af-go">Voir le spectacle →</span></span></a>
-      <a class="af-slide" href="tribute-calogero"><img src="images/calo-photo-1-1200.webp" alt="" width="1200" height="600" loading="lazy" decoding="async"><span class="af-info"><span class="af-tag">Tribute · Pop-rock</span><strong>Tribute Calogero</strong><span class="af-meta">Quatuor rock · 2 h de concert</span><span class="af-go">Voir le spectacle →</span></span></a>
-      <a class="af-slide" href="tribute-kool-and-the-gang"><img src="images/kool-photo-1-1200.webp" alt="" width="1200" height="600" loading="lazy" decoding="async"><span class="af-info"><span class="af-tag">Tribute · Funk</span><strong>Tribute Kool &amp; the Gang</strong><span class="af-meta">9 musiciens · 1 h 45 de funk</span><span class="af-go">Voir le spectacle →</span></span></a>
-      <a class="af-slide" href="panache"><img src="images/panache-photo-1-1200.webp" alt="" width="1200" height="600" loading="lazy" decoding="async"><span class="af-info"><span class="af-tag">Cabaret</span><strong>Panache</strong><span class="af-meta">Revue de cabaret · de 30 min à 1 h 30</span><span class="af-go">Voir le spectacle →</span></span></a>
-      <a class="af-slide" href="clement-blouin"><img src="images/clement-blouin-photo-1-1200.webp" alt="" width="1200" height="600" loading="lazy" decoding="async"><span class="af-info"><span class="af-tag">Spectacle de magie</span><strong>Clément Blouin</strong><span class="af-meta">Magie et humour · élu spectacle magique 2026</span><span class="af-go">Voir le spectacle →</span></span></a>
-      <a class="af-slide" href="alchimie"><img src="images/alchimie-banniere-1200.webp" alt="" width="1200" height="600" loading="lazy" decoding="async"><span class="af-info"><span class="af-tag">Groupe de reprises · Pop / Rock</span><strong>Alchimie</strong><span class="af-meta">Reprises pop/rock pleines d’énergie</span><span class="af-go">Voir le spectacle →</span></span></a>
-      <a class="af-slide" href="tekila-the-band"><img src="images/tekila-scene-full.webp" alt="" width="1200" height="600" loading="lazy" decoding="async"><span class="af-info"><span class="af-tag">Groupe de reprises · Latino / Reggae</span><strong>Tékila The Band</strong><span class="af-meta">Duo, trio ou quatuor · 100 dates par an</span><span class="af-go">Voir le spectacle →</span></span></a>
-      <a class="af-slide" href="cache-candy"><img src="images/cache-candy-photo-cropped-1200.webp" alt="" width="1200" height="600" loading="lazy" decoding="async"><span class="af-info"><span class="af-tag">Duo pop-rock électro</span><strong>Cache Candy</strong><span class="af-meta">Compositions originales · exclusivité SLP</span><span class="af-go">Voir le spectacle →</span></span></a>
-      <button class="af-arrow af-prev" type="button" aria-label="Précédent">‹</button><button class="af-arrow af-next" type="button" aria-label="Suivant">›</button><div class="af-dots" role="group" aria-label="Choisir un spectacle"></div>
-    </div>
-        <p class="show-more"><a href="artistes" class="btn btn-ghost">Voir tous les spectacles →</a></p>
-  </div>
-</section>
-
-<!-- RÉALISATIONS : section volontairement absente. En attente de trois cas documentés par SLP (événement, lieu, année, rôle de SLP,
-     visuel et retour du responsable autorisés). Voir la liste des contenus attendus. Ne rien publier d'inventé. -->
-
-<section class="about" id="about">
-  <div class="wrap">
-    <div class="about-grid"><div class="about-copy"><div class="section-head"><span class="label">Qui sommes-nous</span><h2><b>Producteur et diffuseur</b> de spectacles</h2></div><p class="about-lead">Sound Light Prod sélectionne, produit et diffuse des spectacles pour les mairies, comités des fêtes, associations, entreprises et particuliers. Notre équipe réunit 20 ans d&rsquo;expérience en animation, sonorisation et éclairage, et 10 ans en diffusion et production de spectacles : nous savons ce qui fait un bon spectacle, et ce qu&rsquo;il faut pour qu&rsquo;il se passe bien. Nous diffusons des spectacles dans toute l&rsquo;Europe et au Canada.</p></div><figure class="about-photo"><div class="ap-clip is-video" data-yt="CSD4xiWCw0I" data-title="SLP Sound Light Prod — vidéo de présentation"><img src="https://i.ytimg.com/vi/CSD4xiWCw0I/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async"><button class="ap-play" type="button" aria-label="Lire la vidéo de présentation de SLP"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button><button type="button" class="ap-sound" aria-pressed="false">🔇 Activer le son</button></div></figure></div>
-    <ul class="about-stats"><li><strong>20 ans</strong><span>d&rsquo;expérience en animation, sonorisation et éclairage</span></li><li><strong>10 ans</strong><span>en diffusion et production de spectacles</span></li><li><strong>24 h</strong><span>pour recevoir votre devis</span></li></ul>
-  </div>
-</section>
-
-<section class="how" id="how">
-  <div class="wrap">
-    <div class="section-head"><span class="label">Comment ça se passe</span><h2><b>Un accompagnement</b> en trois étapes</h2><p class="section-sub">De votre premier message jusqu’au jour J, un seul interlocuteur.</p></div>
-    <div class="steps">
-      <div class="step"><img src="images/panache-photo-1-480.webp" width="480" height="270" alt="" loading="lazy" decoding="async"><h3>Vous décrivez votre projet</h3><p>Date, lieu, public, ambiance : un échange rapide suffit pour cerner votre besoin.</p></div>
-      <div class="step"><img src="images/calo-photo-1-480.webp" width="480" height="270" alt="" loading="lazy" decoding="async"><h3>Vous recevez une sélection et un devis</h3><p>Après vérification des disponibilités, vous recevez une proposition claire et sans engagement. Elle détaille ce qui est inclus et ce qui est facturé à part (technique, voyages, hôtels, restauration). Un forfait tout compris est possible sur demande.</p></div>
-      <div class="step"><img src="images/abba-photo-1-480.webp" width="480" height="270" alt="" loading="lazy" decoding="async"><h3>Nous coordonnons jusqu&rsquo;au jour J</h3><p>Contrats, planning, accueil des artistes : un seul interlocuteur du premier échange jusqu&rsquo;à la fin de votre événement.</p></div>
-    </div>
-  </div>
-</section>
-
-
-<section class="faq-home" id="faq">
-  <div class="wrap">
-    <div class="section-head"><span class="label">Questions d&rsquo;organisateurs</span><h2><b>Avant de demander</b> un devis</h2></div>
-    <div class="faq-grid">
-    <img class="faq-photo" src="images/calo-photo-1-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async">
-    <div class="faq-list">
-      <details><summary>Je n&rsquo;ai pas encore choisi d&rsquo;artiste</summary><p>Décrivez-nous votre événement (date, lieu, public, ambiance) : nous vous proposons une sélection adaptée. Vous pouvez aussi parcourir les <a href="#spectacles">spectacles</a> ou le <a href="artistes">catalogue complet</a>.</p></details>
-      <details><summary>La date est-elle disponible ?</summary><p>Nous vérifions la disponibilité du spectacle après votre demande. Le devis détaillé vous est envoyé une fois la date et vos besoins vérifiés.</p></details>
-      <details><summary>Que comprend la proposition ?</summary><p>Le devis est gratuit et sans engagement. Il précise ce qui est inclus et ce qui est facturé à part (technique, voyages, hôtels, restauration), pour que vous sachiez exactement ce que vous commandez. Si vous préférez un budget unique, nous pouvons aussi vous proposer un forfait tout compris, sur demande.</p></details>
-      <details><summary>Que se passe-t-il si l&rsquo;artiste ne peut pas venir ?</summary><p>Le contrat prévoit le remplacement de l&rsquo;artiste en cas d&rsquo;annulation. Votre interlocuteur SLP s&rsquo;occupe de la solution, vous n&rsquo;avez pas à rechercher un autre spectacle vous-même.</p></details>
-      <details><summary>Intervenez-vous près de chez nous ?</summary><p>Oui, nous travaillons partout en France et en Europe, avec mairies, comités des fêtes, entreprises, associations et particuliers.</p></details>
-    </div>
-    </div>
-  </div>
-</section>
-
-<div class="bandeaux" aria-hidden="true">
-  <div class="bandeau froid"><div class="defile"><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span><span>Production</span><span>Diffusion</span><span>Son</span><span>Lumière</span></div></div>
-  <div class="bandeau chaud"><div class="defile"><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Mariages</span><span>Soirées privées</span><span>Festivals</span><span>Galas</span><span>Événements ponctuels</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Mariages</span><span>Soirées privées</span><span>Festivals</span><span>Galas</span><span>Événements ponctuels</span><span>Concerts</span><span>Tributes</span><span>Cabaret</span><span>Festivités</span><span>Marchés gourmands</span><span>Saison culturelle</span><span>Mariages</span><span>Soirées privées</span><span>Festivals</span><span>Galas</span><span>Événements ponctuels</span></div></div>
+<main class="pm" id="pm-main">
+<section class="pm-hero" id="top" aria-label="SLP">
+<div class="pm-slides" aria-hidden="true">
+<div class="pm-slide on"><img src="/images/abba-photo-2-1200.webp" srcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" sizes="100vw" width="1200" height="800" alt="" fetchpriority="high"></div>
+<div class="pm-slide"><img src="/images/kool-photo-1-1200.webp" srcset="/images/kool-photo-1-480.webp 480w, /images/kool-photo-1-800.webp 800w, /images/kool-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="676" alt="" loading="lazy" decoding="async"></div>
+<div class="pm-slide"><img src="/images/panache-photo-2-1200.webp" srcset="/images/panache-photo-2-480.webp 480w, /images/panache-photo-2-800.webp 800w, /images/panache-photo-2-1200.webp 1200w" sizes="100vw" width="1200" height="801" alt="" style="object-position:50% 40%" loading="lazy" decoding="async"></div>
+<div class="pm-slide"><img src="/images/fine-allies-photo-1-1200.webp" srcset="/images/fine-allies-photo-1-480.webp 480w, /images/fine-allies-photo-1-800.webp 800w, /images/fine-allies-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="798" alt="" loading="lazy" decoding="async"></div>
+<div class="pm-slide"><img src="/images/matmatah-photo-9-1200.webp" srcset="/images/matmatah-photo-9-480.webp 480w, /images/matmatah-photo-9-800.webp 800w, /images/matmatah-photo-9-1200.webp 1200w" sizes="100vw" width="1200" height="675" alt="" loading="lazy" decoding="async"></div>
 </div>
-<section class="cta-band">
-  <div class="wrap tight">
-    <span class="label">Un projet en tête ?</span>
-    <h2>Parlons de votre<br>prochain événement</h2>
-    <p>Devis gratuit et sans engagement, réponse rapide.</p>
-    <div class="cta-row" style="justify-content:center; opacity:1; animation:none;">
-      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>06 31 94 96 53</a>
-      <a href="https://wa.me/33631949653?text=Bonjour%2C%20je%20vous%20contacte%20depuis%20le%20site%20SLP%20%3A%20" target="_blank" rel="noopener" class="btn btn-ghost cta-wa" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
-    </div>
-  </div>
-</section>
+<div class="pm-wrap pm-hero-in">
+<h1><span>L’émotion du live.</span><span>L’exigence de la production.</span></h1>
+<p class="pm-sub">Des artistes, des spectacles et une expertise technique au service de vos événements.</p>
+<div class="pm-cta"><a class="pm-btn pm-btn-p" href="#spectacles">Découvrir nos spectacles <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-btn pm-btn-g" href="#contact">Parlons de votre projet</a></div>
+</div><div class="pm-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></div></section>
+<div class="pm-rule" aria-hidden="true"></div>
+<section class="pm-sec" id="univers"><div class="pm-wrap">
+<div class="pm-head pm-rv"><span class="pm-label">Nos univers</span><h2 class="pm-h2">La scène n’a <em>pas de limites.</em></h2></div><div class="pm-ugrid">
+<a class="pm-tile pm-t1 pm-rv" href="tributes"><img src="/images/abba-photo-5-1200.webp" srcset="/images/abba-photo-5-480.webp 480w, /images/abba-photo-5-800.webp 800w, /images/abba-photo-5-1200.webp 1200w" sizes="(max-width:720px) 80vw, 60vw" width="1200" height="800" alt="Tribute ABBA sur scène" loading="lazy" decoding="async"><div class="pm-cap"><h3>Tributes</h3><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-t2 pm-rv" href="cabaret"><img src="/images/cabaret-photo-cropped-1200.webp" srcset="/images/cabaret-photo-cropped-480.webp 480w, /images/cabaret-photo-cropped-800.webp 800w, /images/cabaret-photo-cropped-1200.webp 1200w" sizes="(max-width:720px) 80vw, 60vw" width="1200" height="1501" alt="Revue de cabaret" style="object-position:50% 30%" loading="lazy" decoding="async"><div class="pm-cap"><h3>Cabaret</h3><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-t3 pm-rv" href="groupes-de-reprises"><img src="/images/alchimie-photo-3-1200.webp" srcset="/images/alchimie-photo-3-480.webp 480w, /images/alchimie-photo-3-800.webp 800w, /images/alchimie-photo-3-1200.webp 1200w" sizes="(max-width:720px) 80vw, 60vw" width="1200" height="1045" alt="Groupe live en concert" loading="lazy" decoding="async"><div class="pm-cap"><h3>Groupes live</h3><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-t4 pm-rv" href="magie"><img src="/images/clement-blouin-photo-1-1200.webp" srcset="/images/clement-blouin-photo-1-480.webp 480w, /images/clement-blouin-photo-1-800.webp 800w, /images/clement-blouin-photo-1-1200.webp 1200w" sizes="(max-width:720px) 80vw, 60vw" width="1200" height="800" alt="Spectacle de magie" loading="lazy" decoding="async"><div class="pm-cap"><h3>Magie</h3><span class="pm-go" aria-hidden="true">→</span></div></a>
+</div></div></section>
+<section class="pm-sec" id="spectacles" style="padding-top:0"><div class="pm-wrap">
+<div class="pm-head pm-rv"><span class="pm-label">À l’affiche</span><h2 class="pm-h2">Des spectacles qui <em>marquent les esprits.</em></h2></div>
+<div class="pm-chips pm-rv" role="group" aria-label="Filtrer par catégorie"><button type="button" class="pm-chip" aria-pressed="true" data-f="all">Tous</button><button type="button" class="pm-chip" aria-pressed="false" data-f="tribute">Tributes</button><button type="button" class="pm-chip" aria-pressed="false" data-f="live">Groupes live</button><button type="button" class="pm-chip" aria-pressed="false" data-f="cabaret">Cabaret</button><button type="button" class="pm-chip" aria-pressed="false" data-f="magie">Magie</button></div>
+<div class="pm-cards">
+<a class="pm-card pm-rv" data-c="tribute" href="tribute-abba"><div class="pm-ph"><img src="/images/abba-photo-5-1200.webp" srcset="/images/abba-photo-5-480.webp 480w, /images/abba-photo-5-800.webp 800w, /images/abba-photo-5-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="800" alt="Tribute ABBA" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute ABBA</h3><p>6 musiciens dont deux chanteuses, 2 h de spectacle 100 % live.</p><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="tribute" href="tribute-calogero"><div class="pm-ph"><img src="/images/calo-photo-5-1200.webp" srcset="/images/calo-photo-5-480.webp 480w, /images/calo-photo-5-800.webp 800w, /images/calo-photo-5-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="960" alt="Tribute Calogero" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute Calogero</h3><p>Quatuor rock, 2 h de concert, 100 % live.</p><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="tribute" href="tribute-matmatah"><div class="pm-ph"><img src="/images/matmatah-photo-2-1200.webp" srcset="/images/matmatah-photo-2-480.webp 480w, /images/matmatah-photo-2-800.webp 800w, /images/matmatah-photo-2-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="801" alt="Tribute Matmatah" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute Matmatah</h3><p>Le rock breton de Matmatah, quatuor 100 % live.</p><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="tribute" href="tribute-kool-and-the-gang"><div class="pm-ph"><img src="/images/kool-photo-7-1200.webp" srcset="/images/kool-photo-7-480.webp 480w, /images/kool-photo-7-800.webp 800w, /images/kool-photo-7-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="900" alt="Tribute Kool &amp; the Gang" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute Kool &amp; the Gang</h3><p>9 musiciens, 1 h 45 de funk, 100 % live.</p><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="live" href="the-fine-allies"><div class="pm-ph"><img src="/images/fine-allies-photo-1-1200.webp" srcset="/images/fine-allies-photo-1-480.webp 480w, /images/fine-allies-photo-1-800.webp 800w, /images/fine-allies-photo-1-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="798" alt="The Fine Allies" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Groupe live</span><h3>The Fine Allies</h3><p>Funk, soul et rhythm’n’blues.</p><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="cabaret" href="panache"><div class="pm-ph"><img src="/images/panache-photo-2-1200.webp" srcset="/images/panache-photo-2-480.webp 480w, /images/panache-photo-2-800.webp 800w, /images/panache-photo-2-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="801" alt="Panache" style="object-position:50% 40%" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Cabaret</span><h3>Panache</h3><p>Revue de cabaret itinérante : plumes et strass.</p><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="live" href="alchimie"><div class="pm-ph"><img src="/images/alchimie-photo-3-1200.webp" srcset="/images/alchimie-photo-3-480.webp 480w, /images/alchimie-photo-3-800.webp 800w, /images/alchimie-photo-3-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="1045" alt="Alchimie" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Groupe live</span><h3>Alchimie</h3><p>Groupe pop/rock formé en 2018.</p><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="live" href="noon-coverband"><div class="pm-ph"><img src="/images/noon-photo-2-480.webp" srcset="/images/noon-photo-2-480.webp 480w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="480" height="720" alt="NooN Coverband" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Groupe live</span><h3>NooN Coverband</h3><p>Duo pop/rock/funk.</p><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="live" href="cache-candy"><div class="pm-ph"><img src="/images/cache-candy-photo-cropped-1200.webp" srcset="/images/cache-candy-photo-cropped-480.webp 480w, /images/cache-candy-photo-cropped-800.webp 800w, /images/cache-candy-photo-cropped-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="945" alt="Cache Candy" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Groupe live</span><h3>Cache Candy</h3><p>Duo pop-rock électro.</p><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="magie" href="clement-blouin"><div class="pm-ph"><img src="/images/clement-blouin-photo-6-1200.webp" srcset="/images/clement-blouin-photo-6-480.webp 480w, /images/clement-blouin-photo-6-800.webp 800w, /images/clement-blouin-photo-6-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="1200" alt="Clément Blouin" style="object-position:50% 20%" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Magie</span><h3>Clément Blouin</h3><p>Show de magie et d’humour.</p><span class="pm-note">Présenté par SLP en accord avec Clément B.</span><span class="pm-more">Voir la fiche <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+</div></div></section>
+<section class="pm-sec pm-expertise" id="expertise"><span id="how"></span><span id="spectacle"></span><div class="pm-wrap">
+<div class="pm-head pm-rv"><span class="pm-label">L’expertise SLP</span><h2 class="pm-h2">Bien plus qu’un spectacle. <em>Une production complète.</em></h2><p class="pm-lead">Sound Light Prod sélectionne, produit et diffuse des spectacles pour les mairies, comités des fêtes, associations, entreprises et particuliers, en France, en Europe et au Canada.</p></div>
+<div class="pm-exp-grid">
+<article class="pm-exp pm-rv"><img src="/images/panache-photo-2-1200.webp" srcset="/images/panache-photo-2-480.webp 480w, /images/panache-photo-2-800.webp 800w, /images/panache-photo-2-1200.webp 1200w" sizes="(max-width:1100px) 100vw, 33vw" width="1200" height="801" alt="" style="object-position:50% 40%" loading="lazy" decoding="async"><div class="pm-tx"><span class="pm-n">01</span><h3>Production artistique</h3><p>Une sélection de spectacles choisis et approuvés par SLP, adaptés à votre public et à votre lieu.</p></div></article>
+<article class="pm-exp pm-rv"><img src="/images/kool-photo-1-1200.webp" srcset="/images/kool-photo-1-480.webp 480w, /images/kool-photo-1-800.webp 800w, /images/kool-photo-1-1200.webp 1200w" sizes="(max-width:1100px) 100vw, 33vw" width="1200" height="676" alt="" loading="lazy" decoding="async"><div class="pm-tx"><span class="pm-n">02</span><h3>Diffusion et accompagnement</h3><p>Un seul interlocuteur, du premier échange jusqu’à la fin de votre événement.</p></div></article>
+<article class="pm-exp pm-rv"><img src="/images/abba-photo-2-1200.webp" srcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" sizes="(max-width:1100px) 100vw, 33vw" width="1200" height="800" alt="" loading="lazy" decoding="async"><div class="pm-tx"><span class="pm-n">03</span><h3>Sonorisation et éclairage scénique</h3><p>En option, une production technique complète, dimensionnée pour votre lieu.</p></div></article>
+</div>
+<div class="pm-figs pm-rv"><div class="pm-fig"><b>20 ans</b><span>d’expérience en animation, sonorisation et éclairage</span></div><div class="pm-fig"><b>10 ans</b><span>en diffusion et production de spectacles</span></div><div class="pm-fig"><b>24 h</b><span>pour recevoir votre devis</span></div></div>
+<div class="pm-vid"><div class="pm-rv"><span class="pm-label">Présentation</span><h2 class="pm-h2" style="margin-top:18px;font-size:clamp(1.8rem,3.4vw,2.8rem)">SLP en <em>quelques secondes.</em></h2></div><div class="pm-rv"><figure class="about-photo"><div class="ap-clip is-video" data-yt="CSD4xiWCw0I" data-title="SLP Sound Light Prod — vidéo de présentation"><img src="https://i.ytimg.com/vi/CSD4xiWCw0I/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async"><button class="ap-play" type="button" aria-label="Lire la vidéo de présentation de SLP"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button><button type="button" class="ap-sound" aria-pressed="false">🔇 Activer le son</button></div></figure></div></div>
+</div></section>
+<section class="pm-sec" id="realisations"><div class="pm-wrap">
+<div class="pm-head pm-rv"><span class="pm-label">En images</span><h2 class="pm-h2">Sur scène, <em>devant le public.</em></h2></div><div class="pm-gal pm-rv">
+<figure class="pm-g pm-g1"><img src="/images/abba-photo-2-1200.webp" srcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" sizes="(max-width:720px) 100vw, 45vw" width="1200" height="800" alt="Tribute ABBA" loading="lazy" decoding="async"><figcaption>Tribute ABBA</figcaption></figure>
+<figure class="pm-g pm-g2"><img src="/images/kool-photo-1-1200.webp" srcset="/images/kool-photo-1-480.webp 480w, /images/kool-photo-1-800.webp 800w, /images/kool-photo-1-1200.webp 1200w" sizes="(max-width:720px) 100vw, 45vw" width="1200" height="676" alt="Tribute Kool &amp; the Gang" loading="lazy" decoding="async"><figcaption>Tribute Kool &amp; the Gang</figcaption></figure>
+<figure class="pm-g pm-g3"><img src="/images/fine-allies-photo-4-1200.webp" srcset="/images/fine-allies-photo-4-480.webp 480w, /images/fine-allies-photo-4-800.webp 800w, /images/fine-allies-photo-4-1200.webp 1200w" sizes="(max-width:720px) 100vw, 45vw" width="1200" height="798" alt="The Fine Allies" loading="lazy" decoding="async"><figcaption>The Fine Allies</figcaption></figure>
+<figure class="pm-g pm-g4"><img src="/images/panache-photo-2-1200.webp" srcset="/images/panache-photo-2-480.webp 480w, /images/panache-photo-2-800.webp 800w, /images/panache-photo-2-1200.webp 1200w" sizes="(max-width:720px) 100vw, 45vw" width="1200" height="801" alt="Panache" style="object-position:50% 40%" loading="lazy" decoding="async"><figcaption>Panache</figcaption></figure>
+<figure class="pm-g pm-g5"><img src="/images/calo-photo-5-1200.webp" srcset="/images/calo-photo-5-480.webp 480w, /images/calo-photo-5-800.webp 800w, /images/calo-photo-5-1200.webp 1200w" sizes="(max-width:720px) 100vw, 45vw" width="1200" height="960" alt="Tribute Calogero" loading="lazy" decoding="async"><figcaption>Tribute Calogero</figcaption></figure>
+<figure class="pm-g pm-g6"><img src="/images/matmatah-photo-9-1200.webp" srcset="/images/matmatah-photo-9-480.webp 480w, /images/matmatah-photo-9-800.webp 800w, /images/matmatah-photo-9-1200.webp 1200w" sizes="(max-width:720px) 100vw, 45vw" width="1200" height="675" alt="Tribute Matmatah" loading="lazy" decoding="async"><figcaption>Tribute Matmatah</figcaption></figure>
+</div><p class="pm-gal-more"><a class="pm-btn pm-btn-g" href="galerie">Voir toute la galerie <span class="pm-ar" aria-hidden="true">→</span></a></p></div></section>
+<section class="pm-sec pm-prog" id="programmateurs"><div class="pm-wrap pm-prog-grid"><div class="pm-rv">
+<span class="pm-label">Pour les programmateurs</span><h2 class="pm-h2" style="margin-top:18px">Votre programmation mérite <em>le meilleur de la scène.</em></h2><ul><li>Une sélection artistique choisie et approuvée</li><li>Un accompagnement personnalisé</li><li>Des propositions claires, sans engagement</li><li>Une production technique complète possible</li><li>Une coordination jusqu’au jour J</li></ul>
+<a class="pm-btn pm-btn-g" href="spectacles-mairies-comites-des-fetes">Découvrir notre accompagnement <span class="pm-ar" aria-hidden="true">→</span></a></div>
+<div class="pm-pimg pm-rv"><img src="/images/kool-photo-7-1200.webp" srcset="/images/kool-photo-7-480.webp 480w, /images/kool-photo-7-800.webp 800w, /images/kool-photo-7-1200.webp 1200w" sizes="(max-width:1100px) 100vw, 45vw" width="1200" height="900" alt="" loading="lazy" decoding="async"></div></div></section>
+<section class="pm-sec" id="faq"><div class="pm-wrap">
+<div class="pm-head pm-center pm-rv"><span class="pm-label">Questions d’organisateurs</span><h2 class="pm-h2">Avant de demander <em>un devis</em></h2></div><div class="pm-faq-list pm-rv">
+<details><summary>Je n’ai pas encore choisi d’artiste</summary><p>Décrivez-nous votre événement (date, lieu, public, ambiance) : nous vous proposons une sélection adaptée. Vous pouvez aussi parcourir les <a href="#spectacles">spectacles</a> ou le <a href="artistes">catalogue complet</a>.</p></details>
+<details><summary>La date est-elle disponible ?</summary><p>Nous vérifions la disponibilité du spectacle après votre demande. Le devis détaillé vous est envoyé une fois la date et vos besoins vérifiés.</p></details>
+<details><summary>Que comprend la proposition ?</summary><p>Le devis est gratuit et sans engagement. Il précise ce qui est inclus et ce qui est facturé à part (technique, voyages, hôtels, restauration), pour que vous sachiez exactement ce que vous commandez. Si vous préférez un budget unique, nous pouvons aussi vous proposer un forfait tout compris, sur demande.</p></details>
+<details><summary>Que se passe-t-il si l’artiste ne peut pas venir ?</summary><p>Le contrat prévoit le remplacement de l’artiste en cas d’annulation. Votre interlocuteur SLP s’occupe de la solution, vous n’avez pas à rechercher un autre spectacle vous-même.</p></details>
+<details><summary>Intervenez-vous près de chez nous ?</summary><p>Oui, nous travaillons partout en France et en Europe, avec mairies, comités des fêtes, entreprises, associations et particuliers.</p></details>
+</div></div></section>
+<section class="pm-sec pm-contact" id="contact"><div class="pm-wrap pm-c-grid"><div class="pm-rv">
+<span class="pm-label">Contact</span><h2 class="pm-h2" style="margin-top:18px">Faisons de votre projet <em>un moment inoubliable.</em></h2><p class="pm-lead" style="margin-top:22px">Devis gratuit et sans engagement, réponse sous 24 h.</p>
+<div class="pm-direct"><a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a><a href="https://wa.me/33631949653?text=Bonjour%2C%20je%20vous%20contacte%20depuis%20le%20site%20SLP%20%3A%20" target="_blank" rel="noopener" data-contact="whatsapp">WhatsApp</a><a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a></div></div>
+<div class="pm-parcours pm-rv"><div class="pm-parc"><h3>Programmer un spectacle</h3><p>Vous avez une date et un lieu : nous vous proposons une sélection d’artistes disponibles.</p></div><div class="pm-parc"><h3>Organiser un événement complet</h3><p>Artistes, son, lumière et coordination : une seule équipe, de la préparation au jour J.</p></div>
+<p><a class="pm-btn pm-btn-p" href="contact" data-contact="devis">Demander un devis <span class="pm-ar" aria-hidden="true">→</span></a></p></div>
+</div></section></main>
 
 <footer>
   <div class="footer-wrap">
@@ -611,6 +740,19 @@ requestAnimationFrame(step);})();</script>
   function cmd(fn,args){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(e){}}
   snd.addEventListener('click',function(){on=!on;if(on){cmd('unMute');cmd('setVolume',[100]);cmd('playVideo');}else{cmd('mute');}
     snd.textContent=on?'🔊 Couper le son':'🔇 Activer le son';snd.setAttribute('aria-pressed',on?'true':'false');});
+})();
+</script>
+<script>
+(function(){
+  var d=document,h=d.documentElement;h.classList.add('pm-js');
+  var $$=function(s){return [].slice.call(d.querySelectorAll(s))};
+  var hd=d.querySelector('header');
+  if(hd){var f=function(){hd.classList.toggle('pm-solid',window.scrollY>40)};f();addEventListener('scroll',f,{passive:true});}
+  var sl=$$('.pm-slide'),dt=$$('.pm-dots i'),i=0;
+  if(sl.length>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches){setInterval(function(){sl[i].classList.remove('on');dt[i]&&dt[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');dt[i]&&dt[i].classList.add('on')},6500)}
+  var els=$$('.pm-rv');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('pm-in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(el){io.observe(el)})}else{els.forEach(function(el){el.classList.add('pm-in')})}
+  $$('.pm-chip').forEach(function(c){c.addEventListener('click',function(){$$('.pm-chip').forEach(function(x){x.setAttribute('aria-pressed','false')});c.setAttribute('aria-pressed','true');var k=c.getAttribute('data-f');$$('.pm-card').forEach(function(card){card.hidden=!(k==='all'||card.getAttribute('data-c')===k);card.classList.add('pm-in')})})});
 })();
 </script>
 </body>
