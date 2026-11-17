@@ -295,6 +295,15 @@
   <div class="bandeau chaud"><div class="defile"><span>Conciertos</span><span>Tributos</span><span>Cabaret</span><span>Fiestas</span><span>Mercados gastronómicos</span><span>Temporada cultural</span><span>Bodas</span><span>Fiestas privadas</span><span>Festivales</span><span>Galas</span><span>Eventos puntuales</span><span>Conciertos</span><span>Tributos</span><span>Cabaret</span><span>Fiestas</span><span>Mercados gastronómicos</span><span>Temporada cultural</span><span>Bodas</span><span>Fiestas privadas</span><span>Festivales</span><span>Galas</span><span>Eventos puntuales</span><span>Conciertos</span><span>Tributos</span><span>Cabaret</span><span>Fiestas</span><span>Mercados gastronómicos</span><span>Temporada cultural</span><span>Bodas</span><span>Fiestas privadas</span><span>Festivales</span><span>Galas</span><span>Eventos puntuales</span></div></div>
 </div>
 
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="section-head"><span class="label">Quiénes somos</span><h2>Productor y distribuidor de espectáculos</h2></div>
+    <p class="about-lead">SLP Sound Light Prod selecciona, produce y distribuye espectáculos para ayuntamientos, comités de fiestas, asociaciones, empresas y particulares. Nuestro equipo reúne unos 20 años de experiencia en iluminación escénica y 10 años en producción y distribución de espectáculos: sabemos qué hace bueno un espectáculo y qué hace falta para que todo salga bien.</p>
+    <ul class="about-stats"><li><strong>20 años</strong><span>de experiencia en escena e iluminación</span></li><li><strong>10 años</strong><span>de producción y distribución de espectáculos</span></li><li><strong>24 h</strong><span>para recibir su presupuesto</span></li></ul>
+    <ul class="about-pledges"><li>Espectáculos seleccionados y aprobados por SLP</li><li>Un único interlocutor de principio a fin</li><li>Sustitución del artista en caso de cancelación</li></ul>
+  </div>
+</section>
+
 <section class="how" id="how">
   <div class="wrap">
     <div class="section-head"><span class="label">Cómo funciona</span><h2>Sencillo, de la primera llamada al último bis</h2></div>
@@ -668,5 +677,17 @@ html,body{overflow-x:clip}
 @media (max-width:560px){.how .steps{grid-template-columns:1fr}}
 /* how-compact:end */
 /* home-compact:end */
+
+/* QUI SOMMES-NOUS */
+.about .wrap{padding-top:44px; padding-bottom:20px;}
+.about .section-head h2{font-size:clamp(1.4rem,2.8vw,2rem);}
+.about-lead{max-width:760px; color:var(--muted); line-height:1.6; margin:0 0 22px;}
+.about-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 18px; padding:0; list-style:none;}
+.about-stats li{padding:18px 20px; border-radius:18px; background:var(--ink-2); border:1px solid var(--line);}
+.about-stats strong{display:block; font-size:clamp(1.8rem,4vw,2.5rem); line-height:1.1; background:var(--spectre); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.about-stats span{display:block; margin-top:6px; font-size:.9rem; line-height:1.4; color:var(--muted);}
+.about-pledges{display:flex; flex-wrap:wrap; gap:10px 22px; margin:0; padding:0; list-style:none; font-weight:600; font-size:.92rem;}
+.about-pledges li::before{content:'\2713'; margin-right:8px; color:var(--amber);}
+@media (max-width:760px){ .about-stats{grid-template-columns:1fr;} }
 </style>
 </html>
