@@ -1,0 +1,64 @@
+/* SLP Store (slpstore.fr) : habillage « Premium spectaculaire » sur le magasin clair.
+   Chargé en dernier ; ne modifie ni le contenu, ni le panier, ni les données structurées. */
+:root{--pm-gold:#e6c27e;--pm-brand:linear-gradient(90deg,#3259be,#8c3290 35%,#ff0953 65%,#fc8024 85%,#fbc608)}
+.shop-light{background:#f1f2f7}
+.shop-light h1,.shop-light h2,.shop-light h3{font-family:'League Spartan',sans-serif}
+.shop-wrap{padding-top:clamp(24px,3vw,44px)}
+
+/* Bandeau d'engagements et barre de recherche */
+.shop-top{background:#0c0a14;color:rgba(247,245,240,.85);letter-spacing:.02em}
+.shop-top span::before{color:var(--pm-gold)}
+.shop-bar{box-shadow:0 1px 0 rgba(20,33,61,.06)}
+.shop-search{border-color:rgba(20,33,61,.18);transition:border-color .25s,box-shadow .25s}
+.shop-search:focus-within{border-color:#14213d;box-shadow:0 0 0 4px rgba(20,33,61,.08)}
+.shop-nav{background:#0c0a14;border-bottom:3px solid transparent;border-image:var(--pm-brand) 1}
+.shop-nav a.top{letter-spacing:.08em;text-transform:uppercase;font-size:.76rem;font-weight:700;transition:color .2s,background .2s}
+.shop-nav a.top:hover,.shop-nav .dd:hover>a.top{background:rgba(255,255,255,.06);color:var(--pm-gold)}
+
+/* Bandeaux promotionnels : plus grands, plus cinématographiques */
+.hero-ban,.hero-side,.tile4{border-radius:24px}
+.hero-ban{min-height:380px;box-shadow:0 24px 60px rgba(12,10,20,.28);transition:transform .4s,box-shadow .4s}
+.hero-ban:hover{transform:translateY(-3px);box-shadow:0 30px 70px rgba(12,10,20,.34)}
+.hero-ban h2{font-weight:900;text-transform:uppercase;letter-spacing:-.012em;line-height:.98}
+.hero-ban .tx{padding:44px 12px 44px 48px}
+.hero-ban .pill,.tile4 .pill{text-transform:uppercase;letter-spacing:.08em;font-size:.76rem;transition:background .25s,transform .25s}
+.hero-ban:hover .pill,.tile4:hover .pill{background:var(--pm-gold);transform:translateX(3px)}
+.hero-bf .big{color:var(--pm-gold)}
+.hero-bf .pill{background:var(--pm-gold)}
+.hero-side{background:linear-gradient(160deg,#17142a,#0c0a14);box-shadow:0 24px 60px rgba(12,10,20,.28);border:1px solid rgba(230,194,126,.25)}
+.hero-side h3{font-weight:900;text-transform:uppercase;color:var(--pm-gold)}
+.hero-side li::before{content:'✓';color:var(--pm-gold);font-weight:800}
+.hero-side a{border-radius:100px;text-transform:uppercase;letter-spacing:.07em;font-size:.76rem;transition:background .25s}
+.hero-side a:hover{background:var(--pm-gold)}
+
+/* Rayons */
+.tile4{box-shadow:0 14px 36px rgba(12,10,20,.2)}
+.tile4 h3{font-weight:900;text-transform:uppercase;letter-spacing:-.005em}
+.tile4:hover{box-shadow:0 22px 50px rgba(12,10,20,.3)}
+
+/* Titres de section avec filet de marque */
+.shop-wrap .sec-title,.shop-wrap .cat-head h1{font-weight:900;text-transform:uppercase;letter-spacing:-.012em}
+.shop-wrap .sec-title{padding-bottom:14px;background:var(--pm-brand) left bottom/56px 3px no-repeat}
+.shop-wrap .cat-head h1::after{content:'';display:block;width:56px;height:3px;margin-top:10px;background:var(--pm-brand);border-radius:3px}
+
+/* Cartes produits */
+.shop-light .card{border-radius:18px;border:1px solid rgba(20,33,61,.08);box-shadow:0 2px 8px rgba(20,33,61,.05);transition:transform .3s,box-shadow .3s,border-color .3s}
+.shop-light .card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(20,33,61,.14);border-color:rgba(20,33,61,.18)}
+.grid-sm .card h3{font-family:'Instrument Sans',sans-serif;font-weight:700}
+.grid-sm .price,.shop-light .price{font-family:'League Spartan',sans-serif;font-weight:800}
+.shop-light .btn,.grid-sm .btn{border-radius:100px;letter-spacing:.05em;text-transform:uppercase;font-weight:700}
+.shop-light .btn-primary:hover{background:#0c0a14 !important}
+.badge-new{background:#14213d}
+.subchips button{text-transform:uppercase;letter-spacing:.06em}
+
+/* Réassurance et bas de page */
+.shop-light .trust li{border-radius:16px;box-shadow:0 2px 8px rgba(20,33,61,.05)}
+.shop-light .refs{background:#fff}
+
+/* Fiche produit */
+.shop-light .pp h1{font-weight:900;text-transform:uppercase;letter-spacing:-.012em;line-height:1}
+.shop-light .pp-price,.shop-light .pp .price{font-family:'League Spartan',sans-serif;font-weight:900}
+.shop-light .pp-trust div{border-radius:14px}
+.shop-light .pp-thumbs button{border-radius:12px}
+@media (max-width:600px){.hero-ban .tx{padding:20px 18px 6px}.hero-ban{min-height:0}}
+@media (prefers-reduced-motion:reduce){.hero-ban,.shop-light .card{transition:none}}
