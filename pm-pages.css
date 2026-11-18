@@ -180,3 +180,28 @@ body.pm-inner .klb-hero{padding-top:110px}
 .pm-slide.pm-logo{background:#000}
 .pm-slide.pm-logo img{object-fit:contain;object-position:82% 45%;mix-blend-mode:screen}
 @media (max-width:900px){.fiche-hero.pm-cine.pm-logo .fiche-photo img,.pm-slide.pm-logo img{object-position:50% 8%}}
+
+/* Fiches spectacle : corps de page dense, pleine largeur sur ordinateur */
+body:has(.fiche-hero) .fiche-body .wrap{padding-top:16px;padding-bottom:16px}
+body:has(.fiche-hero) .fiche-body .section-head{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:14px;row-gap:2px;margin-bottom:14px}
+body:has(.fiche-hero) .fiche-body .section-head h2{font-size:clamp(1.3rem,1.9vw,1.75rem);margin:0}
+body:has(.fiche-hero) .fiche-body .section-head .label{margin:0}
+body:has(.fiche-hero) .fiche-body .bio-text p{max-width:none}
+@media (min-width:1000px){
+  body:has(.fiche-hero) .fiche-body{max-width:1280px;margin:0 auto;padding:12px 32px 8px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:44px;grid-auto-flow:dense;align-items:start}
+  body:has(.fiche-hero) .fiche-body>section{grid-column:span 12;min-width:0}
+  body:has(.fiche-hero) .fiche-body .wrap{max-width:none;padding-left:0;padding-right:0}
+  body:has(.fiche-hero) .fiche-body>section:has(.video16x9){grid-column:span 7}
+  body:has(.fiche-hero) .fiche-body>section:has(.info-grid){grid-column:span 5}
+  body:has(.fiche-hero) .fiche-body>section:has(.info-grid):has(~ section .info-grid)~section:has(.bio-text){grid-column:span 7}
+  body:has(.fiche-hero) .fiche-body>section:has(.bio-text){grid-column:span 7}
+  body:has(.fiche-hero) .fiche-body>section:has(.gal){grid-column:span 12}
+  body:has(.fiche-hero) .fiche-body>section:has(.trib-seo){grid-column:span 12}
+  body:has(.fiche-hero) .fiche-body .info-grid{grid-template-columns:1fr;gap:10px}
+  body:has(.fiche-hero) .fiche-body .gal{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  body:has(.fiche-hero) .fiche-body .trib-seo{column-count:2;column-gap:44px}
+  body:has(.fiche-hero) .fiche-body .trib-seo p{break-inside:avoid-column}
+  body:has(.fiche-hero) .fiche-body .video16x9{border-radius:14px}
+  body:has(.fiche-hero) .fiche-body ~ section:not(.cta-band) .wrap{max-width:1280px;padding-left:32px;padding-right:32px}
+  body:has(.fiche-hero) .fiche-body ~ section .show-card{aspect-ratio:16/10}
+}
