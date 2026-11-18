@@ -267,11 +267,14 @@ section.how .steps{grid-template-columns:repeat(4,1fr) !important}
 @media (max-width:980px){section.how .steps{grid-template-columns:repeat(2,1fr) !important}}
 @media (max-width:560px){section.how .steps{grid-template-columns:1fr !important}}
 </style>
+<link rel="preload" as="image" href="/images/abba-photo-2-1200.webp" imagesrcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 <style id="pm-home">
 /* ===== Accueil « Premium spectaculaire » (préfixe pm-) ===== */
 body.pm-home{--pm-gold:#e6c27e;--pm-ink3:#110e1f;--pm-hair:rgba(255,255,255,.1);--pm-brand:linear-gradient(90deg,#3259be,#8c3290 35%,#ff0953 65%,#fc8024 85%,#fbc608)}
-body.pm-home header{position:fixed;left:0;right:0;top:0;background:transparent !important;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;transition:background .35s,border-color .35s}body.pm-home header::after{opacity:0;transition:opacity .35s}body.pm-home header.pm-solid::after,body.pm-home header.menu-open::after{opacity:.9}body.pm-home header:not(.pm-solid):not(.menu-open){background:linear-gradient(180deg,rgba(12,10,20,.55),transparent) !important}
-body.pm-home header.pm-solid,body.pm-home header.menu-open{background:rgba(12,10,20,.9) !important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+body.pm-home header{position:fixed;left:0;right:0;top:0;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;transition:background .35s,border-color .35s}
+body.pm-home header.pm-solid,body.pm-home header.menu-open{background:rgba(12,10,20,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
 body.pm-home nav a{color:rgba(247,245,240,.88)}
 body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 .pm{--pm-pad:clamp(20px,4vw,72px)}
@@ -327,6 +330,7 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 .pm-ph{aspect-ratio:4/5;overflow:hidden}
 .pm-ph img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
 .pm-card:hover .pm-ph img{transform:scale(1.06)}
+.pm-ph img[src*="noon-coverband-new-logo"]{object-fit:contain;background:#000}
 .pm-tx{padding:20px 22px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
 .pm-cat{font:400 .68rem/1 'DM Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--pm-gold)}
 .pm-card h3{font:900 1.35rem/1.05 'League Spartan',sans-serif;text-transform:uppercase;color:var(--paper)}
@@ -407,9 +411,8 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
   .pm-gal{grid-template-columns:repeat(2,1fr);grid-auto-rows:130px}
   .pm-g1,.pm-g6{grid-column:span 2;grid-row:span 2}.pm-g2,.pm-g3,.pm-g4,.pm-g5{grid-column:span 1;grid-row:span 1}
 }
-.pm-ph img.pm-logo-img{object-fit:contain;background:#000}
 </style>
-<link rel="preload" as="image" href="/images/abba-photo-2-1200.webp" imagesrcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 </head>
 <body class="pm-home">
 
@@ -435,17 +438,16 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 <main class="pm" id="pm-main">
 <section class="pm-hero" id="top" aria-label="SLP">
 <div class="pm-slides" aria-hidden="true">
-<div class="pm-slide on"><img src="/images/abba-photo-2-1200.webp" srcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" sizes="100vw" width="1200" height="800" alt="" fetchpriority="high"></div>
-<div class="pm-slide"><img src="/images/kool-photo-1-1200.webp" srcset="/images/kool-photo-1-480.webp 480w, /images/kool-photo-1-800.webp 800w, /images/kool-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="676" alt="" loading="lazy" decoding="async"></div>
+<div class="pm-slide on"><img src="/images/celine-dion-photo-5-1200.webp" srcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" sizes="100vw" width="1200" height="633" alt="" style="object-position:50% 35%" fetchpriority="high"></div>
+<div class="pm-slide"><img src="/images/calo-photo-2-1200.webp" srcset="/images/calo-photo-2-480.webp 480w, /images/calo-photo-2-800.webp 800w, /images/calo-photo-2-1200.webp 1200w" sizes="100vw" width="1200" height="960" alt="" style="object-position:50% 45%" loading="lazy" decoding="async"></div>
 <div class="pm-slide"><img src="/images/panache-photo-2-1200.webp" srcset="/images/panache-photo-2-480.webp 480w, /images/panache-photo-2-800.webp 800w, /images/panache-photo-2-1200.webp 1200w" sizes="100vw" width="1200" height="801" alt="" style="object-position:50% 40%" loading="lazy" decoding="async"></div>
-<div class="pm-slide"><img src="/images/fine-allies-photo-1-1200.webp" srcset="/images/fine-allies-photo-1-480.webp 480w, /images/fine-allies-photo-1-800.webp 800w, /images/fine-allies-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="798" alt="" loading="lazy" decoding="async"></div>
-<div class="pm-slide"><img src="/images/matmatah-photo-9-1200.webp" srcset="/images/matmatah-photo-9-480.webp 480w, /images/matmatah-photo-9-800.webp 800w, /images/matmatah-photo-9-1200.webp 1200w" sizes="100vw" width="1200" height="675" alt="" loading="lazy" decoding="async"></div>
+<div class="pm-slide"><img src="/images/bim-bam-boom-photo-1-1200.webp" srcset="/images/bim-bam-boom-photo-1-480.webp 480w, /images/bim-bam-boom-photo-1-800.webp 800w, /images/bim-bam-boom-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="900" alt="" style="object-position:50% 40%" loading="lazy" decoding="async"></div>
 </div>
 <div class="pm-wrap pm-hero-in">
 <h1><span>The emotion of live.</span><span>The standards of a full production.</span></h1>
 <p class="pm-sub">Artists, shows and technical expertise at the service of your events.</p>
 <div class="pm-cta"><a class="pm-btn pm-btn-p" href="#spectacles">Discover our shows <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-btn pm-btn-g" href="#contact">Let’s talk about your project</a></div>
-</div><div class="pm-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></div></section>
+</div><div class="pm-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div></section>
 <div class="pm-rule" aria-hidden="true"></div>
 <section class="pm-sec" id="univers"><div class="pm-wrap">
 <div class="pm-head pm-rv"><span class="pm-label">Our worlds</span><h2 class="pm-h2">The stage has <em>no limits.</em></h2></div><div class="pm-ugrid">
@@ -465,7 +467,7 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 <a class="pm-card pm-rv" data-c="live" href="the-fine-allies"><div class="pm-ph"><img src="/images/fine-allies-photo-1-1200.webp" srcset="/images/fine-allies-photo-1-480.webp 480w, /images/fine-allies-photo-1-800.webp 800w, /images/fine-allies-photo-1-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="798" alt="The Fine Allies" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Live band</span><h3>The Fine Allies</h3><p>Funk, soul and rhythm’n’blues.</p><span class="pm-more">View the show <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
 <a class="pm-card pm-rv" data-c="cabaret" href="panache"><div class="pm-ph"><img src="/images/panache-photo-2-1200.webp" srcset="/images/panache-photo-2-480.webp 480w, /images/panache-photo-2-800.webp 800w, /images/panache-photo-2-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="801" alt="Panache" style="object-position:50% 40%" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Cabaret</span><h3>Panache</h3><p>Touring cabaret revue: feathers and rhinestones.</p><span class="pm-more">View the show <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
 <a class="pm-card pm-rv" data-c="live" href="alchimie"><div class="pm-ph"><img src="/images/alchimie-photo-3-1200.webp" srcset="/images/alchimie-photo-3-480.webp 480w, /images/alchimie-photo-3-800.webp 800w, /images/alchimie-photo-3-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="1045" alt="Alchimie" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Live band</span><h3>Alchimie</h3><p>Pop/rock band formed in 2018.</p><span class="pm-more">View the show <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
-<a class="pm-card pm-rv" data-c="live" href="noon-coverband"><div class="pm-ph"><img src="/images/noon-coverband-new-logo-480.webp" srcset="/images/noon-coverband-new-logo-480.webp 480w, /images/noon-coverband-new-logo-800.webp 800w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="480" height="480" alt="NooN Coverband" loading="lazy" decoding="async" class="pm-logo-img"></div><div class="pm-tx"><span class="pm-cat">Live band</span><h3>NooN Coverband</h3><p>Pop/rock/funk duo.</p><span class="pm-more">View the show <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
+<a class="pm-card pm-rv" data-c="live" href="noon-coverband"><div class="pm-ph"><img src="/images/noon-coverband-new-logo-1200.webp" srcset="/images/noon-coverband-new-logo-480.webp 480w, /images/noon-coverband-new-logo-800.webp 800w, /images/noon-coverband-new-logo-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="1200" alt="NooN Coverband" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Live band</span><h3>NooN Coverband</h3><p>Pop/rock/funk duo.</p><span class="pm-more">View the show <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
 <a class="pm-card pm-rv" data-c="live" href="cache-candy"><div class="pm-ph"><img src="/images/cache-candy-photo-cropped-1200.webp" srcset="/images/cache-candy-photo-cropped-480.webp 480w, /images/cache-candy-photo-cropped-800.webp 800w, /images/cache-candy-photo-cropped-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="945" alt="Cache Candy" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Live band</span><h3>Cache Candy</h3><p>Electro pop-rock duo.</p><span class="pm-more">View the show <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
 <a class="pm-card pm-rv" data-c="magie" href="clement-blouin"><div class="pm-ph"><img src="/images/clement-blouin-photo-6-1200.webp" srcset="/images/clement-blouin-photo-6-480.webp 480w, /images/clement-blouin-photo-6-800.webp 800w, /images/clement-blouin-photo-6-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="1200" alt="Clément Blouin" style="object-position:50% 20%" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Magic</span><h3>Clément Blouin</h3><p>A show of magic and humour.</p><span class="pm-note">Presented by SLP in agreement with Clément B.</span><span class="pm-more">View the show <span class="pm-ar" aria-hidden="true">→</span></span></div></a>
 </div></div></section>
@@ -610,6 +612,45 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
   function cmd(fn,args){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(e){}}
   snd.addEventListener('click',function(){on=!on;if(on){cmd('unMute');cmd('setVolume',[100]);cmd('playVideo');}else{cmd('mute');}
     snd.textContent=on?'🔊 Turn sound off':'🔇 Turn sound on';snd.setAttribute('aria-pressed',on?'true':'false');});
+})();
+</script>
+<script>
+(function(){
+  var d=document,h=d.documentElement;h.classList.add('pm-js');
+  var $$=function(s){return [].slice.call(d.querySelectorAll(s))};
+  var hd=d.querySelector('header');
+  if(hd){var f=function(){hd.classList.toggle('pm-solid',window.scrollY>40)};f();addEventListener('scroll',f,{passive:true});}
+  var sl=$$('.pm-slide'),dt=$$('.pm-dots i'),i=0;
+  if(sl.length>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches){setInterval(function(){sl[i].classList.remove('on');dt[i]&&dt[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');dt[i]&&dt[i].classList.add('on')},6500)}
+  var els=$$('.pm-rv');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('pm-in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(el){io.observe(el)})}else{els.forEach(function(el){el.classList.add('pm-in')})}
+  $$('.pm-chip').forEach(function(c){c.addEventListener('click',function(){$$('.pm-chip').forEach(function(x){x.setAttribute('aria-pressed','false')});c.setAttribute('aria-pressed','true');var k=c.getAttribute('data-f');$$('.pm-card').forEach(function(card){card.hidden=!(k==='all'||card.getAttribute('data-c')===k);card.classList.add('pm-in')})})});
+})();
+</script>
+<script>
+(function(){
+  var d=document,h=d.documentElement;h.classList.add('pm-js');
+  var $$=function(s){return [].slice.call(d.querySelectorAll(s))};
+  var hd=d.querySelector('header');
+  if(hd){var f=function(){hd.classList.toggle('pm-solid',window.scrollY>40)};f();addEventListener('scroll',f,{passive:true});}
+  var sl=$$('.pm-slide'),dt=$$('.pm-dots i'),i=0;
+  if(sl.length>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches){setInterval(function(){sl[i].classList.remove('on');dt[i]&&dt[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');dt[i]&&dt[i].classList.add('on')},6500)}
+  var els=$$('.pm-rv');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('pm-in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(el){io.observe(el)})}else{els.forEach(function(el){el.classList.add('pm-in')})}
+  $$('.pm-chip').forEach(function(c){c.addEventListener('click',function(){$$('.pm-chip').forEach(function(x){x.setAttribute('aria-pressed','false')});c.setAttribute('aria-pressed','true');var k=c.getAttribute('data-f');$$('.pm-card').forEach(function(card){card.hidden=!(k==='all'||card.getAttribute('data-c')===k);card.classList.add('pm-in')})})});
+})();
+</script>
+<script>
+(function(){
+  var d=document,h=d.documentElement;h.classList.add('pm-js');
+  var $$=function(s){return [].slice.call(d.querySelectorAll(s))};
+  var hd=d.querySelector('header');
+  if(hd){var f=function(){hd.classList.toggle('pm-solid',window.scrollY>40)};f();addEventListener('scroll',f,{passive:true});}
+  var sl=$$('.pm-slide'),dt=$$('.pm-dots i'),i=0;
+  if(sl.length>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches){setInterval(function(){sl[i].classList.remove('on');dt[i]&&dt[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');dt[i]&&dt[i].classList.add('on')},6500)}
+  var els=$$('.pm-rv');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('pm-in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(el){io.observe(el)})}else{els.forEach(function(el){el.classList.add('pm-in')})}
+  $$('.pm-chip').forEach(function(c){c.addEventListener('click',function(){$$('.pm-chip').forEach(function(x){x.setAttribute('aria-pressed','false')});c.setAttribute('aria-pressed','true');var k=c.getAttribute('data-f');$$('.pm-card').forEach(function(card){card.hidden=!(k==='all'||card.getAttribute('data-c')===k);card.classList.add('pm-in')})})});
 })();
 </script>
 <script>
