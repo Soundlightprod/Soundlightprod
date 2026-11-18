@@ -270,6 +270,7 @@ section.how .steps{grid-template-columns:repeat(4,1fr) !important}
 <link rel="preload" as="image" href="/images/abba-photo-2-1200.webp" imagesrcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 <link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 <link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 <style id="pm-home">
 /* ===== Accueil « Premium spectaculaire » (préfixe pm-) ===== */
 body.pm-home{--pm-gold:#e6c27e;--pm-ink3:#110e1f;--pm-hair:rgba(255,255,255,.1);--pm-brand:linear-gradient(90deg,#3259be,#8c3290 35%,#ff0953 65%,#fc8024 85%,#fbc608)}
@@ -442,12 +443,14 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 <div class="pm-slide"><img src="/images/calo-photo-2-1200.webp" srcset="/images/calo-photo-2-480.webp 480w, /images/calo-photo-2-800.webp 800w, /images/calo-photo-2-1200.webp 1200w" sizes="100vw" width="1200" height="960" alt="" style="object-position:50% 45%" loading="lazy" decoding="async"></div>
 <div class="pm-slide"><img src="/images/panache-photo-2-1200.webp" srcset="/images/panache-photo-2-480.webp 480w, /images/panache-photo-2-800.webp 800w, /images/panache-photo-2-1200.webp 1200w" sizes="100vw" width="1200" height="801" alt="" style="object-position:50% 40%" loading="lazy" decoding="async"></div>
 <div class="pm-slide"><img src="/images/bim-bam-boom-photo-1-1200.webp" srcset="/images/bim-bam-boom-photo-1-480.webp 480w, /images/bim-bam-boom-photo-1-800.webp 800w, /images/bim-bam-boom-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="900" alt="" style="object-position:50% 40%" loading="lazy" decoding="async"></div>
+<div class="pm-slide"><img src="/images/kool-photo-1-1200.webp" srcset="/images/kool-photo-1-480.webp 480w, /images/kool-photo-1-800.webp 800w, /images/kool-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="676" alt="" loading="lazy" decoding="async"></div>
+<div class="pm-slide"><img src="/images/clement-blouin-photo-1-1200.webp" srcset="/images/clement-blouin-photo-1-480.webp 480w, /images/clement-blouin-photo-1-800.webp 800w, /images/clement-blouin-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="800" alt="" style="object-position:50% 25%" loading="lazy" decoding="async"></div>
 </div>
 <div class="pm-wrap pm-hero-in">
 <h1><span>La emoción del directo.</span><span>La exigencia de la producción.</span></h1>
 <p class="pm-sub">Artistas, espectáculos y experiencia técnica al servicio de sus eventos.</p>
 <div class="pm-cta"><a class="pm-btn pm-btn-p" href="#spectacles">Descubrir nuestros espectáculos <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-btn pm-btn-g" href="#contact">Hablemos de su proyecto</a></div>
-</div><div class="pm-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div></section>
+</div><div class="pm-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div></section>
 <div class="pm-rule" aria-hidden="true"></div>
 <section class="pm-sec" id="univers"><div class="pm-wrap">
 <div class="pm-head pm-rv"><span class="pm-label">Nuestros universos</span><h2 class="pm-h2">El escenario <em>no tiene límites.</em></h2></div><div class="pm-ugrid">
@@ -612,6 +615,19 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
   function cmd(fn,args){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(e){}}
   snd.addEventListener('click',function(){on=!on;if(on){cmd('unMute');cmd('setVolume',[100]);cmd('playVideo');}else{cmd('mute');}
     snd.textContent=on?'🔊 Silenciar':'🔇 Activar el sonido';snd.setAttribute('aria-pressed',on?'true':'false');});
+})();
+</script>
+<script>
+(function(){
+  var d=document,h=d.documentElement;h.classList.add('pm-js');
+  var $$=function(s){return [].slice.call(d.querySelectorAll(s))};
+  var hd=d.querySelector('header');
+  if(hd){var f=function(){hd.classList.toggle('pm-solid',window.scrollY>40)};f();addEventListener('scroll',f,{passive:true});}
+  var sl=$$('.pm-slide'),dt=$$('.pm-dots i'),i=0;
+  if(sl.length>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches){setInterval(function(){sl[i].classList.remove('on');dt[i]&&dt[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');dt[i]&&dt[i].classList.add('on')},6500)}
+  var els=$$('.pm-rv');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('pm-in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(el){io.observe(el)})}else{els.forEach(function(el){el.classList.add('pm-in')})}
+  $$('.pm-chip').forEach(function(c){c.addEventListener('click',function(){$$('.pm-chip').forEach(function(x){x.setAttribute('aria-pressed','false')});c.setAttribute('aria-pressed','true');var k=c.getAttribute('data-f');$$('.pm-card').forEach(function(card){card.hidden=!(k==='all'||card.getAttribute('data-c')===k);card.classList.add('pm-in')})})});
 })();
 </script>
 <script>
