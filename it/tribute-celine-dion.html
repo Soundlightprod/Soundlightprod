@@ -169,6 +169,13 @@
 .gal-credit{margin:10px 0 0;font-size:.82rem;color:var(--muted,rgba(247,245,240,.6))}
 .presse-q{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}.presse-q blockquote{margin:0;padding:18px 20px;border-left:3px solid var(--gold,#e8b84b);background:rgba(255,255,255,.04);border-radius:0 12px 12px 0}.presse-q p{margin:0 0 10px;font-size:1.05rem;line-height:1.45;font-style:italic}.presse-q cite{display:block;font-style:normal;font-size:.85rem;opacity:.8}.presse-q small{display:block;margin-top:4px;opacity:.65}
 .presse-x{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;align-items:start}.presse-x figure{margin:0}.presse-x img{width:100%;height:auto;border-radius:10px;display:block}.presse-x figcaption{margin-top:8px;font-size:.85rem;opacity:.8}
+.video16x9{position:relative; aspect-ratio:16/9; border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#000;}
+.video16x9 iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+.video-tabs{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:12px;}
+.video-tabs button{min-height:44px; padding:0 18px; border-radius:100px; background:transparent; color:var(--paper); border:1.5px solid rgba(255,255,255,.25); font:inherit; font-weight:700; cursor:pointer;}
+.video-tabs button[aria-pressed="true"]{background:var(--paper); color:var(--ink);}
+.video-tabs button:focus-visible,.video-alt:focus-visible,.fiche-actions .btn:focus-visible,.gal a:focus-visible,.show-card:focus-visible,summary:focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+.video-alt{color:var(--muted); font-size:.9rem; margin-left:auto; padding:10px 4px;}
 </style>
 
 
@@ -271,11 +278,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
       <span class="label">Guarda</span>
       <h2>Il video</h2>
     </div>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
-      <div style="position:relative; width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden;">
-        <iframe src="https://www.youtube.com/embed/mSQPCFXrCRE" title="Tribute Céline Dion — Il video" style="position:absolute; inset:0; width:100%; height:100%; border:0;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-      </div>
-    </div>
+    <div class="extrait-v"><div class="video16x9"><iframe id="videoFrame" src="https://www.youtube-nocookie.com/embed/mSQPCFXrCRE" title="Tribute Céline Dion — Presentazione" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="video-tabs" role="group" aria-label="Scegli il video"><button type="button" data-v="mSQPCFXrCRE" data-t="Tribute Céline Dion — Presentazione" aria-pressed="true">Presentazione</button><button type="button" data-v="OyP1Ev2Qo2g" data-t="Tribute Céline Dion — Estratto 1" aria-pressed="false">Estratto 1</button><button type="button" data-v="Ym6gs49cju0" data-t="Tribute Céline Dion — Estratto 2" aria-pressed="false">Estratto 2</button><button type="button" data-v="8XdMna2O0N0" data-t="Tribute Céline Dion — Estratto 3" aria-pressed="false">Estratto 3</button><button type="button" data-v="NY1nIbuSAlk" data-t="Tribute Céline Dion — Estratto 4" aria-pressed="false">Estratto 4</button><button type="button" data-v="SdlovJBGEq4" data-t="Tribute Céline Dion — Estratto 5" aria-pressed="false">Estratto 5</button><a class="video-alt" id="videoAlt" href="https://www.youtube.com/watch?v=mSQPCFXrCRE" target="_blank" rel="noopener">Apri su YouTube</a></div><script>(function(){var f=document.getElementById('videoFrame'),alt=document.getElementById('videoAlt'),bs=document.querySelectorAll('.video-tabs button');bs.forEach(function(b){b.addEventListener('click',function(){if(b.getAttribute('aria-pressed')==='true')return;bs.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');var id=b.getAttribute('data-v');f.title=b.getAttribute('data-t');f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1';alt.href='https://www.youtube.com/watch?v='+id;});});})();</script></div>
   </div>
 </section>
 
