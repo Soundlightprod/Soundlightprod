@@ -85,6 +85,7 @@
   .trust span::before{content:'✓ '; color:var(--amber); font-weight:700;}
   @media (max-width:560px){ .quick a{flex:1 1 100%; justify-content:center;} }
   .contact-form{order:-1;} @media (min-width:761px){ .contact-form{order:0;} }
+.more-opts{margin:0 0 14px;border:1px solid var(--line,rgba(255,255,255,.18));border-radius:14px;padding:4px 16px}.more-opts summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;color:var(--amber,#fbc608)}.more-opts[open]{padding-bottom:6px}
   .opt{color:var(--muted); text-transform:none; letter-spacing:0;}
   .hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
   .form-msg{margin-top:14px; font-size:.92rem; text-align:center;} .form-msg.err{color:var(--pink);}
@@ -251,6 +252,13 @@
             <input type="text" id="commune" autocomplete="address-level2" placeholder="e.g. Bergerac" required aria-describedby="commune-err">
             <p class="err" id="commune-err" hidden></p>
           </div>
+          <details class="more-opts">
+            <summary>Tell us more about your event (optional)</summary>
+            <div class="field"><label for="evtype">Event type</label><select id="evtype"><option value=""></option><option value="Town hall / village festival">Town hall / village festival</option><option value="Festival / cultural season">Festival / cultural season</option><option value="Festival committee / association">Festival committee / association</option><option value="Company">Company</option><option value="Wedding / private event">Wedding / private event</option><option value="Other">Other</option></select></div>
+            <div class="field"><label for="evdate">Event date</label><input type="date" id="evdate"></div>
+            <div class="field"><label for="evtech">Technical needs</label><select id="evtech"><option value=""></option><option value="None / already covered">None / already covered</option><option value="Sound">Sound</option><option value="Stage lighting">Stage lighting</option><option value="Sound and lighting">Sound and lighting</option></select></div>
+            <div class="field"><label for="evbudget">Indicative budget</label><input type="text" id="evbudget" inputmode="text" maxlength="60" placeholder="e.g. €3,000"></div>
+          </details>
           <div class="field">
             <label for="message">Your event <span class="opt">(date, details… optional)</span></label>
             <textarea id="message" rows="2" placeholder="e.g. village fête, June 2027"></textarea>
@@ -415,7 +423,7 @@ window.__DEVIS = {"artists": {"tribute-abba": "Tribute ABBA", "tribute-calogero"
     if (bad) { msg.className = 'form-msg err'; msg.textContent = S.fields_missing; bad.focus(); return; }
     var v = function (id) { return $(id).value.trim(); };
     var nomArt = artiste.value ? (artiste.querySelector('option[value="' + artiste.value + '"]') || {}).textContent : '';
-    var d = { nom: v('name'), telephone: v('phone'), email: v('email'), sujet: subj.value, date_event: '', lieu: v('commune'), message: v('message'),
+    var d = { nom: v('name'), telephone: v('phone'), email: v('email'), sujet: subj.value, date_event: v('evdate'), type_evenement: v('evtype'), technique: v('evtech'), budget: v('evbudget'), lieu: v('commune'), message: v('message'),
       artiste: artiste.value, artiste_nom: nomArt || '',
       site_web: v('site_web'), page: from || 'contact', session_id: sid, lang: C.lang, form: 'devis' };
     d.cle = keyFor(Object.assign({}, d, { session_id: '' }));

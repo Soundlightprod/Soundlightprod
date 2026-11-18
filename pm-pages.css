@@ -205,3 +205,8 @@ body:has(.fiche-hero) .fiche-body .bio-text p{max-width:none}
   body:has(.fiche-hero) .fiche-body ~ section:not(.cta-band) .wrap{max-width:1280px;padding-left:32px;padding-right:32px}
   body:has(.fiche-hero) .fiche-body ~ section .show-card{aspect-ratio:16/10}
 }
+
+/* Liens dans les textes d'introduction : même teinte que le texte, soulignés (pas de bleu par défaut) */
+.pm-hero p a,.page-hero p a,.fiche-hero p a{color:var(--paper);text-decoration:underline;text-decoration-color:rgba(251,198,8,.6);text-underline-offset:3px}
+.pm-hero p a:hover,.page-hero p a:hover{text-decoration-color:var(--pm-gold)}
+@media (min-width:1000px){.pm-ugrid .pm-tile{min-height:300px}}
