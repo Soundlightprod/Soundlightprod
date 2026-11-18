@@ -272,11 +272,12 @@ section.how .steps{grid-template-columns:repeat(4,1fr) !important}
 <link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 <link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 <link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" href="/images/celine-dion-photo-5-1200.webp" imagesrcset="/images/celine-dion-photo-5-480.webp 480w, /images/celine-dion-photo-5-800.webp 800w, /images/celine-dion-photo-5-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 <style id="pm-home">
 /* ===== Accueil « Premium spectaculaire » (préfixe pm-) ===== */
 body.pm-home{--pm-gold:#e6c27e;--pm-ink3:#110e1f;--pm-hair:rgba(255,255,255,.1);--pm-brand:linear-gradient(90deg,#3259be,#8c3290 35%,#ff0953 65%,#fc8024 85%,#fbc608)}
-body.pm-home header{position:fixed;left:0;right:0;top:0;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;transition:background .35s,border-color .35s}
-body.pm-home header.pm-solid,body.pm-home header.menu-open{background:rgba(12,10,20,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+body.pm-home header{position:fixed;left:0;right:0;top:0;background:transparent !important;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent;transition:background .35s,border-color .35s}body.pm-home header::after{opacity:0;transition:opacity .35s}body.pm-home header.pm-solid::after,body.pm-home header.menu-open::after{opacity:.9}body.pm-home header:not(.pm-solid):not(.menu-open){background:linear-gradient(180deg,rgba(12,10,20,.55),transparent) !important}
+body.pm-home header.pm-solid,body.pm-home header.menu-open{background:rgba(12,10,20,.9) !important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
 body.pm-home nav a{color:rgba(247,245,240,.88)}
 body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 .pm{--pm-pad:clamp(20px,4vw,72px)}
@@ -401,7 +402,7 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
   .pm-prog .pm-pimg{aspect-ratio:16/10}
 }
 @media (max-width:720px){
-  .pm-hero-in{padding-top:110px}
+  .pm-hero{align-items:center}.pm-hero-in{padding-top:120px;padding-bottom:96px}
   .pm-cta .pm-btn{width:100%;justify-content:center}
   .pm-dots{display:none}
   .pm-ugrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 calc(var(--pm-pad)*-1);padding:0 var(--pm-pad) 14px;-webkit-overflow-scrolling:touch}
@@ -616,6 +617,19 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
   function cmd(fn,args){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(e){}}
   snd.addEventListener('click',function(){on=!on;if(on){cmd('unMute');cmd('setVolume',[100]);cmd('playVideo');}else{cmd('mute');}
     snd.textContent=on?'🔊 Disattiva l\'audio':'🔇 Attiva l\'audio';snd.setAttribute('aria-pressed',on?'true':'false');});
+})();
+</script>
+<script>
+(function(){
+  var d=document,h=d.documentElement;h.classList.add('pm-js');
+  var $$=function(s){return [].slice.call(d.querySelectorAll(s))};
+  var hd=d.querySelector('header');
+  if(hd){var f=function(){hd.classList.toggle('pm-solid',window.scrollY>40)};f();addEventListener('scroll',f,{passive:true});}
+  var sl=$$('.pm-slide'),dt=$$('.pm-dots i'),i=0;
+  if(sl.length>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches){setInterval(function(){sl[i].classList.remove('on');dt[i]&&dt[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');dt[i]&&dt[i].classList.add('on')},6500)}
+  var els=$$('.pm-rv');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('pm-in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(el){io.observe(el)})}else{els.forEach(function(el){el.classList.add('pm-in')})}
+  $$('.pm-chip').forEach(function(c){c.addEventListener('click',function(){$$('.pm-chip').forEach(function(x){x.setAttribute('aria-pressed','false')});c.setAttribute('aria-pressed','true');var k=c.getAttribute('data-f');$$('.pm-card').forEach(function(card){card.hidden=!(k==='all'||card.getAttribute('data-c')===k);card.classList.add('pm-in')})})});
 })();
 </script>
 <script>
