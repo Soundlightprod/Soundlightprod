@@ -229,8 +229,10 @@ def promo_html(p):
     if not was:
         return ''
     pct = round((1 - p['price_cents'] / was) * 100)
+    _end = datetime.datetime.fromisoformat(PROMO['jusqu_au'])
+    _fin = f" · jusqu'au {_end.day:02d}/{_end.month:02d}"
     return (f'<span class="pp-was">{was / 100:.2f}'.replace('.', ',') + ' €</span>'
-            f'<span class="pp-promo">{esc(PROMO["nom"])} −{pct} %</span>')
+            f'<span class="pp-promo">{esc(PROMO["nom"])} −{pct} %{_fin}</span>')
 
 
 def fr_price_ht(p):
