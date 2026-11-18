@@ -197,7 +197,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
 }
 </style>
 <link rel="stylesheet" href="/pm-pages.css?v=5">
-<script src="/pm-pages.js?v=2" defer></script>
+<script src="/pm-pages.js?v=3" defer></script>
 <style>.tag-excl{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px 10px;padding:3px 10px;border-radius:100px;background:var(--gold);color:var(--ink);font-weight:700;font-size:.78rem;vertical-align:middle}</style>
 </head>
 <body class="pm-inner">
@@ -305,7 +305,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
     <div class="retro-tv" id="retroTv">
       <div class="tv-set">
         <div class="tv-view">
-          <iframe id="tvFrame" src="https://www.youtube.com/embed/odv7OehzC1A" title="Tribute ABBA — Teaser 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          <iframe id="tvFrame" src="https://www.youtube.com/embed/odv7OehzC1A?controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&fs=0&disablekb=1&cc_load_policy=0" title="Tribute ABBA — Teaser 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
           <div class="tv-static" id="tvStatic"></div>
           <div class="tv-glass" aria-hidden="true"></div>
         </div>
@@ -326,7 +326,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
           tv.querySelectorAll('.tv-chan button').forEach(function(x){x.setAttribute('aria-pressed','false');});
           b.setAttribute('aria-pressed','true');
           st.classList.remove('on'); void st.offsetWidth; st.classList.add('on');
-          setTimeout(function(){ f.title=b.getAttribute('data-t'); f.src='https://www.youtube.com/embed/'+b.getAttribute('data-v')+'?autoplay=1'; },180);
+          setTimeout(function(){ f.title=b.getAttribute('data-t'); f.src='https://www.youtube.com/embed/'+b.getAttribute('data-v')+'?autoplay=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&fs=0&disablekb=1&cc_load_policy=0'; },180);
           setTimeout(function(){ st.classList.remove('on'); },420);
         });
       });
