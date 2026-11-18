@@ -75,6 +75,17 @@ except Exception:
     TO_CONFIRM = {}
 
 
+try:
+    TEXTES = json.loads((pathlib.Path(__file__).parent / 'textes_slp.json').read_text(encoding='utf-8'))
+except Exception:
+    TEXTES = {}
+
+
+def lead_html(p):
+    t = TEXTES.get(p.get('slug'))
+    return f'<h2>Présentation</h2><p class="pp-lead">{esc(t)}</p>' if t else ''
+
+
 def specs(p):
     d = (p.get('description') or '').strip()
     if d.lower() in EMPTY:
@@ -354,6 +365,7 @@ PAGE_CSS = """<style>
 .pp-actions .btn-primary{background:#3259be;color:#fff;border-radius:10px;min-height:52px;padding:0 30px;font-weight:800;letter-spacing:.02em}
 .pp-actions .btn-primary:hover{background:#27489f}
 .pp-actions .btn-ghost{border-radius:10px;min-height:52px}
+.pp-lead{font-size:1rem;line-height:1.65;color:var(--paper);margin:0 0 26px;max-width:62ch}
 .pp-img{border-radius:14px}
 .pp-trust div{background:#fff;border-radius:10px}
 .pp-trust b{color:#14213d}
@@ -489,7 +501,7 @@ def page(p, products, tpl):
     cat = CATS.get(p['category'], p['category'])
     _tl = type_label(p)
     title = f"{p['name']} — " + (f"{_tl}, " if _tl else '') + f"{CAT_FULL.get(p['category'], 'Matériel')} | Boutique SLP"
-    desc = _trim_desc(summary(p))
+    desc = _trim_desc(TEXTES.get(p['slug']) or summary(p))
     sp = specs(p)
     spec_html = spec_table(sp) if len(sp) > 1 else ''
     intro = f'<p class="pp-intro">{esc(sp[0])}</p>' if len(sp) == 1 else ''
@@ -562,6 +574,7 @@ def page(p, products, tpl):
       <div class="pp-actions">{buy}<a class="btn btn-ghost" href="/boutique.html">Toute la boutique</a></div>
       {wa}
       <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel sélectionné par SLP</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
+      {lead_html(p)}
       {intro}
       {f'<h2>Caractéristiques techniques</h2>{spec_html}' if spec_html else ''}
       {need_block(p, products)}
