@@ -353,6 +353,9 @@
   .px-stats b{display:block; font-family:'League Spartan',sans-serif; font-size:2.4rem; font-weight:800; color:#fff; line-height:1.1;}
   @media (max-width:860px){ .px-trust{grid-template-columns:repeat(2,1fr);} .px-expert{grid-template-columns:1fr;} }
   @media (max-width:600px){ .px-hero{flex-direction:column; align-items:stretch; min-height:0;} .px-hero img{position:static; width:100%; height:190px;} .px-hero::before{display:none;} .px-hero .in{padding:24px 20px 28px;} .px-btn{width:100%;} .px-trust{grid-template-columns:1fr;} }
+  .px-filters{display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin:-6px 0 16px; font-size:.88rem; color:var(--muted);}
+  .px-filters label{display:flex; align-items:center; gap:10px; font-weight:600;}
+  .px-filters .chk input{width:20px; height:20px; accent-color:#3259be;}
   .shop-wrap{max-width:none; margin:0 auto; padding:30px clamp(24px,3.5vw,72px) 70px;}
   .shop-wrap .sec-title{color:var(--navy);}
   .shop-wrap .crumb, .shop-wrap .cat-head .cnt{color:var(--muted);}
@@ -499,6 +502,18 @@
           <option value="desc">Prix décroissant</option>
           <option value="name">Nom A → Z</option>
         </select>
+      </div>
+      <div class="px-filters" id="pxFilters">
+        <label>Prix
+          <select class="sort" id="priceSel" aria-label="Filtrer par prix">
+            <option value="">Tous les prix</option>
+            <option value="0-100">Moins de 100 €</option>
+            <option value="100-200">100 à 200 €</option>
+            <option value="200-300">200 à 300 €</option>
+            <option value="300-99999">Plus de 300 €</option>
+          </select>
+        </label>
+        <label class="chk"><input type="checkbox" id="stockChk"> En stock uniquement</label>
       </div>
       <div class="subchips" id="subchips"></div>
       <div class="grid-sm" id="grid"><p style="color:var(--muted);">Chargement du catalogue…</p></div>
@@ -774,6 +789,9 @@
     const sort = document.getElementById('sortSel').value;
     document.getElementById('sortDef').textContent = opts.ranked ? 'Trier : pertinence' : 'Trier : sélection';
     list = list.slice();
+    const pr = document.getElementById('priceSel').value;
+    if (pr){ const [lo, hi] = pr.split('-').map(Number); list = list.filter(p => p.price_cents >= lo * 100 && p.price_cents < hi * 100); }
+    if (document.getElementById('stockChk').checked) list = list.filter(p => (p.stock_qty == null ? 1 : p.stock_qty) > 0);
     if (sort === 'asc') list.sort((a,b) => a.price_cents - b.price_cents);
     else if (sort === 'desc') list.sort((a,b) => b.price_cents - a.price_cents);
     else if (sort === 'name') list.sort((a,b) => a.name.localeCompare(b.name, 'fr'));
@@ -842,6 +860,8 @@
     route();
   });
   document.getElementById('sortSel').onchange = () => route();
+  document.getElementById('priceSel').onchange = () => route();
+  document.getElementById('stockChk').onchange = () => route();
   document.getElementById('shopCartLink').addEventListener('click', e => { e.preventDefault(); openCartFromLink(); });
 
   // Produits associés : une machine à effets nécessite un consommable (poudre, liquide…)
