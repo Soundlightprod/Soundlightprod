@@ -181,6 +181,13 @@ def keywords(p):
     return ', '.join(res)
 
 
+def _trim_desc(s, n=158):
+    s = re.sub(r'\s+', ' ', s).strip()
+    if len(s) <= n:
+        return s
+    return s[:n].rsplit(' ', 1)[0].rstrip(' ,;:—-') + '…'
+
+
 def summary(p):
     sp = specs(p)
     cat = CAT_FULL.get(p['category'], 'Matériel')
@@ -222,8 +229,10 @@ def promo_html(p):
     if not was:
         return ''
     pct = round((1 - p['price_cents'] / was) * 100)
+    _end = datetime.datetime.fromisoformat(PROMO['jusqu_au'])
+    _fin = f" · jusqu'au {_end.day:02d}/{_end.month:02d}"
     return (f'<span class="pp-was">{was / 100:.2f}'.replace('.', ',') + ' €</span>'
-            f'<span class="pp-promo">{esc(PROMO["nom"])} −{pct} %</span>')
+            f'<span class="pp-promo">{esc(PROMO["nom"])} −{pct} %{_fin}</span>')
 
 
 def fr_price_ht(p):
@@ -471,7 +480,7 @@ def page(p, products, tpl):
     cat = CATS.get(p['category'], p['category'])
     _tl = type_label(p)
     title = f"{p['name']} — " + (f"{_tl}, " if _tl else '') + f"{CAT_FULL.get(p['category'], 'Matériel')} | Boutique SLP"
-    desc = summary(p)[:300]
+    desc = _trim_desc(summary(p))
     sp = specs(p)
     spec_html = spec_table(sp) if len(sp) > 1 else ''
     intro = f'<p class="pp-intro">{esc(sp[0])}</p>' if len(sp) == 1 else ''
@@ -509,7 +518,6 @@ def page(p, products, tpl):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
-<meta name="keywords" content="{esc(keywords(p))}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="product">
@@ -544,7 +552,7 @@ def page(p, products, tpl):
       {pack_block(p, products)}
       <div class="pp-actions">{buy}<a class="btn btn-ghost" href="/boutique.html">Toute la boutique</a></div>
       {wa}
-      <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel testé par nos techniciens</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
+      <div class="pp-trust"><div><b>Garantie 2 ans</b>Matériel sélectionné par SLP</div><div><b>Livraison France</b>Expédition soignée</div><div><b>Paiement sécurisé</b>Carte bancaire via Stripe</div></div>
       {intro}
       {f'<h2>Caractéristiques techniques</h2>{spec_html}' if spec_html else ''}
       {need_block(p, products)}
