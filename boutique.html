@@ -328,6 +328,31 @@
   .bf-sub{color:var(--muted); margin:-6px 0 16px; font-size:.95rem;}
   .grid-sm .card-img{position:relative;}
   .grid-sm .card .price{color:var(--navy);}
+
+  /* Accueil Premium Performance : hero, réassurance, expertise */
+  .px-hero{position:relative; border-radius:18px; overflow:hidden; background:#0c0a14; color:#fff; margin-bottom:18px; min-height:420px; display:flex; align-items:center;}
+  .px-hero img{position:absolute; right:0; top:0; width:62%; height:100%; object-fit:cover; opacity:.92;}
+  .px-hero::before{content:''; position:absolute; inset:0; z-index:1; background:linear-gradient(90deg,#0c0a14 36%,rgba(12,10,20,.6) 62%,rgba(12,10,20,0) 100%);}
+  .px-hero .in{position:relative; z-index:2; padding:56px clamp(24px,4vw,64px); max-width:640px;}
+  .px-hero .k{font-family:'DM Mono',monospace; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:#fbc608;}
+  .px-hero h1{color:#fff; font-size:clamp(2.2rem,5.4vw,4.4rem); margin:14px 0 16px; line-height:1;}
+  .px-hero p{color:#e6e5ec; font-size:1.08rem; max-width:480px; margin-bottom:26px;}
+  .px-btns{display:flex; flex-wrap:wrap; gap:12px;}
+  .px-btn{display:inline-flex; align-items:center; justify-content:center; min-height:50px; padding:0 26px; border-radius:10px; font-weight:800; font-size:.92rem; letter-spacing:.02em; text-decoration:none; background:#3259be; color:#fff;}
+  .px-btn:hover{background:#27489f;}
+  .px-btn.line{background:transparent; box-shadow:inset 0 0 0 2px #fff;} .px-btn.line:hover{background:rgba(255,255,255,.12);}
+  .px-trust{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:30px;}
+  .px-trust div{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px; font-size:.86rem; color:var(--muted); line-height:1.35;}
+  .px-trust b{display:block; color:var(--paper); font-size:.95rem; margin-bottom:2px;}
+  .px-expert{background:#0c0a14; color:#fff; border-radius:18px; padding:clamp(28px,5vw,64px); margin:38px 0; display:grid; grid-template-columns:1.2fr 1fr; gap:36px; align-items:center;}
+  .px-expert h2{color:#fff; font-size:clamp(1.7rem,3.6vw,2.8rem); margin:12px 0 16px;}
+  .px-expert p{color:#cfcde0; max-width:520px; margin-bottom:22px;}
+  .px-expert .k{font-family:'DM Mono',monospace; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:#fbc608;}
+  .px-stats{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .px-stats div{border:1px solid #2a2740; border-radius:12px; padding:20px; color:#cfcde0; font-size:.86rem; line-height:1.35;}
+  .px-stats b{display:block; font-family:'League Spartan',sans-serif; font-size:2.4rem; font-weight:800; color:#fff; line-height:1.1;}
+  @media (max-width:860px){ .px-trust{grid-template-columns:repeat(2,1fr);} .px-expert{grid-template-columns:1fr;} }
+  @media (max-width:600px){ .px-hero{flex-direction:column; align-items:stretch; min-height:0;} .px-hero img{position:static; width:100%; height:190px;} .px-hero::before{display:none;} .px-hero .in{padding:24px 20px 28px;} .px-btn{width:100%;} .px-trust{grid-template-columns:1fr;} }
   .shop-wrap{max-width:none; margin:0 auto; padding:30px clamp(24px,3.5vw,72px) 70px;}
   .shop-wrap .sec-title{color:var(--navy);}
   .shop-wrap .crumb, .shop-wrap .cat-head .cnt{color:var(--muted);}
@@ -396,6 +421,21 @@
 
     <!-- Accueil de la boutique : les rayons -->
     <div id="viewHome">
+      <section class="px-hero" aria-label="Présentation">
+        <img src="/barre-led-sunstrip-10x50w.png" alt="Barre Sunstrip halogène 10×50W allumée" width="462" height="330" fetchpriority="high" decoding="async">
+        <div class="in">
+          <div class="k">Sonorisation · Éclairage · Effets scéniques</div>
+          <h1>L'ÉQUIPEMENT DE VOS AMBITIONS.</h1>
+          <p>Sonorisation, éclairage et équipements scéniques pour donner vie à vos événements.</p>
+          <div class="px-btns"><a class="px-btn" href="/boutique.html#tous">DÉCOUVRIR NOS PRODUITS</a><a class="px-btn line" href="/produits/barre-led-sunstrip-10x50w">VOIR LES OFFRES</a></div>
+        </div>
+      </section>
+      <div class="px-trust">
+        <div><b>Livraison offerte dès 100 €</b>6,99 € jusqu'à 20 €, 14,99 € au-delà. France uniquement.</div>
+        <div><b>Garantie 2 ans</b>Professionnels : échange ou avoir.</div>
+        <div><b>Retour sous 14 jours</b>Pour les particuliers, selon les <a href="/cgv-boutique" style="color:#3259be">CGV</a>.</div>
+        <div><b>Conseils au 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</b>Par téléphone, WhatsApp ou email.</div>
+      </div>
       <a class="hero-ban hero-bf" id="bfHero" href="/produits/barre-led-sunstrip-10x50w" hidden>
         <div class="tx"><span class="tag" id="bfTag"></span><span class="big" id="bfBig"></span><h2 id="bfH"></h2><p id="bfP"></p><span class="pill">Profiter de l'offre</span></div>
         <div class="im"><span class="bf-badge" id="bfBadge"></span><img src="/barre-led-sunstrip-10x50w.png" alt="Barre Sunstrip halogène 10×50W" loading="eager" decoding="async"></div>
@@ -418,6 +458,15 @@
         <div class="grid-sm" id="featuredBf" style="margin-bottom:38px;"></div>
       </div>
       <div class="tiles4" id="catTiles"></div>
+      <section class="px-expert">
+        <div>
+          <div class="k">L'expertise SLP</div>
+          <h2>DU MATÉRIEL PENSÉ POUR LA SCÈNE.</h2>
+          <p>SLP Store est la boutique de SLP, société de production et de diffusion de spectacles. Une expérience de terrain en animation, sonorisation et éclairage au service de vos choix de matériel, avec des conseils avant l'achat.</p>
+          <a class="px-btn line" href="/contact-boutique" data-contact="devis">PARLER À UN CONSEILLER</a>
+        </div>
+        <div class="px-stats"><div><b>20 ans</b>d'expérience en animation, sonorisation et éclairage</div><div><b>10 ans</b>en diffusion et production de spectacles</div></div>
+      </section>
       <div class="intro-shop">
         <h2>Le matériel son et lumière des professionnels du spectacle</h2>
         <p>La boutique SLP propose une sélection de matériel de scène : lyres, projecteurs PAR LED, barres LED, machines à effets et consommables. Chaque référence est sélectionnée par SLP, garantie 2&nbsp;ans et livrée partout en France.</p>
