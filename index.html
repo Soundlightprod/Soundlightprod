@@ -1093,5 +1093,10 @@ body{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
 .hero-v2 .hero-inner{grid-template-columns:minmax(0,1fr) !important;}
 .hero.hero-v2{padding-bottom:56px;}
 @media (max-width:760px){ .hero .cta-row{display:none;} .hero.hero-v2{padding-bottom:30px;} .hero-v2 .hero-text p.hero-lead{margin-bottom:0;} }
+/* haut de page : bloc texte remonté et calé à gauche (bureau) */
+@media (min-width:721px){
+  .pm-hero{align-items:center;}
+  .pm-hero .pm-hero-in{max-width:none;margin:0;padding-top:130px;padding-bottom:60px;padding-left:clamp(24px,3.8vw,72px);padding-right:clamp(24px,3.8vw,72px);}
+}
 </style>
 </html>
