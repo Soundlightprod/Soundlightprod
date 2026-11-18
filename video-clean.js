@@ -16,6 +16,7 @@
     '.vc-ov:hover .vc-play{transform:scale(1.08);}' +
     '.vc-ov.vc-on .vc-play{opacity:0;transform:scale(.8);}' +
     '.vc-fs{position:absolute;right:10px;bottom:10px;z-index:4;width:36px;height:36px;border:0;border-radius:50%;background:rgba(12,10,20,.78);color:#f1ece2;font-size:16px;cursor:pointer;line-height:1;}' +
+    '.vc-host.slp-vw .vc-fs{right:122px;bottom:14px;width:44px;height:44px;border:1px solid rgba(255,255,255,.35);font-size:18px;}' + /* à gauche de la barre pause/son de pm-pages.js, pour ne pas couvrir le bouton son */
     '.vc-host iframe{pointer-events:none !important;}';
   document.head.appendChild(st);
 
