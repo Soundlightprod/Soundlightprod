@@ -58,9 +58,24 @@ def upsert(table, cols, rows):
         d1(f"INSERT OR REPLACE INTO {table} ({','.join(cols)}) VALUES {ph}", [v for row in chunk for v in row])
 
 
+def post_robuste(sess, url, body, essais=4):
+    """POST vers Google avec nouvelles tentatives sur timeout, coupure réseau ou erreur 5xx."""
+    derniere = None
+    for n in range(essais):
+        try:
+            r = sess.post(url, json=body, timeout=90)
+            if r.status_code < 500:
+                return r
+            derniere = RuntimeError(f"Google a répondu {r.status_code}")
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+            derniere = e
+        time.sleep(10 * (n + 1))
+    raise derniere
+
+
 def search_analytics(sess, prop, body):
     url = "https://searchconsole.googleapis.com/webmasters/v3/sites/" + urllib.parse.quote(prop, safe="") + "/searchAnalytics/query"
-    r = sess.post(url, json=body, timeout=60)
+    r = post_robuste(sess, url, body)
     if r.status_code == 403:
         raise RuntimeError(f"Google refuse l'accès à {prop} : le compte de service n'est pas ajouté comme utilisateur de cette propriété dans Search Console")
     r.raise_for_status()
@@ -125,12 +140,16 @@ def main():
         urls = sitemap_urls(cfg["sitemap"])[:MAX_INSPECTIONS_PAR_SITE]
         out = []
         for u in urls:
-            r = sess.post("https://searchconsole.googleapis.com/v1/urlInspection/index:inspect",
-                          json={"inspectionUrl": u, "siteUrl": prop, "languageCode": "fr"}, timeout=60)
-            if r.status_code == 429:
-                time.sleep(30)
-                r = sess.post("https://searchconsole.googleapis.com/v1/urlInspection/index:inspect",
-                              json={"inspectionUrl": u, "siteUrl": prop, "languageCode": "fr"}, timeout=60)
+            insp = "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect"
+            corps = {"inspectionUrl": u, "siteUrl": prop, "languageCode": "fr"}
+            try:
+                r = post_robuste(sess, insp, corps, essais=2)
+                if r.status_code == 429:
+                    time.sleep(30)
+                    r = post_robuste(sess, insp, corps, essais=2)
+            except Exception:
+                out.append([site, releve, u, "ERREUR", "inspection impossible (délai dépassé)", None])
+                continue
             if not r.ok:
                 out.append([site, releve, u, "ERREUR", f"inspection impossible ({r.status_code})", None])
                 continue
