@@ -312,6 +312,16 @@
   .hero-bf .im{position:relative;}
   .bf-badge{position:absolute; top:16px; right:22px; width:104px; height:104px; border-radius:50%; background:#ff0953; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'League Spartan',sans-serif; font-weight:900; font-size:1.8rem; transform:rotate(-10deg); box-shadow:0 6px 22px rgba(255,9,83,.45); z-index:3;}
   @media (max-width:600px){ .hero-bf{grid-template-columns:1fr; margin-bottom:12px;} .hero-bf .big{font-size:2.4rem; margin-bottom:6px;} .hero-bf h2{font-size:1.1rem; margin-bottom:4px;} .bf-badge{width:68px; height:68px; font-size:1.15rem; top:6px; right:12px;} }
+  .bf-car{position:relative; margin-bottom:18px;} .bf-car[hidden]{display:none;}
+  .bf-car .hero-bf{display:none; margin-bottom:0;} .bf-car .hero-bf.on{display:grid; animation:bfIn .45s ease;}
+  @keyframes bfIn{from{opacity:0} to{opacity:1}}
+  .bf-nav{position:absolute; top:50%; transform:translateY(-50%); z-index:5; width:40px; height:40px; border-radius:50%; border:0; background:rgba(255,255,255,.92); color:#14213d; font-size:1.6rem; line-height:1; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .bf-prev{left:10px;} .bf-next{right:10px;}
+  .bf-dots{position:absolute; left:0; right:0; bottom:12px; display:flex; justify-content:center; gap:8px; z-index:5;}
+  .bf-dots button{width:10px; height:10px; padding:0; border-radius:50%; border:0; background:rgba(255,255,255,.45); cursor:pointer;} .bf-dots button.on{background:#ffd400; width:24px; border-radius:6px;}
+  .bf-car.single .bf-nav,.bf-car.single .bf-dots{display:none;}
+  @media (max-width:600px){ .bf-nav{top:36%; width:32px; height:32px; font-size:1.3rem;} .bf-prev{left:4px;} .bf-next{right:4px;} .bf-dots{bottom:6px;} }
+  @media (prefers-reduced-motion:reduce){ .bf-car .hero-bf.on{animation:none;} }
   .hero-side{border-radius:18px; background:linear-gradient(160deg,#fc8024,#e8590c); color:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;}
   .hero-side h3{color:#fff; font-size:1.5rem; margin-bottom:4px;}
   .hero-side ul{list-style:none; display:flex; flex-direction:column; gap:11px; margin:6px 0 10px;}
