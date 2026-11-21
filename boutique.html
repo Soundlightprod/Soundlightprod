@@ -306,6 +306,16 @@
   .hero-bf .im{position:relative;}
   .bf-badge{position:absolute; top:16px; right:22px; width:104px; height:104px; border-radius:50%; background:#ff0953; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'League Spartan',sans-serif; font-weight:900; font-size:1.8rem; transform:rotate(-10deg); box-shadow:0 6px 22px rgba(255,9,83,.45); z-index:3;}
   @media (max-width:600px){ .hero-bf{grid-template-columns:1fr; margin-bottom:12px;} .hero-bf .big{font-size:2.4rem; margin-bottom:6px;} .hero-bf h2{font-size:1.1rem; margin-bottom:4px;} .bf-badge{width:68px; height:68px; font-size:1.15rem; top:6px; right:12px;} }
+  .bf-car{position:relative; margin-bottom:18px;} .bf-car[hidden]{display:none;}
+  .bf-car .hero-bf{display:none; margin-bottom:0;} .bf-car .hero-bf.on{display:grid; animation:bfIn .45s ease;}
+  @keyframes bfIn{from{opacity:0} to{opacity:1}}
+  .bf-nav{position:absolute; top:50%; transform:translateY(-50%); z-index:5; width:40px; height:40px; border-radius:50%; border:0; background:rgba(255,255,255,.92); color:#14213d; font-size:1.6rem; line-height:1; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .bf-prev{left:10px;} .bf-next{right:10px;}
+  .bf-dots{position:absolute; left:0; right:0; bottom:12px; display:flex; justify-content:center; gap:8px; z-index:5;}
+  .bf-dots button{width:10px; height:10px; padding:0; border-radius:50%; border:0; background:rgba(255,255,255,.45); cursor:pointer;} .bf-dots button.on{background:#ffd400; width:24px; border-radius:6px;}
+  .bf-car.single .bf-nav,.bf-car.single .bf-dots{display:none;}
+  @media (max-width:600px){ .bf-nav{top:36%; width:32px; height:32px; font-size:1.3rem;} .bf-prev{left:4px;} .bf-next{right:4px;} .bf-dots{bottom:6px;} }
+  @media (prefers-reduced-motion:reduce){ .bf-car .hero-bf.on{animation:none;} }
   .hero-side{border-radius:18px; background:linear-gradient(160deg,#fc8024,#e8590c); color:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;}
   .hero-side h3{color:#fff; font-size:1.5rem; margin-bottom:4px;}
   .hero-side ul{list-style:none; display:flex; flex-direction:column; gap:11px; margin:6px 0 10px;}
@@ -441,10 +451,19 @@
         <div><b>Retour sous 14 jours</b>Pour les particuliers, selon les <a href="/cgv-boutique" style="color:#3259be">CGV</a>.</div>
         <div><b>Conseils au 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</b>Par téléphone, WhatsApp ou email.</div>
       </div>
-      <a class="hero-ban hero-bf" id="bfHero" href="/produits/barre-led-sunstrip-10x50w" hidden>
-        <div class="tx"><span class="tag" id="bfTag"></span><span class="big" id="bfBig"></span><h2 id="bfH"></h2><p id="bfP"></p><span class="pill">Profiter de l'offre</span></div>
-        <div class="im"><span class="bf-badge" id="bfBadge"></span><img src="/barre-led-sunstrip-10x50w.png" alt="Barre Sunstrip halogène 10×50W" loading="eager" decoding="async"></div>
-      </a>
+      <div class="bf-car" id="bfCar" role="region" aria-roledescription="carrousel" aria-label="Offres Black Friday" hidden>
+        <a class="hero-ban hero-bf" id="bfHero" href="/produits/barre-led-sunstrip-10x50w" hidden>
+          <div class="tx"><span class="tag" id="bfTag"></span><span class="big" id="bfBig"></span><h2 id="bfH"></h2><p id="bfP"></p><span class="pill">Profiter de l'offre</span></div>
+          <div class="im"><span class="bf-badge" id="bfBadge"></span><img src="/barre-led-sunstrip-10x50w.png" alt="Barre Sunstrip halogène 10×50W" loading="eager" decoding="async"></div>
+        </a>
+        <a class="hero-ban hero-bf" id="bfHero2" href="/produits/lyre-wash-220w-19x8w-x2" hidden>
+          <div class="tx"><span class="tag" id="bf2Tag"></span><span class="big" id="bf2Big"></span><h2>Lot de 2 lyres wash zoom LED 220W</h2><p id="bf2P"></p><span class="pill">Profiter de l'offre</span></div>
+          <div class="im"><span class="bf-badge" id="bf2Badge"></span><img src="/galerie-produits/lyre-wash-220w-19x8w-x2-1.png" alt="Lot de 2 lyres wash zoom LED 220W — 19×8W RGBW" loading="lazy" decoding="async"></div>
+        </a>
+        <button type="button" class="bf-nav bf-prev" id="bfPrev" aria-label="Offre précédente">‹</button>
+        <button type="button" class="bf-nav bf-next" id="bfNext" aria-label="Offre suivante">›</button>
+        <div class="bf-dots" id="bfDots"></div>
+      </div>
       <div class="hero-row">
         <a class="hero-ban" href="/produits/machine-etincelles-800w">
           <div class="tx"><span class="tag">Nouveau</span><h2>Machines à étincelles 800W</h2><p>4 hauteurs réglables jusqu'à 3,5&nbsp;m, télécommande incluse. Dès 199,99&nbsp;€.</p><span class="pill">Découvrir</span></div>
@@ -583,7 +602,7 @@
 <section class="refs refs-fold">
   <div class="wrap">
     <details><summary>Toutes nos références (44)</summary>
-    <div class="refs-grid"><div class="refs-col"><h3>Éclairage scénique</h3><ul><li><a href="/produits/par-led-7x40w-zoom-bee-eye">PAR LED 7×40W zoom Bee-Eye</a> <span>137,99 €</span></li><li><a href="/produits/new-1940w-bee-eye-moving-light-power-750w">Lyre LED Bee-Eye 19×40W</a> <span>274,99 €</span></li><li><a href="/produits/par-led-19x15w-zoom-ip65">PAR LED 19×15W zoom IP65</a> <span>121,99 €</span></li><li><a href="/produits/new-mini295w-beam-moving-light-with-ring">Lyre Beam 295W avec anneau LED</a> <span>199,99 €</span></li><li><a href="/produits/mini230w-beam-moving-light-with-ring">Lyre Beam 230W avec anneau LED</a> <span>234,99 €</span></li><li><a href="/produits/ip65-1940w-bee-eye-moving-light-">Lyre LED Bee-Eye 19×40W IP65</a> <span>274,99 €</span></li><li><a href="/produits/stage-light-bars-1810w-led-tubo">Barre LED 18×10W RGBW 4 en 1</a> <span>60,99 €</span></li><li><a href="/produits/ip65-4812-segments-control-strobe">Stroboscope LED 400W IP65 RGBW 48+12 segments</a> <span>155,99 €</span></li><li><a href="/produits/battery-3w-animated-laser-light">Laser RVB 3W sur batterie</a> <span>130,99 €</span></li><li><a href="/produits/300w-zoom-cob-spotlight">Projecteur COB LED 300W zoom motorisé</a> <span>168,99 €</span></li><li><a href="/produits/ip65-4410w-segments-control-flood-light">Projecteur LED IP65 44 LED 660W — 11 segments</a> <span>153,99 €</span></li><li><a href="/produits/ip65-1818w-led-big-par-light">PAR LED 18×18W IP65 — boîtier alu moulé</a> <span>75,99 €</span></li><li><a href="/produits/lyre-big-bee-1940w-anneau">Lyre LED Big Bee 19×40W avec anneau — Wash/Beam/Spot</a> <span>274,99 €</span></li><li><a href="/produits/mini-230w-beam-moving-light">Lyre Beam 230W LED</a> <span>234,99 €</span></li><li><a href="/produits/1940w-big-bee-moving-light">Lyre LED Big Bee 19×40W zoom</a> <span>274,99 €</span></li><li><a href="/produits/lyre-500w-cmy-cto-3en1">Lyre Spot Beam Wash 500W CMY CTO 3 en 1</a> <span>572,99 €</span></li><li><a href="/produits/1925w-bee-beam-wash-moving-light-k15">Lyre LED Bee Beam-Wash 19×25W</a> <span>265,99 €</span></li><li><a href="/produits/8-way-dmx-splitter-booster-with-artnet">Répartiteur DMX 8 voies Art-Net — rack 1U</a> <span>45,99 €</span></li><li><a href="/produits/6-way-dmx-truss-splitter">Répartiteur DMX 6 voies pour structure</a> <span>52,99 €</span></li><li><a href="/produits/200w-488-segment-strobe">Stroboscope LED 200W 48+12 segments RGBW</a> <span>58,99 €</span></li><li><a href="/produits/1818w-rgbwauv-pixel-control-bar-light">Barre LED pixel 18×18W RGBWA+UV 6 en 1</a> <span>106,99 €</span></li><li><a href="/produits/ip65-6010w-flood-light">Projecteur LED IP65 60×10W</a> <span>321,99 €</span></li><li><a href="/produits/ip65-4410w-flood-light">PAR LED 44 LED 528W IP65</a> <span>153,99 €</span></li><li><a href="/produits/ip65-1818w-led-par-light-ultra">PAR LED 18 LED IP65 Ultra — angle 45°</a> <span>75,99 €</span></li><li><a href="/produits/ip65-1818w-led-par-light">PAR LED 18×18W IP65 — 3 angles (25/35/45°)</a> <span>75,99 €</span></li><li><a href="/produits/ip65-1218w-battery-par-light">PAR LED 12×18W IP65 sur batterie</a> <span>130,99 €</span></li><li><a href="/produits/ip65-618w-mini-battery-par-light">PAR LED 6×18W IP65 sur batterie — mini</a> <span>79,99 €</span></li><li><a href="/produits/ip65-618w-battery-par-light">PAR LED 6×18W IP65 sur batterie</a> <span>79,99 €</span></li><li><a href="/produits/1818w-rgbwauv-led-par-light">PAR LED 18×18W RGBWA+UV</a> <span>75,99 €</span></li><li><a href="/produits/418w-battery-parlight">PAR LED 4×18W sur batterie</a> <span>45,99 €</span></li><li><a href="/produits/barre-led-sunstrip-10x50w">Barre Sunstrip halogène 10×50W</a> <span>139,99 €</span></li><li><a href="/produits/barre-led-sunstrip-10x50w-x2">Lot de 2 barres Sunstrip halogènes 10×50W</a> <span>258,99 €</span></li><li><a href="/produits/barre-led-sunstrip-10x50w-x4">Lot de 4 barres Sunstrip halogènes 10×50W</a> <span>503,99 €</span></li><li><a href="/produits/lyre-wash-220w-19x8w-x2">Lot de 2 lyres wash zoom LED 220W — 19×8W RGBW</a> <span>289,99 €</span></li></ul></div><div class="refs-col"><h3>Machines à effets</h3><ul><li><a href="/produits/machine-etincelles-800w">Machine à étincelles 800W</a> <span>199,99 €</span></li><li><a href="/produits/machine-etincelles-800w-x2">Lot de 2 machines à étincelles 800W</a> <span>379,99 €</span></li><li><a href="/produits/machine-etincelles-800w-x4">Lot de 4 machines à étincelles 800W</a> <span>749,99 €</span></li></ul></div><div class="refs-col"><h3>Consommables</h3><ul><li><a href="/produits/jet-de-scene-2m-30s-argent">Jet de scène 2m 30sec — Argent</a> <span>8,00 €</span></li><li><a href="/produits/jet-de-scene-2m-30s-or">Jet de scène 2m 30sec — Or</a> <span>9,00 €</span></li><li><a href="/produits/jet-de-scene-3m-30s-argent">Jet de scène 3m 30sec — Argent</a> <span>10,00 €</span></li><li><a href="/produits/jet-de-scene-3m-30s-or">Jet de scène 3m 30sec — Or</a> <span>12,00 €</span></li><li><a href="/produits/canon-confettis-electrique-80cm">Canon à confettis électrique 80cm</a> <span>15,00 €</span></li><li><a href="/produits/poudre-machine-etincelles-indoor">Poudre pour machine à étincelles — Indoor</a> <span>19,99 €</span></li><li><a href="/produits/poudre-machine-etincelles-outdoor">Poudre pour machine à étincelles — Outdoor</a> <span>19,99 €</span></li></ul></div></div>
+    <div class="refs-grid"><div class="refs-col"><h3>Éclairage scénique</h3><ul><li><a href="/produits/par-led-7x40w-zoom-bee-eye">PAR LED 7×40W zoom Bee-Eye</a> <span>137,99 €</span></li><li><a href="/produits/new-1940w-bee-eye-moving-light-power-750w">Lyre LED Bee-Eye 19×40W</a> <span>274,99 €</span></li><li><a href="/produits/par-led-19x15w-zoom-ip65">PAR LED 19×15W zoom IP65</a> <span>121,99 €</span></li><li><a href="/produits/new-mini295w-beam-moving-light-with-ring">Lyre Beam 295W avec anneau LED</a> <span>199,99 €</span></li><li><a href="/produits/mini230w-beam-moving-light-with-ring">Lyre Beam 230W avec anneau LED</a> <span>234,99 €</span></li><li><a href="/produits/ip65-1940w-bee-eye-moving-light-">Lyre LED Bee-Eye 19×40W IP65</a> <span>274,99 €</span></li><li><a href="/produits/stage-light-bars-1810w-led-tubo">Barre LED 18×10W RGBW 4 en 1</a> <span>60,99 €</span></li><li><a href="/produits/ip65-4812-segments-control-strobe">Stroboscope LED 400W IP65 RGBW 48+12 segments</a> <span>155,99 €</span></li><li><a href="/produits/battery-3w-animated-laser-light">Laser RVB 3W sur batterie</a> <span>130,99 €</span></li><li><a href="/produits/300w-zoom-cob-spotlight">Projecteur COB LED 300W zoom motorisé</a> <span>168,99 €</span></li><li><a href="/produits/ip65-4410w-segments-control-flood-light">Projecteur LED IP65 44 LED 660W — 11 segments</a> <span>153,99 €</span></li><li><a href="/produits/ip65-1818w-led-big-par-light">PAR LED 18×18W IP65 — boîtier alu moulé</a> <span>75,99 €</span></li><li><a href="/produits/lyre-big-bee-1940w-anneau">Lyre LED Big Bee 19×40W avec anneau — Wash/Beam/Spot</a> <span>274,99 €</span></li><li><a href="/produits/mini-230w-beam-moving-light">Lyre Beam 230W LED</a> <span>234,99 €</span></li><li><a href="/produits/1940w-big-bee-moving-light">Lyre LED Big Bee 19×40W zoom</a> <span>274,99 €</span></li><li><a href="/produits/lyre-500w-cmy-cto-3en1">Lyre Spot Beam Wash 500W CMY CTO 3 en 1</a> <span>572,99 €</span></li><li><a href="/produits/1925w-bee-beam-wash-moving-light-k15">Lyre LED Bee Beam-Wash 19×25W</a> <span>265,99 €</span></li><li><a href="/produits/8-way-dmx-splitter-booster-with-artnet">Répartiteur DMX 8 voies Art-Net — rack 1U</a> <span>45,99 €</span></li><li><a href="/produits/6-way-dmx-truss-splitter">Répartiteur DMX 6 voies pour structure</a> <span>52,99 €</span></li><li><a href="/produits/200w-488-segment-strobe">Stroboscope LED 200W 48+12 segments RGBW</a> <span>58,99 €</span></li><li><a href="/produits/1818w-rgbwauv-pixel-control-bar-light">Barre LED pixel 18×18W RGBWA+UV 6 en 1</a> <span>106,99 €</span></li><li><a href="/produits/ip65-6010w-flood-light">Projecteur LED IP65 60×10W</a> <span>321,99 €</span></li><li><a href="/produits/ip65-4410w-flood-light">PAR LED 44 LED 528W IP65</a> <span>153,99 €</span></li><li><a href="/produits/ip65-1818w-led-par-light-ultra">PAR LED 18 LED IP65 Ultra — angle 45°</a> <span>75,99 €</span></li><li><a href="/produits/ip65-1818w-led-par-light">PAR LED 18×18W IP65 — 3 angles (25/35/45°)</a> <span>75,99 €</span></li><li><a href="/produits/ip65-1218w-battery-par-light">PAR LED 12×18W IP65 sur batterie</a> <span>130,99 €</span></li><li><a href="/produits/ip65-618w-mini-battery-par-light">PAR LED 6×18W IP65 sur batterie — mini</a> <span>79,99 €</span></li><li><a href="/produits/ip65-618w-battery-par-light">PAR LED 6×18W IP65 sur batterie</a> <span>79,99 €</span></li><li><a href="/produits/1818w-rgbwauv-led-par-light">PAR LED 18×18W RGBWA+UV</a> <span>75,99 €</span></li><li><a href="/produits/418w-battery-parlight">PAR LED 4×18W sur batterie</a> <span>45,99 €</span></li><li><a href="/produits/barre-led-sunstrip-10x50w">Barre Sunstrip halogène 10×50W</a> <span>139,99 €</span></li><li><a href="/produits/barre-led-sunstrip-10x50w-x2">Lot de 2 barres Sunstrip halogènes 10×50W</a> <span>258,99 €</span></li><li><a href="/produits/barre-led-sunstrip-10x50w-x4">Lot de 4 barres Sunstrip halogènes 10×50W</a> <span>503,99 €</span></li><li><a href="/produits/lyre-wash-220w-19x8w-x2">Lot de 2 lyres wash zoom LED 220W — 19×8W RGBW</a> <span>235,99 €</span></li></ul></div><div class="refs-col"><h3>Machines à effets</h3><ul><li><a href="/produits/machine-etincelles-800w">Machine à étincelles 800W</a> <span>199,99 €</span></li><li><a href="/produits/machine-etincelles-800w-x2">Lot de 2 machines à étincelles 800W</a> <span>379,99 €</span></li><li><a href="/produits/machine-etincelles-800w-x4">Lot de 4 machines à étincelles 800W</a> <span>749,99 €</span></li></ul></div><div class="refs-col"><h3>Consommables</h3><ul><li><a href="/produits/jet-de-scene-2m-30s-argent">Jet de scène 2m 30sec — Argent</a> <span>8,00 €</span></li><li><a href="/produits/jet-de-scene-2m-30s-or">Jet de scène 2m 30sec — Or</a> <span>9,00 €</span></li><li><a href="/produits/jet-de-scene-3m-30s-argent">Jet de scène 3m 30sec — Argent</a> <span>10,00 €</span></li><li><a href="/produits/jet-de-scene-3m-30s-or">Jet de scène 3m 30sec — Or</a> <span>12,00 €</span></li><li><a href="/produits/canon-confettis-electrique-80cm">Canon à confettis électrique 80cm</a> <span>15,00 €</span></li><li><a href="/produits/poudre-machine-etincelles-indoor">Poudre pour machine à étincelles — Indoor</a> <span>19,99 €</span></li><li><a href="/produits/poudre-machine-etincelles-outdoor">Poudre pour machine à étincelles — Outdoor</a> <span>19,99 €</span></li></ul></div></div>
     </details>
   </div>
 </section>
@@ -738,25 +757,56 @@
     { const promo = products.filter(p => p.image && promoWas(p));
       document.getElementById('bfBlock').hidden = !promo.length;
       { const hero = document.getElementById('bfHero');
-        const one = promo.find(p => !packInfo(p));
+        const isSun = p => /^barre-led-sunstrip/.test(p.slug);
+        const one = promo.find(p => isSun(p) && !packInfo(p));
         hero.hidden = !one;
         if (one){
           const pct = promoPct(one), end = new Date(PROMO.jusqu_au).toLocaleDateString('fr-FR', { day:'numeric', month:'long', timeZone:'Europe/Paris' });
-          const packs = promo.filter(p => packInfo(p)).sort((a, b) => packInfo(a).n - packInfo(b).n);
+          const packs = promo.filter(p => isSun(p) && packInfo(p)).sort((a, b) => packInfo(a).n - packInfo(b).n);
           document.getElementById('bfTag').textContent = PROMO.nom + ' · jusqu\'au ' + end;
           document.getElementById('bfBig').textContent = '−' + pct + ' %';
           document.getElementById('bfH').textContent = 'Barres Sunstrip halogènes 10×50W';
           document.getElementById('bfP').innerHTML = '<b>' + money(one.price_cents) + '</b> <s>' + money(promoWas(one)) + '</s> TTC'
             + packs.map(q => ' · lot de ' + packInfo(q).n + ' : <b>' + money(q.price_cents) + '</b>').join('') + '. Livraison partout en France.';
           document.getElementById('bfBadge').textContent = '−' + pct + ' %';
-        } }
+        }
+        const ly = promo.find(p => p.slug === 'lyre-wash-220w-19x8w-x2');
+        const h2 = document.getElementById('bfHero2'); h2.hidden = !ly;
+        if (ly){
+          const pct = promoPct(ly), end = new Date(PROMO.jusqu_au).toLocaleDateString('fr-FR', { day:'numeric', month:'long', timeZone:'Europe/Paris' });
+          document.getElementById('bf2Tag').textContent = PROMO.nom + ' · jusqu\'au ' + end;
+          document.getElementById('bf2Big').textContent = '−' + pct + ' %';
+          document.getElementById('bf2P').innerHTML = '<b>' + money(ly.price_cents) + '</b> <s>' + money(promoWas(ly)) + '</s> TTC le lot de 2 lyres wash 19×8W RGBW, zoom motorisé. Livraison partout en France.';
+          document.getElementById('bf2Badge').textContent = '−' + pct + ' %';
+        }
+        initBfCar(); }
       if (promo.length){
         document.getElementById('bfTitle').textContent = PROMO.nom;
         const d = new Date(PROMO.jusqu_au).toLocaleDateString('fr-FR', { day:'numeric', month:'long', timeZone:'Europe/Paris' });
-        document.getElementById('bfSub').textContent = 'Barres Sunstrip 10×50W à prix réduit, jusqu\'au ' + d + ' inclus.';
+        document.getElementById('bfSub').textContent = 'Barres Sunstrip 10×50W et lyres wash 220W à prix réduit, jusqu\'au ' + d + ' inclus.';
         document.getElementById('featuredBf').innerHTML = promo.map(p => packInfo(p) ? packHTML(p) : cardHTML(p, false)).join('');
       } }
     fillRows();
+  }
+
+  // Carrousel Black Friday : défilement auto (pause au survol / au focus), flèches et pastilles
+  let bfTimer = null, bfIdx = 0;
+  function initBfCar(){
+    const car = document.getElementById('bfCar'); if (!car) return;
+    const slides = [...car.querySelectorAll('.hero-bf')].filter(a => !a.hidden);
+    car.hidden = !slides.length; car.classList.toggle('single', slides.length < 2);
+    if (!slides.length) return;
+    const dots = document.getElementById('bfDots'); dots.innerHTML = '';
+    const show = i => { bfIdx = (i + slides.length) % slides.length;
+      slides.forEach((a, k) => a.classList.toggle('on', k === bfIdx));
+      [...dots.children].forEach((d, k) => d.classList.toggle('on', k === bfIdx)); };
+    slides.forEach((a, k) => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Offre ' + (k + 1)); b.onclick = () => { show(k); play(); }; dots.appendChild(b); });
+    document.getElementById('bfPrev').onclick = () => { show(bfIdx - 1); play(); };
+    document.getElementById('bfNext').onclick = () => { show(bfIdx + 1); play(); };
+    const stop = () => { clearInterval(bfTimer); bfTimer = null; };
+    const play = () => { stop(); if (slides.length < 2 || matchMedia('(prefers-reduced-motion:reduce)').matches) return; bfTimer = setInterval(() => show(bfIdx + 1), 6000); };
+    car.onmouseenter = stop; car.onmouseleave = play; car.onfocusin = stop; car.onfocusout = play;
+    show(0); play();
   }
 
   // Rangées d'accueil toujours complètes : on n'affiche que des lignes entières (2 lignes au plus), quelle que soit la largeur
