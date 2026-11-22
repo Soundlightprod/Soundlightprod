@@ -990,11 +990,12 @@
 
     <div class="vz-bar">
       <div class="vz-seg" id="dbDaysSeg">
-        <button class="active" data-d="1" onclick="dbSetDays(1)">Aujourd'hui</button>
-        <button data-d="7" onclick="dbSetDays(7)">7 jours</button>
-        <button data-d="14" onclick="dbSetDays(14)">14 jours</button>
-        <button data-d="30" onclick="dbSetDays(30)">30 jours</button>
-        <button data-d="90" onclick="dbSetDays(90)">90 jours</button>
+        <button class="active" data-d="1" data-o="0" onclick="dbSetDays(1)">Aujourd'hui</button>
+        <button data-d="1" data-o="1" onclick="dbSetDays(1, 1)">Hier</button>
+        <button data-d="7" data-o="0" onclick="dbSetDays(7)">7 jours</button>
+        <button data-d="14" data-o="0" onclick="dbSetDays(14)">14 jours</button>
+        <button data-d="30" data-o="0" onclick="dbSetDays(30)">30 jours</button>
+        <button data-d="90" data-o="0" onclick="dbSetDays(90)">90 jours</button>
       </div>
     </div>
 
@@ -1584,7 +1585,7 @@
 
   // ===== Tableau de bord : graphiques =====
   const DB_PAL = ['#ffb238', '#ff2d6f', '#38bdf8', '#a3e635', '#8b5cf6', '#2f9bff', '#fb923c', '#6ee7a0', '#9a93a6'];
-  let dbSite = 'slp', dbDays = 1, dbLast = null, dbSeq = 0; const dbCharts = {};
+  let dbSite = 'slp', dbDays = 1, dbOff = 0, dbLast = null, dbSeq = 0; const dbCharts = {};
   const dbAx = { ticks:{ color:'#9a93a6', font:{ size:11 }, maxRotation:0, autoSkip:true }, grid:{ color:'rgba(255,255,255,.06)' } };
   function dbMake(id, cfg){
     const c = document.getElementById(id); if (!c || typeof Chart === 'undefined') return;
@@ -1610,13 +1611,13 @@
     mtRenderBySite();
     loadDashboard();
   }
-  function dbSetDays(n){
-    dbDays = n;
-    document.querySelectorAll('#dbDaysSeg button').forEach((b) => b.classList.toggle('active', Number(b.dataset.d) === n));
+  function dbSetDays(n, off){
+    dbDays = n; dbOff = off ? 1 : 0;
+    document.querySelectorAll('#dbDaysSeg button').forEach((b) => b.classList.toggle('active', Number(b.dataset.d) === n && Number(b.dataset.o) === dbOff));
     loadDashboard();
   }
 
-  const dbPrev = () => (dbDays === 1 ? 'hier' : 'période précédente');
+  const dbPrev = () => (dbDays === 1 ? (dbOff ? 'avant-hier' : 'hier') : 'période précédente');
   function dbDelta(el, cur, prev, opts){
     opts = opts || {}; el.className = 'd';
     if (prev === null || prev === undefined || cur === null || cur === undefined){ el.textContent = ''; return; }
@@ -1682,7 +1683,7 @@
     const vis = days.map((j) => (by[j] ? by[j].visiteurs : 0)), pg = days.map((j) => (by[j] ? by[j].pages : 0));
     const col = d.site ? MT_SITES[d.site].c : '#2f9bff';
     const today1 = d.days === 1, siteNom = d.site ? MT_SITES[d.site].nom : 'tous les sites';
-    document.getElementById('dbRange').textContent = today1 ? `visiteurs cumulés heure par heure, comparés à hier et à ${dbJ7Label(d)} · ${siteNom}` : `${dbLab(days[0])} → ${dbLab(days[days.length - 1])} · ${siteNom}`;
+    document.getElementById('dbRange').textContent = today1 ? `visiteurs cumulés heure par heure${d.off ? ' (hier)' : ''}, comparés à ${d.off ? 'avant-hier' : 'hier'} et à ${dbJ7Label(d)} · ${siteNom}` : `${dbLab(days[0])} → ${dbLab(days[days.length - 1])} · ${siteNom}`;
     document.getElementById('dbDepthRow').style.display = today1 ? 'none' : '';
     document.getElementById('dbHoursCard').style.display = today1 ? 'none' : '';
 
@@ -1698,7 +1699,7 @@
     if (d.days === 1) {
       const cm = {}; (d.cmp || []).forEach((r) => { cm[r.jour] = r; });
       const mk = (label, j) => { const r = j && cm[j]; return { label, v:r ? r.visiteurs : 0, p:r ? r.pages : 0, ppv:r && r.visiteurs ? r.pages / r.visiteurs : null, reb:r && r.visiteurs ? r.rebonds / r.visiteurs : null }; };
-      comps = [mk('hier', d.meta && d.meta.j1), mk(dbJ7Label(d), d.meta && d.meta.j7)];
+      comps = [mk(d.off ? 'avant-hier' : 'hier', d.meta && d.meta.j1), mk(dbJ7Label(d), d.meta && d.meta.j7)];
     } else comps = [{ label:'période précédente', v:prev.visiteurs, p:prev.pages, ppv:prev.visiteurs ? prev.pages / prev.visiteurs : null, reb:sp ? rp / sp : null }];
     document.getElementById('dbK1').textContent = mtFmt(tot.visiteurs);
     document.getElementById('dbK2').textContent = mtFmt(tot.pages);
@@ -1717,8 +1718,8 @@
       const byJ = {}; (d.hcmp || []).forEach((r) => { (byJ[r.jour] = byJ[r.jour] || {})[r.h] = r.n; });
       const cum = (j, cut) => { let t = 0; return hLab.map((_, h) => { t += (byJ[j] && byJ[j][h]) || 0; return cut !== undefined && h > cut ? null : t; }); };
       ovLabels = hLab;
-      series = [ { name:'Aujourd’hui', data:cum(d.meta && d.meta.aujourdhui, nowH), color:col, main:true },
-                 { name:'Hier', data:cum(d.meta && d.meta.j1), color:'#a78bfa' },
+      series = [ { name:d.off ? 'Hier' : 'Aujourd’hui', data:cum(d.meta && d.meta.aujourdhui, d.off ? undefined : nowH), color:col, main:true },
+                 { name:d.off ? 'Avant-hier' : 'Hier', data:cum(d.meta && d.meta.j1), color:'#a78bfa' },
                  { name:dbJ7Label(d), data:cum(d.meta && d.meta.j7), color:'#ff4d7d' } ];
     } else {
       ovLabels = days.map(dbLab);
@@ -1733,7 +1734,7 @@
       options:{ interaction:{ mode:'index', intersect:false }, onHover:(e, els) => { if (els && els.length) dbOvInfo(els[0].index); },
         plugins:{ legend:Object.assign({ position:'bottom' }, dbLegend), tooltip:{ enabled:false } },
         scales:{ x:ovX, y:Object.assign({}, dbAx, { beginAtZero:true, ticks:Object.assign({}, dbAx.ticks, { precision:0 }) }) } } });
-    dbOvInfo(today1 ? Math.min(nowH, 23) : ovLabels.length - 1);
+    dbOvInfo(today1 ? (d.off ? 23 : Math.min(nowH, 23)) : ovLabels.length - 1);
 
     dbDonut('dbEntrees', d.entrees, dbPageName); dbDonut('dbSorties', d.sorties, dbPageName);
 
@@ -1819,7 +1820,7 @@
   async function loadDashboard(){
     const my = ++dbSeq;
     try {
-      const res = await fetch(`/api/admin/dashboard?days=${dbDays}${dbSite ? '&site=' + dbSite : ''}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const res = await fetch(`/api/admin/dashboard?days=${dbDays}${dbOff ? '&off=1' : ''}${dbSite ? '&site=' + dbSite : ''}`, { headers:{ Authorization:`Bearer ${token}` } });
       if (!res.ok) throw new Error('Erreur ' + res.status);
       const d = await res.json();
       if (my !== dbSeq) return;

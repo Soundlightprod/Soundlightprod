@@ -1045,26 +1045,27 @@ async function meteoData(env) {
 }
 
 // Tableau de bord des stats : tout ce qu'il faut pour les graphiques, en une seule requête (admin).
-// GET /api/admin/dashboard?site=slp|bmb|csa|store|digital (vide = tous)&days=1|7|14|30|90 (1 = aujourd'hui)
-async function dashboardData(env, siteParam, daysParam) {
+// GET /api/admin/dashboard?site=slp|bmb|csa|store|digital (vide = tous)&days=1|7|14|30|90 (1 = aujourd'hui)&off=1 (avec days=1 : hier)
+async function dashboardData(env, siteParam, daysParam, offParam) {
   const site = ["slp", "bmb", "csa", "store", "digital"].includes(siteParam) ? siteParam : "";
   const days = [1, 7, 14, 30, 90].includes(Number(daysParam)) ? Number(daysParam) : 1;
   const q = async (sql) => { try { return (await env.DB.prepare(sql).all()).results || []; } catch (e) { return []; } };
-  const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
+  const off = days === 1 && Number(offParam) === 1 ? 1 : 0; // off = 1 : « Hier » (journée complète d'hier)
+  const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}), '-${off} day')`;
   const start = `date(${today}, '-${days - 1} day')`;
   const pStart = `date(${today}, '-${2 * days - 1} day')`;
   const pEnd = `date(${today}, '-${days} day')`;
   const vWith = (extra) => `v AS (SELECT session_id, site, artist_slug AS page, visited_at, device, referrer, city, country, network, latitude, longitude, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, CAST(strftime('%H', datetime(visited_at, ${PARIS_OFFSET("visited_at")})) AS INTEGER) AS h FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")}${extra} AND visited_at >= datetime('now', '-${Math.max(2 * days + 2, 16)} days'))`;
   const vS = vWith(site ? ` AND site = '${site}'` : "");
   const vAll = vWith("");
-  const cur = `jour >= ${start}`;
+  const cur = `jour >= ${start} AND jour <= ${today}`;
   const jCmp = `jour IN (${today}, date(${today}, '-1 day'), date(${today}, '-7 day'))`;
   const [meta, daily, tot, prev, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp, vues, carte] = await Promise.all([
     q(`SELECT ${start} AS debut, ${pStart} AS prec_debut, ${pEnd} AS prec_fin, ${today} AS aujourdhui, date(${today}, '-1 day') AS j1, date(${today}, '-7 day') AS j7`),
     q(`WITH ${vS} SELECT jour, COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE ${cur} GROUP BY jour ORDER BY jour`),
     q(`WITH ${vS} SELECT COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE ${cur}`),
     q(`WITH ${vS} SELECT COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE jour BETWEEN ${pStart} AND ${pEnd}`),
-    q(`WITH ${vS}, s AS (SELECT session_id, MIN(jour) AS jour, COUNT(*) AS n FROM v WHERE jour >= ${pStart} GROUP BY session_id) SELECT jour, COUNT(*) AS sessions, SUM(CASE WHEN n = 1 THEN 1 ELSE 0 END) AS rebonds FROM s GROUP BY jour ORDER BY jour`),
+    q(`WITH ${vS}, s AS (SELECT session_id, MIN(jour) AS jour, COUNT(*) AS n FROM v WHERE jour >= ${pStart} AND jour <= ${today} GROUP BY session_id) SELECT jour, COUNT(*) AS sessions, SUM(CASE WHEN n = 1 THEN 1 ELSE 0 END) AS rebonds FROM s GROUP BY jour ORDER BY jour`),
     q(`WITH ${vS} SELECT h, COUNT(DISTINCT session_id) AS n, COUNT(*) AS pages FROM v WHERE ${cur} GROUP BY h ORDER BY h`),
     q(`WITH ${vS}, w AS (SELECT * FROM v WHERE ${cur}), s AS (SELECT session_id, COUNT(*) AS n FROM w GROUP BY session_id), f AS (SELECT session_id, page, ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY visited_at) AS rn FROM w)
        SELECT COALESCE(w.page, '') AS page, COUNT(DISTINCT w.session_id) AS visiteurs, COUNT(*) AS vues,
@@ -1077,7 +1078,7 @@ async function dashboardData(env, siteParam, daysParam) {
     q(`WITH ${vS} SELECT COALESCE(referrer, 'Accès direct / inconnu') AS label, COUNT(DISTINCT session_id) AS total FROM v WHERE ${cur} GROUP BY label ORDER BY total DESC LIMIT 8`),
     q(`WITH ${vS} SELECT city AS label, COUNT(DISTINCT session_id) AS total FROM v WHERE ${cur} AND city IS NOT NULL GROUP BY city ORDER BY total DESC LIMIT 8`),
     q(`WITH ${vS} SELECT country AS label, COUNT(DISTINCT session_id) AS total FROM v WHERE ${cur} AND country IS NOT NULL GROUP BY country ORDER BY total DESC LIMIT 6`),
-    q(`WITH ${vAll} SELECT site, jour, COUNT(DISTINCT session_id) AS visiteurs FROM v WHERE jour >= date(${today}, '-${Math.max(days, 14) - 1} day') GROUP BY site, jour`),
+    q(`WITH ${vAll} SELECT site, jour, COUNT(DISTINCT session_id) AS visiteurs FROM v WHERE jour >= date(${today}, '-${Math.max(days, 14) - 1} day') AND jour <= ${today} GROUP BY site, jour`),
     q(`WITH ${vS}, s AS (SELECT session_id, MIN(jour) AS jour, COUNT(*) AS n FROM v WHERE ${jCmp} GROUP BY session_id) SELECT jour, COUNT(*) AS visiteurs, SUM(n) AS pages, SUM(CASE WHEN n = 1 THEN 1 ELSE 0 END) AS rebonds FROM s GROUP BY jour`),
     q(`WITH ${vS}, a AS (SELECT session_id, jour, MIN(h) AS h FROM v WHERE ${jCmp} GROUP BY session_id, jour) SELECT jour, h, COUNT(*) AS n FROM a GROUP BY jour, h`),
     // journal des pages vues : qui (ville, appareil, réseau, provenance) et à quelle heure, les plus récentes d'abord
@@ -1085,7 +1086,7 @@ async function dashboardData(env, siteParam, daysParam) {
     // carte des connexions : lieux regroupés (arrondi ~1 km), mêmes filtres que le reste du tableau (sans robots ni tests)
     q(`WITH ${vS} SELECT ROUND(latitude, 2) AS lat, ROUND(longitude, 2) AS lng, MAX(city) AS city, MAX(country) AS country, site, COUNT(DISTINCT session_id) AS visiteurs, COUNT(*) AS pages FROM v WHERE ${cur} AND latitude IS NOT NULL AND longitude IS NOT NULL GROUP BY ROUND(latitude, 2), ROUND(longitude, 2), site ORDER BY visiteurs DESC LIMIT 500`),
   ]);
-  return { site, days, meta: meta[0] || null, daily, tot: tot[0] || null, prev: prev[0] || null, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp, vues, carte };
+  return { site, days, off, meta: meta[0] || null, daily, tot: tot[0] || null, prev: prev[0] || null, sess, hours, pages, entrees, sorties, devices, referrers, cities, countries, bysite, cmp, hcmp, vues, carte };
 }
 
 // Contacts à suivre : visiteurs « chauds » repérés dans les visites + demandes reçues, classés par intérêt (admin).
@@ -2677,7 +2678,7 @@ export default {
       // GET /api/admin/dashboard — graphiques du tableau de bord des stats (admin)
       if (url.pathname === "/api/admin/dashboard" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
-        return cachedAdminJson(url, 120, origin, () => dashboardData(env, url.searchParams.get("site"), url.searchParams.get("days")));
+        return cachedAdminJson(url, 120, origin, () => dashboardData(env, url.searchParams.get("site"), url.searchParams.get("days"), url.searchParams.get("off")));
       }
 
       // GET /api/admin/meteo — rapport du jour : visites, Google, Brevo (admin)
