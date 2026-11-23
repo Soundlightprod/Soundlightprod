@@ -4194,7 +4194,9 @@
               : '<p class="vz-note" style="margin:14px 0 0;">Visiteur identifié (il a accepté le suivi) : première visite connue.</p>')
           : '<p class="vz-note" style="margin:14px 0 0;">Visiteur non identifié (pas encore de choix, ou refus) : ses retours ne sont pas suivis.</p>';
       }
-      document.getElementById('vzJourney').classList.add('open');
+      const jm = document.getElementById('vzJourney');
+      if (jm.parentElement !== document.body) document.body.appendChild(jm); // la fenêtre vivait dans l'onglet « Visites des sites » : cachée depuis « Contacts à suivre »
+      jm.classList.add('open');
     } catch(e){
       showToast('Erreur lors du chargement du parcours');
     }
