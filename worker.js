@@ -2681,6 +2681,21 @@ export default {
         return cachedAdminJson(url, 120, origin, () => dashboardData(env, url.searchParams.get("site"), url.searchParams.get("days"), url.searchParams.get("off")));
       }
 
+      // GET /api/admin/cf-stats?site=jolibois&days=30|90|365 — statistiques Cloudflare (tous requêtes, robots inclus), historique stocké dans cf_jours (admin)
+      if (url.pathname === "/api/admin/cf-stats" && request.method === "GET") {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        return cachedAdminJson(url, 120, origin, async () => {
+          const q = async (sql, ...p) => { try { return (await env.DB.prepare(sql).bind(...p).all()).results || []; } catch (e) { return []; } };
+          const sites = await q("SELECT site, MIN(jour) AS debut, MAX(jour) AS fin, MAX(releve_le) AS releve_le FROM cf_jours GROUP BY site ORDER BY site");
+          const site = sites.find((s) => s.site === url.searchParams.get("site"))?.site || sites[0]?.site || "";
+          const days = [30, 90, 365].includes(Number(url.searchParams.get("days"))) ? Number(url.searchParams.get("days")) : 90;
+          const jours = site ? await q("SELECT jour, requetes, pages_vues, visiteurs_uniques, octets, en_cache, menaces, pays_json FROM cf_jours WHERE site = ? AND jour >= date('now', ?) ORDER BY jour", site, `-${days} days`) : [];
+          const pays = {};
+          for (const j of jours) { try { for (const [c, n] of JSON.parse(j.pays_json || "[]")) pays[c] = (pays[c] || 0) + n; } catch (e) {} }
+          return { sites, site, days, jours: jours.map(({ pays_json, ...r }) => r), pays: Object.entries(pays).sort((a, b) => b[1] - a[1]).slice(0, 12) };
+        });
+      }
+
       // GET /api/admin/meteo — rapport du jour : visites, Google, Brevo (admin)
       if (url.pathname === "/api/admin/meteo" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);

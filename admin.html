@@ -937,6 +937,7 @@
       <button class="vp-btn" id="vpBtn-today" onclick="switchVisitsPane('today')">📊 Tableau de bord</button>
       <button class="vp-btn" id="vpBtn-leads" onclick="switchVisitsPane('leads')">🔥 Contacts à suivre <span id="ldBadge"></span></button>
       <button class="vp-btn" id="vpBtn-visits" onclick="switchVisitsPane('visits')">📈 Visites des sites</button>
+      <button class="vp-btn" id="vpBtn-cf" onclick="switchVisitsPane('cf')">🌐 Cloudflare</button>
       <button class="vp-btn" id="vpBtn-search" onclick="switchVisitsPane('search')">🔍 Google &amp; mails</button>
       <button class="vp-btn" id="vpBtn-social" onclick="switchVisitsPane('social')">📣 Réseaux &amp; YouTube</button>
     </div>
@@ -1211,6 +1212,21 @@
     <p class="vz-note" id="mtMails" style="margin:6px 0 0;"></p>
     <div class="vz-grid2" id="mtBrevo" style="margin-top:12px;"></div>
 
+    </div>
+
+    <div class="vp-pane" id="vp-cf">
+    <div class="mt-head">
+      <div>
+        <h2 style="margin:0;">Cloudflare, site par site</h2>
+        <p class="vz-sub">Statistiques relevées chez Cloudflare, sans bandeau ni script sur le site. Elles comptent toutes les requêtes, robots compris : à lire comme une tendance, pas comme un nombre de vrais visiteurs.</p>
+      </div>
+      <button class="btn-outline" onclick="loadCf()">↻ Actualiser</button>
+    </div>
+    <div class="vz-bar"><div class="vz-seg" id="cfSites"></div><div class="vz-seg" id="cfDays"><button data-d="30" onclick="loadCf(null,30)">30 j</button><button class="active" data-d="90" onclick="loadCf(null,90)">90 j</button><button data-d="365" onclick="loadCf(null,365)">1 an</button></div></div>
+    <div class="vz-grid2" id="cfKpis" style="margin-top:10px;"></div>
+    <div class="vz-card"><div class="vz-card-h"><h3>Pages vues par jour</h3></div><div id="cfChart" style="overflow-x:auto;"></div></div>
+    <div class="vz-card"><div class="vz-card-h"><h3>Pays (requêtes)</h3></div><div id="cfPays"></div></div>
+    <p class="vz-note" id="cfNote"></p>
     </div>
 
     <div class="vp-pane" id="vp-social">
@@ -2408,6 +2424,33 @@
   }
   function chatStartPolling(){ clearInterval(chatTimer); chatLoadList(); chatTimer = setInterval(() => { if (document.visibilityState === 'visible') chatLoadList(); }, 6000); }
 
+
+  // ===== Cloudflare : une page par site (aujourd'hui Auberge Jolibois) =====
+  var cfSite = '', cfDays = 90;
+  var CF_NOMS = { jolibois: 'Auberge Jolibois' };
+  async function loadCf(site, days){
+    if (site) cfSite = site; if (days) cfDays = days;
+    try {
+      const res = await fetch(`/api/admin/cf-stats?site=${encodeURIComponent(cfSite)}&days=${cfDays}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const d = await res.json(); if (!res.ok) throw new Error(d.error || res.status);
+      cfSite = d.site; cfDays = d.days;
+      document.getElementById('cfSites').innerHTML = d.sites.map(s => `<button class="${s.site===d.site?'active':''}" onclick="loadCf('${s.site}')">${CF_NOMS[s.site] || s.site}</button>`).join('') || '<span class="vz-note">Aucun site relevé.</span>';
+      document.querySelectorAll('#cfDays button').forEach(b => b.classList.toggle('active', Number(b.dataset.d) === d.days));
+      const J = d.jours, sum = (a, k) => a.reduce((s, x) => s + (x[k] || 0), 0);
+      const last7 = J.slice(-7), prev7 = J.slice(-14, -7);
+      const pv7 = sum(last7, 'pages_vues'), pvp = sum(prev7, 'pages_vues');
+      const delta = pvp ? Math.round((pv7 - pvp) / pvp * 100) : null;
+      const k = (t, v, s) => `<div class="vz-card" style="margin-bottom:0"><div class="vz-note">${t}</div><div style="font-size:1.8rem;font-weight:700">${v}</div><div class="vz-note">${s || ''}</div></div>`;
+      document.getElementById('cfKpis').innerHTML = k('Pages vues, 7 derniers jours', pv7.toLocaleString('fr-FR'), delta === null ? '' : `${delta > 0 ? '+' : ''}${delta} % vs 7 jours précédents`) + k(`Pages vues, ${d.days} jours`, sum(J, 'pages_vues').toLocaleString('fr-FR'), `${sum(J, 'requetes').toLocaleString('fr-FR')} requêtes au total`);
+      const max = Math.max(1, ...J.map(x => x.pages_vues)), w = Math.max(6, Math.min(14, Math.floor(900 / Math.max(1, J.length))));
+      document.getElementById('cfChart').innerHTML = `<svg width="${J.length * w + 10}" height="170" role="img" aria-label="Pages vues par jour">` + J.map((x, i) => { const h = Math.round(x.pages_vues / max * 140); return `<rect x="${5 + i * w}" y="${150 - h}" width="${w - 2}" height="${h}" rx="2" fill="#ffb238"><title>${x.jour} : ${x.pages_vues} pages vues, ${x.visiteurs_uniques} adresses uniques</title></rect>`; }).join('') + `<text x="5" y="166" font-size="10" fill="#999">${J[0] ? J[0].jour : ''}</text><text x="${J.length * w + 5}" y="166" font-size="10" fill="#999" text-anchor="end">${J.length ? J[J.length-1].jour : ''}</text></svg>`;
+      const tot = d.pays.reduce((s, p) => s + p[1], 0) || 1;
+      document.getElementById('cfPays').innerHTML = '<table class="vz-table" style="width:100%"><tbody>' + d.pays.map(p => `<tr><td>${p[0]}</td><td style="text-align:right">${p[1].toLocaleString('fr-FR')}</td><td style="text-align:right">${Math.round(p[1] / tot * 100)} %</td></tr>`).join('') + '</tbody></table>';
+      const st = d.sites.find(s => s.site === d.site);
+      document.getElementById('cfNote').textContent = st ? `Historique disponible depuis le ${st.debut}. Dernier relevé : ${st.releve_le || '—'}. Les pays très présents hors de France (Pays-Bas, États-Unis, Allemagne) viennent surtout de robots.` : '';
+    } catch (e) { document.getElementById('cfNote').textContent = 'Erreur de chargement : ' + e.message; }
+  }
+
   function switchVisitsPane(name){
     document.querySelectorAll('.vp-pane').forEach(el => el.classList.toggle('active', el.id === 'vp-' + name));
     document.querySelectorAll('.vp-btn').forEach(el => el.classList.toggle('active', el.id === 'vpBtn-' + name));
@@ -2417,6 +2460,7 @@
         if (typeof visitsMapInstance !== 'undefined' && visitsMapInstance) visitsMapInstance.invalidateSize();
         if (typeof visitsChartInstance !== 'undefined' && visitsChartInstance) visitsChartInstance.resize();
       }
+      if (name === 'cf') loadCf();
       if (name === 'search' && typeof mtChart !== 'undefined' && mtChart) mtChart.resize();
       if (name === 'rapport'){ const fr = document.getElementById('mtVisuel'); try { if (fr && fr.contentDocument) fr.style.height = (fr.contentDocument.documentElement.scrollHeight + 4) + 'px'; } catch(e){} }
     }, 60);
