@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Artists & Live Bands — Alchimie, Cache Candy, The Fine Allies... | SLP</title>
-<meta name="description" content="Discover our live bands touring across France and Europe: ABBA, Calogero, Matmatah and Kool &amp; the Gang tributes, the Panache and Bim Bam Boom revues, Cache Candy, Alchimie, NooN Coverband, The Fine Allies and DJ entertainment.">
+<title>Our Artists &amp; Live Bands — Alchimie, Cache Candy, The Fine Allies... | SLP</title>
+<meta name="description" content="Discover our concert acts booked across France and Europe: ABBA tribute, Calogero tribute, Bee Gees tribute, Phil Collins tribute, Céline Dion tribute, Matmatah tribute and Kool &amp; the Gang tribute, the Panache and Bim Bam Boom revues, Cache Candy, Alchimie, NooN Coverband, The Fine Allies and DJ entertainment.">
 <meta name="keywords" content="tribute ABBA, tribute Calogero, tribute Bee Gees, tribute Phil Collins, tribute Kool and the Gang, tribute Matmatah, tribute Balavoine, tribute Barry White, tribute Céline Dion, tribute show, tribute band, cabaret show, cover band, DJ, live band, concert, festival, wedding, gala, private party, sound and lighting, show producer, France">
 <style>
   :root{
@@ -189,24 +189,24 @@
   .spot-arrow:hover{border-color:var(--gold); color:var(--gold);}
 
   /* Catégories — mosaïque photo */
-  .cats2{margin-top:34px; display:grid; grid-template-columns:repeat(6,1fr); gap:20px;}
-  .cat2{position:relative; display:block; overflow:hidden; border-radius:20px; text-decoration:none; color:var(--paper); background:var(--ink-2); border:1px solid var(--line); isolation:isolate;}
-  .cat2.big{grid-column:span 3; height:440px;}
-  .cat2.small{grid-column:span 2; height:380px;}
-  .cat2 img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; transition:transform .6s ease;}
-  .cat2::before{content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(12,10,20,.05) 25%, rgba(12,10,20,.55) 55%, rgba(12,10,20,.96) 100%);}
+  .cats2{margin-top:34px; display:grid; grid-template-columns:repeat(6,1fr); gap:22px;}
+  .cat2{position:relative; display:flex; flex-direction:column; overflow:hidden; border-radius:20px; text-decoration:none; color:var(--paper); background:var(--ink-2); border:1px solid var(--line); transition:border-color .3s, transform .3s;}
+  .cat2.big{grid-column:span 3;} .cat2.small{grid-column:span 2;}
+  .cat2 .pic{position:relative; aspect-ratio:16/9; overflow:hidden; background:#0c0a14;}
+  .cat2 .pic img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease;}
   .cat2::after{content:''; position:absolute; left:0; right:0; bottom:0; height:4px; background:var(--spectre); transform:scaleX(0); transform-origin:left; transition:transform .45s ease;}
-  .cat2:hover img{transform:scale(1.06);} .cat2:hover::after{transform:scaleX(1);} .cat2:hover{border-color:rgba(255,255,255,.28);}
-  .cat2 .count{position:absolute; top:18px; left:18px; font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; background:rgba(12,10,20,.72); backdrop-filter:blur(6px); border:1px solid var(--line); padding:6px 12px; border-radius:100px;}
-  .cat2 .body{position:absolute; left:0; right:0; bottom:0; padding:26px 28px 28px; display:flex; align-items:flex-end; justify-content:space-between; gap:18px;}
-  .cat2 h3{font-family:'League Spartan',sans-serif; font-weight:900; text-transform:uppercase; font-size:clamp(1.6rem,2.6vw,2.4rem); line-height:.95; margin:0 0 10px; letter-spacing:-.01em;}
-  .cat2.small h3{font-size:clamp(1.4rem,2vw,1.8rem);}
-  .cat2 p{margin:0 0 10px; color:rgba(247,245,240,.82); font-size:.95rem; line-height:1.45; max-width:44ch;}
-  .cat2 .names{font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.04em; color:rgba(247,245,240,.62); line-height:1.6;}
-  .cat2 .go{flex-shrink:0; width:48px; height:48px; border-radius:50%; background:var(--blanc); color:var(--noir); display:flex; align-items:center; justify-content:center; font-size:1.2rem; transition:background .3s, transform .3s;}
+  .cat2:hover .pic img{transform:scale(1.04);} .cat2:hover::after{transform:scaleX(1);} .cat2:hover{border-color:rgba(255,255,255,.28); transform:translateY(-3px);}
+  .cat2 .count{display:inline-block; font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--jaune); margin-bottom:8px;}
+  .cat2 .body{flex:1; padding:22px 24px 26px; display:flex; align-items:flex-end; justify-content:space-between; gap:18px;}
+  .cat2 h3{font-family:'League Spartan',sans-serif; font-weight:900; text-transform:uppercase; font-size:clamp(1.4rem,2.2vw,1.9rem); line-height:.95; margin:0 0 8px; letter-spacing:-.01em;}
+  .cat2.small h3{font-size:clamp(1.2rem,1.7vw,1.5rem);}
+  .cat2 p{margin:0 0 10px; color:rgba(247,245,240,.82); font-size:.93rem; line-height:1.45; max-width:44ch;}
+  .cat2 .names{font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.04em; color:rgba(247,245,240,.62); line-height:1.6;}
+  .cat2 .body>div{align-self:flex-start;}
+  .cat2 .go{flex-shrink:0; width:44px; height:44px; border-radius:50%; background:var(--blanc); color:var(--noir); display:flex; align-items:center; justify-content:center; font-size:1.1rem; transition:background .3s, transform .3s;}
   .cat2:hover .go{background:var(--chaud); transform:rotate(-45deg);}
-  @media (max-width:960px){ .cat2.big,.cat2.small{grid-column:span 3; height:360px;} .cat2.small:last-child{grid-column:span 6;} }
-  @media (max-width:600px){ .cats2{grid-template-columns:1fr; gap:14px;} .cat2.big,.cat2.small,.cat2.small:last-child{grid-column:auto; height:320px;} .cat2 .body{padding:20px;} }
+  @media (max-width:960px){ .cat2.big,.cat2.small{grid-column:span 3;} .cat2.small:last-child{grid-column:span 6;} .cat2.small:last-child .pic{aspect-ratio:21/9;} }
+  @media (max-width:600px){ .cats2{grid-template-columns:1fr; gap:16px;} .cat2.big,.cat2.small,.cat2.small:last-child{grid-column:auto;} .cat2.small:last-child .pic{aspect-ratio:16/9;} .cat2 .body{padding:18px 20px 22px;} }
 </style>
 
 
@@ -233,8 +233,8 @@
 .annuaire .chip{min-height:44px;padding:0 18px;border-radius:100px;border:1px solid var(--line,rgba(255,255,255,.2));background:transparent;color:inherit;font:600 .92rem 'Instrument Sans',sans-serif;cursor:pointer}
 .annuaire .chip[aria-pressed=true]{background:#f7f5f0;color:#0c0a14;border-color:#f7f5f0}
 .annuaire .chip:focus-visible,.annuaire .names-list a:focus-visible{outline:3px solid #fbc608;outline-offset:3px}
-.annuaire .names-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:10px;margin:0;padding:0;list-style:none}
-.annuaire .names-list a{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;padding:10px 16px;border-radius:14px;border:1px solid var(--line,rgba(255,255,255,.18));text-decoration:none;color:inherit;font-weight:600}
+.annuaire .names-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:10px;margin:0;padding:0;list-style:none}
+.annuaire .names-list a{display:flex;align-items:center;justify-content:flex-start;gap:10px;min-height:52px;padding:10px 16px;border-radius:14px;border:1px solid var(--line,rgba(255,255,255,.18));text-decoration:none;color:inherit;font-weight:600}
 .annuaire .names-list a small{opacity:.7;font-weight:500;font-size:.78rem}.annuaire .names-list a:hover{border-color:#fbc608}
 .annuaire [hidden]{display:none!important}
 .pm .annuaire .wrap{max-width:1560px}
@@ -255,7 +255,7 @@
 
 </style>
 <style id="cta-photo">
-.cta-band{background-image:linear-gradient(rgba(10,8,20,.80),rgba(10,8,20,.90)),url(/images/alchimie-photo-3-1200.webp) !important;background-size:cover !important;background-position:center !important}
+.cta-band{background-image:linear-gradient(rgba(10,8,20,.80),rgba(10,8,20,.90)),url(/images/kool-photo-1-1200.webp) !important;background-size:cover !important;background-position:50% 20% !important}
 .cta-band .wrap.tight{padding-top:64px !important;padding-bottom:64px !important}
 .cta-band h2{font-size:clamp(1.9rem,4vw,2.8rem) !important}
 </style>
@@ -267,7 +267,7 @@
 <header>
   <div class="nav-wrap">
     <a href="./" class="brand">
-      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
     </a>
     <nav>
       <ul>
@@ -275,7 +275,7 @@
         <li><a href="artistes" class="current">Artists &amp; Shows</a></li>
         <li><a href="concepts">Our concepts</a></li>
         <li><a href="galerie">Gallery</a></li>
-        <li><a href="contact" class="nav-cta">Contact</a></li>
+                <li><a href="contact" class="nav-cta">Contact</a></li>
       </ul>
     </nav>
     <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/artistes" hreflang="fr" lang="fr">FR</a><a href="https://soundlightprod.com/en/artistes" hreflang="en" lang="en" class="on" aria-current="true">EN</a><a href="https://soundlightprod.com/es/artistes" hreflang="es" lang="es">ES</a><a href="https://soundlightprod.com/it/artistes" hreflang="it" lang="it">IT</a></div>
@@ -283,73 +283,35 @@
   </div>
 </header>
 
-<section class="page-hero pm-cinepage">
-  <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
-  <div class="page-hero-inner">
-    <span class="label">Our catalogue</span>
-    <h1>Our artists &amp; shows</h1>
-    <p>Every artist is selected and approved by SLP, by type of show. Choose a category to discover the matching artist, and we advise you and coordinate the rest. We also put together turnkey line-ups and work with nationally known artists: tell us about your project.</p>
-  </div>
-  <div class="hero-frieze" aria-hidden="true"><img src="/artistes-silhouettes.png" alt=""></div>
-</section>
-
-<section>
-  <div class="wrap">
-    <div class="section-head"><span class="label">Choose your show</span><h2>8 worlds to make your event shine</h2></div>
-    <div class="cats2">
-      <a href="tributes" class="cat2 big">
-        <img src="/images/celine-new-C-1200.webp" srcset="/images/celine-new-C-480.webp 480w, /images/celine-new-C-800.webp 800w, /images/celine-new-C-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="" loading="lazy" style="object-position:center 22%;">
-        <span class="count">9 tributes</span>
-        <div class="body"><div><h3>Tributes</h3><p>Legendary artists brought back to life on stage, 100% live.</p><div class="names">Céline Dion · Calogero · Bee Gees · ABBA · Matmatah · Kool &amp; the Gang · Phil Collins · Balavoine · Barry White</div></div><span class="go" aria-hidden="true">→</span></div>
-      </a>
-      <a href="cabaret" class="cat2 big">
-        <img src="/cabaret-photo-cropped.jpg" srcset="/images/cabaret-photo-cropped-480.webp 480w, /images/cabaret-photo-cropped-800.webp 800w, /images/cabaret-photo-cropped-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="" loading="lazy" style="object-position:center 30%;">
-        <span class="count">2 shows</span>
-        <div class="body"><div><h3>Cabaret Shows</h3><p>Feathers, rhinestones and live-sung tableaux for your galas.</p><div class="names">Panache · Bim Bam Boom</div></div><span class="go" aria-hidden="true">→</span></div>
-      </a>
-      <a href="magie" class="cat2 small">
-        <img src="/clement-blouin-photo-1.jpg" srcset="/images/clement-blouin-photo-1-480.webp 480w, /images/clement-blouin-photo-1-800.webp 800w" sizes="(max-width:700px) 100vw, 1100px" alt="Clément Blouin, magic show" loading="lazy" style="object-position:center 30%;">
-        <span class="count">New</span>
-        <div class="body"><div><h3>Magic Show</h3><p>Illusions, humour and complicity with the audience.</p><div class="names">Clément Blouin</div></div><span class="go" aria-hidden="true">→</span></div>
-      </a>
-      <a href="cache-candy" class="cat2 small">
-        <img src="/cache-candy-live-1.jpg" srcset="/images/cache-candy-live-1-480.webp 480w" sizes="(max-width:700px) 100vw, 1100px" alt="" loading="lazy" style="object-position:center 30%;">
-        <span class="count">SLP exclusive</span>
-        <div class="body"><div><h3>Cache Candy</h3><p>Pop-rock electro duo with original songs.</p><div class="names">New album “Happy End”</div></div><span class="go" aria-hidden="true">→</span></div>
-      </a>
-      <a href="groupes-de-reprises" class="cat2 small">
-        <img src="/fine-allies-photo-1.jpg" srcset="/images/fine-allies-photo-1-480.webp 480w, /images/fine-allies-photo-1-800.webp 800w, /images/fine-allies-photo-1-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="" loading="lazy" style="object-position:center 40%;">
-        <span class="count">4 bands</span>
-        <div class="body"><div><h3>Cover bands</h3><p>Pop, rock, funk and soul to fill the dance floor.</p><div class="names">Alchimie · NooN Coverband · The Fine Allies · Tékila The Band</div></div><span class="go" aria-hidden="true">→</span></div>
-      </a>
-      <a href="dj" class="cat2 small">
-        <img src="/images/dj-photo-1200.webp" srcset="/images/dj-photo-480.webp 480w, /images/dj-photo-800.webp 800w, /images/dj-photo-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="" loading="lazy" style="object-position:center 65%;">
-        <span class="count">DJ</span>
-        <div class="body"><div><h3>DJ</h3><p>An entertainer DJ for every generation.</p><div class="names">Weddings · Parties · Birthdays</div></div><span class="go" aria-hidden="true">→</span></div>
-      </a>
-      <a href="karaoke-live" class="cat2 small">
-        <img src="/images/karaoke-live-scene-1200.webp" srcset="/images/karaoke-live-scene-480.webp 480w, /images/karaoke-live-scene-800.webp 800w, /images/karaoke-live-scene-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="Live karaoke with a band on stage" loading="lazy" style="object-position:center 40%;">
-        <span class="count">New concept</span>
-        <div class="body"><div><h3>Live Karaoke</h3><p>Sing with a real band on stage, lyrics on a big screen.</p><div class="names">Companies · Towns · Festivals</div></div><span class="go" aria-hidden="true">→</span></div>
-      </a>
-<a href="show-disco" class="cat2 small">
-        <img src="/images/show-disco-groupe-1200.webp" srcset="/images/show-disco-groupe-480.webp 480w, /images/show-disco-groupe-800.webp 800w, /images/show-disco-groupe-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="Mirror ball and lights: 100% disco show" loading="lazy" style="object-position:50% 50%;">
-        <span class="count">2027 season</span>
-        <div class="body"><div><h3>100% Disco Show</h3><p>50 years of Saturday Night Fever: three live tributes for a unique headline show.</p><div class="names">Bee Gees tribute · Chic tribute · Imagination tribute</div></div><span class="go" aria-hidden="true">→</span></div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section class="annuaire" id="annuaire"><div class="wrap"><div class="section-head"><span class="label">Quick access</span><h2>Find an act</h2></div><ul class="chips" aria-label="Filter by category"><li><button type="button" class="chip" data-g="all" aria-pressed="true">All</button></li><li><button type="button" class="chip" data-g="tributes" aria-pressed="false">Tributes</button></li><li><button type="button" class="chip" data-g="cabaret" aria-pressed="false">Cabaret Shows</button></li><li><button type="button" class="chip" data-g="magie" aria-pressed="false">Magic Show</button></li><li><button type="button" class="chip" data-g="cache-candy" aria-pressed="false">Cache Candy</button></li><li><button type="button" class="chip" data-g="groupes-de-reprises" aria-pressed="false">Cover bands</button></li><li><button type="button" class="chip" data-g="dj" aria-pressed="false">DJ</button></li><li><button type="button" class="chip" data-g="karaoke" aria-pressed="false">Live karaoke</button></li></ul><ul class="names-list"><li data-g="tributes"><a class="art-card" href="tribute-celine-dion"><img src="/images/celine-new-B-800.webp" alt="" style="object-position:center 25%" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Céline Dion</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-calogero"><img src="/images/calo-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Calogero</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-bee-gees"><img src="/images/stayin-alive-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Bee Gees</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-abba"><img src="/images/abba-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute ABBA</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-kool-and-the-gang"><img src="/images/kool-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Kool &amp; the Gang</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-matmatah"><img src="/images/matmatah-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Matmatah</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-phil-collins"><img src="/images/phil-collins-photo-1-800.webp" alt="" style="object-position:center 30%" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Phil Collins</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-balavoine"><img src="/images/balavoine-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Balavoine</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-barry-white"><img src="/images/barry-white-photo-1-800.webp" alt="" style="object-position:50% 0" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Barry White</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="cabaret"><a class="art-card" href="panache"><img src="/images/panache-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cabaret Shows</small><b>Panache</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="cabaret"><a class="art-card" href="bim-bam-boom"><img src="/images/bim-bam-boom-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cabaret Shows</small><b>Bim Bam Boom</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="magie"><a class="art-card" href="clement-blouin"><img src="/images/clement-blouin-portrait-800.webp" alt="" style="object-position:center 20%" loading="lazy" decoding="async"><span class="art-tx"><small>Magic Show</small><b>Clément Blouin</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="cache-candy"><a class="art-card" href="cache-candy"><img src="/images/cache-candy-photo-cropped-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cache Candy</small><b>Cache Candy</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="groupes-de-reprises"><a class="art-card" href="alchimie"><img src="/images/alchimie-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cover bands</small><b>Alchimie</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="groupes-de-reprises"><a class="art-card" href="tekila-the-band"><img src="/images/tekila-bridge-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cover bands</small><b>Tékila The Band</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="groupes-de-reprises"><a class="art-card" href="noon-coverband"><img src="/images/noon-photo-1-480.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cover bands</small><b>NooN Coverband</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="groupes-de-reprises"><a class="art-card" href="the-fine-allies"><img src="/images/fine-allies-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cover bands</small><b>The Fine Allies</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="dj"><a class="art-card" href="dj"><img src="/images/dj-photo-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>DJ</small><b>DJ</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="karaoke"><a class="art-card" href="karaoke-live"><img src="/images/karaoke-live-scene-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Live karaoke</small><b>Live Karaoke</b></span><span class="art-ar" aria-hidden="true">→</span></a></li></ul></div></section>
+<main class="pm" id="pm-main">
+<section class="pm-hero pm-page" aria-label="Artists &amp; Shows"><div class="pm-slides" aria-hidden="true">
+<div class="pm-slide on"><img src="/images/abba-photo-2-1200.webp" srcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" sizes="100vw" width="1200" height="800" alt="" fetchpriority="high"></div>
+<div class="pm-slide"><img src="/images/kool-photo-1-1200.webp" srcset="/images/kool-photo-1-480.webp 480w, /images/kool-photo-1-800.webp 800w, /images/kool-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="676" alt="" loading="lazy" decoding="async"></div>
+<div class="pm-slide"><img src="/images/panache-photo-2-1200.webp" srcset="/images/panache-photo-2-480.webp 480w, /images/panache-photo-2-800.webp 800w, /images/panache-photo-2-1200.webp 1200w" sizes="100vw" width="1200" height="801" alt="" style="object-position:50% 40%" loading="lazy" decoding="async"></div>
+<div class="pm-slide"><img src="/images/fine-allies-photo-1-1200.webp" srcset="/images/fine-allies-photo-1-480.webp 480w, /images/fine-allies-photo-1-800.webp 800w, /images/fine-allies-photo-1-1200.webp 1200w" sizes="100vw" width="1200" height="798" alt="" loading="lazy" decoding="async"></div>
+<div class="pm-slide"><img src="/images/matmatah-photo-9-1200.webp" srcset="/images/matmatah-photo-9-480.webp 480w, /images/matmatah-photo-9-800.webp 800w, /images/matmatah-photo-9-1200.webp 1200w" sizes="100vw" width="1200" height="675" alt="" loading="lazy" decoding="async"></div>
+</div><div class="pm-wrap pm-hero-in"><span class="pm-label">Our catalogue</span><h1 style="margin-top:16px"><span>Our artists</span><span>and shows</span></h1>
+<p class="pm-sub">Every artist is selected and approved by SLP, by type of show. Choose a category to discover the matching artist, and we advise you and coordinate the rest. We also put together turnkey line-ups and work with nationally known artists: tell us about your project.</p></div><div class="pm-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></div></section><div class="pm-rule" aria-hidden="true"></div>
+<section class="pm-sec"><div class="pm-wrap"><div class="pm-head pm-rv"><span class="pm-label">Choose your show</span><h2 class="pm-h2">8 worlds to <em>elevate your event.</em></h2></div><div class="pm-ugrid">
+<a class="pm-tile pm-rv" href="tributes"><img src="/images/celine-new-C-1200.webp" srcset="/images/celine-new-C-480.webp 480w, /images/celine-new-C-800.webp 800w, /images/celine-new-C-1200.webp 1200w" sizes="(max-width:720px) 82vw, 58vw" width="1200" height="720" alt="Tributes" loading="lazy" decoding="async" style="object-position:center 22%"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">9 tributes</span><h3>Tributes</h3><p>Legendary artists brought back to life on stage, 100% live.</p><span class="pm-names">Céline Dion · Calogero · Bee Gees · ABBA · Matmatah · Kool &amp; the Gang · Phil Collins · Balavoine · Barry White</span></div><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-rv" href="cabaret"><img src="/images/cabaret-photo-cropped-1200.webp" srcset="/images/cabaret-photo-cropped-480.webp 480w, /images/cabaret-photo-cropped-800.webp 800w, /images/cabaret-photo-cropped-1200.webp 1200w" sizes="(max-width:720px) 82vw, 58vw" width="1200" height="1501" alt="Cabaret revue" style="object-position:50% 30%" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">2 shows</span><h3>Cabaret Shows</h3><p>Feathers, rhinestones and live-sung tableaux for your galas.</p><span class="pm-names">Panache · Bim Bam Boom</span></div><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-rv" href="magie"><img src="/images/clement-blouin-photo-1-1200.webp" srcset="/images/clement-blouin-photo-1-480.webp 480w, /images/clement-blouin-photo-1-800.webp 800w, /images/clement-blouin-photo-1-1200.webp 1200w" sizes="(max-width:720px) 82vw, 58vw" width="1200" height="800" alt="Clément Blouin, magic show" style="object-position:50% 22%" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">New</span><h3>Magic Show</h3><p>Illusions, humour and complicity with the audience.</p><span class="pm-names">Clément Blouin</span></div><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-rv" href="cache-candy"><img src="/images/cache-candy-photo-cropped-1200.webp" srcset="/images/cache-candy-photo-cropped-480.webp 480w, /images/cache-candy-photo-cropped-800.webp 800w, /images/cache-candy-photo-cropped-1200.webp 1200w" sizes="(max-width:720px) 82vw, 58vw" width="1200" height="945" alt="Cache Candy in concert" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">Exclusive</span><h3>Cache Candy</h3><p>Pop-rock electro duo with original songs.</p><span class="pm-names">New album “Happy End”</span></div><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-rv" href="groupes-de-reprises"><img src="/images/alchimie-photo-3-1200.webp" srcset="/images/alchimie-photo-3-480.webp 480w, /images/alchimie-photo-3-800.webp 800w, /images/alchimie-photo-3-1200.webp 1200w" sizes="(max-width:720px) 82vw, 58vw" width="1200" height="1045" alt="Cover band in concert" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">4 bands</span><h3>Cover bands</h3><p>Pop, rock, funk and soul to fill the dance floor.</p><span class="pm-names">Alchimie · NooN Coverband · The Fine Allies · Tékila The Band</span></div><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-art pm-rv" href="dj"><img src="/images/dj-photo-1200.webp" srcset="/images/dj-photo-480.webp 480w, /images/dj-photo-800.webp 800w, /images/dj-photo-1200.webp 1200w" sizes="(max-width:720px) 82vw, 58vw" alt="" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">DJ</span><h3>DJ</h3><p>An entertainer DJ for every generation.</p><span class="pm-names">Weddings · Parties · Birthdays</span></div><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-rv" href="karaoke-live" style="grid-column:span 12"><img src="/images/karaoke-live-scene-1200.webp" srcset="/images/karaoke-live-scene-480.webp 480w, /images/karaoke-live-scene-800.webp 800w, /images/karaoke-live-scene-1200.webp 1200w" sizes="(max-width:720px) 82vw, 100vw" width="1200" height="800" alt="Live karaoke with a band on stage" style="object-position:50% 40%" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">New concept</span><h3>Live karaoke</h3><p>Sing with a real band on stage, lyrics on a big screen.</p><span class="pm-names">Companies · Towns · Festivals</span></div><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-rv" href="show-disco" style="grid-column:span 12"><img src="/images/show-disco-groupe-1200.webp" srcset="/images/show-disco-groupe-480.webp 480w, /images/show-disco-groupe-800.webp 800w, /images/show-disco-groupe-1200.webp 1200w" sizes="(max-width:720px) 82vw, 100vw" width="1200" height="695" alt="Mirror ball and lights: 100% disco show" style="object-position:50% 50%" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">2027 season</span><h3>100% disco show</h3><p>50 years of Saturday Night Fever: three live tributes for a unique headline show.</p><span class="pm-names">Bee Gees tribute · Chic tribute · Imagination tribute</span></div><span class="pm-go" aria-hidden="true">→</span></div></a>
+</div></div></section>
+<section class="annuaire" id="annuaire"><div class="wrap"><div class="section-head"><span class="label">Quick access</span><h2>Find an act</h2></div><ul class="chips" aria-label="Filter by world"><li><button type="button" class="chip" data-g="all" aria-pressed="true">All</button></li><li><button type="button" class="chip" data-g="tributes" aria-pressed="false">Tributes</button></li><li><button type="button" class="chip" data-g="cabaret" aria-pressed="false">Cabaret Shows</button></li><li><button type="button" class="chip" data-g="magie" aria-pressed="false">Magic Show</button></li><li><button type="button" class="chip" data-g="cache-candy" aria-pressed="false">Cache Candy</button></li><li><button type="button" class="chip" data-g="groupes-de-reprises" aria-pressed="false">Cover bands</button></li><li><button type="button" class="chip" data-g="dj" aria-pressed="false">DJ</button></li><li><button type="button" class="chip" data-g="karaoke" aria-pressed="false">Live karaoke</button></li></ul><ul class="names-list"><li data-g="tributes"><a class="art-card" href="tribute-celine-dion"><img src="/images/celine-new-B-800.webp" alt="" style="object-position:center 25%" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Céline Dion</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-calogero"><img src="/images/calo-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Calogero</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-bee-gees"><img src="/images/stayin-alive-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Bee Gees</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-abba"><img src="/images/abba-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute ABBA</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-kool-and-the-gang"><img src="/images/kool-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Kool &amp; the Gang</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-matmatah"><img src="/images/matmatah-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Matmatah</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-phil-collins"><img src="/images/phil-collins-photo-1-800.webp" alt="" style="object-position:center 30%" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Phil Collins</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-balavoine"><img src="/images/balavoine-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Balavoine</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="tributes"><a class="art-card" href="tribute-barry-white"><img src="/images/barry-white-photo-1-800.webp" alt="" style="object-position:50% 0" loading="lazy" decoding="async"><span class="art-tx"><small>Tributes</small><b>Tribute Barry White</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="cabaret"><a class="art-card" href="panache"><img src="/images/panache-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cabaret Shows</small><b>Panache</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="cabaret"><a class="art-card" href="bim-bam-boom"><img src="/images/bim-bam-boom-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cabaret Shows</small><b>Bim Bam Boom</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="magie"><a class="art-card" href="clement-blouin"><img src="/images/clement-blouin-portrait-800.webp" alt="" style="object-position:center 20%" loading="lazy" decoding="async"><span class="art-tx"><small>Magic Show</small><b>Clément Blouin</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="cache-candy"><a class="art-card" href="cache-candy"><img src="/images/cache-candy-photo-cropped-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cache Candy</small><b>Cache Candy</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="groupes-de-reprises"><a class="art-card" href="alchimie"><img src="/images/alchimie-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cover bands</small><b>Alchimie</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="groupes-de-reprises"><a class="art-card" href="tekila-the-band"><img src="/images/tekila-bridge-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cover bands</small><b>Tékila The Band</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="groupes-de-reprises"><a class="art-card" href="noon-coverband"><img src="/images/noon-photo-1-480.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cover bands</small><b>NooN Coverband</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="groupes-de-reprises"><a class="art-card" href="the-fine-allies"><img src="/images/fine-allies-photo-1-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Cover bands</small><b>The Fine Allies</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="dj"><a class="art-card" href="dj"><img src="/images/dj-photo-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>DJ</small><b>DJ</b></span><span class="art-ar" aria-hidden="true">→</span></a></li><li data-g="karaoke"><a class="art-card" href="karaoke-live"><img src="/images/karaoke-live-scene-800.webp" alt="" loading="lazy" decoding="async"><span class="art-tx"><small>Live karaoke</small><b>Live karaoke</b></span><span class="art-ar" aria-hidden="true">→</span></a></li></ul></div></section>
+</main>
 <section class="cta-band">
   <div class="wrap">
     <span class="label">Want to book an artist?</span>
     <h2>Let's talk about your<br>next event</h2>
-    <p>We'll suggest the right package for your budget and atmosphere.</p>
+    <p>We'll suggest the package that fits your budget and your atmosphere.</p>
     <div class="cta-row">
       <a href="contact" class="btn btn-primary" data-contact="devis">Get a quote</a>
-      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>+33 6 31 94 96 53</a>
+      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>06 31 94 96 53</a>
       <a href="https://wa.me/33631949653?text=Hello%2C%20I%27m%20contacting%20you%20from%20the%20SLP%20website%3A%20" target="_blank" rel="noopener" class="btn btn-ghost cta-wa" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
     </div>
   </div>
@@ -368,13 +330,14 @@
       <h4>Navigation</h4>
       <a href="./">Home</a>
       <a href="artistes">Artists &amp; Shows</a>
+      <a href="spectacles-mairies-comites-des-fetes">Town halls &amp; festival committees</a>
       <a href="galerie">Gallery</a>
       <a href="contact">Contact</a>
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
       <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
-      <a href="tel:+33631949653" data-contact="appel">+33 6 31 94 96 53</a>
+      <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
     </div>
     <div class="footer-col">
       <h4>Follow us</h4>
@@ -467,13 +430,12 @@ l.forEach(function(li){li.hidden=!(g==='all'||li.getAttribute('data-g')===g)});}
 .cta-band h2{font-size:clamp(1.6rem,3.6vw,2.3rem);margin-bottom:12px}
 .cta-band p{margin-bottom:24px}
 /* cats-equal:start */
-.cat2,.cat2.big,.cat2.small{height:400px !important}
-@media (max-width:600px){.cat2,.cat2.big,.cat2.small,.cat2.small:last-child{height:340px !important}}
+.cat2,.cat2.big,.cat2.small{height:auto !important}
 .cats2{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:1fr;gap:18px;margin-top:26px}
 .cat2,.cat2.big,.cat2.small{grid-column:span 2}
 .cat2:nth-child(4){grid-column:2 / span 2}
 .cat2:nth-child(5){grid-column:4 / span 2}
-
+.cat2 .pic,.cat2.small:last-child .pic{aspect-ratio:2/1}
 .cat2 .body{padding:16px 20px 20px}
 .cat2 h3,.cat2.small h3{font-size:clamp(1.15rem,1.7vw,1.45rem)}
 .cat2 p{font-size:.9rem;margin-bottom:8px}

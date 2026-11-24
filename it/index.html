@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SLP — Sound Light Prod | Produzione di spettacoli e concerti, audio e luci in Francia e in Europa</title>
-<meta name="description" content="SLP - Sound Light Prod: produzione e organizzazione di spettacoli e concerti, servizi audio e luci, booking e distribuzione di artisti (tribute ABBA, tribute Calogero, tribute Bee Gees, tribute Phil Collins, cabaret, DJ) in tutta la Francia e in Europa.">
+<meta name="description" content="Tribute 100% live, cabaret, magia, cover band, DJ, audio e luci per comuni, comitati delle feste e gala. Preventivo gratuito, in tutta la Francia.">
 <meta name="keywords" content="tribute ABBA, tribute Calogero, tribute Bee Gees, tribute Phil Collins, tribute Kool and the Gang, tribute Matmatah, tribute Balavoine, tribute Barry White, tribute Céline Dion, spettacolo tributo, tribute band, cabaret, cover band, DJ, musica dal vivo, concerto, festival, matrimonio, gala, festa privata, audio e luci, produttore di spettacoli, Francia">
 <style>
   :root{
@@ -178,7 +178,9 @@
   }
 
   /* ===== Accueil v2 : engagements, métiers, publics, méthode ===== */
-  .eng{padding:70px 0 40px;}
+  .eng{padding:24px 0 0;}
+  .eng .wrap.tight{padding-top:24px; padding-bottom:24px;}
+  .eng + section .wrap{padding-top:36px;}
   .eng-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
   .eng-card{position:relative; border-radius:20px; padding:30px 26px 28px; background:var(--ink-2); border:1px solid var(--line); overflow:hidden;}
   .eng-card::before{content:''; position:absolute; left:0; top:0; right:0; height:3px; background:var(--spectre);}
@@ -231,6 +233,9 @@
   .publics.two{grid-template-columns:repeat(2,1fr);} @media (max-width:900px){ .publics.two{grid-template-columns:1fr;} }
   .tightsec .wrap{padding-top:30px !important; padding-bottom:30px !important;}
   .tightsec .section-head{margin-bottom:28px !important;}
+.tech-mini{display:flex; align-items:center; justify-content:space-between; gap:24px; padding:22px 26px; border:1px solid var(--line); border-radius:18px; background:var(--ink-2);}
+.tech-mini h3{font-family:'League Spartan',sans-serif; font-size:1.3rem; margin:4px 0 6px;} .tech-mini p{color:var(--muted); max-width:62ch; margin:0;} .tech-mini .kicker{font-family:'DM Mono',monospace; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold);}
+@media (max-width:700px){ .tech-mini{flex-direction:column; align-items:stretch;} .tech-mini .btn{width:100%; justify-content:center;} }
 </style>
 
 
@@ -247,25 +252,132 @@
 <!-- i18n:end -->
 <link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/charte.css?v=3">
+<style id="accueil-v2">
+/* Accueil v2 (pilote) — identité « Plein feux » conservée : fond sombre, logo, polices locales, accents colorés */
+.hero.hero-v2{min-height:0; padding:64px clamp(24px,3.5vw,72px) 40px; align-items:flex-start;}
+.hero-v2 .hero-inner>*{min-width:0;}
+.hero-v2 .hero-inner{display:grid; grid-template-columns:1.05fr .95fr; gap:40px; align-items:center;}
+.hero-v2 h1{opacity:1; animation:none; font-size:clamp(2.1rem,4.6vw,3.6rem); line-height:1.04; margin-bottom:18px; color:var(--paper);}
+.hero-v2 h1 .accent{display:inline;}
+.hero-v2 .hero-text p.hero-lead{opacity:1; animation:none; color:var(--paper); font-size:1.12rem; line-height:1.5; max-width:34ch; margin:0 0 24px;}
+.hero-v2 .cta-row{opacity:1; animation:none; gap:12px; margin-bottom:18px;}
+.hero-v2 .cta-row .btn{min-height:52px; padding:0 26px !important; font-size:1rem; justify-content:center;}
+@media (min-width:961px){
+  .hero-v2 .hero-inner{align-items:end; grid-template-columns:minmax(0,1fr) minmax(0,1fr); justify-content:start; gap:40px;}
+  .hero-v2 .hero-photo{width:100%; margin-bottom:0;}
+  .hero-v2 .feux-dot{left:calc(100% - clamp(24px,3.5vw,72px) - 60px); top:56px;}
+}
+@media (max-width:960px){ .hero-v2 .feux-dot{left:-6px; top:22px;} }
+@media (min-width:1200px){
+  .hero-v2 .hero-inner{grid-template-columns:minmax(640px,max-content) minmax(0,704px);}
+  .hero-v2 .hero-text p.hero-lead{max-width:none; white-space:nowrap; font-size:clamp(.8rem, calc((93vw - 660px) * .0197), 1rem);}
+}
+
+.reassure{list-style:none; display:flex; flex-wrap:wrap; gap:6px 18px; color:var(--muted); font-size:.9rem; margin:0; padding:0;}
+.reassure li::before{content:'✓ '; color:var(--amber); font-weight:700;}
+.hero-photo{margin:0; position:relative; z-index:4; border-radius:20px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,.45); aspect-ratio:3/2; background:var(--ink-2);}
+.hero-photo img{display:block; width:100%; height:100%; object-fit:cover;}
+.hero-photo .slide{position:absolute; inset:0; opacity:0; transition:opacity .9s ease;} .hero-photo .slide.on{opacity:1;}
+@media (prefers-reduced-motion:reduce){ .hero-photo .slide{transition:none;} }
+
+.hero-photo.hero-video iframe{pointer-events:none;} /* pas de menu YouTube au survol */
+.hv-sound{position:absolute; right:12px; bottom:12px; z-index:3; border:0; border-radius:100px; padding:7px 14px; font:700 .82rem/1 'Manrope',sans-serif; cursor:pointer; background:rgba(12,10,20,.78); color:var(--paper); backdrop-filter:blur(6px); transition:transform .15s ease;} .hv-sound:hover{transform:scale(1.05);}
+.hero-photo.hero-video{aspect-ratio:16/9;} .hero-photo.hero-video iframe{position:absolute; inset:0; width:100%; height:100%; border:0; display:block;}
+.hero-photo figcaption{position:absolute; left:12px; bottom:10px; font-size:.78rem; padding:4px 10px; border-radius:100px; background:rgba(12,10,20,.72); color:var(--paper);}
+@media (max-width:960px){
+  .hero.hero-v2{padding:96px 20px 28px;}
+  .hero-v2 .hero-inner{grid-template-columns:minmax(0,1fr); gap:22px;}
+  .hero-v2 h1{font-size:clamp(1.9rem,8.4vw,2.5rem);}
+  .hero-v2 .hero-text p.hero-lead{font-size:1.02rem; margin-bottom:18px; max-width:none;}
+  .hero-v2 .cta-row .btn{flex:1 1 100%;}
+  .hero-v2 .cta-row{margin-bottom:14px;}
+  .reassure{font-size:.84rem; gap:4px 14px;}
+  .hero-photo{aspect-ratio:3/2;}
+}
+.selection .wrap,.univers .wrap,.technique .wrap,.faq-home .wrap{padding-top:44px; padding-bottom:20px;}
+.show-grid,.univ-grid{list-style:none; padding:0; margin:0; display:grid; gap:16px;}
+.show-carousel{position:relative;}
+.show-grid{display:flex; gap:14px; overflow-x:auto; scroll-behavior:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding:2px 2px 6px;}
+.show-grid::-webkit-scrollbar{display:none;}
+.show-grid>li{flex:0 0 auto; width:250px; display:flex;}
+.show-grid>li>.show-card{width:100%;}
+.show-grid .show-card img{aspect-ratio:4/3;}
+.show-grid .show-card strong{font-size:1.1rem;}
+.sc-arrow{position:absolute; top:calc(50% - 30px); transform:translateY(-50%); z-index:3; width:44px; height:44px; border-radius:50%; background:var(--ink); border:1px solid var(--line); color:var(--paper); font-size:1.3rem; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:opacity .2s, background .2s;}
+.sc-arrow:hover{background:var(--paper); color:var(--ink);}
+.sc-arrow:focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+.sc-prev{left:-16px;} .sc-next{right:-16px;}
+@media (max-width:900px){ .sc-arrow{display:none;} .show-grid>li{width:220px;} }
+.show-card{position:relative; display:flex; flex-direction:column; border-radius:18px; overflow:hidden; border:1px solid var(--line); text-decoration:none; color:var(--paper); background:var(--ink-2); transition:border-color .2s, transform .2s;}
+.show-card:hover{border-color:var(--gold);}
+.show-card img{display:block; width:100%; aspect-ratio:3/2; height:auto; object-fit:cover; transition:transform .5s ease;}
+.show-card:hover img,.show-card:focus-visible img{transform:scale(1.04);}
+.show-card .shade{display:none;}
+.show-card .info{position:static; padding:14px 14px 16px; display:flex; flex-direction:column; gap:4px; flex:1;}
+.show-card .tag{font-family:'DM Mono',monospace; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold);}
+.show-card strong{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.2rem; line-height:1.1;}
+.show-card .meta{font-size:.82rem; color:#d6d2e4; line-height:1.35;}
+.show-card .go{font-size:.82rem; font-weight:700; color:var(--paper); margin-top:4px;}
+.show-card:focus-visible,.univ-grid a:focus-visible,.faq-list summary:focus-visible,.hero-v2 .btn:focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+.show-more{margin-top:18px;}
+.univ-grid{grid-template-columns:repeat(5,1fr);}
+@media (max-width:1100px){ .univ-grid{grid-template-columns:repeat(3,1fr);} }
+@media (max-width:620px){ .univ-grid{grid-template-columns:1fr 1fr;} }
+.univ-grid li:last-child:nth-child(odd){grid-column:1/-1;}
+@media (min-width:621px) and (max-width:1100px){ .univ-grid li:last-child:nth-child(odd){grid-column:auto;} }
+.univ-grid a{display:flex; flex-direction:column; gap:6px; height:100%; padding:18px; border-radius:16px; background:var(--ink-2); border:1px solid var(--line); text-decoration:none; color:var(--paper); transition:border-color .25s,transform .25s;}
+.univ-grid a:hover{border-color:rgba(255,255,255,.35); transform:translateY(-3px);}
+.univ-grid .n{font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--amber);}
+.univ-grid strong{font-family:'League Spartan',sans-serif; font-size:1.15rem;}
+.univ-grid span:last-child{color:var(--muted); font-size:.85rem; line-height:1.4;}
+.univers .tlinks{margin-top:18px; font-size:.86rem; line-height:1.7; color:var(--muted);}
+.univers .tlinks a{color:var(--paper);}
+.faq-list{display:grid; gap:10px; max-width:860px;}
+.faq-list details{border:1px solid var(--line); border-radius:14px; background:var(--ink-2); padding:0 18px;}
+.faq-list summary{cursor:pointer; padding:16px 0; font-weight:700; min-height:48px; list-style-position:inside;}
+.faq-list details p{color:var(--muted); padding:0 0 16px; line-height:1.55;}
+.faq-list details p a{color:var(--amber);}
+.how .steps{grid-template-columns:repeat(3,1fr);}
+@media (max-width:760px){ .how .steps{grid-template-columns:1fr;} }
+.how .wrap{padding-top:44px; padding-bottom:20px;}
+.how .section-head h2{font-size:clamp(1.4rem,2.8vw,2rem);}
+.how .step{display:block; padding:20px 20px;}
+.how .step::before{font-size:1.9rem; margin-bottom:8px;}
+.how .step h3{font-size:1.05rem;}
+.how .step p{font-size:.9rem; line-height:1.5;}
+.met-pic img{width:100%; height:100%; object-fit:cover;}
+:target{scroll-margin-top:96px;}
+html{scroll-padding-top:96px;}
+@media (prefers-reduced-motion:reduce){ .show-card img,.univ-grid a{transition:none;} }
+</style>
+
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.com/it/">
+<meta property="og:type" content="website"><meta property="og:title" content="SLP — Sound Light Prod | Produzione di spettacoli e concerti, audio e luci in Francia e in Europa"><meta property="og:description" content="Tribute 100% live, cabaret, magia, cover band, DJ, audio e luci per comuni, comitati delle feste e gala. Preventivo gratuito, in tutta la Francia."><meta property="og:url" content="https://soundlightprod.com/it/"><meta property="og:image" content="https://soundlightprod.fr/abba-photo-1.jpg"><script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://soundlightprod.com/it/#org", "name": "SLP Sound Light Prod", "url": "https://soundlightprod.com/it/", "logo": "https://soundlightprod.fr/slp-logo-complet.png", "telephone": "+33631949653", "areaServed": "FR", "description": "Tribute, spettacoli di cabaret, cover band, DJ, audio e luci per comuni, comitati delle feste e feste private."}, {"@type": "WebSite", "name": "SLP Sound Light Prod", "url": "https://soundlightprod.com/it/", "publisher": {"@id": "https://soundlightprod.com/it/#org"}}]}</script>
 <style id="bas-premium">
+section.how .section-head,section.faq-home .section-head{display:block !important;text-align:center;margin:0 auto 34px;max-width:720px}
+section.how .section-head .label,section.faq-home .section-head .label{display:block;margin-bottom:12px;color:var(--gold-soft)}
+section.how .section-head h2,section.faq-home .section-head h2{font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.15;margin:0}
 .section-sub{color:var(--muted);font-size:1.02rem;line-height:1.55;margin:12px auto 0;max-width:52ch}
+.how .wrap,.faq-home .wrap{padding-top:72px;padding-bottom:36px}
 section.how .steps .steps{gap:24px}
 section.how .steps .step{display:flex !important;flex-direction:column;padding:0 !important;overflow:hidden !important;border-radius:20px !important;background:var(--ink-2) !important;border:1px solid var(--hair) !important;border-top:1px solid var(--hair) !important}
 section.how .steps .step::before{position:absolute;top:14px;left:14px;z-index:2;margin:0;width:42px !important;height:42px !important;display:flex !important;align-items:center !important;justify-content:center !important;line-height:1 !important;padding:0 !important;box-sizing:border-box;border-radius:50%;background:rgba(12,10,20,.78) !important;-webkit-background-clip:border-box;background-clip:border-box;color:var(--gold-soft) !important;-webkit-text-fill-color:var(--gold-soft);font-size:1rem !important;font-weight:700;border:1px solid rgba(230,194,126,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 section.how .steps .step img{display:block;width:100% !important;height:190px !important;object-fit:cover;margin:0;border-radius:0;order:-1}
 section.how .steps .step h3{font-size:1.2rem;line-height:1.25;margin:0;padding:22px 24px 8px !important}
 section.how .steps .step p{font-size:.96rem;line-height:1.6;padding:0 24px 26px !important;color:var(--muted)}
+.faq-grid{display:grid;grid-template-columns:5fr 7fr;gap:36px;align-items:stretch}
+.faq-photo{width:100%;height:100%;min-height:360px;object-fit:cover;object-position:62% center;border-radius:20px;border:1px solid var(--hair)}
+.faq-grid .faq-list{align-self:center}
+.faq-list summary{font-size:1.02rem}
 .cta-band{background-image:linear-gradient(rgba(10,8,20,.80),rgba(10,8,20,.90)),url(/images/abba-photo-1-1200.webp) !important;background-size:cover !important;background-position:center !important}
 .cta-band .wrap.tight{padding-top:64px;padding-bottom:64px}
 .cta-band h2{font-size:clamp(1.9rem,4vw,2.8rem)}
-section.how .steps{grid-template-columns:repeat(4,1fr) !important}
-@media (max-width:980px){section.how .steps{grid-template-columns:repeat(2,1fr) !important}}
-@media (max-width:560px){section.how .steps{grid-template-columns:1fr !important}}
+@media (max-width:900px){.faq-grid{grid-template-columns:1fr}.faq-photo{min-height:0;height:200px}}
+@media (max-width:760px){section.how .steps .step img{height:170px}.how .wrap,.faq-home .wrap{padding-top:52px}}
 </style>
 <link rel="preload" as="image" href="/images/abba-photo-2-1200.webp" imagesrcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
 <link rel="preload" as="image" href="/images/celine-new-F-1200.webp" imagesrcset="/images/celine-new-F-480.webp 480w, /images/celine-new-F-800.webp 800w, /images/celine-new-F-1200.webp 1200w" imagesizes="100vw" fetchpriority="high">
@@ -420,7 +532,7 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 <header>
   <div class="nav-wrap">
     <a href="./" class="brand">
-      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
     </a>
     <nav>
       <ul>
@@ -428,7 +540,7 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
         <li><a href="artistes">Artisti e spettacoli</a></li>
         <li><a href="concepts">I nostri concept</a></li>
         <li><a href="galerie">Galleria</a></li>
-        <li><a href="contact" class="nav-cta">Contatti</a></li>
+                <li><a href="contact" class="nav-cta">Contatti</a></li>
       </ul>
     </nav>
     <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/" hreflang="fr" lang="fr">FR</a><a href="https://soundlightprod.com/en/" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/" hreflang="es" lang="es">ES</a><a href="https://soundlightprod.com/it/" hreflang="it" lang="it" class="on" aria-current="true">IT</a></div>
@@ -456,12 +568,12 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 <div class="pm-head pm-rv"><span class="pm-label">I nostri universi</span><h2 class="pm-h2">Il palco <em>non ha limiti.</em></h2></div><div class="pm-ugrid">
 <a class="pm-tile pm-t1 pm-rv" href="tributes"><img src="/images/celine-new-C-1200.webp" srcset="/images/celine-new-C-480.webp 480w, /images/celine-new-C-800.webp 800w, /images/celine-new-C-1200.webp 1200w" sizes="(max-width:720px) 80vw, 60vw" width="1200" height="720" alt="Tribute Céline Dion sul palco" loading="lazy" decoding="async" style="object-position:center 22%"><div class="pm-cap"><h3>Tribute</h3><span class="pm-go" aria-hidden="true">→</span></div></a>
 <a class="pm-tile pm-t2 pm-rv" href="cabaret"><img src="/images/cabaret-photo-cropped-1200.webp" srcset="/images/cabaret-photo-cropped-480.webp 480w, /images/cabaret-photo-cropped-800.webp 800w, /images/cabaret-photo-cropped-1200.webp 1200w" sizes="(max-width:720px) 80vw, 60vw" width="1200" height="1501" alt="Rivista di cabaret" style="object-position:50% 50%" loading="lazy" decoding="async"><div class="pm-cap"><h3>Cabaret</h3><span class="pm-go" aria-hidden="true">→</span></div></a>
-<a class="pm-tile pm-t3 pm-rv" href="groupes-de-reprises"><img src="/images/alchimie-photo-3-1200.webp" srcset="/images/alchimie-photo-3-480.webp 480w, /images/alchimie-photo-3-800.webp 800w, /images/alchimie-photo-3-1200.webp 1200w" sizes="(max-width:720px) 80vw, 60vw" width="1200" height="1045" alt="Gruppo live in concerto" loading="lazy" decoding="async"><div class="pm-cap"><h3>Gruppi live</h3><span class="pm-go" aria-hidden="true">→</span></div></a>
+<a class="pm-tile pm-t3 pm-rv" href="groupes-de-reprises"><img src="/images/alchimie-photo-3-1200.webp" srcset="/images/alchimie-photo-3-480.webp 480w, /images/alchimie-photo-3-800.webp 800w, /images/alchimie-photo-3-1200.webp 1200w" sizes="(max-width:720px) 80vw, 60vw" width="1200" height="1045" alt="Band dal vivo in concerto" loading="lazy" decoding="async"><div class="pm-cap"><h3>Gruppi live</h3><span class="pm-go" aria-hidden="true">→</span></div></a>
 <a class="pm-tile pm-t4 pm-rv" href="magie"><img src="/images/clement-blouin-photo-1-1200.webp" srcset="/images/clement-blouin-photo-1-480.webp 480w, /images/clement-blouin-photo-1-800.webp 800w, /images/clement-blouin-photo-1-1200.webp 1200w" sizes="(max-width:720px) 80vw, 60vw" width="1200" height="800" alt="Spettacolo di magia" loading="lazy" decoding="async"><div class="pm-cap"><h3>Magia</h3><span class="pm-go" aria-hidden="true">→</span></div></a>
 </div></div></section>
 <section class="pm-sec" id="concepts" style="padding-top:0"><div class="pm-wrap">
 <div class="pm-head pm-rv"><span class="pm-label">I nostri concept</span><h2 class="pm-h2">Serate <em>firmate SLP.</em></h2></div>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px"><a class="pm-tile pm-rv" href="show-disco" style="min-height:420px"><img src="/images/show-disco-affiche-1200.webp" srcset="/images/show-disco-affiche-480.webp 480w, /images/show-disco-affiche-800.webp 800w, /images/show-disco-affiche-1200.webp 1200w" sizes="(max-width:720px) 92vw, 55vw" width="1200" height="799" alt="Palla a specchi e locandina dello show 100% disco" style="object-position:50% 40%" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">Stagione 2027</span><h3>Show 100&nbsp;% disco</h3><p>50 anni di Saturday Night Fever: fino a tre tribute dal vivo e un DJ 100&nbsp;% disco.</p></div><span class="pm-go" aria-hidden="true">→</span></div></a><a class="pm-tile pm-rv" href="karaoke-live" style="min-height:420px"><img src="/images/karaoke-live-scene-1200.webp" srcset="/images/karaoke-live-scene-480.webp 480w, /images/karaoke-live-scene-800.webp 800w, /images/karaoke-live-scene-1200.webp 1200w" sizes="(max-width:720px) 92vw, 45vw" width="1200" height="800" alt="Karaoke dal vivo con band sul palco" style="object-position:50% 40%" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">Nuovo concept</span><h3>Karaoke dal vivo</h3><p>Cantate con una vera band sul palco, testi su grande schermo.</p></div><span class="pm-go" aria-hidden="true">→</span></div></a></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px"><a class="pm-tile pm-rv" href="show-disco" style="min-height:420px"><img src="/images/show-disco-affiche-1200.webp" srcset="/images/show-disco-affiche-480.webp 480w, /images/show-disco-affiche-800.webp 800w, /images/show-disco-affiche-1200.webp 1200w" sizes="(max-width:720px) 92vw, 55vw" width="1200" height="799" alt="Palla a specchi e locandina dello show 100% disco" style="object-position:50% 40%" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">Stagione 2027</span><h3>Show 100% disco</h3><p>50 anni di Saturday Night Fever: fino a tre tribute dal vivo e un DJ 100 % disco.</p></div><span class="pm-go" aria-hidden="true">→</span></div></a><a class="pm-tile pm-rv" href="karaoke-live" style="min-height:420px"><img src="/images/karaoke-live-scene-1200.webp" srcset="/images/karaoke-live-scene-480.webp 480w, /images/karaoke-live-scene-800.webp 800w, /images/karaoke-live-scene-1200.webp 1200w" sizes="(max-width:720px) 92vw, 45vw" width="1200" height="800" alt="Karaoke dal vivo con band sul palco" style="object-position:50% 40%" loading="lazy" decoding="async"><div class="pm-cap"><div class="pm-meta"><span class="pm-count">Nuovo concept</span><h3>Karaoke dal vivo</h3><p>Cantate con una vera band sul palco, testi su grande schermo.</p></div><span class="pm-go" aria-hidden="true">→</span></div></a></div>
 <p class="pm-rv" style="margin-top:22px"><a class="pm-btn pm-btn-g" href="concepts">Scopri tutti i nostri concept <span class="pm-ar" aria-hidden="true">→</span></a></p>
 </div></section>
 <section class="pm-sec" id="spectacles" style="padding-top:0"><div class="pm-wrap">
@@ -470,8 +582,8 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 <div class="pm-cards">
 <div class="pm-card pm-rv" data-c="tribute" ><div class="pm-ph"><img style="object-position:center 25%" src="/images/celine-new-B-1200.webp" srcset="/images/celine-new-B-480.webp 480w, /images/celine-new-B-800.webp 800w, /images/celine-new-B-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="720" alt="Tribute Céline Dion" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute Céline Dion</h3><p>6 artisti sul palco, 1 h 50 di concerto 100 % dal vivo.</p><div class="pm-act"><a class="pm-more" href="tribute-celine-dion">Vedi la scheda <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-avail" href="contact?artiste=tribute-celine-dion&amp;nom=Tribute%20C%C3%A9line%20Dion#contact-form" data-contact="devis">Richiedi la data</a></div></div></div>
 <div class="pm-card pm-rv" data-c="tribute" ><div class="pm-ph"><span class="pm-excl">Esclusiva</span><img src="/images/calo-carte-1200.webp" srcset="/images/calo-carte-480.webp 480w, /images/calo-carte-800.webp 800w, /images/calo-carte-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="960" alt="Tribute Calogero" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute Calogero</h3><p>Quartetto rock, concerto di 2 ore, 100 % dal vivo.</p><div class="pm-act"><a class="pm-more" href="tribute-calogero">Vedi la scheda <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-avail" href="contact?artiste=tribute-calogero&amp;nom=Tribute%20Calogero#contact-form" data-contact="devis">Richiedi la data</a></div></div></div>
-<div class="pm-card pm-rv" data-c="tribute" ><div class="pm-ph"><img src="/images/stayin-alive-photo-1-1200.webp" srcset="/images/stayin-alive-photo-1-480.webp 480w, /images/stayin-alive-photo-1-800.webp 800w, /images/stayin-alive-photo-1-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="687" alt="Tribute Bee Gees" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute Bee Gees</h3><p>Quattro decenni di successi, dal pop alla disco, 100 % dal vivo.</p><div class="pm-act"><a class="pm-more" href="tribute-bee-gees">Vedi la scheda <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-avail" href="contact?artiste=tribute-bee-gees&amp;nom=Tribute%20Bee%20Gees#contact-form" data-contact="devis">Richiedi la data</a></div></div></div>
-<div class="pm-card pm-rv" data-c="tribute" ><div class="pm-ph"><span class="pm-excl">Esclusiva per la Francia</span><img src="/images/abba-photo-5-1200.webp" srcset="/images/abba-photo-5-480.webp 480w, /images/abba-photo-5-800.webp 800w, /images/abba-photo-5-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="800" alt="Tribute ABBA" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute ABBA</h3><p>6 musicisti, tra cui due cantanti, 2 ore di spettacolo 100 % dal vivo.</p><div class="pm-act"><a class="pm-more" href="tribute-abba">Vedi la scheda <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-avail" href="contact?artiste=tribute-abba&amp;nom=Tribute%20ABBA#contact-form" data-contact="devis">Richiedi la data</a></div></div></div>
+<div class="pm-card pm-rv" data-c="tribute" ><div class="pm-ph"><img src="/images/stayin-alive-photo-1-1200.webp" srcset="/images/stayin-alive-photo-1-480.webp 480w, /images/stayin-alive-photo-1-800.webp 800w, /images/stayin-alive-photo-1-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="687" alt="Tribute Bee Gees" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute Bee Gees</h3><p>4 decenni di successi, dal pop alla disco, 100% dal vivo.</p><div class="pm-act"><a class="pm-more" href="tribute-bee-gees">Vedi la scheda <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-avail" href="contact?artiste=tribute-bee-gees&amp;nom=Tribute%20Bee%20Gees#contact-form" data-contact="devis">Richiedi la data</a></div></div></div>
+<div class="pm-card pm-rv" data-c="tribute" ><div class="pm-ph"><span class="pm-excl">Esclusiva in Francia</span><img src="/images/abba-photo-5-1200.webp" srcset="/images/abba-photo-5-480.webp 480w, /images/abba-photo-5-800.webp 800w, /images/abba-photo-5-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="800" alt="Tribute ABBA" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute ABBA</h3><p>6 musicisti, tra cui due cantanti, 2 ore di spettacolo 100 % dal vivo.</p><div class="pm-act"><a class="pm-more" href="tribute-abba">Vedi la scheda <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-avail" href="contact?artiste=tribute-abba&amp;nom=Tribute%20ABBA#contact-form" data-contact="devis">Richiedi la data</a></div></div></div>
 <div class="pm-card pm-rv" data-c="tribute" ><div class="pm-ph"><img src="/images/matmatah-photo-2-1200.webp" srcset="/images/matmatah-photo-2-480.webp 480w, /images/matmatah-photo-2-800.webp 800w, /images/matmatah-photo-2-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="801" alt="Tribute Matmatah" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute Matmatah</h3><p>Il rock bretone dei Matmatah, quartetto 100 % dal vivo.</p><div class="pm-act"><a class="pm-more" href="tribute-matmatah">Vedi la scheda <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-avail" href="contact?artiste=tribute-matmatah&amp;nom=Tribute%20Matmatah#contact-form" data-contact="devis">Richiedi la data</a></div></div></div>
 <div class="pm-card pm-rv" data-c="tribute" ><div class="pm-ph"><img style="object-position:54% center" src="/images/kool-carte-1426.webp" srcset="/images/kool-carte-1426.webp 1426w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1426" height="539" alt="Tribute Kool &amp; the Gang" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Tribute</span><h3>Tribute Kool &amp; the Gang</h3><p>9 musicisti, 1 h 45 di funk, 100 % dal vivo.</p><div class="pm-act"><a class="pm-more" href="tribute-kool-and-the-gang">Vedi la scheda <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-avail" href="contact?artiste=tribute-kool-and-the-gang&amp;nom=Tribute%20Kool%20%26%20the%20Gang#contact-form" data-contact="devis">Richiedi la data</a></div></div></div>
 <div class="pm-card pm-rv" data-c="live" ><div class="pm-ph"><span class="pm-excl">Esclusiva</span><img src="/images/fine-allies-photo-1-1200.webp" srcset="/images/fine-allies-photo-1-480.webp 480w, /images/fine-allies-photo-1-800.webp 800w, /images/fine-allies-photo-1-1200.webp 1200w" sizes="(max-width:720px) 72vw, (max-width:1279px) 45vw, 20vw" width="1200" height="798" alt="The Fine Allies" loading="lazy" decoding="async"></div><div class="pm-tx"><span class="pm-cat">Gruppo live</span><h3>The Fine Allies</h3><p>Funk, soul e rhythm’n’blues.</p><div class="pm-act"><a class="pm-more" href="the-fine-allies">Vedi la scheda <span class="pm-ar" aria-hidden="true">→</span></a><a class="pm-avail" href="contact?artiste=the-fine-allies&amp;nom=The%20Fine%20Allies#contact-form" data-contact="devis">Richiedi la data</a></div></div></div>
@@ -490,7 +602,7 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 <article class="pm-exp pm-rv"><img src="/images/abba-photo-2-1200.webp" srcset="/images/abba-photo-2-480.webp 480w, /images/abba-photo-2-800.webp 800w, /images/abba-photo-2-1200.webp 1200w" sizes="(max-width:1100px) 100vw, 33vw" width="1200" height="800" alt="" loading="lazy" decoding="async"><div class="pm-tx"><span class="pm-n">03</span><h3>Audio e illuminazione scenica</h3><p>In opzione, una produzione tecnica completa, dimensionata per il vostro luogo.</p></div></article>
 </div>
 <div class="pm-figs pm-rv"><div class="pm-fig"><b>20 anni</b><span>di esperienza in animazione, audio e illuminazione</span></div><div class="pm-fig"><b>10 anni</b><span>nella diffusione e produzione di spettacoli</span></div><div class="pm-fig"><b>24 h</b><span>per ricevere il vostro preventivo</span></div></div>
-<div class="pm-vid"><div class="pm-rv"><span class="pm-label">Presentazione</span><h2 class="pm-h2" style="margin-top:18px;font-size:clamp(1.8rem,3.4vw,2.8rem)">SLP in <em>pochi secondi.</em></h2></div><div class="pm-rv"><figure class="about-photo"><div class="ap-clip is-video" data-yt="CSD4xiWCw0I" data-title="SLP Sound Light Prod — video di presentazione"><img src="https://i.ytimg.com/vi/CSD4xiWCw0I/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async"><button class="ap-play" type="button" aria-label="Riproduci il video di presentazione di SLP"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button><button type="button" class="ap-sound" aria-pressed="false">🔇 Attiva l'audio</button></div></figure></div></div>
+<div class="pm-vid"><div class="pm-rv"><span class="pm-label">Presentazione</span><h2 class="pm-h2" style="margin-top:18px;font-size:clamp(1.8rem,3.4vw,2.8rem)">SLP in <em>pochi secondi.</em></h2></div><div class="pm-rv"><figure class="about-photo"><div class="ap-clip is-video" data-yt="CSD4xiWCw0I" data-title="SLP Sound Light Prod — video di presentazione"><img src="https://i.ytimg.com/vi/CSD4xiWCw0I/hqdefault.jpg" width="480" height="360" alt="" loading="lazy" decoding="async"><button class="ap-play" type="button" aria-label="Guarda il video di presentazione di SLP"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button><button type="button" class="ap-sound" aria-pressed="false">🔇 Attiva l'audio</button></div></figure></div></div>
 </div></section>
 <section class="pm-sec" id="realisations"><div class="pm-wrap">
 <div class="pm-head pm-rv"><span class="pm-label">In immagini</span><h2 class="pm-h2">Sul palco, <em>davanti al pubblico.</em></h2></div><div class="pm-gal pm-rv">
@@ -514,10 +626,10 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
 <details><summary>Intervenite vicino a noi?</summary><p>Sì, lavoriamo in tutta la Francia e in Europa, con comuni, comitati delle feste, aziende, associazioni e privati.</p></details>
 </div></div></section>
 <section class="pm-sec pm-contact" id="contact"><div class="pm-wrap pm-c-grid"><div class="pm-rv">
-<span class="pm-label">Contatto</span><h2 class="pm-h2" style="margin-top:18px">Facciamo del vostro progetto <em>un momento indimenticabile.</em></h2><p class="pm-lead" style="margin-top:22px">Preventivo gratuito e senza impegno, risposta entro 24 h.</p>
+<span class="pm-label">Contatti</span><h2 class="pm-h2" style="margin-top:18px">Facciamo del vostro progetto <em>un momento indimenticabile.</em></h2><p class="pm-lead" style="margin-top:22px">Preventivo gratuito e senza impegno, risposta entro 24 h.</p>
 <div class="pm-direct"><a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a><a href="https://wa.me/33631949653?text=Buongiorno%2C%20vi%20contatto%20dal%20sito%20SLP%3A%20" target="_blank" rel="noopener" data-contact="whatsapp">WhatsApp</a><a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a></div></div>
 <div class="pm-parcours pm-rv"><div class="pm-parc"><h3>Programmare uno spettacolo</h3><p>Avete una data e un luogo: vi proponiamo una selezione di artisti disponibili.</p></div><div class="pm-parc"><h3>Organizzare un evento completo</h3><p>Artisti, audio, luci e coordinamento: un’unica squadra, dalla preparazione al giorno dell’evento.</p></div>
-<p><a class="pm-btn pm-btn-p" href="contact" data-contact="devis">Richiedere un preventivo <span class="pm-ar" aria-hidden="true">→</span></a></p></div>
+<p><a class="pm-btn pm-btn-p" href="contact" data-contact="devis">Chiedi un preventivo <span class="pm-ar" aria-hidden="true">→</span></a></p></div>
 </div></section></main>
 
 <footer>
@@ -533,14 +645,15 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
       <h4>Navigazione</h4>
       <a href="./">Home</a>
       <a href="artistes">Artisti e spettacoli</a>
-      <a href="#spectacle">Il nostro metodo</a>
+      <a href="spectacles-mairies-comites-des-fetes">Comuni e comitati delle feste</a>
+      <a href="#how">Come lavoriamo</a>
       <a href="galerie">Galleria</a>
       <a href="contact">Contatti</a>
     </div>
     <div class="footer-col">
       <h4>Contatti</h4>
       <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
-      <a href="tel:+33631949653" data-contact="appel">+33 6 31 94 96 53</a>
+      <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
     </div>
     <div class="footer-col">
       <h4>Seguiteci</h4>
@@ -554,6 +667,21 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
   <p class="legal">Sound Light Prod è un marchio di SLP · 173 rue de Courcelles, 75017 Paris · SIRET 130 415 045 00017 · Licenze di imprenditore di spettacoli (categorie 2 e 3): in corso di assegnazione — © 2026 · <a href="mentions-legales" style="color:inherit;">Note legali</a> · Creazione del sito: <a href="https://slpdigital.fr" target="_blank" rel="noopener" style="color:inherit;">SLP Digital</a></p>
 </footer>
 
+<script>(function(){var g=document.getElementById('showGrid');if(!g)return;var w=g.parentNode,bp=w.querySelector('.sc-prev'),bn=w.querySelector('.sc-next');
+var orig=[].slice.call(g.children);orig.forEach(function(li){var c=li.cloneNode(true);c.setAttribute('aria-hidden','true');c.querySelector('a').tabIndex=-1;g.appendChild(c);});
+var SPEED=40,pos=0,last=0,paused=false,hold=0,vis=true,reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches,t0=0;
+function setW(){return g.children[orig.length].offsetLeft-g.children[0].offsetLeft;}
+function wrap(){var W=setW();if(W<=0)return;if(g.scrollLeft>=W)g.scrollLeft-=W;else if(g.scrollLeft<=0)g.scrollLeft+=W;pos=g.scrollLeft;}
+function pause(ms){hold=Date.now()+(ms||2500);}
+function step(t){if(t0){var dt=Math.min(t-t0,60)/1000;if(!reduce&&vis&&!paused&&Date.now()>hold){pos+=SPEED*dt;g.scrollLeft=pos;wrap();}}t0=t;requestAnimationFrame(step);}
+g.addEventListener('scroll',function(){if(Math.abs(g.scrollLeft-pos)>2){pos=g.scrollLeft;}wrap();},{passive:true});
+w.addEventListener('mouseenter',function(){paused=true;});w.addEventListener('mouseleave',function(){paused=false;});
+g.addEventListener('focusin',function(){paused=true;});g.addEventListener('focusout',function(){paused=false;});
+['touchstart','pointerdown','wheel'].forEach(function(e){g.addEventListener(e,function(){pause(4000);},{passive:true});});
+function m(d){pause(4000);var c=g.children[0];g.scrollBy({left:d*(c.offsetWidth+14)*2,behavior:'smooth'});}
+bp.addEventListener('click',function(){m(-1)});bn.addEventListener('click',function(){m(1)});
+if('IntersectionObserver' in window){new IntersectionObserver(function(e){vis=e[0].isIntersecting;}).observe(g);}
+requestAnimationFrame(step);})();</script>
 <script src="/feux.js" defer></script>
 <!-- cta-contact:start (boutons de contact + suivi des clics) -->
 <style>
@@ -577,6 +705,7 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
     if (band && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ bandVisible = e[0].isIntersecting; upd(); }).observe(band);
     window.addEventListener('scroll', upd, { passive:true }); upd();
   }
+  /* comptage des contacts : contact-track.js (data-contact) */
 })();
 </script>
 <!-- cta-contact:end -->
@@ -621,7 +750,7 @@ body.pm-home nav a:hover,body.pm-home nav a.current{color:#fff}
   if('IntersectionObserver' in window){var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){build(true);io.disconnect();}},{rootMargin:'200px'});io.observe(c);}else{build(true);}
   function cmd(fn,args){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*');}catch(e){}}
   snd.addEventListener('click',function(){on=!on;if(on){cmd('unMute');cmd('setVolume',[100]);cmd('playVideo');}else{cmd('mute');}
-    snd.textContent=on?'🔊 Disattiva l\'audio':'🔇 Attiva l\'audio';snd.setAttribute('aria-pressed',on?'true':'false');});
+    snd.textContent=on?'🔊 Disattiva l’audio':'🔇 Attiva l’audio';snd.setAttribute('aria-pressed',on?'true':'false');});
 })();
 </script>
 <script>
@@ -713,12 +842,84 @@ html,body{overflow-x:clip}
 .about-stats span{display:block; margin-top:6px; font-size:.9rem; line-height:1.4; color:var(--muted);}
 .about-pledges{display:flex; flex-wrap:wrap; gap:10px 22px; margin:0; padding:0; list-style:none; font-weight:600; font-size:.92rem;}
 .about-pledges li::before{content:'\2713'; margin-right:8px; color:var(--amber);}
+@media (max-width:760px){ .about-stats{grid-template-columns:1fr;} }
+
+/* ================= HAUT DE GAMME : finitions ================= */
+:root{--gold-soft:#e6c27e; --hair:rgba(255,255,255,.09);}
+body{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+/* filets fins entre les sections */
+.selection,.about,.how,.univers,.faq-home{position:relative;}
+.about::before,.how::before,.univers::before,.faq-home::before{content:''; position:absolute; top:0; left:50%; width:min(1200px,86%); height:1px; transform:translateX(-50%); background:linear-gradient(90deg,transparent,rgba(230,194,126,.45),transparent);}
+/* respiration */
+.about .wrap{padding-top:76px; padding-bottom:36px;}
+.how .wrap{padding-top:76px; padding-bottom:40px;}
+.univers .wrap,.faq-home .wrap{padding-top:76px;}
+/* petits titres : filet doré à la place du point, lettrage espacé */
+.section-head .label,.label{letter-spacing:.3em; color:var(--gold-soft); font-size:.72rem;}
+.label::before{width:30px; height:1px; border-radius:0; background:var(--gold-soft); box-shadow:none; margin-right:14px; vertical-align:middle;}
+.section-head h2{letter-spacing:.03em;}
+/* cartes : verre sombre, bord fin, relief discret */
+.step,.about-stats li,.univ-grid a,.faq-list details{background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.012)) !important; border:1px solid var(--hair) !important; border-radius:16px; box-shadow:0 22px 44px -28px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.06); transition:transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s, box-shadow .35s;}
+.univ-grid a:hover,.step:hover,.about-stats li:hover{transform:translateY(-4px); border-color:rgba(230,194,126,.5) !important; box-shadow:0 30px 56px -26px rgba(0,0,0,.95), 0 0 0 1px rgba(230,194,126,.08);}
+.show-card{border-color:var(--hair); box-shadow:0 26px 50px -30px rgba(0,0,0,.95); transition:transform .4s cubic-bezier(.2,.7,.2,1), border-color .3s;}
+.show-card:hover{transform:translateY(-5px); border-color:rgba(230,194,126,.6);}
+/* chiffres clés en or */
+.about-stats strong{background:linear-gradient(135deg,#f8e8bf,#d9a441 60%,#b9822a) !important; -webkit-background-clip:text !important; background-clip:text !important; color:transparent !important; letter-spacing:.01em;}
+.about-pledges li::before{color:var(--gold-soft);}
+/* numéros d'étapes */
+.how .step::before{background:linear-gradient(135deg,#f8e8bf,#d9a441); -webkit-background-clip:text; background-clip:text; color:transparent !important;}
+/* FAQ : chevron fin au lieu du triangle */
+.faq-list summary{list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px; letter-spacing:.01em;}
+.faq-list summary::-webkit-details-marker{display:none;}
+.faq-list summary::after{content:'+'; font-weight:300; font-size:1.5rem; line-height:1; color:var(--gold-soft); transition:transform .3s;}
+.faq-list details[open] summary::after{transform:rotate(45deg);}
+.faq-list details[open]{border-color:rgba(230,194,126,.35) !important;}
+/* boutons : relief et lueur discrète */
+.btn{transition:transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s, background .3s;}
+.btn-primary{box-shadow:0 10px 30px -12px rgba(255,255,255,.35);}
+.btn:hover{transform:translateY(-2px);}
+.btn-ghost,.btn-secondary{border-color:rgba(255,255,255,.28) !important;}
+@media (min-width:900px){ .univ-grid{grid-template-columns:repeat(3,1fr) !important;} }
+.univ-grid .n{color:var(--gold-soft) !important; letter-spacing:.22em;}
+.univ-grid a{padding:24px 24px !important;}
+
+/* Moins de cadres : mise en page épurée, filets fins à la place des cartes */
+.step,.about-stats li,.univ-grid a,.faq-list details{background:none !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;}
+.about-stats li,.step,.univ-grid a{border-top:1px solid rgba(230,194,126,.35) !important; padding:20px 4px 6px !important;}
+.univ-grid{gap:6px 40px !important;}
+.univ-grid a:hover,.step:hover,.about-stats li:hover{transform:none; border-top-color:var(--gold-soft) !important; box-shadow:none;}
+.univ-grid a:hover strong{color:var(--gold-soft);}
+.faq-list{gap:0 !important;}
+.faq-list details{border-bottom:1px solid var(--hair) !important; padding:0 4px !important;}
+.faq-list details[open]{border-bottom-color:rgba(230,194,126,.4) !important;}
+
+/* étapes : numéro au-dessus du titre, texte aligné */
+.how .step{display:block !important;}
+.how .step::before{display:block !important; margin:0 0 10px !important;}
+.how .step h3,.how .step p{margin-left:0 !important; padding-left:0 !important;}
+.how .step h3{margin-bottom:8px !important;}
+
+/* allègement : chips d'univers, tributes repliés, typos réduites */
+.cat-chips{list-style:none; display:flex; flex-wrap:wrap; gap:8px; margin:0 0 22px; padding:0;}
+.cat-chips a{display:inline-block; padding:8px 16px; border-radius:100px; border:1px solid rgba(230,194,126,.4); color:var(--paper); text-decoration:none; font-size:.86rem; font-weight:600; transition:background .2s,border-color .2s;}
+.cat-chips a:hover{background:rgba(230,194,126,.12); border-color:var(--gold-soft);}
+.tlinks-fold{margin:-4px 0 22px; font-size:.84rem; color:var(--muted);}
+.tlinks-fold summary{cursor:pointer; width:max-content; color:var(--gold-soft); list-style:none;}
+.tlinks-fold summary::-webkit-details-marker{display:none;}
+.tlinks-fold summary::after{content:' +';}
+.tlinks-fold[open] summary::after{content:' –';}
+.tlinks-fold p{margin:10px 0 0; line-height:1.9;}
+.tlinks-fold a{color:var(--paper); text-decoration:none; border-bottom:1px solid rgba(251,198,8,.4);}
+.hero-v2 h1{font-size:clamp(1.8rem,3.7vw,2.9rem);}
+.hero-v2 .hero-text p.hero-lead{font-size:1rem;}
 .section-head h2,.about .section-head h2,.how .section-head h2{font-size:clamp(1.2rem,2.2vw,1.6rem);}
 .about-lead{font-size:.95rem;}
 .about-stats strong{font-size:clamp(1.5rem,3vw,2rem);}
 .about-stats span{font-size:.86rem;}
 .cta-band h2{font-size:clamp(1.4rem,3vw,2rem);}
-@media (max-width:760px){ .about-stats{grid-template-columns:1fr;} }
+.faq-list summary{font-size:1rem;}
+@media (max-width:640px){ .hero-v2 h1{font-size:clamp(1.65rem,7.4vw,2.1rem);} .section-head h2{font-size:1.2rem;} }
+@media (prefers-reduced-motion:reduce){ .step,.about-stats li,.univ-grid a,.show-card,.btn{transition:none;} .univ-grid a:hover,.step:hover,.about-stats li:hover,.show-card:hover,.btn:hover{transform:none;} }
 
 :root{--gold-soft:#e6c27e;}
 /* ---- accueil : titres à deux graisses, photo cadrée (Qui sommes-nous) ---- */
@@ -733,6 +934,39 @@ html,body{overflow-x:clip}
 .ap-clip{position:relative; overflow:hidden; border-radius:20px; aspect-ratio:4/3; background:var(--ink-2); box-shadow:0 40px 70px -40px rgba(0,0,0,.95);}
 .ap-clip img{position:absolute; left:0; top:-9%; width:100%; height:118%; object-fit:cover; will-change:transform; transform:translate3d(0,var(--py,0px),0);}
 @media (max-width:860px){ .about-grid{grid-template-columns:1fr;} .about-photo{margin:0 14px 14px 0; order:2;} }
+
+/* ---- accueil : « à l'affiche », cartes, bouton à cheval ---- */
+.alaffiche .wrap{padding-top:10px; padding-bottom:0;}
+.af-stage{position:relative; border-radius:22px; overflow:hidden; aspect-ratio:24/7; min-height:250px; background:var(--ink-2); box-shadow:0 40px 80px -46px rgba(0,0,0,.95), 0 0 0 1px rgba(230,194,126,.22);}
+.af-slide{position:absolute; inset:0; display:block; color:var(--paper); text-decoration:none; opacity:0; visibility:hidden; transition:opacity .9s ease, visibility .9s;}
+.af-slide.on{opacity:1; visibility:visible; z-index:1;}
+.af-slide img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 22%; transform:scale(1.04); transition:transform 7s ease-out;}
+.af-slide.on img{transform:scale(1.12);}
+.af-slide::after{content:''; position:absolute; inset:0; background:linear-gradient(90deg,rgba(12,10,20,.88) 0%,rgba(12,10,20,.55) 42%,rgba(12,10,20,0) 75%), linear-gradient(0deg,rgba(12,10,20,.55),rgba(12,10,20,0) 45%);}
+.af-info{position:absolute; z-index:2; left:clamp(22px,4vw,56px); bottom:clamp(22px,4vw,48px); max-width:min(520px,80%); display:flex; flex-direction:column; gap:8px;}
+.af-tag{align-self:flex-start; font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-soft); border:1px solid rgba(230,194,126,.5); border-radius:100px; padding:5px 12px; background:rgba(12,10,20,.5); backdrop-filter:blur(6px);}
+.af-info strong{font-family:'League Spartan',sans-serif; font-weight:800; font-size:clamp(1.5rem,3.2vw,2.6rem); line-height:1.02; text-transform:uppercase; letter-spacing:.02em;}
+.af-info strong::after{content:''; display:block; width:48px; height:3px; border-radius:2px; background:var(--spectre); margin-top:10px;}
+.af-meta{color:#e4e0ee; font-size:.95rem; line-height:1.4;}
+.af-go{align-self:flex-start; margin-top:6px; font-weight:700; font-size:.88rem; padding:10px 20px; border-radius:100px; background:var(--paper); color:var(--ink); transition:transform .2s, box-shadow .2s;}
+.af-slide:hover .af-go{transform:translateY(-2px); box-shadow:0 12px 30px -10px rgba(251,198,8,.5);}
+.af-arrow{position:absolute; z-index:4; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; background:rgba(12,10,20,.6); border:1px solid rgba(255,255,255,.25); color:var(--paper); font-size:1.3rem; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px);}
+.af-arrow:hover{background:var(--paper); color:var(--ink);}
+.af-prev{left:14px;} .af-next{right:14px;}
+.af-dots{position:absolute; z-index:4; right:clamp(18px,3vw,36px); bottom:clamp(18px,3vw,30px); display:flex; gap:8px;}
+.af-dots button{width:9px; height:9px; padding:0; border-radius:50%; border:0; background:rgba(255,255,255,.4); cursor:pointer; transition:all .3s;}
+.af-dots button[aria-current="true"]{background:var(--gold); width:26px; border-radius:6px;}
+.af-arrow:focus-visible,.af-dots button:focus-visible,.af-slide:focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+@media (max-width:760px){ .af-stage{aspect-ratio:4/3.3;} .af-arrow{display:none;} .af-slide::after{background:linear-gradient(0deg,rgba(12,10,20,.92) 0%,rgba(12,10,20,.4) 55%,rgba(12,10,20,0) 80%);} .af-info{max-width:none; right:22px;} .af-dots{top:16px; bottom:auto; right:18px;} }
+.show-card .tag{position:absolute; z-index:2; top:12px; left:12px; padding:5px 11px; border-radius:100px; background:rgba(12,10,20,.72); border:1px solid rgba(230,194,126,.55); color:var(--gold-soft); backdrop-filter:blur(6px);}
+.show-card .go{align-self:flex-start; margin-top:8px; padding:8px 16px; border-radius:100px; border:1px solid rgba(255,255,255,.3); transition:background .25s,color .25s,border-color .25s;}
+.show-card:hover .go,.show-card:focus-visible .go{background:var(--paper); color:var(--ink); border-color:var(--paper);}
+.selection{padding-bottom:28px; z-index:4;}
+.show-more{display:flex; justify-content:center; margin:30px 0 -66px; position:relative; z-index:5;}
+.show-more .btn{background:var(--ink) !important; box-shadow:0 0 0 6px var(--ink), 0 14px 34px -14px rgba(0,0,0,.9);}
+.show-more .btn:hover{background:var(--paper); color:var(--ink);}
+.about .wrap{padding-top:70px;}
+@media (prefers-reduced-motion:reduce){ .af-slide,.af-slide img{transition:none;} .af-slide.on img{transform:scale(1.04);} .ap-clip img{transform:none !important;} }
 
 /* vidéo de présentation (Qui sommes-nous) + mobile : accroche moins insistante */
 .ap-clip.is-video{aspect-ratio:16/9; background:#000;}
@@ -753,6 +987,8 @@ html,body{overflow-x:clip}
 .ap-sound{position:absolute; right:12px; bottom:12px; z-index:3; border:0; border-radius:100px; padding:7px 14px; font:700 .8rem/1 'Manrope','Instrument Sans',sans-serif; cursor:pointer; background:rgba(12,10,20,.78); color:var(--paper); backdrop-filter:blur(6px); transition:transform .15s;}
 .ap-sound:hover{transform:scale(1.05);}
 .ap-clip.is-video:not(.live) .ap-sound{display:none;}
+.hero-v2 .hero-inner{grid-template-columns:minmax(0,1fr) !important;}
+.hero.hero-v2{padding-bottom:56px;}
 @media (max-width:760px){ .hero .cta-row{display:none;} .hero.hero-v2{padding-bottom:30px;} .hero-v2 .hero-text p.hero-lead{margin-bottom:0;} }
 /* haut de page : bloc texte remonté et calé à gauche (bureau) */
 @media (min-width:721px){

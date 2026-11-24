@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Espectáculos para ayuntamientos y comités de fiestas: tributos y grupos en vivo | SLP</title>
-<meta name="description" content="Espectáculos en vivo llave en mano para ayuntamientos, comités de fiestas y temporadas culturales: tributos, grupos de versiones, revista de cabaret. Un solo interlocutor, presupuesto gratuito, en toda Francia.">
+<meta name="description" content="Espectáculos en directo llave en mano para ayuntamientos, comités de fiestas y temporadas culturales: tributos, grupos de versiones, revista de cabaret. Un solo interlocutor, presupuesto gratuito, en toda Francia.">
 <meta name="keywords" content="espectáculo ayuntamiento, espectáculo comité de fiestas, animación fiesta municipal, espectáculo fiesta de pueblo, grupo tributo, tributo Céline Dion, tributo ABBA, revista de cabaret, grupo de versiones, programación 2027, programación 2028">
 <style>
   :root{
@@ -206,6 +206,12 @@
   .artist-body .discover-btn{background:var(--chaud); color:var(--noir);}
   .artist-body .discover-icon{background:var(--noir); color:var(--blanc);}
   @media (max-width:820px){ .artists{grid-template-columns:1fr;} .artist-body{padding:20px 22px 24px;} .artist-media .lg{max-height:58px;} }
+  .trib-seo p{color:rgba(247,245,240,.82); line-height:1.7; margin:0 0 22px;} .trib-seo a{color:var(--paper); border-bottom:1px solid rgba(251,198,8,.5); text-decoration:none;}
+  .faq{display:flex; flex-direction:column; gap:10px;}
+  .faq-it{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:4px 18px;}
+  .faq-it summary{cursor:pointer; list-style:none; padding:14px 0; font-weight:700; display:flex; justify-content:space-between; gap:12px;}
+  .faq-it summary::after{content:'+'; color:var(--gold); font-size:1.3rem; line-height:1;} .faq-it[open] summary::after{content:'–';}
+  .faq-it p{color:var(--muted); margin:0 0 16px; line-height:1.6;}
 </style>
 
 
@@ -227,49 +233,24 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.com/es/spectacles-mairies-comites-des-fetes">
-<style id="tributes-compact">
-/* Page Tributes : cartes plus compactes (3 par ligne sur grand écran) */
-.artists{grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:18px !important;}
-.artists>.artist:only-child,.artists>.artist:last-child:nth-child(odd){grid-column:auto !important; flex-direction:column !important;}
-.artists>.artist:only-child .artist-media,.artists>.artist:last-child:nth-child(odd) .artist-media{flex:none !important; min-height:0 !important; aspect-ratio:16/9 !important;}
-.artists>.artist:last-child:nth-child(odd) .artist-media::after{background:linear-gradient(180deg, rgba(12,10,20,0) 45%, rgba(12,10,20,.75) 85%, rgba(23,20,42,1) 100%) !important;}
-.artists>.artist:last-child:nth-child(odd) .artist-body{padding:16px 18px 20px !important;}
-.artist-media{aspect-ratio:16/9 !important;}
-.artist-body{padding:16px 18px 20px !important;}
-.artist-body h3{font-size:clamp(1.2rem,1.7vw,1.5rem) !important; margin-bottom:6px !important;}
-.artist-body p{font-size:.92rem !important; line-height:1.45 !important;}
-.artist-body .discover-row{padding-top:14px !important;}
-.artist-media .lg{left:14px !important; bottom:12px !important; max-height:46px !important;}
-.artist-media .pill{top:12px !important; left:12px !important; padding:5px 11px !important; font-size:.66rem !important;}
-@media (max-width:1000px){ .artists{grid-template-columns:repeat(2,minmax(0,1fr)) !important;} }
-@media (max-width:620px){ .artists{grid-template-columns:minmax(0,1fr) !important; gap:14px !important;} .artist-media{aspect-ratio:2/1 !important;} }
-</style>
-<style>
-  .trib-seo p{color:rgba(247,245,240,.82); line-height:1.7; margin:0 0 22px;} .trib-seo a{color:var(--paper); border-bottom:1px solid rgba(251,198,8,.5); text-decoration:none;}
-  .faq{display:flex; flex-direction:column; gap:10px;}
-  .faq-it{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:4px 18px;}
-  .faq-it summary{cursor:pointer; list-style:none; padding:14px 0; font-weight:700; display:flex; justify-content:space-between; gap:12px;}
-  .faq-it summary::after{content:'+'; color:var(--gold); font-size:1.3rem; line-height:1;} .faq-it[open] summary::after{content:'–';}
-  .faq-it p{color:var(--muted); margin:0 0 16px; line-height:1.6;}
-</style>
-<style id="tributes-compact">
-/* Page Tributes : cartes plus compactes (3 par ligne sur grand écran) */
-.artists{grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:18px !important;}
-.artists>.artist:only-child,.artists>.artist:last-child:nth-child(odd){grid-column:auto !important; flex-direction:column !important;}
-.artists>.artist:only-child .artist-media,.artists>.artist:last-child:nth-child(odd) .artist-media{flex:none !important; min-height:0 !important; aspect-ratio:16/9 !important;}
-.artists>.artist:last-child:nth-child(odd) .artist-media::after{background:linear-gradient(180deg, rgba(12,10,20,0) 45%, rgba(12,10,20,.75) 85%, rgba(23,20,42,1) 100%) !important;}
-.artists>.artist:last-child:nth-child(odd) .artist-body{padding:16px 18px 20px !important;}
-.artist-media{aspect-ratio:16/9 !important;}
-.artist-body{padding:16px 18px 20px !important;}
-.artist-body h3{font-size:clamp(1.2rem,1.7vw,1.5rem) !important; margin-bottom:6px !important;}
-.artist-body p{font-size:.92rem !important; line-height:1.45 !important;}
-.artist-body .discover-row{padding-top:14px !important;}
-.artist-media .lg{left:14px !important; bottom:12px !important; max-height:46px !important;}
-.artist-media .pill{top:12px !important; left:12px !important; padding:5px 11px !important; font-size:.66rem !important;}
-@media (max-width:1000px){ .artists{grid-template-columns:repeat(2,minmax(0,1fr)) !important;} }
-@media (max-width:620px){ .artists{grid-template-columns:minmax(0,1fr) !important; gap:14px !important;} .artist-media{aspect-ratio:2/1 !important;} }
-</style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Cómo programar un espectáculo para una fiesta municipal?", "acceptedAnswer": {"@type": "Answer", "text": "Indíquenos la fecha, el lugar y el público previsto a través del formulario de contacto, por teléfono o por WhatsApp. Le respondemos en 24 horas con una propuesta adaptada; el presupuesto detallado llega tras comprobar la fecha y sus necesidades."}}, {"@type": "Question", "name": "¿Trabajan con ayuntamientos y comités de fiestas?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. SLP ofrece espectáculos a ayuntamientos, comités de fiestas, asociaciones y centros culturales. Cada espectáculo está seleccionado y aprobado por SLP, y usted tiene un único interlocutor desde el primer contacto hasta el día del evento."}}, {"@type": "Question", "name": "¿En qué regiones actúan?", "acceptedAnswer": {"@type": "Answer", "text": "En toda Francia. Indíquenos el lugar de su evento y le confirmamos qué espectáculos están disponibles en esa fecha."}}, {"@type": "Question", "name": "¿Se pueden programar varios espectáculos para una misma temporada o velada?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Podemos componer una programación completa o un cartel con varios espectáculos (tributos, grupos de versiones, revista de cabaret) y coordinarlo todo, lo que simplifica sus gestiones."}}, {"@type": "Question", "name": "¿Con cuánta antelación hay que reservar?", "acceptedAnswer": {"@type": "Answer", "text": "Para las temporadas culturales y las fiestas de verano, conviene reservar con varios meses de antelación para garantizar la disponibilidad del artista en la fecha deseada. Ya estamos construyendo las programaciones 2027-2028."}}]}</script>
+<style id="tributes-compact">
+/* Page Tributes : cartes plus compactes (3 par ligne sur grand écran) */
+.artists{grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:18px !important;}
+.artists>.artist:only-child,.artists>.artist:last-child:nth-child(odd){grid-column:auto !important; flex-direction:column !important;}
+.artists>.artist:only-child .artist-media,.artists>.artist:last-child:nth-child(odd) .artist-media{flex:none !important; min-height:0 !important; aspect-ratio:16/9 !important;}
+.artists>.artist:last-child:nth-child(odd) .artist-media::after{background:linear-gradient(180deg, rgba(12,10,20,0) 45%, rgba(12,10,20,.75) 85%, rgba(23,20,42,1) 100%) !important;}
+.artists>.artist:last-child:nth-child(odd) .artist-body{padding:16px 18px 20px !important;}
+.artist-media{aspect-ratio:16/9 !important;}
+.artist-body{padding:16px 18px 20px !important;}
+.artist-body h3{font-size:clamp(1.2rem,1.7vw,1.5rem) !important; margin-bottom:6px !important;}
+.artist-body p{font-size:.92rem !important; line-height:1.45 !important;}
+.artist-body .discover-row{padding-top:14px !important;}
+.artist-media .lg{left:14px !important; bottom:12px !important; max-height:46px !important;}
+.artist-media .pill{top:12px !important; left:12px !important; padding:5px 11px !important; font-size:.66rem !important;}
+@media (max-width:1000px){ .artists{grid-template-columns:repeat(2,minmax(0,1fr)) !important;} }
+@media (max-width:620px){ .artists{grid-template-columns:minmax(0,1fr) !important; gap:14px !important;} .artist-media{aspect-ratio:2/1 !important;} }
+</style>
 <style id="cta-photo">
 .cta-band .wrap.tight{padding-top:64px !important;padding-bottom:64px !important}
 .cta-band h2{font-size:clamp(1.9rem,4vw,2.8rem) !important}
@@ -282,7 +263,7 @@
 <header>
   <div class="nav-wrap">
     <a href="./" class="brand">
-      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
     </a>
     <nav>
       <ul>
@@ -290,11 +271,11 @@
         <li><a href="artistes" class="current">Artistas y espectáculos</a></li>
         <li><a href="concepts">Nuestros conceptos</a></li>
         <li><a href="galerie">Galería</a></li>
-        <li><a href="contact" class="nav-cta">Contacto</a></li>
+                <li><a href="contact" class="nav-cta">Contacto</a></li>
       </ul>
     </nav>
     <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/spectacles-mairies-comites-des-fetes" hreflang="fr" lang="fr">FR</a><a href="https://soundlightprod.com/en/spectacles-mairies-comites-des-fetes" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/spectacles-mairies-comites-des-fetes" hreflang="es" lang="es" class="on" aria-current="true">ES</a><a href="https://soundlightprod.com/it/spectacles-mairies-comites-des-fetes" hreflang="it" lang="it">IT</a></div>
-    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+    <button class="burger" type="button" aria-label="Menú" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -305,7 +286,7 @@
     <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span>
   </div>
   <div class="page-hero-inner">
-    <span class="breadcrumb"><a href="artistes">← Nuestros artistas</a></span>
+    <span class="breadcrumb"><a href="artistes">← Artistas y espectáculos</a></span>
     <span class="label">Administraciones y asociaciones</span>
     <h1>Espectáculos para ayuntamientos y comités de fiestas</h1>
     <p>Tributos, grupos en vivo y revista de cabaret para sus fiestas municipales, temporadas culturales y celebraciones, seleccionados y aprobados por SLP. Un solo interlocutor, de la propuesta a la coordinación del día del evento.</p>
@@ -345,7 +326,7 @@
         <a class="artist-media" href="tribute-bee-gees" tabindex="-1" aria-hidden="true"><img class="ph" src="/stayin-alive-photo-1.jpg" srcset="/images/stayin-alive-photo-1-480.webp 480w, /images/stayin-alive-photo-1-800.webp 800w, /images/stayin-alive-photo-1-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="Tribute Bee Gees" loading="lazy" style="object-position:center 30%;"><img class="lg" src="/tribute-bee-gees-logo.png" srcset="/images/tribute-bee-gees-logo-480.webp 480w, /images/tribute-bee-gees-logo-800.webp 800w" sizes="(max-width:700px) 100vw, 1100px" alt="" loading="lazy"></a>
         <div class="artist-body">
           <h3>Tribute Bee Gees</h3>
-          <p>Cuatro décadas de éxitos de los Bee Gees, 100&nbsp;% en directo: del pop de los sesenta a la fiebre disco de «Saturday Night Fever». Más de 2.000 espectáculos desde 2004.</p>
+          <p>Cuatro décadas de éxitos de los Bee Gees, 100 % en directo: del pop de los sesenta a la fiebre disco de «Saturday Night Fever». Más de 2 000 espectáculos desde 2004.</p>
           <div class="discover-row"><a href="tribute-bee-gees" class="discover-btn" aria-label="Descubrir Tribute Bee Gees"><span>Descubrir</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>
@@ -381,7 +362,7 @@
         <a class="artist-media" href="tribute-balavoine" tabindex="-1" aria-hidden="true"><img class="ph" src="/balavoine-photo-1.jpg" alt="Tribute Balavoine" loading="lazy" style="object-position:center 35%;"></a>
         <div class="artist-body">
           <h3>Tribute Balavoine</h3>
-          <p>Las grandes etapas de la carrera de Daniel Balavoine en versiones en directo orientadas al rock, durante alrededor de 1&nbsp;h&nbsp;30.</p>
+          <p>Las grandes etapas de la carrera de Daniel Balavoine en versiones en directo orientadas al rock, durante alrededor de 1 h 30.</p>
           <div class="discover-row"><a href="tribute-balavoine" class="discover-btn" aria-label="Descubrir Tribute Balavoine"><span>Descubrir</span><span class="discover-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span></a></div>
         </div>
       </div>
@@ -409,7 +390,7 @@
     <p>Indíquenos la fecha y el lugar: le respondemos en 24 horas con una propuesta adaptada.</p>
     <div class="cta-row">
       <a href="contact" class="btn btn-primary" data-contact="devis">Pedir presupuesto</a>
-      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>+33 6 31 94 96 53</a>
+      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>06 31 94 96 53</a>
       <a href="https://wa.me/33631949653?text=Hola%2C%20les%20contacto%20desde%20la%20web%20de%20SLP%3A%20" target="_blank" rel="noopener" class="btn btn-ghost cta-wa" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
     </div>
   </div>
@@ -435,7 +416,7 @@
     <div class="footer-col">
       <h4>Contacto</h4>
       <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
-      <a href="tel:+33631949653" data-contact="appel">+33 6 31 94 96 53</a>
+      <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
     </div>
     <div class="footer-col">
       <h4>Síganos</h4>

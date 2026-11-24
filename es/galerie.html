@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galería — Sound Light Prod</title>
-<meta name="description" content="Teasers y extractos en directo de nuestros artistas: tributos, cabaret y grupos de versiones.">
+<title>Galería de vídeos y fotos: tributos, cabaret y grupos en directo | Sound Light Prod</title>
+<meta name="description" content="Teasers y extractos en directo de nuestros artistas: tributos, cabaret y grupos de versiones, tocados en vivo. Un adelanto de nuestros espectáculos.">
 <meta name="keywords" content="tribute ABBA, tribute Calogero, tribute Bee Gees, tribute Phil Collins, tribute Kool and the Gang, tribute Matmatah, tribute Balavoine, tribute Barry White, tribute Céline Dion, espectáculo tributo, banda tributo, cabaret, grupo de versiones, DJ, música en directo, concierto, festival, boda, gala, fiesta privada, sonido e iluminación, productor de espectáculos, Francia">
 <style>
   :root{
@@ -121,30 +121,9 @@
   .yt-lite:hover img{opacity:1; transform:scale(1.03);}
   .yt-play{position:absolute; left:50%; top:50%; width:68px; height:48px; margin:-24px 0 0 -34px; border-radius:14px; background:linear-gradient(90deg,#FF0953,#FC8024); box-shadow:0 8px 24px rgba(0,0,0,.45);}
   .yt-play::after{content:''; position:absolute; left:28px; top:15px; border-style:solid; border-width:9px 0 9px 15px; border-color:transparent transparent transparent #fff;}
-  .video-grid.all{grid-template-columns:repeat(3,1fr);}
-  @media (max-width:960px){ .video-grid.all{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:600px){ .video-grid.all{grid-template-columns:1fr;} }
+  .video-grid.all{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));}
   .video-card .caption b{display:block; font-family:'League Spartan',sans-serif; font-weight:800; font-size:1rem;}
   .video-card .caption span{color:var(--muted); font-weight:500; font-size:.84rem;}
-.photos{padding-top:0}
-.photos .ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:14px;margin:0;padding:0;list-style:none}
-.photos .ph-card{display:block;width:100%;padding:0;border:1px solid var(--line,rgba(255,255,255,.18));border-radius:16px;overflow:hidden;background:#0c0a14;color:inherit;font:inherit;text-align:left;cursor:pointer;position:relative}
-.photos .ph-card img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;object-position:50% 15%;transition:transform .35s}
-.photos .ph-card:hover img{transform:scale(1.04)}
-.photos .ph-card:hover{border-color:#fbc608}
-.photos .ph-meta{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;padding:34px 14px 12px;background:linear-gradient(transparent,rgba(8,6,16,.88))}
-.photos .ph-name{font-weight:700;font-size:1.02rem}.photos .ph-count{font-size:.8rem;opacity:.8;white-space:nowrap}
-.photos .ph-card:focus-visible,.lb button:focus-visible,.lb a:focus-visible{outline:3px solid #fbc608;outline-offset:3px}
-.lb{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(6,4,12,.97);padding:16px}
-.lb[hidden]{display:none}
-.lb-fig{margin:0;max-width:min(1100px,86vw);display:flex;flex-direction:column;align-items:center;gap:10px}
-.lb-fig img{max-width:100%;max-height:78vh;object-fit:contain;border-radius:10px}
-.lb-fig figcaption{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;justify-content:center;font-size:.95rem}
-.lb-fig figcaption span{opacity:.7}.lb-fig figcaption a{color:#fbc608;font-weight:700}
-.lb-x,.lb-nav{background:rgba(255,255,255,.1);border:0;color:#fff;border-radius:50%;width:48px;height:48px;font-size:1.8rem;line-height:1;cursor:pointer}
-.lb-x{position:absolute;top:14px;right:14px}.lb-nav:hover,.lb-x:hover{background:rgba(255,255,255,.22)}
-@media (max-width:640px){.lb{gap:4px;padding:8px}.lb-nav{width:40px;height:40px;position:absolute;bottom:18px}.lb-prev{left:16px}.lb-next{right:16px}.lb-fig{max-width:100%}.lb-fig img{max-height:68vh}}
-html.lb-open{overflow:hidden}
 
 .gal-filters{display:flex;flex-wrap:wrap;gap:10px;padding:22px clamp(24px,3.5vw,72px) 0;margin:0;list-style:none}
 .gal-filters button{min-height:44px;padding:0 20px;border-radius:100px;background:transparent;color:var(--paper,#f7f5f0);border:1.5px solid rgba(255,255,255,.25);font:inherit;font-weight:700;cursor:pointer}
@@ -176,8 +155,29 @@ section.gal-videos .wrap{padding-bottom:36px!important}
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.com/es/galerie">
+<style id="photos-css">
+.photos{padding-top:0}
+.photos .ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:14px;margin:0;padding:0;list-style:none}
+.photos .ph-card{display:block;width:100%;padding:0;border:1px solid var(--line,rgba(255,255,255,.18));border-radius:16px;overflow:hidden;background:#0c0a14;color:inherit;font:inherit;text-align:left;cursor:pointer;position:relative}
+.photos .ph-card img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;object-position:50% 15%;transition:transform .35s}
+.photos .ph-card:hover img{transform:scale(1.04)}
+.photos .ph-card:hover{border-color:#fbc608}
+.photos .ph-meta{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;padding:34px 14px 12px;background:linear-gradient(transparent,rgba(8,6,16,.88))}
+.photos .ph-name{font-weight:700;font-size:1.02rem}.photos .ph-count{font-size:.8rem;opacity:.8;white-space:nowrap}
+.photos .ph-card:focus-visible,.lb button:focus-visible,.lb a:focus-visible{outline:3px solid #fbc608;outline-offset:3px}
+.lb{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(6,4,12,.97);padding:16px}
+.lb[hidden]{display:none}
+.lb-fig{margin:0;max-width:min(1100px,86vw);display:flex;flex-direction:column;align-items:center;gap:10px}
+.lb-fig img{max-width:100%;max-height:78vh;object-fit:contain;border-radius:10px}
+.lb-fig figcaption{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;justify-content:center;font-size:.95rem}
+.lb-fig figcaption span{opacity:.7}.lb-fig figcaption a{color:#fbc608;font-weight:700}
+.lb-x,.lb-nav{background:rgba(255,255,255,.1);border:0;color:#fff;border-radius:50%;width:48px;height:48px;font-size:1.8rem;line-height:1;cursor:pointer}
+.lb-x{position:absolute;top:14px;right:14px}.lb-nav:hover,.lb-x:hover{background:rgba(255,255,255,.22)}
+@media (max-width:640px){.lb{gap:4px;padding:8px}.lb-nav{width:40px;height:40px;position:absolute;bottom:18px}.lb-prev{left:16px}.lb-next{right:16px}.lb-fig{max-width:100%}.lb-fig img{max-height:68vh}}
+html.lb-open{overflow:hidden}
+</style>
 <style id="cta-photo">
-.cta-band{background-image:linear-gradient(rgba(10,8,20,.80),rgba(10,8,20,.90)),url(/images/abba-photo-1-1200.webp) !important;background-size:cover !important;background-position:center !important}
+.cta-band{background-image:linear-gradient(rgba(10,8,20,.80),rgba(10,8,20,.90)),url(/images/kool-photo-1-1200.webp) !important;background-size:cover !important;background-position:50% 20% !important}
 .cta-band .wrap.tight{padding-top:64px !important;padding-bottom:64px !important}
 .cta-band h2{font-size:clamp(1.9rem,4vw,2.8rem) !important}
 </style>
@@ -189,7 +189,7 @@ section.gal-videos .wrap{padding-bottom:36px!important}
 <header>
   <div class="nav-wrap">
     <a href="./" class="brand">
-      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
     </a>
     <nav>
       <ul>
@@ -197,11 +197,11 @@ section.gal-videos .wrap{padding-bottom:36px!important}
         <li><a href="artistes">Artistas y espectáculos</a></li>
         <li><a href="concepts">Nuestros conceptos</a></li>
         <li><a href="galerie" class="current">Galería</a></li>
-        <li><a href="contact" class="nav-cta">Contacto</a></li>
+                <li><a href="contact" class="nav-cta">Contacto</a></li>
       </ul>
     </nav>
     <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/galerie" hreflang="fr" lang="fr">FR</a><a href="https://soundlightprod.com/en/galerie" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/galerie" hreflang="es" lang="es" class="on" aria-current="true">ES</a><a href="https://soundlightprod.com/it/galerie" hreflang="it" lang="it">IT</a></div>
-    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+    <button class="burger" type="button" aria-label="Menú" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -213,7 +213,7 @@ section.gal-videos .wrap{padding-bottom:36px!important}
   </div>
 </section>
 
-<ul class="gal-filters" aria-label="Filtrar por categoría"><li><button type="button" data-f="all" aria-pressed="true">Todos</button></li><li><button type="button" data-f="t" aria-pressed="false">Tributos</button></li><li><button type="button" data-f="c" aria-pressed="false">Cabaret</button></li><li><button type="button" data-f="l" aria-pressed="false">Grupos en directo</button></li></ul>
+<ul class="gal-filters" aria-label="Filtrar por universo"><li><button type="button" data-f="all" aria-pressed="true">Todos</button></li><li><button type="button" data-f="t" aria-pressed="false">Tributos</button></li><li><button type="button" data-f="c" aria-pressed="false">Cabaret</button></li><li><button type="button" data-f="l" aria-pressed="false">Grupos en directo</button></li></ul>
 <section class="gal-videos">
   <div class="wrap">
     <div class="section-head">
@@ -223,83 +223,83 @@ section.gal-videos .wrap{padding-bottom:36px!important}
 
     <div class="video-grid all">
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="mSQPCFXrCRE" data-title="Tribute Céline Dion — En directo" aria-label="Ver el vídeo : Tribute Céline Dion — En directo"><img src="https://i.ytimg.com/vi/mSQPCFXrCRE/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="mSQPCFXrCRE" data-title="Tribute Céline Dion — En directo" aria-label="Reproducir el vídeo: Tribute Céline Dion — En directo"><img src="https://i.ytimg.com/vi/mSQPCFXrCRE/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Céline Dion</b><span>En directo</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="zY5Zkr5o0Ek" data-title="Tribute Calogero — Prendre Racine" aria-label="Ver el vídeo : Tribute Calogero — Prendre Racine"><img src="https://i.ytimg.com/vi/zY5Zkr5o0Ek/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="zY5Zkr5o0Ek" data-title="Tribute Calogero — Prendre Racine" aria-label="Reproducir el vídeo: Tribute Calogero — Prendre Racine"><img src="https://i.ytimg.com/vi/zY5Zkr5o0Ek/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Calogero</b><span>Prendre Racine</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="oxmoT3FtSfs" data-title="Tribute Calogero — Yalla" aria-label="Ver el vídeo : Tribute Calogero — Yalla"><img src="https://i.ytimg.com/vi/oxmoT3FtSfs/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="oxmoT3FtSfs" data-title="Tribute Calogero — Yalla" aria-label="Reproducir el vídeo: Tribute Calogero — Yalla"><img src="https://i.ytimg.com/vi/oxmoT3FtSfs/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Calogero</b><span>Yalla</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="anUMw9X4yO0" data-title="Tribute Bee Gees — En directo" aria-label="Ver el vídeo : Tribute Bee Gees — En directo"><img src="https://i.ytimg.com/vi/anUMw9X4yO0/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="anUMw9X4yO0" data-title="Tribute Bee Gees — En directo" aria-label="Reproducir el vídeo: Tribute Bee Gees — En directo"><img src="https://i.ytimg.com/vi/anUMw9X4yO0/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Bee Gees</b><span>En directo</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="odv7OehzC1A" data-title="Tribute ABBA — Teaser" aria-label="Ver el vídeo : Tribute ABBA — Teaser"><img src="https://i.ytimg.com/vi/odv7OehzC1A/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="odv7OehzC1A" data-title="Tribute ABBA — Teaser" aria-label="Reproducir el vídeo: Tribute ABBA — Teaser"><img src="https://i.ytimg.com/vi/odv7OehzC1A/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute ABBA</b><span>Teaser</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="S-G_SznvWQg" data-title="Tribute ABBA — Teaser 2" aria-label="Ver el vídeo : Tribute ABBA — Teaser 2"><img src="https://i.ytimg.com/vi/S-G_SznvWQg/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="S-G_SznvWQg" data-title="Tribute ABBA — Teaser 2" aria-label="Reproducir el vídeo: Tribute ABBA — Teaser 2"><img src="https://i.ytimg.com/vi/S-G_SznvWQg/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute ABBA</b><span>Teaser 2</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="kggHqV1v5wo" data-title="Tribute Kool &amp; the Gang — En directo" aria-label="Ver el vídeo : Tribute Kool &amp; the Gang — En directo"><img src="https://i.ytimg.com/vi/kggHqV1v5wo/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="kggHqV1v5wo" data-title="Tribute Kool &amp; the Gang — En directo" aria-label="Reproducir el vídeo: Tribute Kool &amp; the Gang — En directo"><img src="https://i.ytimg.com/vi/kggHqV1v5wo/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Kool &amp; the Gang</b><span>En directo</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="go8NqfNCEbE" data-title="Tribute Kool &amp; the Gang — Extractos de conciertos" aria-label="Ver el vídeo : Tribute Kool &amp; the Gang — Extractos de conciertos"><img src="https://i.ytimg.com/vi/go8NqfNCEbE/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="go8NqfNCEbE" data-title="Tribute Kool &amp; the Gang — Extractos de conciertos" aria-label="Reproducir el vídeo: Tribute Kool &amp; the Gang — Extractos de conciertos"><img src="https://i.ytimg.com/vi/go8NqfNCEbE/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Kool &amp; the Gang</b><span>Extractos de conciertos</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="H4eHomgH61s" data-title="Tribute Matmatah — En directo" aria-label="Ver el vídeo : Tribute Matmatah — En directo"><img src="https://i.ytimg.com/vi/H4eHomgH61s/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="H4eHomgH61s" data-title="Tribute Matmatah — En directo" aria-label="Reproducir el vídeo: Tribute Matmatah — En directo"><img src="https://i.ytimg.com/vi/H4eHomgH61s/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Matmatah</b><span>En directo</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="O9SPIU-30qQ" data-title="Tribute Phil Collins — En directo" aria-label="Ver el vídeo : Tribute Phil Collins — En directo"><img src="https://i.ytimg.com/vi/O9SPIU-30qQ/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="O9SPIU-30qQ" data-title="Tribute Phil Collins — En directo" aria-label="Reproducir el vídeo: Tribute Phil Collins — En directo"><img src="https://i.ytimg.com/vi/O9SPIU-30qQ/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Phil Collins</b><span>En directo</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="qOIJgU8qnwI" data-title="Tribute Balavoine — En directo" aria-label="Ver el vídeo : Tribute Balavoine — En directo"><img src="https://i.ytimg.com/vi/qOIJgU8qnwI/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="qOIJgU8qnwI" data-title="Tribute Balavoine — En directo" aria-label="Reproducir el vídeo: Tribute Balavoine — En directo"><img src="https://i.ytimg.com/vi/qOIJgU8qnwI/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Balavoine</b><span>En directo</span></div>
         </div>
         <div class="video-card" data-g="t">
-          <div class="embed"><button type="button" class="yt-lite" data-id="Dq1JrwHku9o" data-title="Tribute Barry White — En directo" aria-label="Ver el vídeo : Tribute Barry White — En directo"><img src="https://i.ytimg.com/vi/Dq1JrwHku9o/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="Dq1JrwHku9o" data-title="Tribute Barry White — En directo" aria-label="Reproducir el vídeo: Tribute Barry White — En directo"><img src="https://i.ytimg.com/vi/Dq1JrwHku9o/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Tribute Barry White</b><span>En directo</span></div>
         </div>
         <div class="video-card" data-g="c">
-          <div class="embed"><button type="button" class="yt-lite" data-id="p_2l2p1K6k4" data-title="Panache — Cabaret itinerante" aria-label="Ver el vídeo : Panache — Cabaret itinerante"><img src="https://i.ytimg.com/vi/p_2l2p1K6k4/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="p_2l2p1K6k4" data-title="Panache — Cabaret itinerante" aria-label="Reproducir el vídeo: Panache — Cabaret itinerante"><img src="https://i.ytimg.com/vi/p_2l2p1K6k4/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Panache</b><span>Cabaret itinerante</span></div>
         </div>
         <div class="video-card" data-g="c">
-          <div class="embed"><button type="button" class="yt-lite" data-id="vfyqjnU4XhU" data-title="Bim Bam Boom — Revista 2027" aria-label="Ver el vídeo : Bim Bam Boom — Revista 2027"><img src="https://i.ytimg.com/vi/vfyqjnU4XhU/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="vfyqjnU4XhU" data-title="Bim Bam Boom — Revista 2027" aria-label="Reproducir el vídeo: Bim Bam Boom — Revista 2027"><img src="https://i.ytimg.com/vi/vfyqjnU4XhU/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Bim Bam Boom</b><span>Revista 2027</span></div>
         </div>
         <div class="video-card" data-g="l">
-          <div class="embed"><button type="button" class="yt-lite" data-id="QyU9YqfbgFM" data-title="Alchimie — Teaser versiones pop rock" aria-label="Ver el vídeo : Alchimie — Teaser versiones pop rock"><img src="https://i.ytimg.com/vi/QyU9YqfbgFM/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="QyU9YqfbgFM" data-title="Alchimie — Teaser de versiones pop rock" aria-label="Reproducir el vídeo: Alchimie — Teaser de versiones pop rock"><img src="https://i.ytimg.com/vi/QyU9YqfbgFM/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Alchimie</b><span>Teaser versiones pop rock</span></div>
         </div>
         <div class="video-card" data-g="l">
-          <div class="embed"><button type="button" class="yt-lite" data-id="h1sqE5CJxX4" data-title="NooN Coverband — Extracto de actuación 3" aria-label="Ver el vídeo : NooN Coverband — Extracto de actuación 3"><img src="https://i.ytimg.com/vi/h1sqE5CJxX4/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="h1sqE5CJxX4" data-title="NooN Coverband — Extracto de actuación 3" aria-label="Reproducir el vídeo: NooN Coverband — Extracto de actuación 3"><img src="https://i.ytimg.com/vi/h1sqE5CJxX4/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>NooN Coverband</b><span>Extracto de actuación 3</span></div>
         </div>
         <div class="video-card" data-g="l">
-          <div class="embed"><button type="button" class="yt-lite" data-id="lz2G_UvzbSM" data-title="NooN Coverband — Extracto de actuación 2" aria-label="Ver el vídeo : NooN Coverband — Extracto de actuación 2"><img src="https://i.ytimg.com/vi/lz2G_UvzbSM/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="lz2G_UvzbSM" data-title="NooN Coverband — Extracto de actuación 2" aria-label="Reproducir el vídeo: NooN Coverband — Extracto de actuación 2"><img src="https://i.ytimg.com/vi/lz2G_UvzbSM/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>NooN Coverband</b><span>Extracto de actuación 2</span></div>
         </div>
         <div class="video-card" data-g="l">
-          <div class="embed"><button type="button" class="yt-lite" data-id="AxXP9Pd6tFs" data-title="NooN Coverband — Extracto de actuación 1" aria-label="Ver el vídeo : NooN Coverband — Extracto de actuación 1"><img src="https://i.ytimg.com/vi/AxXP9Pd6tFs/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="AxXP9Pd6tFs" data-title="NooN Coverband — Extracto de actuación 1" aria-label="Reproducir el vídeo: NooN Coverband — Extracto de actuación 1"><img src="https://i.ytimg.com/vi/AxXP9Pd6tFs/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>NooN Coverband</b><span>Extracto de actuación 1</span></div>
         </div>
         <div class="video-card" data-g="l">
-          <div class="embed"><button type="button" class="yt-lite" data-id="yX4MbyWqZc0" data-title="Cache Candy — Wake Me Up — dúo pop-rock electro" aria-label="Ver el vídeo : Cache Candy — Wake Me Up — dúo pop-rock electro"><img src="https://i.ytimg.com/vi/yX4MbyWqZc0/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="yX4MbyWqZc0" data-title="Cache Candy — Wake Me Up — dúo de pop-rock electrónico" aria-label="Reproducir el vídeo: Cache Candy — Wake Me Up — dúo de pop-rock electrónico"><img src="https://i.ytimg.com/vi/yX4MbyWqZc0/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>Cache Candy</b><span>Wake Me Up — dúo pop-rock electro</span></div>
         </div>
         <div class="video-card" data-g="l">
-          <div class="embed"><button type="button" class="yt-lite" data-id="pCBTgx0PCPQ" data-title="The Fine Allies — Extracto de concierto" aria-label="Ver el vídeo : The Fine Allies — Extracto de concierto"><img src="https://i.ytimg.com/vi/pCBTgx0PCPQ/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
+          <div class="embed"><button type="button" class="yt-lite" data-id="pCBTgx0PCPQ" data-title="The Fine Allies — Extracto de concierto" aria-label="Reproducir el vídeo: The Fine Allies — Extracto de concierto"><img src="https://i.ytimg.com/vi/pCBTgx0PCPQ/hqdefault.jpg" alt="" loading="lazy"><span class="yt-play" aria-hidden="true"></span></button></div>
           <div class="caption"><b>The Fine Allies</b><span>Extracto de concierto</span></div>
         </div>
     </div>
@@ -335,10 +335,10 @@ section.gal-videos .wrap{padding-bottom:36px!important}
   </div>
 </section>
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Fotos del artista" hidden>
-  <button class="lb-x" type="button" aria-label="Fermer">&times;</button>
+  <button class="lb-x" type="button" aria-label="Cerrar">&times;</button>
   <button class="lb-nav lb-prev" type="button" aria-label="Foto anterior">&lsaquo;</button>
   <figure class="lb-fig"><img id="lbImg" alt="">
-    <figcaption><strong id="lbName"></strong><span id="lbPos"></span><a id="lbLink" href="#">Ver el espectáculo &rarr;</a></figcaption></figure>
+    <figcaption><strong id="lbName"></strong><span id="lbPos"></span><a id="lbLink" href="#">Ver el espectáculo →</a></figcaption></figure>
   <button class="lb-nav lb-next" type="button" aria-label="Foto siguiente">&rsaquo;</button>
 </div>
 <script id="photos-js">(function(){
@@ -349,7 +349,7 @@ function ev(page){try{if(localStorage.getItem('slp_admin_token')||localStorage.g
 var sec=document.getElementById('photos');
 if(sec&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){ev('galerie');io.disconnect()}},{threshold:.25});io.observe(sec)}
 var img=document.getElementById('lbImg'),nm=document.getElementById('lbName'),pos=document.getElementById('lbPos'),lk=document.getElementById('lbLink'),cur=null,i=0,from=null,x0=null;
-function show(){var a=D[cur],p=a.photos;img.src=p[i][1];img.alt=a.name+', foto '+(i+1);nm.textContent=a.name;pos.textContent=(i+1)+' / '+p.length;lk.href=a.page;
+function show(){var a=D[cur],p=a.photos;img.src=p[i][1];img.alt=a.name+', photo '+(i+1);nm.textContent=a.name;pos.textContent=(i+1)+' / '+p.length;lk.href=a.page;
  [i+1,i-1].forEach(function(j){var q=p[(j+p.length)%p.length];if(q)(new Image()).src=q[1]})}
 function open(k,btn){cur=k;i=0;from=btn;ev('galerie:'+k);show();lb.hidden=false;document.documentElement.classList.add('lb-open');lb.querySelector('.lb-x').focus()}
 function close(){lb.hidden=true;document.documentElement.classList.remove('lb-open');if(from)from.focus()}
@@ -370,7 +370,7 @@ lb.addEventListener('touchend',function(e){if(x0==null)return;var dx=e.changedTo
     <p>Presupuesto gratuito y sin compromiso.</p>
     <div class="cta-row">
       <a href="contact" class="btn btn-primary" data-contact="devis">Pedir presupuesto</a>
-      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>+33 6 31 94 96 53</a>
+      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>06 31 94 96 53</a>
       <a href="https://wa.me/33631949653?text=Hola%2C%20les%20contacto%20desde%20la%20web%20de%20SLP%3A%20" target="_blank" rel="noopener" class="btn btn-ghost cta-wa" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
     </div>
   </div>
@@ -395,7 +395,7 @@ lb.addEventListener('touchend',function(e){if(x0==null)return;var dx=e.changedTo
     <div class="footer-col">
       <h4>Contacto</h4>
       <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
-      <a href="tel:+33631949653" data-contact="appel">+33 6 31 94 96 53</a>
+      <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
     </div>
     <div class="footer-col">
       <h4>Síganos</h4>
@@ -440,6 +440,26 @@ document.addEventListener('click',function(e){var b=e.target.closest('.yt-lite')
 })();
 </script>
 <!-- cta-contact:end -->
+<script id="photos-js">(function(){
+var D={"abba":{"name":"Tribute ABBA","page":"tribute-abba","photos":[["/images/abba-photo-1-480.webp","/images/abba-photo-1-1200.webp"],["/images/abba-photo-2-480.webp","/images/abba-photo-2-1200.webp"],["/images/abba-photo-3-480.webp","/images/abba-photo-3-1200.webp"],["/images/abba-photo-4-480.webp","/images/abba-photo-4-1200.webp"],["/images/abba-photo-5-480.webp","/images/abba-photo-5-1200.webp"],["/images/abba-photo-6-480.webp","/images/abba-photo-6-1200.webp"],["/images/abba-photo-7-480.webp","/images/abba-photo-7-800.webp"],["/images/abba-photo-8-480.webp","/images/abba-photo-8-1200.webp"]]},"balavoine":{"name":"Tribute Balavoine","page":"tribute-balavoine","photos":[["/images/balavoine-photo-1-480.webp","/images/balavoine-photo-1-1200.webp"],["/images/balavoine-photo-2-480.webp","/images/balavoine-photo-2-1200.webp"],["/images/balavoine-photo-3-480.webp","/images/balavoine-photo-3-1200.webp"],["/images/balavoine-photo-4-480.webp","/images/balavoine-photo-4-1200.webp"],["/images/balavoine-photo-5-480.webp","/images/balavoine-photo-5-1200.webp"],["/images/balavoine-photo-6-480.webp","/images/balavoine-photo-6-1200.webp"],["/images/balavoine-photo-7-480.webp","/images/balavoine-photo-7-1200.webp"],["/images/balavoine-photo-8-480.webp","/images/balavoine-photo-8-1200.webp"],["/images/balavoine-photo-9-480.webp","/images/balavoine-photo-9-1200.webp"],["/images/balavoine-photo-10-480.webp","/images/balavoine-photo-10-1200.webp"],["/images/balavoine-photo-11-480.webp","/images/balavoine-photo-11-1200.webp"],["/images/balavoine-photo-12-480.webp","/images/balavoine-photo-12-1200.webp"],["/images/balavoine-photo-13-480.webp","/images/balavoine-photo-13-1200.webp"]]},"barry-white":{"name":"Tribute Barry White","page":"tribute-barry-white","photos":[["/images/barry-white-photo-1-480.webp","/images/barry-white-photo-1-1200.webp"],["/images/barry-white-photo-2-480.webp","/images/barry-white-photo-2-1200.webp"],["/images/barry-white-photo-3-480.webp","/images/barry-white-photo-3-800.webp"],["/images/barry-white-photo-4-480.webp","/images/barry-white-photo-4-1200.webp"],["/images/barry-white-photo-5-480.webp","/images/barry-white-photo-5-800.webp"],["/images/barry-white-photo-6-480.webp","/images/barry-white-photo-6-1200.webp"],["/images/barry-white-photo-7-480.webp","/images/barry-white-photo-7-1200.webp"],["/images/barry-white-photo-8-480.webp","/images/barry-white-photo-8-800.webp"],["/images/barry-white-photo-9-480.webp","/images/barry-white-photo-9-800.webp"],["/images/barry-white-photo-10-480.webp","/images/barry-white-photo-10-1200.webp"],["/images/barry-white-photo-11-480.webp","/images/barry-white-photo-11-800.webp"]]},"stayin-alive":{"name":"Tribute Bee Gees","page":"tribute-bee-gees","photos":[["/images/stayin-alive-photo-1-480.webp","/images/stayin-alive-photo-1-1200.webp"],["/images/stayin-alive-photo-2-480.webp","/images/stayin-alive-photo-2-1200.webp"],["/images/stayin-alive-photo-3-480.webp","/images/stayin-alive-photo-3-1200.webp"],["/images/stayin-alive-photo-4-480.webp","/images/stayin-alive-photo-4-1200.webp"],["/images/stayin-alive-photo-5-480.webp","/images/stayin-alive-photo-5-1200.webp"],["/images/stayin-alive-photo-6-480.webp","/images/stayin-alive-photo-6-1200.webp"],["/images/stayin-alive-photo-7-480.webp","/images/stayin-alive-photo-7-1200.webp"],["/images/stayin-alive-photo-8-480.webp","/images/stayin-alive-photo-8-1200.webp"],["/images/stayin-alive-photo-9-480.webp","/images/stayin-alive-photo-9-800.webp"],["/images/stayin-alive-photo-10-480.webp","/images/stayin-alive-photo-10-800.webp"],["/images/stayin-alive-photo-11-480.webp","/images/stayin-alive-photo-11-1200.webp"],["/images/stayin-alive-photo-12-480.webp","/images/stayin-alive-photo-12-1200.webp"],["/images/stayin-alive-photo-13-480.webp","/images/stayin-alive-photo-13-1200.webp"],["/images/stayin-alive-photo-14-480.webp","/images/stayin-alive-photo-14-1200.webp"],["/images/stayin-alive-photo-15-480.webp","/images/stayin-alive-photo-15-1200.webp"],["/images/stayin-alive-photo-16-480.webp","/images/stayin-alive-photo-16-1200.webp"],["/images/stayin-alive-photo-17-480.webp","/images/stayin-alive-photo-17-1200.webp"]]},"calo":{"name":"Tribute Calogero","page":"tribute-calogero","photos":[["/images/calo-photo-1-480.webp","/images/calo-photo-1-1200.webp"],["/images/calo-photo-2-480.webp","/images/calo-photo-2-1200.webp"],["/images/calo-photo-3-480.webp","/images/calo-photo-3-1200.webp"],["/images/calo-photo-4-480.webp","/images/calo-photo-4-1200.webp"],["/images/calo-photo-5-480.webp","/images/calo-photo-5-1200.webp"],["/images/calo-photo-6-480.webp","/images/calo-photo-6-800.webp"],["/images/calo-photo-7-480.webp","/images/calo-photo-7-1200.webp"],["/images/calo-photo-8-480.webp","/images/calo-photo-8-800.webp"],["/images/calo-photo-9-480.webp","/images/calo-photo-9-1200.webp"],["/images/calo-photo-10-480.webp","/images/calo-photo-10-1200.webp"],["/images/calo-photo-11-480.webp","/images/calo-photo-11-800.webp"],["/images/calo-photo-12-480.webp","/images/calo-photo-12-1200.webp"]]},"celine-dion":{"name":"Tribute Céline Dion","page":"tribute-celine-dion","photos":[["/images/celine-new-B-480.webp","/images/celine-new-B-1200.webp"],["/images/celine-new-C-480.webp","/images/celine-new-C-1200.webp"],["/images/celine-new-D-480.webp","/images/celine-new-D-1200.webp"],["/images/celine-new-A-480.webp","/images/celine-new-A-1200.webp"],["/images/celine-new-F-480.webp","/images/celine-new-F-1200.webp"],["/images/celine-new-E-480.webp","/images/celine-new-E-1200.webp"],["/images/celine-new-G-480.webp","/images/celine-new-G-1200.webp"],["/images/celine-new-H-480.webp","/images/celine-new-H-1200.webp"],["/images/celine-new-I-480.webp","/images/celine-new-I-1200.webp"],["/images/celine-new-J-480.webp","/images/celine-new-J-480.webp"]]},"kool":{"name":"Tribute Kool & the Gang","page":"tribute-kool-and-the-gang","photos":[["/images/kool-photo-1-480.webp","/images/kool-photo-1-1200.webp"],["/images/kool-photo-2-480.webp","/images/kool-photo-2-1200.webp"],["/images/kool-photo-3-480.webp","/images/kool-photo-3-1200.webp"],["/images/kool-photo-4-480.webp","/images/kool-photo-4-1200.webp"],["/images/kool-photo-5-480.webp","/images/kool-photo-5-1200.webp"],["/images/kool-photo-6-480.webp","/images/kool-photo-6-1200.webp"],["/images/kool-photo-7-480.webp","/images/kool-photo-7-1200.webp"],["/images/kool-photo-8-480.webp","/images/kool-photo-8-1200.webp"],["/images/kool-photo-9-480.webp","/images/kool-photo-9-1200.webp"],["/images/kool-photo-10-480.webp","/images/kool-photo-10-1200.webp"],["/images/kool-photo-11-480.webp","/images/kool-photo-11-1200.webp"],["/images/kool-photo-12-480.webp","/images/kool-photo-12-1200.webp"]]},"matmatah":{"name":"Tribute Matmatah","page":"tribute-matmatah","photos":[["/images/matmatah-photo-1-480.webp","/images/matmatah-photo-1-1200.webp"],["/images/matmatah-photo-2-480.webp","/images/matmatah-photo-2-1200.webp"],["/images/matmatah-photo-3-480.webp","/images/matmatah-photo-3-1200.webp"],["/images/matmatah-photo-4-480.webp","/images/matmatah-photo-4-1200.webp"],["/images/matmatah-photo-5-480.webp","/images/matmatah-photo-5-1200.webp"],["/images/matmatah-photo-6-480.webp","/images/matmatah-photo-6-1200.webp"],["/images/matmatah-photo-7-480.webp","/images/matmatah-photo-7-1200.webp"],["/images/matmatah-photo-8-480.webp","/images/matmatah-photo-8-1200.webp"],["/images/matmatah-photo-9-480.webp","/images/matmatah-photo-9-1200.webp"]]},"phil-collins":{"name":"Tribute Phil Collins","page":"tribute-phil-collins","photos":[["/images/phil-collins-photo-1-480.webp","/images/phil-collins-photo-1-1200.webp"],["/images/phil-collins-photo-2-480.webp","/images/phil-collins-photo-2-1200.webp"],["/images/phil-collins-photo-3-480.webp","/images/phil-collins-photo-3-1200.webp"],["/images/phil-collins-photo-4-480.webp","/images/phil-collins-photo-4-1200.webp"],["/images/phil-collins-photo-5-480.webp","/images/phil-collins-photo-5-1200.webp"],["/images/phil-collins-photo-6-480.webp","/images/phil-collins-photo-6-1200.webp"],["/images/phil-collins-photo-7-480.webp","/images/phil-collins-photo-7-1200.webp"],["/images/phil-collins-photo-8-480.webp","/images/phil-collins-photo-8-1200.webp"],["/images/phil-collins-photo-9-480.webp","/images/phil-collins-photo-9-1200.webp"],["/images/phil-collins-photo-10-480.webp","/images/phil-collins-photo-10-1200.webp"],["/images/phil-collins-photo-11-480.webp","/images/phil-collins-photo-11-1200.webp"],["/images/phil-collins-photo-12-480.webp","/images/phil-collins-photo-12-1200.webp"],["/images/phil-collins-photo-13-480.webp","/images/phil-collins-photo-13-1200.webp"],["/images/phil-collins-photo-14-480.webp","/images/phil-collins-photo-14-1200.webp"],["/images/phil-collins-photo-15-480.webp","/images/phil-collins-photo-15-1200.webp"],["/images/phil-collins-photo-16-480.webp","/images/phil-collins-photo-16-1200.webp"],["/images/phil-collins-photo-17-480.webp","/images/phil-collins-photo-17-1200.webp"],["/images/phil-collins-photo-18-480.webp","/images/phil-collins-photo-18-1200.webp"]]},"panache":{"name":"Panache","page":"panache","photos":[["/images/panache-photo-1-480.webp","/images/panache-photo-1-1200.webp"],["/images/panache-photo-2-480.webp","/images/panache-photo-2-1200.webp"],["/images/panache-photo-3-480.webp","/images/panache-photo-3-1200.webp"],["/images/panache-photo-4-480.webp","/images/panache-photo-4-800.webp"],["/images/panache-photo-5-480.webp","/images/panache-photo-5-800.webp"],["/images/panache-photo-6-480.webp","/images/panache-photo-6-1200.webp"]]},"bim-bam-boom":{"name":"Bim Bam Boom","page":"bim-bam-boom","photos":[["/images/bim-bam-boom-photo-1-480.webp","/images/bim-bam-boom-photo-1-1200.webp"],["/images/bim-bam-boom-photo-2-480.webp","/images/bim-bam-boom-photo-2-480.webp"],["/images/bim-bam-boom-photo-3-480.webp","/images/bim-bam-boom-photo-3-800.webp"],["/images/bim-bam-boom-photo-4-480.webp","/images/bim-bam-boom-photo-4-800.webp"],["/images/bim-bam-boom-photo-5-480.webp","/images/bim-bam-boom-photo-5-1200.webp"]]},"alchimie":{"name":"Alchimie","page":"alchimie","photos":[["/images/alchimie-photo-1-480.webp","/images/alchimie-photo-1-800.webp"],["/images/alchimie-photo-3-480.webp","/images/alchimie-photo-3-1200.webp"],["/images/alchimie-photo-4-480.webp","/images/alchimie-photo-4-712.webp"],["/images/alchimie-photo-5-480.webp","/images/alchimie-photo-5-800.webp"],["/images/alchimie-photo-6-480.webp","/images/alchimie-photo-6-765.webp"],["/images/alchimie-photo-7-480.webp","/images/alchimie-photo-7-800.webp"]]},"fine-allies":{"name":"The Fine Allies","page":"the-fine-allies","photos":[["/images/fine-allies-photo-1-480.webp","/images/fine-allies-photo-1-1200.webp"],["/images/fine-allies-photo-2-480.webp","/images/fine-allies-photo-2-800.webp"],["/images/fine-allies-photo-3-480.webp","/images/fine-allies-photo-3-800.webp"],["/images/fine-allies-photo-4-480.webp","/images/fine-allies-photo-4-1200.webp"]]},"noon":{"name":"NooN Coverband","page":"noon-coverband","photos":[["/images/noon-photo-1-480.webp","/images/noon-photo-1-480.webp"],["/images/noon-photo-2-480.webp","/images/noon-photo-2-480.webp"],["/images/noon-photo-3-480.webp","/images/noon-photo-3-480.webp"],["/images/noon-photo-5-480.webp","/images/noon-photo-5-480.webp"]]},"cache-candy":{"name":"Cache Candy","page":"cache-candy","photos":[["/images/cache-candy-photo-cropped-480.webp","/images/cache-candy-photo-cropped-1200.webp"],["/images/cache-candy-duo-walk-480.webp","/images/cache-candy-duo-walk-800.webp"],["/images/cache-candy-live-1-480.webp","/images/cache-candy-live-1-480.webp"],["/images/cache-candy-live-2-414.webp","/images/cache-candy-live-2-414.webp"],["/images/cache-candy-live-3-414.webp","/images/cache-candy-live-3-414.webp"]]}};
+var lb=document.getElementById('lb');if(!lb)return;
+function ev(page){try{if(localStorage.getItem('slp_admin_token')||localStorage.getItem('slp_notrack'))return;var s=sessionStorage.getItem('slp_visit_sid');if(!s){s=Date.now().toString(36)+Math.random().toString(36).slice(2);sessionStorage.setItem('slp_visit_sid',s)}
+ fetch('/api/contact-event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'photos',page:page,session_id:s}),keepalive:true}).catch(function(){})}catch(e){}}
+var sec=document.getElementById('photos');
+if(sec&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){ev('galerie');io.disconnect()}},{threshold:.25});io.observe(sec)}
+var img=document.getElementById('lbImg'),nm=document.getElementById('lbName'),pos=document.getElementById('lbPos'),lk=document.getElementById('lbLink'),cur=null,i=0,from=null,x0=null;
+function show(){var a=D[cur],p=a.photos;img.src=p[i][1];img.alt=a.name+', photo '+(i+1);nm.textContent=a.name;pos.textContent=(i+1)+' / '+p.length;lk.href=a.page;
+ [i+1,i-1].forEach(function(j){var q=p[(j+p.length)%p.length];if(q)(new Image()).src=q[1]})}
+function open(k,btn){cur=k;i=0;from=btn;ev('galerie:'+k);show();lb.hidden=false;document.documentElement.classList.add('lb-open');lb.querySelector('.lb-x').focus()}
+function close(){lb.hidden=true;document.documentElement.classList.remove('lb-open');if(from)from.focus()}
+function go(d){var n=D[cur].photos.length;i=(i+d+n)%n;show()}
+document.querySelectorAll('.ph-card').forEach(function(b){b.addEventListener('click',function(){open(b.getAttribute('data-a'),b)})});
+lb.querySelector('.lb-x').addEventListener('click',close);lb.querySelector('.lb-prev').addEventListener('click',function(){go(-1)});lb.querySelector('.lb-next').addEventListener('click',function(){go(1)});
+lb.addEventListener('click',function(e){if(e.target===lb)close()});
+document.addEventListener('keydown',function(e){if(lb.hidden)return;if(e.key==='Escape')close();else if(e.key==='ArrowLeft')go(-1);else if(e.key==='ArrowRight')go(1)});
+lb.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+lb.addEventListener('touchend',function(e){if(x0==null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50)go(dx<0?1:-1)});
+})();</script>
 </body>
 <script>
 (function(){
