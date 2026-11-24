@@ -22,7 +22,9 @@ const SHIPPING_COUNTRIES = ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT"];
 // Sites frères (Book My Band, CS Animations, boutique) : ils envoient leurs visites à /api/track-visit,
 // et Book My Band et SLP Digital envoient leurs demandes à /api/contact (mêmes protections anti-spam que SLP) et leurs clics de contact à /api/contact-event.
 // Cette autorisation CORS ne vaut que pour ces routes.
-const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store", "https://slpstore.fr", "https://www.slpstore.fr", "https://slpdigital.fr", "https://www.slpdigital.fr", "https://aubergejolibois.fr", "https://www.aubergejolibois.fr"];
+// Sites suivis (clé envoyée par /api/track-visit). Pour un nouveau site : l'ajouter ici, dans SIBLING_ORIGINS, dans siteFromRequest, dans la liste VALUES de la synthèse et dans MT_SITES / SITE_LABELS / SITE_COLORS de admin.html.
+const TRACKED_SITES = ["slp", "bmb", "csa", "store", "digital", "jolibois", "noon", "getlucky"];
+const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store", "https://slpstore.fr", "https://www.slpstore.fr", "https://slpdigital.fr", "https://www.slpdigital.fr", "https://aubergejolibois.fr", "https://www.aubergejolibois.fr", "https://nooncoverband.com", "https://www.nooncoverband.com", "https://getluckymusic.fr", "https://www.getluckymusic.fr"];
 function resolveOrigin(request, env) {
   const requestOrigin = request.headers.get("Origin") || "";
   try { if (SIBLING_ORIGINS.includes(requestOrigin) && ["/api/track-visit", "/api/contact", "/api/captcha", "/api/contact-event"].includes(new URL(request.url).pathname)) return requestOrigin; } catch (e) {}
@@ -778,7 +780,7 @@ function withVideoTracking(resp, url) {
 
 function domainFromRequest(request) { try { const o = request.headers.get("Origin") || request.headers.get("Referer") || ""; return o ? new URL(o).hostname.toLowerCase().replace(/^www\./, "").slice(0, 60) : null; } catch (e) { return null; } }
 function langFromReferer(request) { try { const m = new URL(request.headers.get("Referer") || "").pathname.match(/^\/(en|es|it)(\/|$)/); return m ? m[1] : "fr"; } catch (e) { return "fr"; } }
-function siteFromRequest(request, body) { const o = (request.headers.get("Origin") || request.headers.get("Referer") || "").toLowerCase(); if (o.includes("slpstore.fr") || o.includes("soundlightprod.store")) return "store"; if (o.includes("aubergejolibois")) return "jolibois"; if (o.includes("slpdigital")) return "digital"; if (o.includes("bookmyband")) return "bmb"; if (o.includes("csanimations")) return "csa"; if (o.includes("soundlightprod")) return "slp"; return ["slp", "bmb", "csa", "store", "digital", "jolibois"].includes(body && body.site) ? body.site : "slp"; } // Profil anonyme d'une visite : réseau (opérateur / organisation), appareil, provenance, robot ou non.
+function siteFromRequest(request, body) { const o = (request.headers.get("Origin") || request.headers.get("Referer") || "").toLowerCase(); if (o.includes("slpstore.fr") || o.includes("soundlightprod.store")) return "store"; if (o.includes("aubergejolibois")) return "jolibois"; if (o.includes("nooncoverband")) return "noon"; if (o.includes("getluckymusic")) return "getlucky"; if (o.includes("slpdigital")) return "digital"; if (o.includes("bookmyband")) return "bmb"; if (o.includes("csanimations")) return "csa"; if (o.includes("soundlightprod")) return "slp"; return TRACKED_SITES.includes(body && body.site) ? body.site : "slp"; } // Profil anonyme d'une visite : réseau (opérateur / organisation), appareil, provenance, robot ou non.
 const HOSTING_RE = /amazon|aws|google|microsoft|azure|apple|meta platforms|facebook|digitalocean|ovh|hetzner|linode|akamai connected|oracle|alibaba|tencent|huawei cloud|contabo|scaleway|online s\.a\.s|vultr|choopa|leaseweb|m247|datacamp|hostinger|godaddy|cogent|hurricane electric|zscaler|censys|shodan|clouvider|g-core|gcore|constant company|psychz|colocrossing|servers\.com|hostroyale|packethub|tzulo|internet utilities|chiron|elisteka|wookra|palo alto|cybersecurity|hessenbox|logicweb/i;
 const BOT_UA_RE = /bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|embedly|whatsapp|python|curl|wget|httpclient|go-http|axios|node-fetch|phantom|puppeteer|playwright|selenium/i;
 function visitProfile(request, body, cf) {
@@ -786,12 +788,12 @@ function visitProfile(request, body, cf) {
   const network = cf.asOrganization || null;
   const device = /iPad|Tablet/i.test(ua) ? "Tablette" : /Mobi|Android|iPhone/i.test(ua) ? "Mobile" : "Ordinateur";
   let referrer = null;
-  try { if (body && body.ref) { const h = new URL(body.ref).hostname.replace(/^www\./, ""); if (h && !/soundlightprod|bookmyband|csanimations|slpdigital|slpstore|aubergejolibois/.test(h)) referrer = h; } } catch (e) {}
+  try { if (body && body.ref) { const h = new URL(body.ref).hostname.replace(/^www\./, ""); if (h && !/soundlightprod|bookmyband|csanimations|slpdigital|slpstore|aubergejolibois|nooncoverband|getluckymusic/.test(h)) referrer = h; } } catch (e) {}
   const isBot = BOT_UA_RE.test(ua) || (network && HOSTING_RE.test(network)) ? 1 : 0;
   return { network, device, referrer, isBot };
 }
 
-function siteWhere(url) { const p = [notTest("visited_at")]; const s = url.searchParams.get("site"); if (["slp", "bmb", "csa", "store", "digital", "jolibois"].includes(s)) p.push("site = '" + s + "'"); const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/; const f = url.searchParams.get("from"), t = url.searchParams.get("to"); if (f && re.test(f)) p.push("visited_at >= '" + f + " 00:00:00'"); if (t && re.test(t)) p.push("visited_at <= '" + t + " 23:59:59'"); if (url.searchParams.get("bots") === "0") p.push("is_bot = 0"); return p.length ? p.join(" AND ") : "1=1"; } 
+function siteWhere(url) { const p = [notTest("visited_at")]; const s = url.searchParams.get("site"); if (TRACKED_SITES.includes(s)) p.push("site = '" + s + "'"); const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/; const f = url.searchParams.get("from"), t = url.searchParams.get("to"); if (f && re.test(f)) p.push("visited_at >= '" + f + " 00:00:00'"); if (t && re.test(t)) p.push("visited_at <= '" + t + " 23:59:59'"); if (url.searchParams.get("bots") === "0") p.push("is_bot = 0"); return p.length ? p.join(" AND ") : "1=1"; } 
 function periodCutoff(period) {
   const now = new Date();
   if (period === "today") {
@@ -978,7 +980,7 @@ async function meteoData(env) {
   const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
   const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, contactClics, contactPages, contactDemandes, videoSite] = await Promise.all([
     q("SELECT cree_le, moment, titre, resume_json, actions_json, texte, html FROM rapports ORDER BY id DESC LIMIT 1"),
-    q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique'),('digital','SLP Digital'),('jolibois','Auberge Jolibois')),
+    q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique'),('digital','SLP Digital'),('jolibois','Auberge Jolibois'),('noon','NooN Coverband'),('getlucky','Get Lucky Music')),
        v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, ${notTest("visited_at")} AS vrai FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
        SELECT s.site, s.nom,
          COUNT(DISTINCT CASE WHEN v.vrai AND v.jour = t.today THEN v.session_id END) AS aujourdhui,
@@ -1045,9 +1047,9 @@ async function meteoData(env) {
 }
 
 // Tableau de bord des stats : tout ce qu'il faut pour les graphiques, en une seule requête (admin).
-// GET /api/admin/dashboard?site=slp|bmb|csa|store|digital|jolibois (vide = tous)&days=1|7|14|30|90 (1 = aujourd'hui)&off=1 (avec days=1 : hier)
+// GET /api/admin/dashboard?site=slp|bmb|csa|store|digital|jolibois|noon|getlucky (vide = tous)&days=1|7|14|30|90 (1 = aujourd'hui)&off=1 (avec days=1 : hier)
 async function dashboardData(env, siteParam, daysParam, offParam) {
-  const site = ["slp", "bmb", "csa", "store", "digital", "jolibois"].includes(siteParam) ? siteParam : "";
+  const site = TRACKED_SITES.includes(siteParam) ? siteParam : "";
   const days = [1, 7, 14, 30, 90].includes(Number(daysParam)) ? Number(daysParam) : 1;
   const q = async (sql) => { try { return (await env.DB.prepare(sql).all()).results || []; } catch (e) { return []; } };
   const off = days === 1 && Number(offParam) === 1 ? 1 : 0; // off = 1 : « Hier » (journée complète d'hier)

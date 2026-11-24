@@ -986,6 +986,8 @@
         <button data-s="store" onclick="dbSetSite('store')"><i style="background:#a3e635"></i>Boutique</button>
         <button data-s="digital" onclick="dbSetSite('digital')"><i style="background:#a78bfa"></i>SLP Digital</button>
         <button data-s="jolibois" onclick="dbSetSite('jolibois')"><i style="background:#f59e0b"></i>Auberge Jolibois</button>
+        <button data-s="noon" onclick="dbSetSite('noon')"><i style="background:#22d3ee"></i>NooN Coverband</button>
+        <button data-s="getlucky" onclick="dbSetSite('getlucky')"><i style="background:#f472b6"></i>Get Lucky Music</button>
       </div>
     </div>
     <p class="vz-note" id="mtTests" style="display:none; margin:0 0 10px;"></p>
@@ -1094,6 +1096,8 @@
         <button class="site-btn" data-site="store" onclick="setVisitsSite('store')"><i style="background:#a3e635"></i>Boutique <span class="n"></span></button>
         <button class="site-btn" data-site="digital" onclick="setVisitsSite('digital')"><i style="background:#a78bfa"></i>SLP Digital <span class="n"></span></button>
         <button class="site-btn" data-site="jolibois" onclick="setVisitsSite('jolibois')"><i style="background:#f59e0b"></i>Auberge Jolibois <span class="n"></span></button>
+        <button class="site-btn" data-site="noon" onclick="setVisitsSite('noon')"><i style="background:#22d3ee"></i>NooN Coverband <span class="n"></span></button>
+        <button class="site-btn" data-site="getlucky" onclick="setVisitsSite('getlucky')"><i style="background:#f472b6"></i>Get Lucky Music <span class="n"></span></button>
       </div>
       <div class="vz-seg">
         <button class="period-btn active" id="periodBtn-today" onclick="setVisitsPeriod('today')">Aujourd'hui</button>
@@ -1467,7 +1471,7 @@
 
 
   // ===== Onglet Stats & visites =====
-  const MT_SITES = { slp:{nom:'SLP Sound Light Prod', c:'#ffb238'}, bmb:{nom:'Book My Band', c:'#ff2d6f'}, csa:{nom:'CS Animations', c:'#38bdf8'}, store:{nom:'Boutique', c:'#a3e635'}, digital:{nom:'SLP Digital', c:'#a78bfa'}, jolibois:{nom:'Auberge Jolibois', c:'#f59e0b'} };
+  const MT_SITES = { slp:{nom:'SLP Sound Light Prod', c:'#ffb238'}, bmb:{nom:'Book My Band', c:'#ff2d6f'}, csa:{nom:'CS Animations', c:'#38bdf8'}, store:{nom:'Boutique', c:'#a3e635'}, digital:{nom:'SLP Digital', c:'#a78bfa'}, jolibois:{nom:'Auberge Jolibois', c:'#f59e0b'}, noon:{nom:'NooN Coverband', c:'#22d3ee'}, getlucky:{nom:'Get Lucky Music', c:'#f472b6'} };
   const MT_SUIVIES = ['dj animation','animateur de soirée','dj animateur de soirée','dj animation anniversaire','sonorisation spectacle','sonorisation éclairage','tribute abba','tribute calogero','tribute bee gees','tribute phil collins','tribute kool and the gang','tribute matmatah','tribute balavoine','tribute barry white','tribute céline dion','spectacle cabaret','revue cabaret','groupe de reprises','spectacle de magie','magicien','magicien spectacle','magicien soirée d\'entreprise','clément blouin'];
   let mtChart = null;
   const mtEl = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
@@ -3809,8 +3813,8 @@
   let visitsMapInstance = null;
 
   // Multi-sites : SLP, Book My Band, CS Animations (colonne "site" de page_visits)
-  const SITE_LABELS = { slp:'SLP', bmb:'Book My Band', csa:'CS Animations', store:'Boutique', digital:'SLP Digital', jolibois:'Auberge Jolibois' };
-  const SITE_COLORS = { slp:'#ffb238', bmb:'#ff2d6f', csa:'#38bdf8', store:'#a3e635', digital:'#a78bfa', jolibois:'#f59e0b' };
+  const SITE_LABELS = { slp:'SLP', bmb:'Book My Band', csa:'CS Animations', store:'Boutique', digital:'SLP Digital', jolibois:'Auberge Jolibois', noon:'NooN Coverband', getlucky:'Get Lucky Music' };
+  const SITE_COLORS = { slp:'#ffb238', bmb:'#ff2d6f', csa:'#38bdf8', store:'#a3e635', digital:'#a78bfa', jolibois:'#f59e0b', noon:'#22d3ee', getlucky:'#f472b6' };
   // Les dates des visites sont stockées en UTC : on les affiche à l'heure de Paris (été/hiver automatique)
   function parisDT(s){
     if (!s) return '';
