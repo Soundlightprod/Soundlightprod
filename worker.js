@@ -23,6 +23,9 @@ const SHIPPING_COUNTRIES = ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT"];
 // et Book My Band et SLP Digital envoient leurs demandes à /api/contact (mêmes protections anti-spam que SLP) et leurs clics de contact à /api/contact-event.
 // Cette autorisation CORS ne vaut que pour ces routes.
 // Sites suivis (clé envoyée par /api/track-visit). Pour un nouveau site : l'ajouter ici, dans SIBLING_ORIGINS, dans siteFromRequest, dans la liste VALUES de la synthèse et dans MT_SITES / SITE_LABELS / SITE_COLORS de admin.html.
+// Sites suivis uniquement dans SuiviStats (slp-stats, qui ajoute scope=suivi à ses requêtes) : absents de l'admin SLP.
+const PRIVATE_SITES = ["jolibois", "noon", "getlucky"];
+const privSql = (suivi) => suivi ? "" : " AND site NOT IN (" + PRIVATE_SITES.map((s) => "'" + s + "'").join(",") + ")";
 const TRACKED_SITES = ["slp", "bmb", "csa", "store", "digital", "jolibois", "noon", "getlucky"];
 const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store", "https://slpstore.fr", "https://www.slpstore.fr", "https://slpdigital.fr", "https://www.slpdigital.fr", "https://aubergejolibois.fr", "https://www.aubergejolibois.fr", "https://nooncoverband.com", "https://www.nooncoverband.com", "https://getluckymusic.fr", "https://www.getluckymusic.fr"];
 function resolveOrigin(request, env) {
@@ -793,7 +796,7 @@ function visitProfile(request, body, cf) {
   return { network, device, referrer, isBot };
 }
 
-function siteWhere(url) { const p = [notTest("visited_at")]; const s = url.searchParams.get("site"); if (TRACKED_SITES.includes(s)) p.push("site = '" + s + "'"); const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/; const f = url.searchParams.get("from"), t = url.searchParams.get("to"); if (f && re.test(f)) p.push("visited_at >= '" + f + " 00:00:00'"); if (t && re.test(t)) p.push("visited_at <= '" + t + " 23:59:59'"); if (url.searchParams.get("bots") === "0") p.push("is_bot = 0"); return p.length ? p.join(" AND ") : "1=1"; } 
+function siteWhere(url) { const p = [notTest("visited_at")]; const s = url.searchParams.get("site"); if (TRACKED_SITES.includes(s)) p.push("site = '" + s + "'"); const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/; const f = url.searchParams.get("from"), t = url.searchParams.get("to"); if (f && re.test(f)) p.push("visited_at >= '" + f + " 00:00:00'"); if (t && re.test(t)) p.push("visited_at <= '" + t + " 23:59:59'"); if (url.searchParams.get("bots") === "0") p.push("is_bot = 0"); if (url.searchParams.get("scope") !== "suivi") p.push("site NOT IN (" + PRIVATE_SITES.map((x) => "'" + x + "'").join(",") + ")"); return p.length ? p.join(" AND ") : "1=1"; } 
 function periodCutoff(period) {
   const now = new Date();
   if (period === "today") {
@@ -980,7 +983,7 @@ async function meteoData(env) {
   const today = `date(datetime('now', ${PARIS_OFFSET("datetime('now')")}))`;
   const [rapport, sites, googleJours, googleReleve, requetes, index, brevo, mails, prospects, liens, ytReleve, ytVideos, ytStats, contactClics, contactPages, contactDemandes, videoSite] = await Promise.all([
     q("SELECT cree_le, moment, titre, resume_json, actions_json, texte, html FROM rapports ORDER BY id DESC LIMIT 1"),
-    q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique'),('digital','SLP Digital'),('jolibois','Auberge Jolibois'),('noon','NooN Coverband'),('getlucky','Get Lucky Music')),
+    q(`WITH t AS (SELECT ${today} AS today), s(site, nom) AS (VALUES ('slp','SLP Sound Light Prod'),('bmb','Book My Band'),('csa','CS Animations'),('store','Boutique'),('digital','SLP Digital')),
        v AS (SELECT site, session_id, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, ${notTest("visited_at")} AS vrai FROM page_visits WHERE is_bot = 0 AND visited_at >= datetime('now', '-16 days'))
        SELECT s.site, s.nom,
          COUNT(DISTINCT CASE WHEN v.vrai AND v.jour = t.today THEN v.session_id END) AS aujourdhui,
@@ -1008,13 +1011,13 @@ async function meteoData(env) {
        FROM gsc_index GROUP BY site, releve ORDER BY releve`),
     q("SELECT * FROM brevo_campagnes WHERE envoyes > 0 ORDER BY date_envoi DESC, id DESC LIMIT 6"),
     q(`SELECT date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, COUNT(DISTINCT session_id) AS visiteurs FROM page_visits
-       WHERE is_bot = 0 AND ${MAIL_REF} AND ${notTest("visited_at")} AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
+       WHERE is_bot = 0 AND ${MAIL_REF} AND ${notTest("visited_at")}${privSql()} AND visited_at >= datetime('now', '-14 days') GROUP BY jour ORDER BY jour`),
     // Visiteurs à suivre : hier et aujourd'hui, au moins 3 pages vues (tous sites confondus)
     // Optimisation D1 : on retient d'abord les 12 sessions à afficher, puis seulement pour celles-ci on compte
     // les sessions du même visiteur sur 14 jours (avant : sous-requête sans index lancée pour chaque session).
     q(`WITH t AS (SELECT ${today} AS today),
        v AS (SELECT session_id, site, artist_slug, visited_at, city, region, country, network, device, referrer, lang, domaine, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour
-             FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")} AND visited_at >= datetime('now', '-3 days') ORDER BY visited_at),
+             FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")}${privSql()} AND visited_at >= datetime('now', '-3 days') ORDER BY visited_at),
        top AS (
          -- ville, réseau, appareil et provenance = ceux de la première page vue (colonnes « nues » de SQLite liées au MIN)
          SELECT session_id, MIN(visited_at) AS debut, GROUP_CONCAT(DISTINCT site) AS sites, city AS ville, region,
@@ -1048,7 +1051,8 @@ async function meteoData(env) {
 
 // Tableau de bord des stats : tout ce qu'il faut pour les graphiques, en une seule requête (admin).
 // GET /api/admin/dashboard?site=slp|bmb|csa|store|digital|jolibois|noon|getlucky (vide = tous)&days=1|7|14|30|90 (1 = aujourd'hui)&off=1 (avec days=1 : hier)
-async function dashboardData(env, siteParam, daysParam, offParam) {
+async function dashboardData(env, siteParam, daysParam, offParam, scopeParam) {
+  const suivi = scopeParam === "suivi";
   const site = TRACKED_SITES.includes(siteParam) ? siteParam : "";
   const days = [1, 7, 14, 30, 90].includes(Number(daysParam)) ? Number(daysParam) : 1;
   const q = async (sql) => { try { return (await env.DB.prepare(sql).all()).results || []; } catch (e) { return []; } };
@@ -1057,7 +1061,7 @@ async function dashboardData(env, siteParam, daysParam, offParam) {
   const start = `date(${today}, '-${days - 1} day')`;
   const pStart = `date(${today}, '-${2 * days - 1} day')`;
   const pEnd = `date(${today}, '-${days} day')`;
-  const vWith = (extra) => `v AS (SELECT session_id, site, artist_slug AS page, visited_at, device, referrer, city, country, network, latitude, longitude, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, CAST(strftime('%H', datetime(visited_at, ${PARIS_OFFSET("visited_at")})) AS INTEGER) AS h FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")}${extra} AND visited_at >= datetime('now', '-${Math.max(2 * days + 2, 16)} days'))`;
+  const vWith = (extra) => `v AS (SELECT session_id, site, artist_slug AS page, visited_at, device, referrer, city, country, network, latitude, longitude, date(visited_at, ${PARIS_OFFSET("visited_at")}) AS jour, CAST(strftime('%H', datetime(visited_at, ${PARIS_OFFSET("visited_at")})) AS INTEGER) AS h FROM page_visits WHERE is_bot = 0 AND ${notTest("visited_at")}${privSql(suivi)}${extra} AND visited_at >= datetime('now', '-${Math.max(2 * days + 2, 16)} days'))`;
   const vS = vWith(site ? ` AND site = '${site}'` : "");
   const vAll = vWith("");
   const cur = `jour >= ${start} AND jour <= ${today}`;
@@ -2680,7 +2684,7 @@ export default {
       // GET /api/admin/dashboard — graphiques du tableau de bord des stats (admin)
       if (url.pathname === "/api/admin/dashboard" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
-        return cachedAdminJson(url, 120, origin, () => dashboardData(env, url.searchParams.get("site"), url.searchParams.get("days"), url.searchParams.get("off")));
+        return cachedAdminJson(url, 120, origin, () => dashboardData(env, url.searchParams.get("site"), url.searchParams.get("days"), url.searchParams.get("off"), url.searchParams.get("scope")));
       }
 
       // GET /api/admin/cf-stats?site=jolibois&days=30|90|365 — statistiques Cloudflare (tous requêtes, robots inclus), historique stocké dans cf_jours (admin)

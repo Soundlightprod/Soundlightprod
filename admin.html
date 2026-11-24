@@ -937,7 +937,6 @@
       <button class="vp-btn" id="vpBtn-today" onclick="switchVisitsPane('today')">📊 Tableau de bord</button>
       <button class="vp-btn" id="vpBtn-leads" onclick="switchVisitsPane('leads')">🔥 Contacts à suivre <span id="ldBadge"></span></button>
       <button class="vp-btn" id="vpBtn-visits" onclick="switchVisitsPane('visits')">📈 Visites des sites</button>
-      <button class="vp-btn" id="vpBtn-cf" onclick="switchVisitsPane('cf')">🌐 Cloudflare</button>
       <button class="vp-btn" id="vpBtn-search" onclick="switchVisitsPane('search')">🔍 Google &amp; mails</button>
       <button class="vp-btn" id="vpBtn-social" onclick="switchVisitsPane('social')">📣 Réseaux &amp; YouTube</button>
     </div>
@@ -985,9 +984,6 @@
         <button data-s="csa" onclick="dbSetSite('csa')"><i style="background:#38bdf8"></i>CS Animations</button>
         <button data-s="store" onclick="dbSetSite('store')"><i style="background:#a3e635"></i>Boutique</button>
         <button data-s="digital" onclick="dbSetSite('digital')"><i style="background:#a78bfa"></i>SLP Digital</button>
-        <button data-s="jolibois" onclick="dbSetSite('jolibois')"><i style="background:#f59e0b"></i>Auberge Jolibois</button>
-        <button data-s="noon" onclick="dbSetSite('noon')"><i style="background:#22d3ee"></i>NooN Coverband</button>
-        <button data-s="getlucky" onclick="dbSetSite('getlucky')"><i style="background:#f472b6"></i>Get Lucky Music</button>
       </div>
     </div>
     <p class="vz-note" id="mtTests" style="display:none; margin:0 0 10px;"></p>
@@ -1095,9 +1091,6 @@
         <button class="site-btn" data-site="csa" onclick="setVisitsSite('csa')"><i style="background:#38bdf8"></i>CS Animations <span class="n"></span></button>
         <button class="site-btn" data-site="store" onclick="setVisitsSite('store')"><i style="background:#a3e635"></i>Boutique <span class="n"></span></button>
         <button class="site-btn" data-site="digital" onclick="setVisitsSite('digital')"><i style="background:#a78bfa"></i>SLP Digital <span class="n"></span></button>
-        <button class="site-btn" data-site="jolibois" onclick="setVisitsSite('jolibois')"><i style="background:#f59e0b"></i>Auberge Jolibois <span class="n"></span></button>
-        <button class="site-btn" data-site="noon" onclick="setVisitsSite('noon')"><i style="background:#22d3ee"></i>NooN Coverband <span class="n"></span></button>
-        <button class="site-btn" data-site="getlucky" onclick="setVisitsSite('getlucky')"><i style="background:#f472b6"></i>Get Lucky Music <span class="n"></span></button>
       </div>
       <div class="vz-seg">
         <button class="period-btn active" id="periodBtn-today" onclick="setVisitsPeriod('today')">Aujourd'hui</button>
@@ -1219,21 +1212,6 @@
     <p class="vz-note" id="mtMails" style="margin:6px 0 0;"></p>
     <div class="vz-grid2" id="mtBrevo" style="margin-top:12px;"></div>
 
-    </div>
-
-    <div class="vp-pane" id="vp-cf">
-    <div class="mt-head">
-      <div>
-        <h2 style="margin:0;">Cloudflare, site par site</h2>
-        <p class="vz-sub">Statistiques relevées chez Cloudflare, sans bandeau ni script sur le site. Elles comptent toutes les requêtes, robots compris : à lire comme une tendance, pas comme un nombre de vrais visiteurs.</p>
-      </div>
-      <button class="btn-outline" onclick="loadCf()">↻ Actualiser</button>
-    </div>
-    <div class="vz-bar"><div class="vz-seg" id="cfSites"></div><div class="vz-seg" id="cfDays"><button data-d="30" onclick="loadCf(null,30)">30 j</button><button class="active" data-d="90" onclick="loadCf(null,90)">90 j</button><button data-d="365" onclick="loadCf(null,365)">1 an</button></div></div>
-    <div class="vz-grid2" id="cfKpis" style="margin-top:10px;"></div>
-    <div class="vz-card"><div class="vz-card-h"><h3>Pages vues par jour</h3></div><div id="cfChart" style="overflow-x:auto;"></div></div>
-    <div class="vz-card"><div class="vz-card-h"><h3>Pays (requêtes)</h3></div><div id="cfPays"></div></div>
-    <p class="vz-note" id="cfNote"></p>
     </div>
 
     <div class="vp-pane" id="vp-social">
@@ -2467,7 +2445,6 @@
         if (typeof visitsMapInstance !== 'undefined' && visitsMapInstance) visitsMapInstance.invalidateSize();
         if (typeof visitsChartInstance !== 'undefined' && visitsChartInstance) visitsChartInstance.resize();
       }
-      if (name === 'cf') loadCf();
       if (name === 'search' && typeof mtChart !== 'undefined' && mtChart) mtChart.resize();
       if (name === 'rapport'){ const fr = document.getElementById('mtVisuel'); try { if (fr && fr.contentDocument) fr.style.height = (fr.contentDocument.documentElement.scrollHeight + 4) + 'px'; } catch(e){} }
     }, 60);
