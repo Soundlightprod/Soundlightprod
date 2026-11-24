@@ -528,7 +528,7 @@
     <g:description>Jet de scène à usage unique, portée 2 mètres, combustion 30 secondes, couleur argent. Effet spectaculaire pour entrée de scène ou final de show. Garantie 2 ans, livraison partout en France.</g:description>
     <g:link>https://slpstore.fr/produits/jet-de-scene-2m-30s-argent</g:link>
     <g:image_link>https://slpstore.fr/jet-de-scene-argent.png</g:image_link>
-    <g:availability>out_of_stock</g:availability>
+    <g:availability>in_stock</g:availability>
     <g:price>8.00 EUR</g:price>
     <g:condition>new</g:condition>
     <g:brand>SLP Sound Light Prod</g:brand>
@@ -542,7 +542,7 @@
     <g:description>Jet de scène à usage unique, portée 2 mètres, combustion 30 secondes, couleur or. Effet spectaculaire pour entrée de scène ou final de show. Garantie 2 ans, livraison partout en France.</g:description>
     <g:link>https://slpstore.fr/produits/jet-de-scene-2m-30s-or</g:link>
     <g:image_link>https://slpstore.fr/jet-de-scene-argent.png</g:image_link>
-    <g:availability>out_of_stock</g:availability>
+    <g:availability>in_stock</g:availability>
     <g:price>9.00 EUR</g:price>
     <g:condition>new</g:condition>
     <g:brand>SLP Sound Light Prod</g:brand>
@@ -556,7 +556,7 @@
     <g:description>Jet de scène à usage unique, portée 3 mètres, combustion 30 secondes, couleur argent. Effet spectaculaire pour entrée de scène ou final de show. Garantie 2 ans, livraison partout en France.</g:description>
     <g:link>https://slpstore.fr/produits/jet-de-scene-3m-30s-argent</g:link>
     <g:image_link>https://slpstore.fr/jet-de-scene-argent.png</g:image_link>
-    <g:availability>out_of_stock</g:availability>
+    <g:availability>in_stock</g:availability>
     <g:price>10.00 EUR</g:price>
     <g:condition>new</g:condition>
     <g:brand>SLP Sound Light Prod</g:brand>
@@ -570,7 +570,21 @@
     <g:description>Jet de scène à usage unique, portée 3 mètres, combustion 30 secondes, couleur or. Effet spectaculaire pour entrée de scène ou final de show. Garantie 2 ans, livraison partout en France.</g:description>
     <g:link>https://slpstore.fr/produits/jet-de-scene-3m-30s-or</g:link>
     <g:image_link>https://slpstore.fr/jet-de-scene-argent.png</g:image_link>
-    <g:availability>out_of_stock</g:availability>
+    <g:availability>in_stock</g:availability>
+    <g:price>12.00 EUR</g:price>
+    <g:condition>new</g:condition>
+    <g:brand>SLP Sound Light Prod</g:brand>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>Arts et loisirs &gt; Fêtes et célébrations &gt; Articles de fête</g:google_product_category>
+    <g:product_type>Consommables</g:product_type>
+  </item>
+  <item>
+    <g:id>SLP-39</g:id>
+    <g:title>Canon à confettis électrique 50cm</g:title>
+    <g:description>Canon à confettis électrique rechargeable, longueur 50cm. Déclenchement instantané, sans poudre ni gaz. Garantie 2 ans, livraison partout en France.</g:description>
+    <g:link>https://slpstore.fr/produits/canon-confettis-electrique-50cm</g:link>
+    <g:image_link>https://slpstore.fr/canon-confettis-50cm.png</g:image_link>
+    <g:availability>in_stock</g:availability>
     <g:price>12.00 EUR</g:price>
     <g:condition>new</g:condition>
     <g:brand>SLP Sound Light Prod</g:brand>
@@ -584,7 +598,7 @@
     <g:description>Canon à confettis électrique rechargeable, longueur 80cm. Déclenchement instantané, sans poudre ni gaz, portée renforcée. Garantie 2 ans, livraison partout en France.</g:description>
     <g:link>https://slpstore.fr/produits/canon-confettis-electrique-80cm</g:link>
     <g:image_link>https://slpstore.fr/canon-confettis-80cm.png</g:image_link>
-    <g:availability>out_of_stock</g:availability>
+    <g:availability>in_stock</g:availability>
     <g:price>15.00 EUR</g:price>
     <g:condition>new</g:condition>
     <g:brand>SLP Sound Light Prod</g:brand>
