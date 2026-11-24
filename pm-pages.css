@@ -210,3 +210,11 @@ body:has(.fiche-hero) .fiche-body .bio-text p{max-width:none}
 .pm-hero p a,.page-hero p a,.fiche-hero p a{color:var(--paper);text-decoration:underline;text-decoration-color:rgba(251,198,8,.6);text-underline-offset:3px}
 .pm-hero p a:hover,.page-hero p a:hover{text-decoration-color:var(--pm-gold)}
 @media (min-width:1000px){.pm-ugrid .pm-tile{min-height:300px}}
+
+/* PC : toutes les pages utilisent la pleine largeur de l'écran (marges latérales conservées) */
+@media (min-width:961px){
+  .pm-wrap,.pm .annuaire .wrap{max-width:none !important}
+  body:has(.fiche-hero) .fiche-body,
+  body:has(.fiche-hero) .fiche-body ~ section:not(.cta-band) .wrap{max-width:none !important}
+  .wrap.narrow,.klb-intro{max-width:none !important}
+}
