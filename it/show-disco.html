@@ -228,6 +228,12 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
 </style>
 <link rel="stylesheet" href="/pm-pages.css?v=5">
 <script src="/pm-pages.js?v=3" defer></script>
+<style id="boule-deco">
+.klb-ball{position:absolute; top:0; right:clamp(16px,9vw,160px); width:clamp(96px,15vw,220px); z-index:1; pointer-events:none; transform-origin:50% 0; animation:ballSway 7s ease-in-out infinite; filter:drop-shadow(0 0 28px rgba(255,200,230,.35));}
+.klb-ball img{display:block; width:100%; height:auto;}
+@keyframes ballSway{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+@media (max-width:800px){ .klb-ball{opacity:.85; right:12px; width:88px;} }
+</style>
 </head>
 <body class="pm-inner">
 
@@ -252,6 +258,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
 </header>
 
 <section class="klb-hero">
+  <div class="klb-ball" aria-hidden="true"><img src="/images/show-disco-boule-400.webp" srcset="/images/show-disco-boule-240.webp 240w, /images/show-disco-boule-400.webp 400w" sizes="(max-width:800px) 88px, 15vw" width="400" height="442" alt="" loading="eager" decoding="async"></div>
   <div class="klb-hero-inner">
     <span class="breadcrumb"><a href="concepts">← I nostri concept</a></span>
     <span class="label">Show-evento · Stagione 2027</span>
