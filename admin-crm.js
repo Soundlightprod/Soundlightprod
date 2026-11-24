@@ -67,6 +67,8 @@
     #tab-crm .crm-sub{color:var(--muted);font-size:.9rem}
     #tab-crm .crm-badge{display:inline-block;border-radius:100px;padding:3px 11px;font-size:.82rem;font-weight:700;background:rgba(139,92,246,.25);color:#d6c6ff;margin-right:4px}
     #tab-crm .crm-badge.client{background:rgba(47,155,255,.25);color:#b9dcff}
+    #tab-crm .crm-row.nouv{background:linear-gradient(90deg,rgba(255,176,32,.22),rgba(255,176,32,.08));border-color:var(--amber);box-shadow:inset 4px 0 0 var(--amber)}
+    #tab-crm .crm-badge.nouv{background:var(--amber);color:#1b1300}
     #tab-crm .crm-badge.late{background:rgba(255,77,125,.3);color:#ffc2d3}
     #tab-crm .crm-badge.prio{background:rgba(255,178,56,.3);color:#ffe0a8}
     #tab-crm .crm-acts{display:flex;gap:6px;margin-top:8px}
@@ -123,6 +125,7 @@
     injectStyle();
   }
 
+  const isNouv = (c) => c.statut === 'prospect' && c.etape === 'nouveau';
   const isMarque = (c) => (c.marque || 'slp') === marque;
   function filtered() {
     return all.filter((c) => {
@@ -159,7 +162,10 @@
     const lastQ = (c) => { const d = last(c); return d ? quand({ date_echange: d.e, cree_le: d.c }) : ''; };
     const rows = filtered().sort((a, b) => {
       if (vue === 'relance') return (a.date_relance || '').localeCompare(b.date_relance || '');
-      return lastQ(b).localeCompare(lastQ(a)) || (b.maj_le || '').localeCompare(a.maj_le || '');
+      // nouvelles demandes en tête (la plus récente d'abord), puis les autres par ancienneté (les plus anciennes d'abord)
+      const na = isNouv(a), nb = isNouv(b);
+      if (na !== nb) return na ? -1 : 1;
+      return na ? b.id - a.id : a.id - b.id;
     });
     const TL = (t) => (TYPES_J.find((x) => x[0] === t) || [0, t])[1];
     const offLines = (c) => { let l = []; try { l = c.offres_json ? JSON.parse(c.offres_json) : []; } catch (e) { l = []; }
@@ -171,9 +177,9 @@
       const d = last(c), q = lastQ(c);
       const ex = d && d.x ? (d.x.length > 90 ? d.x.slice(0, 90) + '…' : d.x) : '';
       const sub = [sousNom(c), c.ville, c.categorie].filter(Boolean).map(ce).join(' · ');
-      return `<div class="crm-row" data-id="${c.id}">
+      return `<div class="crm-row${isNouv(c) ? ' nouv' : ''}" data-id="${c.id}">
         <div class="c-nom"><h4>${c.priorite ? '⭐ ' : ''}${ce(nomAff(c))}</h4><div class="crm-sub">${sub}</div>${c.prochaine_action ? `<div class="crm-sub">→ ${ce(c.prochaine_action)}</div>` : ''}</div>
-        <div class="c-etape">${c.statut === 'client' ? '<span class="crm-badge client">Client</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : `<span class="crm-badge">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
+        <div class="c-etape">${isNouv(c) ? '<span class="crm-badge nouv">🆕 Nouvelle demande</span>' : ''}${c.statut === 'client' ? '<span class="crm-badge client">Client</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : isNouv(c) ? '' : `<span class="crm-badge">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
           ${late ? `<span class="crm-badge late">⏰ relance ${fmtD(c.date_relance)}</span>` : c.date_relance ? `<span class="crm-sub">relance ${fmtD(c.date_relance)}</span>` : ''}</div>
         <div class="c-last">${d ? `<b>${fmtDT(q)}</b><span class="crm-sub">${ce(TL(d.t))}${ex ? ' · ' + ce(ex) : ''}</span>` : '<span class="crm-sub">Aucun échange noté</span>'}</div>
         <div class="c-money">${offLines(c)}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
