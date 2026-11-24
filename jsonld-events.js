@@ -25,7 +25,7 @@
     'tribute-matmatah': 'tribute-matmatah', 'tribute-celine-dion': 'tribute-celine-dion',
     'tribute-kool-and-the-gang': 'tribute-kool-and-the-gang', 'tribute-bee-gees': 'tribute-bee-gees',
     'tribute-phil-collins': 'tribute-phil-collins', 'tribute-balavoine': 'tribute-balavoine',
-    'tribute-barry-white': 'tribute-barry-white'
+    'tribute-barry-white': 'tribute-barry-white', 'tribute-acdc': 'tribute-acdc'
   };
   var LABEL = {
     'alchimie': 'Alchimie', 'tekila-the-band': 'Tékila The Band', 'cache-candy': 'Cache Candy', 'the-fine-allies': 'The Fine Allies',
@@ -34,7 +34,7 @@
     'the-best-abba-tribute': 'Tribute ABBA', 'calo2-0': 'Tribute Calogero', 'tribute-matmatah': 'Tribute Matmatah',
     'tribute-celine-dion': 'Tribute Céline Dion', 'tribute-kool-and-the-gang': 'Tribute Kool & the Gang',
     'tribute-bee-gees': 'Tribute Bee Gees', 'tribute-phil-collins': 'Tribute Phil Collins',
-    'tribute-balavoine': 'Tribute Balavoine', 'tribute-barry-white': 'Tribute Barry White'
+    'tribute-balavoine': 'Tribute Balavoine', 'tribute-barry-white': 'Tribute Barry White', 'tribute-acdc': 'Tribute AC/DC'
   };
   var SLUG_TO_PAGE = {};
   Object.keys(SLUG).forEach(function (p) { SLUG_TO_PAGE[SLUG[p]] = p; });
