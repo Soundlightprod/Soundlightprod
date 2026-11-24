@@ -1111,6 +1111,7 @@
       <div class="vz-kpi"><span class="k">Pages vues</span><b id="kpiVisits">0</b><span class="d" id="kpiDelta"></span></div>
       <div class="vz-kpi"><span class="k">Page la plus vue</span><b id="kpiTopPage" class="sm">—</b><span class="d" id="kpiTopPageSub"></span></div>
       <div class="vz-kpi"><span class="k">Sur mobile</span><b id="kpiMobile">—</b><span class="d" id="kpiMobileSub"></span></div>
+      <div class="vz-kpi"><span class="k">Dernière visite</span><b id="kpiLastVisit" class="sm">—</b><span class="d" id="kpiLastVisitSub"></span></div>
     </div>
 
     <div class="vz-card">
@@ -4027,6 +4028,13 @@
     const withDev = pts.filter(p => p.device); const mob = withDev.filter(p => /mobile|tablette|phone|android|ios/i.test(p.device)).length;
     document.getElementById('kpiMobile').textContent = withDev.length ? Math.round(mob*100/withDev.length) + ' %' : '—';
     document.getElementById('kpiMobileSub').textContent = withDev.length ? `${mob} sur ${withDev.length} visite(s)` : '';
+    // Dernière visite : date, heure et lieu (la liste arrive du plus récent au plus ancien)
+    const lv = pts[0];
+    if (lv){
+      const [ld, lt] = parisDT(lv.visited_at).split(' ');
+      document.getElementById('kpiLastVisit').textContent = `${(ld||'').split('-').reverse().join('/')} à ${(lt||'').slice(0,5)}`;
+      document.getElementById('kpiLastVisitSub').textContent = [[lv.city, lv.region].filter(Boolean).join(', ') || lv.country || 'Lieu inconnu', pageLabel(lv.page)].join(' · ');
+    } else { document.getElementById('kpiLastVisit').textContent = '—'; document.getElementById('kpiLastVisitSub').textContent = ''; }
     const max = top.length ? top[0][1] : 1;
     document.getElementById('vzTopPages').innerHTML = top.slice(0, 10).map(([k, n]) => { const [site, page] = k.split('|'); return `
       <div class="row" onclick="showVisitDetail('${page}','${site}')"><div class="bl"><span class="f" style="width:${Math.round(n*100/max)}%"></span><span>${pageLabel(page)}${currentVisitsSite ? '' : ' <span class="vz-note">· ' + (SITE_LABELS[site]||site) + '</span>'}</span></div><span class="n">${n}</span></div>`; }).join('') || '<p class="vz-note">Aucune visite sur la période.</p>';
