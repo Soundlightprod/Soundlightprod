@@ -68,6 +68,8 @@
     #tab-crm .crm-badge{display:inline-block;border-radius:100px;padding:3px 11px;font-size:.82rem;font-weight:700;background:rgba(139,92,246,.25);color:#d6c6ff;margin-right:4px}
     #tab-crm .crm-badge.client{background:rgba(47,155,255,.25);color:#b9dcff}
     #tab-crm .crm-row.nouv{background:linear-gradient(90deg,rgba(255,176,32,.22),rgba(255,176,32,.08));border-color:var(--amber);box-shadow:inset 4px 0 0 var(--amber)}
+    #tab-crm .crm-row.nego{background:linear-gradient(90deg,rgba(255,122,26,.26),rgba(255,122,26,.08));border-color:#ff7a1a;box-shadow:inset 4px 0 0 #ff7a1a}
+    #tab-crm .crm-badge.nego{background:#ff7a1a;color:#1f0d00}
     #tab-crm .crm-row.prop{background:linear-gradient(90deg,rgba(168,85,247,.24),rgba(168,85,247,.08));border-color:#a855f7;box-shadow:inset 4px 0 0 #a855f7}
     #tab-crm .crm-row.devis{background:linear-gradient(90deg,rgba(47,155,255,.26),rgba(47,155,255,.08));border-color:#2f9bff;box-shadow:inset 4px 0 0 #2f9bff}
     #tab-crm .crm-row.signe{background:linear-gradient(90deg,rgba(34,197,94,.26),rgba(34,197,94,.08));border-color:#22c55e;box-shadow:inset 4px 0 0 #22c55e}
@@ -79,6 +81,7 @@
     #tab-crm .crm-cat.nouv{border-color:var(--amber);color:var(--amber)}
     #tab-crm .crm-cat.prop{border-color:#a855f7;color:#d8b4fe}
     #tab-crm .crm-cat.devis{border-color:#2f9bff;color:#b9dcff}
+    #tab-crm .crm-cat.nego{border-color:#ff7a1a;color:#ffb27a}
     #tab-crm .crm-cat.cours{border-color:#8b8aa0}
     #tab-crm .crm-cat.signe{border-color:#22c55e;color:#86efac}
     #tab-crm .crm-cat.perdu{border-color:#ff4d7d;color:#ffc2d3}
@@ -141,7 +144,7 @@
 
   const replie = {};
   const isNouv = (c) => c.statut === 'prospect' && c.etape === 'nouveau';
-  const clsEtat = (c) => isNouv(c) ? ' nouv' : c.statut === 'client' ? ' signe' : c.statut === 'prospect' && c.etape === 'devis' ? ' devis' : c.statut === 'prospect' && c.etape === 'proposition' ? ' prop' : '';
+  const clsEtat = (c) => isNouv(c) ? ' nouv' : c.statut === 'client' ? ' signe' : c.statut === 'prospect' && c.etape === 'devis' ? ' devis' : c.statut === 'prospect' && c.etape === 'negociation' ? ' nego' : c.statut === 'prospect' && c.etape === 'proposition' ? ' prop' : '';
   const isMarque = (c) => (c.marque || 'slp') === marque;
   function filtered() {
     return all.filter((c) => {
@@ -195,7 +198,7 @@
       const sub = [sousNom(c), c.ville, c.categorie].filter(Boolean).map(ce).join(' · ');
       return `<div class="crm-row${clsEtat(c)}" data-id="${c.id}">
         <div class="c-nom"><h4>${c.priorite ? '⭐ ' : ''}${ce(nomAff(c))}</h4><div class="crm-sub">${sub}</div>${c.prochaine_action ? `<div class="crm-sub">→ ${ce(c.prochaine_action)}</div>` : ''}</div>
-        <div class="c-etape">${isNouv(c) ? '<span class="crm-badge nouv">🆕 Nouvelle demande</span>' : ''}${c.statut === 'client' ? '<span class="crm-badge signe">✅ Devis signé</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : isNouv(c) ? '' : `<span class="crm-badge${c.etape === 'devis' ? ' devis' : c.etape === 'proposition' ? ' prop' : ''}">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
+        <div class="c-etape">${isNouv(c) ? '<span class="crm-badge nouv">🆕 Nouvelle demande</span>' : ''}${c.statut === 'client' ? '<span class="crm-badge signe">✅ Devis signé</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : isNouv(c) ? '' : `<span class="crm-badge${c.etape === 'devis' ? ' devis' : c.etape === 'proposition' ? ' prop' : c.etape === 'negociation' ? ' nego' : ''}">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
           ${late ? `<span class="crm-badge late">⏰ relance ${fmtD(c.date_relance)}</span>` : c.date_relance ? `<span class="crm-sub">relance ${fmtD(c.date_relance)}</span>` : ''}</div>
         <div class="c-last">${d ? `<b>${fmtDT(q)}</b><span class="crm-sub">${ce(TL(d.t))}${ex ? ' · ' + ce(ex) : ''}</span>` : '<span class="crm-sub">Aucun échange noté</span>'}</div>
         <div class="c-money">${offLines(c)}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
@@ -206,8 +209,8 @@
         </div></div>`;
     };
     // affichage par catégories (sauf la vue « À relancer », triée par date de relance)
-    const catDe = (c) => c.statut === 'perdu' ? 'perdu' : c.statut === 'client' ? 'signe' : c.etape === 'nouveau' ? 'nouv' : c.etape === 'devis' ? 'devis' : c.etape === 'proposition' ? 'prop' : 'cours';
-    const CATS = [['nouv', '🆕 Nouvelles demandes'], ['prop', '📨 Proposition commerciale envoyée'], ['devis', '📄 Devis envoyé'], ['cours', '💬 En cours (contacté, échange, négociation)'], ['signe', '✅ Devis signé : clients'], ['perdu', '✖ Perdus']];
+    const catDe = (c) => c.statut === 'perdu' ? 'perdu' : c.statut === 'client' ? 'signe' : c.etape === 'nouveau' ? 'nouv' : c.etape === 'devis' ? 'devis' : c.etape === 'proposition' ? 'prop' : c.etape === 'negociation' ? 'nego' : 'cours';
+    const CATS = [['nouv', '🆕 Nouvelles demandes'], ['nego', '🔥 Négociation : intéressés'], ['prop', '📨 Proposition commerciale envoyée'], ['devis', '📄 Devis envoyé'], ['cours', '💬 Contactés / échange en cours'], ['signe', '✅ Devis signé : clients'], ['perdu', '✖ Perdus']];
     const shown = rows.slice(0, 300);
     let html;
     if (vue === 'relance') html = shown.map(rowHtml).join('');
