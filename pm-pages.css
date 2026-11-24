@@ -70,8 +70,8 @@ body>section:not(.fiche-hero):not(.page-hero):not(.cta-band) .wrap{padding-top:c
 .pm-btn-g{border-color:rgba(247,245,240,.45);color:var(--paper)}
 .pm-btn-g:hover{border-color:var(--pm-gold);color:var(--pm-gold)}
 .pm-ar{transition:transform .25s}.pm-btn:hover .pm-ar,.pm-more:hover .pm-ar,.pm-card:hover .pm-ar{transform:translateX(4px)}
-.pm-sec{position:relative;padding:clamp(72px,10vw,150px) 0}
-.pm-head{display:grid;gap:18px;margin-bottom:clamp(32px,5vw,64px)}
+.pm-sec{position:relative;padding:clamp(44px,6vw,88px) 0}
+.pm-head{display:grid;gap:16px;margin-bottom:clamp(26px,3.6vw,46px)}
 .pm-rule{height:3px;background:var(--pm-brand)}
 .pm :focus-visible{outline:2px solid var(--pm-gold);outline-offset:3px;border-radius:4px}
 /* hero */
