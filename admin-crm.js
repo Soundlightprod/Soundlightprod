@@ -74,6 +74,14 @@
     #tab-crm .crm-badge.prop{background:#a855f7;color:#fff}
     #tab-crm .crm-badge.devis{background:#2f9bff;color:#04121f}
     #tab-crm .crm-badge.signe{background:#22c55e;color:#04180b}
+    #tab-crm .crm-cat{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px;padding:9px 14px;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;user-select:none;background:var(--ink-2);border-left:6px solid var(--muted)}
+    #tab-crm .crm-cat b{background:rgba(255,255,255,.14);border-radius:100px;padding:1px 11px;font-size:.9rem}
+    #tab-crm .crm-cat.nouv{border-color:var(--amber);color:var(--amber)}
+    #tab-crm .crm-cat.prop{border-color:#a855f7;color:#d8b4fe}
+    #tab-crm .crm-cat.devis{border-color:#2f9bff;color:#b9dcff}
+    #tab-crm .crm-cat.cours{border-color:#8b8aa0}
+    #tab-crm .crm-cat.signe{border-color:#22c55e;color:#86efac}
+    #tab-crm .crm-cat.perdu{border-color:#ff4d7d;color:#ffc2d3}
     #tab-crm .crm-badge.nouv{background:var(--amber);color:#1b1300}
     #tab-crm .crm-badge.late{background:rgba(255,77,125,.3);color:#ffc2d3}
     #tab-crm .crm-badge.prio{background:rgba(255,178,56,.3);color:#ffe0a8}
@@ -131,6 +139,7 @@
     injectStyle();
   }
 
+  const replie = {};
   const isNouv = (c) => c.statut === 'prospect' && c.etape === 'nouveau';
   const clsEtat = (c) => isNouv(c) ? ' nouv' : c.statut === 'client' ? ' signe' : c.statut === 'prospect' && c.etape === 'devis' ? ' devis' : c.statut === 'prospect' && c.etape === 'proposition' ? ' prop' : '';
   const isMarque = (c) => (c.marque || 'slp') === marque;
@@ -178,7 +187,7 @@
     const offLines = (c) => { let l = []; try { l = c.offres_json ? JSON.parse(c.offres_json) : []; } catch (e) { l = []; }
       return l.filter((o) => o.s !== 'brouillon').map((o) => `<span class="crm-badge prio money">${o.e ? ce(o.e) + ' · ' : ''}${o.m != null ? eur(o.m) + ' HT' : 'montant ?'}</span>${o.c ? `<span class="crm-sub">${ce(plus(o.c))}</span>` : ''}`).join(''); };
     const head = '<div class="crm-row head"><span>Contact</span><span>Étape</span><span>Dernier contact</span><span>Montant</span><span></span></div>';
-    const html = rows.slice(0, 300).map((c) => {
+    const rowHtml = (c) => {
       const late = c.statut !== 'perdu' && c.date_relance && c.date_relance <= today();
       const wa = c.telephone ? 'https://wa.me/' + c.telephone.replace(/^0/, '33').replace(/^\+/, '') : '';
       const d = last(c), q = lastQ(c);
@@ -195,8 +204,20 @@
           ${c.pdf_offre_id ? `<a href="#" data-pdf="${c.pdf_offre_id}" data-nom="${ce(c.pdf_offre_nom)}">👁 Proposition</a>` : ''}${c.pdf_devis_id ? `<a href="#" data-pdf="${c.pdf_devis_id}" data-nom="${ce(c.pdf_devis_nom)}">👁 Devis</a>` : ''}
           ${c.telephone ? `<a href="tel:${ce(c.telephone)}">📞</a>` : ''}${wa ? `<a href="${ce(wa)}" target="_blank" rel="noopener">💬</a>` : ''}${c.email ? `<a href="mailto:${ce(c.email)}">✉️</a>` : ''}
         </div></div>`;
+    };
+    // affichage par catégories (sauf la vue « À relancer », triée par date de relance)
+    const catDe = (c) => c.statut === 'perdu' ? 'perdu' : c.statut === 'client' ? 'signe' : c.etape === 'nouveau' ? 'nouv' : c.etape === 'devis' ? 'devis' : c.etape === 'proposition' ? 'prop' : 'cours';
+    const CATS = [['nouv', '🆕 Nouvelles demandes'], ['prop', '📨 Proposition commerciale envoyée'], ['devis', '📄 Devis envoyé'], ['cours', '💬 En cours (contacté, échange, négociation)'], ['signe', '✅ Devis signé : clients'], ['perdu', '✖ Perdus']];
+    const shown = rows.slice(0, 300);
+    let html;
+    if (vue === 'relance') html = shown.map(rowHtml).join('');
+    else html = CATS.map(([k, titre]) => {
+      const l = shown.filter((c) => catDe(c) === k); if (!l.length) return '';
+      const off = replie[k];
+      return `<div class="crm-cat ${k}" data-cat="${k}"><span>${off ? '▸' : '▾'} ${titre}</span><b>${l.length}</b></div>${off ? '' : l.map(rowHtml).join('')}`;
     }).join('');
     $('crmList').innerHTML = (html ? head : '') + html || '<p class="vz-note">Aucun contact ici. Utilise « ＋ Nouveau » ou « ⬆ Importer ».</p>';
+    $('crmList').querySelectorAll('.crm-cat').forEach((el) => (el.onclick = () => { replie[el.dataset.cat] = !replie[el.dataset.cat]; render(); }));
     $('crmList').querySelectorAll('.crm-row[data-id]').forEach((el) => (el.onclick = () => openDetail(+el.dataset.id)));
     $('crmList').querySelectorAll('[data-resume]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); openResume(+a.dataset.resume); }));
     $('crmList').querySelectorAll('[data-pdf]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); viewFile(a.dataset.pdf, a.dataset.nom); }));
