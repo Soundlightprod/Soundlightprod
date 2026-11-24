@@ -24,10 +24,10 @@ const SHIPPING_COUNTRIES = ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT"];
 // Cette autorisation CORS ne vaut que pour ces routes.
 // Sites suivis (clé envoyée par /api/track-visit). Pour un nouveau site : l'ajouter ici, dans SIBLING_ORIGINS, dans siteFromRequest, dans la liste VALUES de la synthèse et dans MT_SITES / SITE_LABELS / SITE_COLORS de admin.html.
 // Sites suivis uniquement dans SuiviStats (slp-stats, qui ajoute scope=suivi à ses requêtes) : absents de l'admin SLP.
-const PRIVATE_SITES = ["jolibois", "noon", "getlucky"];
+const PRIVATE_SITES = ["jolibois", "noon"];
 const privSql = (suivi) => suivi ? "" : " AND site NOT IN (" + PRIVATE_SITES.map((s) => "'" + s + "'").join(",") + ")";
-const TRACKED_SITES = ["slp", "bmb", "csa", "store", "digital", "jolibois", "noon", "getlucky"];
-const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store", "https://slpstore.fr", "https://www.slpstore.fr", "https://slpdigital.fr", "https://www.slpdigital.fr", "https://aubergejolibois.fr", "https://www.aubergejolibois.fr", "https://nooncoverband.com", "https://www.nooncoverband.com", "https://getluckymusic.fr", "https://www.getluckymusic.fr"];
+const TRACKED_SITES = ["slp", "bmb", "csa", "store", "digital", "jolibois", "noon"];
+const SIBLING_ORIGINS = ["https://csanimations.fr", "https://www.csanimations.fr", "https://bookmyband.fr", "https://www.bookmyband.fr", "https://soundlightprod.fr", "https://www.soundlightprod.fr", "https://soundlightprod.com", "https://www.soundlightprod.com", "https://soundlightprod.store", "https://slpstore.fr", "https://www.slpstore.fr", "https://slpdigital.fr", "https://www.slpdigital.fr", "https://aubergejolibois.fr", "https://www.aubergejolibois.fr", "https://nooncoverband.com", "https://www.nooncoverband.com"];
 function resolveOrigin(request, env) {
   const requestOrigin = request.headers.get("Origin") || "";
   try { if (SIBLING_ORIGINS.includes(requestOrigin) && ["/api/track-visit", "/api/contact", "/api/captcha", "/api/contact-event"].includes(new URL(request.url).pathname)) return requestOrigin; } catch (e) {}
@@ -783,7 +783,7 @@ function withVideoTracking(resp, url) {
 
 function domainFromRequest(request) { try { const o = request.headers.get("Origin") || request.headers.get("Referer") || ""; return o ? new URL(o).hostname.toLowerCase().replace(/^www\./, "").slice(0, 60) : null; } catch (e) { return null; } }
 function langFromReferer(request) { try { const m = new URL(request.headers.get("Referer") || "").pathname.match(/^\/(en|es|it)(\/|$)/); return m ? m[1] : "fr"; } catch (e) { return "fr"; } }
-function siteFromRequest(request, body) { const o = (request.headers.get("Origin") || request.headers.get("Referer") || "").toLowerCase(); if (o.includes("slpstore.fr") || o.includes("soundlightprod.store")) return "store"; if (o.includes("aubergejolibois")) return "jolibois"; if (o.includes("nooncoverband")) return "noon"; if (o.includes("getluckymusic")) return "getlucky"; if (o.includes("slpdigital")) return "digital"; if (o.includes("bookmyband")) return "bmb"; if (o.includes("csanimations")) return "csa"; if (o.includes("soundlightprod")) return "slp"; return TRACKED_SITES.includes(body && body.site) ? body.site : "slp"; } // Profil anonyme d'une visite : réseau (opérateur / organisation), appareil, provenance, robot ou non.
+function siteFromRequest(request, body) { const o = (request.headers.get("Origin") || request.headers.get("Referer") || "").toLowerCase(); if (o.includes("slpstore.fr") || o.includes("soundlightprod.store")) return "store"; if (o.includes("aubergejolibois")) return "jolibois"; if (o.includes("nooncoverband")) return "noon"; if (o.includes("slpdigital")) return "digital"; if (o.includes("bookmyband")) return "bmb"; if (o.includes("csanimations")) return "csa"; if (o.includes("soundlightprod")) return "slp"; return TRACKED_SITES.includes(body && body.site) ? body.site : "slp"; } // Profil anonyme d'une visite : réseau (opérateur / organisation), appareil, provenance, robot ou non.
 const HOSTING_RE = /amazon|aws|google|microsoft|azure|apple|meta platforms|facebook|digitalocean|ovh|hetzner|linode|akamai connected|oracle|alibaba|tencent|huawei cloud|contabo|scaleway|online s\.a\.s|vultr|choopa|leaseweb|m247|datacamp|hostinger|godaddy|cogent|hurricane electric|zscaler|censys|shodan|clouvider|g-core|gcore|constant company|psychz|colocrossing|servers\.com|hostroyale|packethub|tzulo|internet utilities|chiron|elisteka|wookra|palo alto|cybersecurity|hessenbox|logicweb/i;
 const BOT_UA_RE = /bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|embedly|whatsapp|python|curl|wget|httpclient|go-http|axios|node-fetch|phantom|puppeteer|playwright|selenium/i;
 function visitProfile(request, body, cf) {
@@ -791,7 +791,7 @@ function visitProfile(request, body, cf) {
   const network = cf.asOrganization || null;
   const device = /iPad|Tablet/i.test(ua) ? "Tablette" : /Mobi|Android|iPhone/i.test(ua) ? "Mobile" : "Ordinateur";
   let referrer = null;
-  try { if (body && body.ref) { const h = new URL(body.ref).hostname.replace(/^www\./, ""); if (h && !/soundlightprod|bookmyband|csanimations|slpdigital|slpstore|aubergejolibois|nooncoverband|getluckymusic/.test(h)) referrer = h; } } catch (e) {}
+  try { if (body && body.ref) { const h = new URL(body.ref).hostname.replace(/^www\./, ""); if (h && !/soundlightprod|bookmyband|csanimations|slpdigital|slpstore|aubergejolibois|nooncoverband/.test(h)) referrer = h; } } catch (e) {}
   const isBot = BOT_UA_RE.test(ua) || (network && HOSTING_RE.test(network)) ? 1 : 0;
   return { network, device, referrer, isBot };
 }
