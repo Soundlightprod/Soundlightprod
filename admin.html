@@ -4032,7 +4032,9 @@
     const lv = pts[0];
     if (lv){
       const [ld, lt] = parisDT(lv.visited_at).split(' ');
-      document.getElementById('kpiLastVisit').textContent = `${(ld||'').split('-').reverse().join('/')} à ${(lt||'').slice(0,5)}`;
+      const _pd = (d) => new Intl.DateTimeFormat('fr-CA', { timeZone:'Europe/Paris' }).format(d);
+      const _j = ld === _pd(new Date()) ? "aujourd'hui" : ld === _pd(new Date(Date.now() - 86400000)) ? 'hier' : (ld||'').split('-').reverse().join('/');
+      document.getElementById('kpiLastVisit').textContent = `${_j} à ${(lt||'').slice(0,5)}`;
       document.getElementById('kpiLastVisitSub').textContent = [[lv.city, lv.region].filter(Boolean).join(', ') || lv.country || 'Lieu inconnu', pageLabel(lv.page)].join(' · ');
     } else { document.getElementById('kpiLastVisit').textContent = '—'; document.getElementById('kpiLastVisitSub').textContent = ''; }
     const max = top.length ? top[0][1] : 1;
