@@ -68,6 +68,12 @@
     #tab-crm .crm-badge{display:inline-block;border-radius:100px;padding:3px 11px;font-size:.82rem;font-weight:700;background:rgba(139,92,246,.25);color:#d6c6ff;margin-right:4px}
     #tab-crm .crm-badge.client{background:rgba(47,155,255,.25);color:#b9dcff}
     #tab-crm .crm-row.nouv{background:linear-gradient(90deg,rgba(255,176,32,.22),rgba(255,176,32,.08));border-color:var(--amber);box-shadow:inset 4px 0 0 var(--amber)}
+    #tab-crm .crm-row.prop{background:linear-gradient(90deg,rgba(168,85,247,.24),rgba(168,85,247,.08));border-color:#a855f7;box-shadow:inset 4px 0 0 #a855f7}
+    #tab-crm .crm-row.devis{background:linear-gradient(90deg,rgba(47,155,255,.26),rgba(47,155,255,.08));border-color:#2f9bff;box-shadow:inset 4px 0 0 #2f9bff}
+    #tab-crm .crm-row.signe{background:linear-gradient(90deg,rgba(34,197,94,.26),rgba(34,197,94,.08));border-color:#22c55e;box-shadow:inset 4px 0 0 #22c55e}
+    #tab-crm .crm-badge.prop{background:#a855f7;color:#fff}
+    #tab-crm .crm-badge.devis{background:#2f9bff;color:#04121f}
+    #tab-crm .crm-badge.signe{background:#22c55e;color:#04180b}
     #tab-crm .crm-badge.nouv{background:var(--amber);color:#1b1300}
     #tab-crm .crm-badge.late{background:rgba(255,77,125,.3);color:#ffc2d3}
     #tab-crm .crm-badge.prio{background:rgba(255,178,56,.3);color:#ffe0a8}
@@ -126,6 +132,7 @@
   }
 
   const isNouv = (c) => c.statut === 'prospect' && c.etape === 'nouveau';
+  const clsEtat = (c) => isNouv(c) ? ' nouv' : c.statut === 'client' ? ' signe' : c.statut === 'prospect' && c.etape === 'devis' ? ' devis' : c.statut === 'prospect' && c.etape === 'proposition' ? ' prop' : '';
   const isMarque = (c) => (c.marque || 'slp') === marque;
   function filtered() {
     return all.filter((c) => {
@@ -177,9 +184,9 @@
       const d = last(c), q = lastQ(c);
       const ex = d && d.x ? (d.x.length > 90 ? d.x.slice(0, 90) + '…' : d.x) : '';
       const sub = [sousNom(c), c.ville, c.categorie].filter(Boolean).map(ce).join(' · ');
-      return `<div class="crm-row${isNouv(c) ? ' nouv' : ''}" data-id="${c.id}">
+      return `<div class="crm-row${clsEtat(c)}" data-id="${c.id}">
         <div class="c-nom"><h4>${c.priorite ? '⭐ ' : ''}${ce(nomAff(c))}</h4><div class="crm-sub">${sub}</div>${c.prochaine_action ? `<div class="crm-sub">→ ${ce(c.prochaine_action)}</div>` : ''}</div>
-        <div class="c-etape">${isNouv(c) ? '<span class="crm-badge nouv">🆕 Nouvelle demande</span>' : ''}${c.statut === 'client' ? '<span class="crm-badge client">Client</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : isNouv(c) ? '' : `<span class="crm-badge">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
+        <div class="c-etape">${isNouv(c) ? '<span class="crm-badge nouv">🆕 Nouvelle demande</span>' : ''}${c.statut === 'client' ? '<span class="crm-badge signe">✅ Devis signé</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : isNouv(c) ? '' : `<span class="crm-badge${c.etape === 'devis' ? ' devis' : c.etape === 'proposition' ? ' prop' : ''}">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
           ${late ? `<span class="crm-badge late">⏰ relance ${fmtD(c.date_relance)}</span>` : c.date_relance ? `<span class="crm-sub">relance ${fmtD(c.date_relance)}</span>` : ''}</div>
         <div class="c-last">${d ? `<b>${fmtDT(q)}</b><span class="crm-sub">${ce(TL(d.t))}${ex ? ' · ' + ce(ex) : ''}</span>` : '<span class="crm-sub">Aucun échange noté</span>'}</div>
         <div class="c-money">${offLines(c)}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
