@@ -164,8 +164,8 @@ footer::before{content:''; position:absolute; left:0; right:0; top:0; height:4px
 @media (min-width:1011px) and (max-width:1179px){ nav ul{gap:18px !important;} nav a{font-size:.8rem !important;} }
 
 /* Accroche d'en-tête, entre le logo et le menu */
-.brand::after{content:'Notre objectif : vous simplifier l’événementiel et faire vibrer votre public.'; display:none; margin-left:6px; max-width:430px; font-family:'Caveat','Segoe Script','Bradley Hand',cursive; font-style:normal; font-weight:600; font-size:1.35rem; line-height:1.1; color:rgba(247,245,240,.92); white-space:normal; transform:rotate(-2deg);}
-html[lang^="en"] .brand::after{content:'Our goal: to simplify event planning for you and thrill your audience.';}
-html[lang^="es"] .brand::after{content:'Nuestro objetivo: simplificarle la organización de eventos y hacer vibrar a su público.';}
-html[lang^="it"] .brand::after{content:'Il nostro obiettivo: semplificarvi l’organizzazione di eventi e far vibrare il vostro pubblico.';}
+.brand::after{content:'Nos objectifs : Vous simplifier l’évènementiel - Faire Vibrer votre public'; display:none; margin-left:6px; max-width:430px; font-family:'Caveat','Segoe Script','Bradley Hand',cursive; font-style:normal; font-weight:600; font-size:1.35rem; line-height:1.1; color:rgba(247,245,240,.92); white-space:normal; transform:rotate(-2deg);}
+html[lang^="en"] .brand::after{content:'Our goals: Simplifying event planning for you - Thrilling your audience';}
+html[lang^="es"] .brand::after{content:'Nuestros objetivos: Simplificarle la organización de eventos - Hacer vibrar a su público';}
+html[lang^="it"] .brand::after{content:'I nostri obiettivi: Semplificarvi l’organizzazione di eventi - Far vibrare il vostro pubblico';}
 @media (min-width:1500px){ .brand::after{display:block;} }
