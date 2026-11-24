@@ -2484,7 +2484,7 @@ export default {
            FROM page_visits WHERE ` + siteWhere(url) + ` GROUP BY site, artist_slug ORDER BY total DESC`
         ).all();
         const grandTotal = await env.DB.prepare("SELECT COUNT(*) as n FROM page_visits WHERE " + siteWhere(url)).first();
-        const u2 = new URL(url); u2.searchParams.delete("site"); const bySite = await env.DB.prepare("SELECT site, COUNT(*) as n FROM page_visits WHERE " + siteWhere(u2) + " GROUP BY site").all(); return { grand_total: grandTotal?.n || 0, pages: results, by_site: bySite.results }; });
+        const u2 = new URL(url); u2.searchParams.delete("site"); const bySite = await env.DB.prepare("SELECT site, COUNT(*) as n, COUNT(DISTINCT COALESCE(session_id, id)) as visites FROM page_visits WHERE " + siteWhere(u2) + " GROUP BY site").all(); return { grand_total: grandTotal?.n || 0, pages: results, by_site: bySite.results }; });
       }
 
       // GET /api/admin/visits-map?period=today|week|month|all — points géolocalisés pour la carte (admin)
