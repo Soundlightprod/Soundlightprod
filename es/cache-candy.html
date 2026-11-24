@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cache Candy — Sound Light Prod</title>
-<meta name="description" content="Cache Candy, dúo pop-rock electro distribuido por SLP para sus eventos.">
+<title>Cache Candy – dúo de pop-rock electrónico en directo para contratar | Sound Light Prod</title>
+<meta name="description" content="Cache Candy, dúo de pop-rock electrónico representado por SLP para sus eventos.">
 <meta name="keywords" content="tribute ABBA, tribute Calogero, tribute Bee Gees, tribute Phil Collins, tribute Kool and the Gang, tribute Matmatah, tribute Balavoine, tribute Barry White, tribute Céline Dion, espectáculo tributo, banda tributo, cabaret, grupo de versiones, DJ, música en directo, concierto, festival, boda, gala, fiesta privada, sonido e iluminación, productor de espectáculos, Francia">
 <style>
   :root{
@@ -182,6 +182,7 @@
 <link rel="alternate" hreflang="x-default" href="https://soundlightprod.fr/cache-candy">
 <style>.lang-switch{display:flex;gap:2px;margin-left:18px;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;letter-spacing:0.04em}.lang-switch a{color:var(--muted);text-decoration:none;padding:4px 7px;border:1px solid transparent;border-radius:4px;transition:color .2s ease,border-color .2s ease}.lang-switch a:hover{color:var(--paper)}.lang-switch a.on{color:var(--paper);border-color:var(--line)}</style>
 <!-- i18n:end -->
+<link rel="preload" as="image" href="/images/cache-candy-photo-cropped-800.webp" imagesrcset="images/cache-candy-photo-cropped-480.webp 480w, images/cache-candy-photo-cropped-800.webp 800w, images/cache-candy-photo-cropped-1200.webp 1200w" imagesizes="(max-width:900px) 92vw, 560px" fetchpriority="high">
 <link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/charte.css?v=3">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -189,6 +190,54 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0C0A14">
 <link rel="canonical" href="https://soundlightprod.com/es/cache-candy">
+<style id="fiche-v2">
+/* Fiche spectacle v2  */
+.fiche-hero{position:relative; padding:96px 24px 26px;}
+.fiche-hero-inner>*{min-width:0;}
+.fiche-hero-inner{max-width:none; margin:0 auto; display:grid; grid-template-columns:1.05fr .95fr; grid-template-areas:"text photo" "resume photo"; column-gap:44px; row-gap:18px; align-items:start;}
+.fiche-text{grid-area:text;} .fiche-photo{grid-area:photo; margin:0; border-radius:20px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,.45); aspect-ratio:3/2; background:var(--ink-2); align-self:center;}
+.fiche-photo img{display:block; width:100%; height:100%; object-fit:cover;}
+.fiche-resume{grid-area:resume;}
+.fiche-text .breadcrumb{display:block; margin-bottom:14px; color:var(--muted); font-size:.85rem;} .fiche-text .breadcrumb a{color:var(--muted); text-decoration:none;}
+.fiche-text .label{display:block; margin-bottom:10px;}
+.fiche-text h1{font-size:clamp(2.1rem,5vw,3.4rem); line-height:1.02; margin-bottom:12px;}
+.promesse{color:var(--paper); font-size:1.05rem; line-height:1.5; max-width:46ch;}
+.resume{list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0; margin:0 0 18px;}
+.resume li{background:var(--ink-2); border:1px solid var(--line); border-radius:14px; padding:12px 12px 12px; display:flex; flex-direction:column; gap:2px;}
+.resume strong{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.55rem; line-height:1; color:var(--gold);}
+.resume span{font-size:.82rem; color:var(--muted); line-height:1.35;}
+.fiche-actions{display:flex; flex-wrap:wrap; gap:12px;}
+.fiche-actions .btn{min-height:52px; padding:0 24px; justify-content:center; font-size:1rem;}
+.fiche-note{margin-top:12px; font-size:.85rem; color:var(--muted);}
+@media (max-width:900px){
+  .fiche-hero{padding:88px 20px 18px;}
+  .fiche-hero-inner{grid-template-columns:minmax(0,1fr); grid-template-areas:"text" "photo" "resume"; row-gap:16px;}
+  .fiche-actions .btn{flex:1 1 100%;}
+  .resume{grid-template-columns:1fr 1fr 1fr; gap:8px;} .resume li{padding:10px 9px;} .resume strong{font-size:1.3rem;} .resume span{font-size:.74rem;}
+}
+.video16x9{position:relative; aspect-ratio:16/9; border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#000;}
+.video16x9 iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+.video-tabs{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:12px;}
+.video-tabs button{min-height:44px; padding:0 18px; border-radius:100px; background:transparent; color:var(--paper); border:1.5px solid rgba(255,255,255,.25); font:inherit; font-weight:700; cursor:pointer;}
+.video-tabs button[aria-pressed="true"]{background:var(--paper); color:var(--ink);}
+.video-tabs button:focus-visible,.video-alt:focus-visible,.fiche-actions .btn:focus-visible,.gal a:focus-visible,.show-card:focus-visible,summary:focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+.video-alt{color:var(--muted); font-size:.9rem; margin-left:auto; padding:10px 4px;}
+.gal{list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+@media (max-width:600px){ .gal{grid-template-columns:1fr 1fr;} }
+.gal a{display:block; aspect-ratio:3/2; border-radius:12px; overflow:hidden; background:var(--ink-2);} .gal img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s;} .gal a:hover img{transform:scale(1.05);}
+.gal-more{margin-top:12px;} .gal-more summary,.bio-more summary{cursor:pointer; font-weight:700; padding:12px 0; min-height:44px; color:var(--amber);} .gal-more .gal{margin-top:6px;}
+.bio-text p{color:var(--paper); line-height:1.6; margin-bottom:12px; max-width:70ch;} .bio-more p{margin-top:12px;}
+.show-grid{list-style:none; padding:0; margin:0; display:grid; gap:14px; grid-template-columns:repeat(3,1fr);} @media (max-width:600px){ .show-grid{grid-template-columns:1fr 1fr;} .show-grid li:last-child{grid-column:1/-1;} .show-grid li:last-child .show-card{aspect-ratio:16/9;} }
+.show-card{position:relative; display:flex; flex-direction:column; border-radius:18px; overflow:hidden; border:1px solid var(--line); text-decoration:none; color:var(--paper); background:var(--ink-2);}
+.show-card img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+.show-card .shade{position:absolute; inset:0; background:linear-gradient(180deg,rgba(12,10,20,0) 18%,rgba(12,10,20,.82) 52%,rgba(12,10,20,.98) 100%);}
+.show-card .info{position:absolute; left:0; right:0; bottom:0; padding:14px; display:flex; flex-direction:column; gap:4px;}
+.show-card .tag{font-family:'DM Mono',monospace; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold);} .show-card strong{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.15rem; line-height:1.1;} .show-card .go{font-size:.82rem; font-weight:700; margin-top:2px;}
+:target{scroll-margin-top:96px;} html{scroll-padding-top:96px;}
+.show-card img{position:static !important; display:block; width:100%; height:auto !important; aspect-ratio:3/2; object-fit:cover;} .show-card .shade{display:none;} .show-card .info{position:static !important; padding:12px 14px 14px;}
+.extra-sec .info-grid{margin-top:4px;}
+</style>
+<style>.tag-excl{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px 10px;padding:3px 10px;border-radius:100px;background:var(--gold);color:var(--ink);font-weight:700;font-size:.78rem;vertical-align:middle}</style><style id="sim-tag">.show-card .tag{border:0 !important; background:none !important; padding:0 !important; box-shadow:none !important; height:auto !important; min-height:0 !important; display:block !important;}</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoObject", "name": "Cache Candy – Wake Me Up (en directo) | Dúo de pop-rock electrónico", "description": "Cache Candy, dúo de pop-rock electrónico representado por SLP para sus eventos.", "thumbnailUrl": ["https://i.ytimg.com/vi/yX4MbyWqZc0/hqdefault.jpg"], "uploadDate": "2026-10-08T12:00:00+02:00", "duration": "PT4M11S", "embedUrl": "https://www.youtube-nocookie.com/embed/yX4MbyWqZc0", "contentUrl": "https://www.youtube.com/watch?v=yX4MbyWqZc0"}</script>
 <style id="cta-photo">
 .cta-band .wrap.tight{padding-top:64px !important;padding-bottom:64px !important}
 .cta-band h2{font-size:clamp(1.9rem,4vw,2.8rem) !important}
@@ -209,7 +258,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
 <header>
   <div class="nav-wrap">
     <a href="./" class="brand">
-      <img src="/slp-sigle.png" alt="SLP - Sound Light Prod">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
     </a>
     <nav>
       <ul>
@@ -217,31 +266,24 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
         <li><a href="artistes" class="current">Artistas y espectáculos</a></li>
         <li><a href="concepts">Nuestros conceptos</a></li>
         <li><a href="galerie">Galería</a></li>
-        <li><a href="contact" class="nav-cta">Contacto</a></li>
+                <li><a href="contact" class="nav-cta">Contacto</a></li>
       </ul>
     </nav>
     <div class="lang-switch" aria-label="Language"><a href="https://soundlightprod.fr/cache-candy" hreflang="fr" lang="fr">FR</a><a href="https://soundlightprod.com/en/cache-candy" hreflang="en" lang="en">EN</a><a href="https://soundlightprod.com/es/cache-candy" hreflang="es" lang="es" class="on" aria-current="true">ES</a><a href="https://soundlightprod.com/it/cache-candy" hreflang="it" lang="it">IT</a></div>
-    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+    <button class="burger" type="button" aria-label="Menú" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
   </div>
 </header>
 
-<section class="page-hero pm-cinepage pm-has-slides"><div class="pm-slides" aria-hidden="true"><div class="pm-slide on"><img src="/images/cache-candy-photo-cropped-1200.webp" srcset="/images/cache-candy-photo-cropped-480.webp 480w, /images/cache-candy-photo-cropped-800.webp 800w, /images/cache-candy-photo-cropped-1200.webp 1200w" sizes="100vw" width="1200" height="945" alt="" fetchpriority="high"></div></div>
-  <div class="hero-blocks" aria-hidden="true"><div class="hb hb1"></div><div class="hb hb2"></div></div>
-  <div class="hero-art" aria-hidden="true" style="--glow:rgba(252,128,36,.55)">
-    <img src="/cache-candy-silhouette.png" alt="">
-    <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span>
-  </div>
-  <div class="page-hero-inner">
-    <span class="breadcrumb"><a href="pop-francaise">← Pop francés</a></span>
-    <span class="label">Pop-Rock Electro</span>
-    <h1>Cache Candy</h1>
-    <p>Un dúo nacido en 2008, entre baladas nostálgicas y energía electro-pop: más de 300 conciertos por toda Francia.</p>
-    <div class="tags">
-      <span class="tag" style="background:var(--gold); color:var(--ink); font-weight:700; box-shadow:none; display:inline-flex; align-items:center; gap:6px;"><img src="/slp-sigle.png" alt="" style="height:11px; width:auto; display:block;" loading="lazy" decoding="async">Exclusiva</span>
-    </div>
-  </div>
-</section>
-
+<section class="fiche-hero pm-cine" id="top"><div class="fiche-hero-inner"><div class="fiche-text">
+      <span class="breadcrumb"><a href="pop-francaise">← Pop francés</a></span>
+      <span class="label">Pop-Rock electrónico</span><span class="tag-excl"><img src="/slp-sigle.png" alt="" height="11">Exclusiva</span><h1>Cache Candy</h1><p class="promesse">Un dúo nacido en 2008, entre baladas nostálgicas y energía electro-pop: más de 300 conciertos por toda Francia.</p></div>
+    <figure class="fiche-photo"><img src="/images/cache-candy-photo-cropped-800.webp" srcset="/images/cache-candy-photo-cropped-480.webp 480w, /images/cache-candy-photo-cropped-800.webp 800w, /images/cache-candy-photo-cropped-1200.webp 1200w" sizes="(max-width:900px) 92vw, 560px" width="800" height="630" alt="Cache Candy en el escenario" fetchpriority="high" decoding="async"></figure>
+    <div class="fiche-resume"><ul class="resume" aria-label="Lo esencial del espectáculo"><li><strong>2008</strong><span>año de creación del dúo</span></li><li><strong>300+</strong><span>conciertos en Francia</span></li><li><strong>2026</strong><span>nuevo álbum HAPPY END.</span></li></ul>
+      <div class="fiche-actions"><a href="contact?artiste=cache-candy&amp;nom=Cache%20Candy#contact-form" class="btn btn-primary" data-contact="devis">Pedir presupuesto para este espectáculo</a><a href="#extrait" class="btn btn-ghost">Ver el extracto en directo</a></div>
+      <p class="fiche-note">Primera respuesta rápida; presupuesto detallado tras comprobar la fecha y sus necesidades.</p></div></div></section>
+<div class="fiche-body">
+<section class="extrait" id="extrait"><div class="wrap tight narrow"><div class="section-head"><span class="label">Ver</span><h2>El extracto en directo</h2></div>
+    <div class="video16x9"><iframe id="videoFrame" src="https://www.youtube-nocookie.com/embed/yX4MbyWqZc0?controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&fs=0&disablekb=1&cc_load_policy=0" title="Cache Candy (vídeo)" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="video-tabs"><a class="video-alt" id="videoAlt" href="https://www.youtube.com/watch?v=yX4MbyWqZc0" target="_blank" rel="noopener">Abrir en YouTube</a></div></div></section>
 <section id="actus-section" style="display:none;">
   <div class="wrap tight narrow">
     <div class="section-head">
@@ -251,66 +293,19 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
     <div class="actus-list" id="actus-list"></div>
   </div>
 </section>
-
-<section>
-  <div class="wrap tight">
-    <div class="bio-wrap">
-      <div class="logo-frame">
-        <img src="/cache-candy-circles-transparent.png" srcset="/images/cache-candy-circles-transparent-480.webp 480w" sizes="(max-width:700px) 100vw, 1100px" alt="Cache Candy" style="object-fit:contain; width:100%; height:100%; border-radius:0;" loading="lazy" decoding="async">
-      </div>
-      <div class="bio-text">
-        <p>Cache Candy es un dúo pop-rock electro formado en 2008. Descubierto por una discográfica y una distribuidora, el proyecto ha publicado varios EP y un álbum, y ha dado más de 300 conciertos en Francia.</p>
-        <p>El grupo ha creado un universo "Electro Pop Love", entre baladas nostálgicas y temas enérgicos que unen al público, íntegramente escritos, compuestos y producidos por ellos mismos con un exigente enfoque DIY. Su trayectoria lo ha llevado hasta las playas del Mediterráneo, ante más de 20 000 personas.</p>
-        <p>En 2017, Cache Candy fue elegido "mejor grupo del Gran Suroeste" y quedó segundo en un concurso organizado por NRJ12 entre más de 800 candidatos.</p>
-        <p>Hoy, el grupo continúa la aventura en formato dúo, en el que la voz, la batería y los instrumentos se intercambian a lo largo del directo, y publica su nuevo álbum, <em>HAPPY END.</em>, el 1 de octubre de 2026: 15 temas para escuchar ya.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap tight narrow">
-    <div class="section-head">
-      <span class="label">Ver</span>
-      <h2>El vídeo</h2>
-    </div>
-    <div class="video-wrap">
-      <iframe src="https://www.youtube.com/embed/yX4MbyWqZc0?controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&fs=0&disablekb=1&cc_load_policy=0" title="Cache Candy (vidéo)" style="position:absolute; inset:0; width:100%; height:100%; border:0;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap tight narrow">
-    <div class="section-head">
-      <span class="label">En imágenes</span>
-      <h2>En el escenario</h2>
-    </div>
-    <div class="photo-grid">
-      <a href="/cache-candy-live-1.jpg"><img src="/cache-candy-live-1.jpg" srcset="/images/cache-candy-live-1-480.webp 480w" sizes="(max-width:700px) 100vw, 1100px" alt="Cache Candy en concierto" loading="lazy"></a>
-      <a href="/cache-candy-live-2.jpg"><img src="/cache-candy-live-2.jpg" alt="Cache Candy en concierto, público" loading="lazy"></a>
-      <a href="/cache-candy-live-3.jpg"><img src="/cache-candy-live-3.jpg" alt="Cache Candy en concierto acústico" loading="lazy"></a>
-    </div>
-  </div>
-</section>
-
-<section>
+<section class="extra-sec">
   <div class="wrap tight">
     <div class="banner-photo" style="padding:0; overflow:hidden; border-radius:20px; aspect-ratio:3/4; max-width:520px; margin:0 auto;">
       <img src="/cache-candy-duo-walk.jpg" srcset="/images/cache-candy-duo-walk-480.webp 480w, /images/cache-candy-duo-walk-800.webp 800w" sizes="(max-width:700px) 100vw, 1100px" alt="Cache Candy — identidad visual del álbum HAPPY END" style="width:100%; height:100%; object-fit:cover;" loading="lazy" decoding="async">
     </div>
   </div>
-</section>
-
-<section>
+</section><section class="extra-sec">
   <div class="wrap tight">
     <div class="banner-photo" style="padding:0; overflow:hidden; border-radius:20px; aspect-ratio:1140/1040;">
       <img src="/cache-candy-photo-cropped.jpg" srcset="/images/cache-candy-photo-cropped-480.webp 480w, /images/cache-candy-photo-cropped-800.webp 800w, /images/cache-candy-photo-cropped-1200.webp 1200w" sizes="(max-width:700px) 100vw, 1100px" alt="Cache Candy" style="width:100%; height:100%; object-fit:cover;" loading="lazy" decoding="async">
     </div>
   </div>
-</section>
-
-<section>
+</section><section class="extra-sec">
   <div class="wrap tight">
     <div class="section-head">
       <span class="label">Nuevo álbum · publicado el 1 de octubre de 2026</span>
@@ -318,9 +313,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
     </div>
     <iframe style="border-radius:14px;" src="https://open.spotify.com/embed/album/3GNShN3xnZucCOJkYoMTkh?utm_source=generator&theme=0" width="100%" height="452" title="Cache Candy — HAPPY END (Spotify)" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
   </div>
-</section>
-
-<section>
+</section><section class="extra-sec">
   <div class="wrap tight">
     <div class="section-head">
       <span class="label">Donde han tocado</span>
@@ -334,9 +327,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
       <div class="venue-card">Les Étoiles — Paris</div>
     </div>
   </div>
-</section>
-
-<section>
+</section><section class="extra-sec">
   <div class="wrap tight">
     <div class="info-grid">
       <div class="info-item"><span class="mark">→</span><p>5,9K seguidores en Facebook</p></div>
@@ -345,19 +336,24 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
     </div>
   </div>
 </section>
+<section><div class="wrap tight narrow"><div class="section-head"><span class="label">En imágenes</span><h2>En escena</h2></div><ul class="gal"><li><a href="/cache-candy-live-1.jpg" data-lightbox><img src="/images/cache-candy-live-1-480.webp" srcset="/images/cache-candy-live-1-480.webp 480w" sizes="(max-width:600px) 46vw, 280px" width="800" height="1000" alt="Cache Candy en concierto" loading="lazy" decoding="async"></a></li><li><a href="/cache-candy-live-2.jpg" data-lightbox><img src="/images/cache-candy-live-2-414.webp" srcset="/images/cache-candy-live-2-414.webp 414w" sizes="(max-width:600px) 46vw, 280px" width="800" height="800" alt="Cache Candy en concierto, público" loading="lazy" decoding="async"></a></li><li><a href="/cache-candy-live-3.jpg" data-lightbox><img src="/images/cache-candy-live-3-414.webp" srcset="/images/cache-candy-live-3-414.webp 414w" sizes="(max-width:600px) 46vw, 280px" width="800" height="800" alt="Cache Candy en concierto acústico" loading="lazy" decoding="async"></a></li></ul></div></section>
+<section><div class="wrap tight narrow bio"><div class="section-head"><span class="label">El espectáculo</span><h2>El dúo Cache Candy</h2></div><div class="bio-text"><p>Cache Candy es un dúo pop-rock electro formado en 2008. Descubierto por una discográfica y una distribuidora, el proyecto ha publicado varios EP y un álbum, y ha dado más de 300 conciertos en Francia.</p><p>El grupo ha creado un universo "Electro Pop Love", entre baladas nostálgicas y temas enérgicos que unen al público, íntegramente escritos, compuestos y producidos por ellos mismos con un exigente enfoque DIY. Su trayectoria lo ha llevado hasta las playas del Mediterráneo, ante más de 20 000 personas.</p><details class="bio-more"><summary>Leer más</summary><p>En 2017, Cache Candy fue elegido "mejor grupo del Gran Suroeste" y quedó segundo en un concurso organizado por NRJ12 entre más de 800 candidatos.</p><p>Hoy, el grupo continúa la aventura en formato dúo, en el que la voz, la batería y los instrumentos se intercambian a lo largo del directo, y publica su nuevo álbum, <em>HAPPY END.</em>, el 1 de octubre de 2026: 15 temas para escuchar ya.</p></details></div></div></section>
 
+
+</div>
 <section class="cta-band">
   <div class="wrap tight">
     <span class="label">¿Quiere programarlos?</span>
     <h2>Reserve a Cache Candy<br>para su evento</h2>
-    <p>Un espectáculo seleccionado y aprobado por SLP. Le asesoramos, le apoyamos y coordinamos toda la logística de su evento. Primera respuesta rápida; presupuesto detallado tras comprobar fechas y necesidades.</p>
+    <p>Un espectáculo seleccionado y aprobado por SLP. Le asesoramos, le acompañamos y coordinamos toda la logística de su evento. Primera respuesta rápida; presupuesto detallado tras comprobar sus fechas y necesidades.</p>
     <div class="cta-row">
-      <a href="contact?artiste=cache-candy&amp;nom=Cache%20Candy" class="btn btn-primary" data-contact="devis">Pedir presupuesto</a>
-      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>+33 6 31 94 96 53</a>
+      <a href="tel:+33631949653" class="btn btn-ghost" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>06 31 94 96 53</a>
       <a href="https://wa.me/33631949653?text=Hola%2C%20les%20contacto%20por%20Cache%20Candy%20%28web%20de%20SLP%29%3A%20" target="_blank" rel="noopener" class="btn btn-ghost cta-wa" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>WhatsApp</a>
     </div>
   </div>
 </section>
+<section><div class="wrap tight narrow"><div class="section-head"><span class="label">Para descubrir también</span><h2>Espectáculos similares</h2></div><ul class="show-grid three"><li><a class="show-card" href="alchimie"><img src="/images/alchimie-banniere-800.webp" srcset="/images/alchimie-banniere-480.webp 480w, /images/alchimie-banniere-800.webp 800w, /images/alchimie-banniere-1200.webp 1200w" sizes="(max-width:600px) 46vw, 300px" width="800" height="447" alt="Alchimie en el escenario" loading="lazy" decoding="async"><span class="info"><span class="tag">Grupo de versiones</span><strong>Alchimie</strong><span class="go">Ver el espectáculo →</span></span></a></li><li><a class="show-card" href="noon-coverband"><img src="/images/noon-photo-1-480.webp" srcset="/images/noon-photo-1-480.webp 480w" sizes="(max-width:600px) 46vw, 300px" width="800" height="1043" alt="NooN Coverband en el escenario" loading="lazy" decoding="async"><span class="info"><span class="tag">Grupo de versiones</span><strong>NooN Coverband</strong><span class="go">Ver el espectáculo →</span></span></a></li></ul></div></section>
+
 
 <footer>
   <div class="footer-wrap">
@@ -378,7 +374,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
     <div class="footer-col">
       <h4>Contacto</h4>
       <a href="mailto:contact@soundlightprod.fr" data-contact="mail">contact@soundlightprod.fr</a>
-      <a href="tel:+33631949653" data-contact="appel">+33 6 31 94 96 53</a>
+      <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
     </div>
     <div class="footer-col">
       <h4>Síganos</h4>
@@ -465,7 +461,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
   @media (max-width:760px){ .ctabar{display:flex;} body{padding-bottom:76px;} }
   @media (prefers-reduced-motion: reduce){ .ctabar{transition:none;} }
 </style>
-<nav class="ctabar" aria-label="Contact"><a class="b1" href="contact?artiste=cache-candy&amp;nom=Cache%20Candy" data-contact="devis">Pedir presupuesto</a><a class="b2" href="tel:+33631949653" aria-label="Llamar" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Llamar</a><a class="b3" href="https://wa.me/33631949653?text=Hola%2C%20les%20contacto%20por%20Cache%20Candy%20%28web%20de%20SLP%29%3A%20" target="_blank" rel="noopener" aria-label="WhatsApp" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg></a></nav>
+<nav class="ctabar" aria-label="Contacto"><a class="b1" href="contact?artiste=cache-candy&amp;nom=Cache%20Candy#contact-form" data-contact="devis">Pedir presupuesto</a><a class="b2" href="tel:+33631949653" aria-label="Llamar" data-contact="appel"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Llamar</a><a class="b3" href="https://wa.me/33631949653?text=Hola%2C%20les%20contacto%20por%20Cache%20Candy%20%28web%20de%20SLP%29%3A%20" target="_blank" rel="noopener" aria-label="WhatsApp" data-contact="whatsapp"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg></a></nav>
 <script>
 (function(){
   var slug = "es/cache-candy";
@@ -515,7 +511,7 @@ body:has(.ctabar) .cta-band p{margin-bottom:0 !important}
 })();
 </script>
 <script>
-document.querySelectorAll('.photo-grid a').forEach(function(a){
+document.querySelectorAll('.gal a').forEach(function(a){
   a.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openLightbox(a.getAttribute('href')); });
 });
 </script>
