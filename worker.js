@@ -486,6 +486,9 @@ async function ensureChatTables(env) {
     env.DB.prepare("CREATE TABLE IF NOT EXISTS push_msgs (id INTEGER PRIMARY KEY AUTOINCREMENT, h TEXT NOT NULL, title TEXT, body TEXT, url TEXT, created_at TEXT DEFAULT (datetime('now')))"),
   ]);
   try { await env.DB.prepare("ALTER TABLE push_subs ADD COLUMN crm INTEGER NOT NULL DEFAULT 0").run(); } catch (e) { /* colonne déjà présente */ }
+  // Alertes « nouvelle visite » (SuiviStats) : visites = 1 → cet appareil ne reçoit que ces alertes ; visites_sites = sites choisis (vide = tous).
+  try { await env.DB.prepare("ALTER TABLE push_subs ADD COLUMN visites INTEGER NOT NULL DEFAULT 0").run(); } catch (e) { /* colonne déjà présente */ }
+  try { await env.DB.prepare("ALTER TABLE push_subs ADD COLUMN visites_sites TEXT").run(); } catch (e) { /* colonne déjà présente */ }
   chatTablesReady = true;
 }
 
@@ -509,7 +512,9 @@ const endpointHash = async (endpoint) => [...new Uint8Array(await crypto.subtle.
 async function sendAdminPush(env, opts) {
   await ensureChatTables(env);
   const crmOnly = !!(opts && opts.crm);
-  const subs = (await env.DB.prepare(crmOnly ? "SELECT id, endpoint FROM push_subs WHERE crm = 1" : "SELECT id, endpoint FROM push_subs").all()).results || [];
+  const visitsOnly = !!(opts && opts.visits);
+  let subs = (await env.DB.prepare(visitsOnly ? "SELECT id, endpoint, visites_sites FROM push_subs WHERE visites = 1" : crmOnly ? "SELECT id, endpoint FROM push_subs WHERE crm = 1 AND visites = 0" : "SELECT id, endpoint FROM push_subs WHERE visites = 0").all()).results || [];
+  if (visitsOnly && opts.site) subs = subs.filter((s) => !s.visites_sites || s.visites_sites.split(",").includes(opts.site));
   if (!subs.length) return;
   if (opts && opts.msg) {
     await env.DB.prepare("DELETE FROM push_msgs WHERE created_at < datetime('now', '-1 day')").run();
@@ -2335,7 +2340,46 @@ export default {
             }
           } catch (e) { /* ne bloque jamais l'enregistrement de la visite */ }
         }
+        // Alerte « nouvelle visite » (SuiviStats) : à la première page d'une visite réelle, juste après son enregistrement.
+        if (!vp.isBot && session_id) {
+          try {
+            const me = await env.DB.prepare("SELECT COUNT(*) AS n, MIN(is_bot) AS b FROM page_visits WHERE session_id = ?").bind(session_id).first();
+            if (me && me.n === 1 && me.b === 0) {
+              const SITE_NOMS = { slp: "SLP", bmb: "Book My Band", csa: "CS Animations", store: "Boutique", digital: "SLP Digital", jolibois: "Auberge Jolibois", noon: "NooN Coverband" };
+              const lieu = [cf.city, cf.region].filter(Boolean).join(", ") || cf.country || "lieu inconnu";
+              const alerte = sendAdminPush(env, { visits: true, site, msg: { title: "Nouvelle visite · " + (SITE_NOMS[site] || site), body: lieu + " · " + artist_slug + (vp.device ? " · " + vp.device : ""), url: "/" } });
+              if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(alerte); else await alerte;
+            }
+          } catch (e) { /* ne bloque jamais l'enregistrement de la visite */ }
+        }
         return json({ ok: true }, 200, origin);
+      }
+
+      // Alertes « nouvelle visite » sur un appareil (SuiviStats) : clé publique, abonnement + sites choisis, test, arrêt
+      if (url.pathname.startsWith("/api/admin/visits-push-")) {
+        if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+        await ensureChatTables(env);
+        if (url.pathname === "/api/admin/visits-push-key" && request.method === "GET") { const v = await getVapid(env); return json({ ok: true, key: v.pub }, 200, origin); }
+        if (request.method === "POST") {
+          const body = await request.json().catch(() => ({}));
+          const sub = body.subscription || {};
+          if (url.pathname === "/api/admin/visits-push-subscribe") {
+            if (!sub.endpoint || !/^https:\/\//.test(sub.endpoint)) return json({ error: "Abonnement invalide" }, 400, origin);
+            const sites = (Array.isArray(body.sites) ? body.sites : []).filter((s) => TRACKED_SITES.includes(s)).join(",");
+            await env.DB.prepare("INSERT INTO push_subs (endpoint, p256dh, auth, created_at, visites, visites_sites) VALUES (?,?,?,datetime('now'),1,?) ON CONFLICT(endpoint) DO UPDATE SET p256dh = excluded.p256dh, auth = excluded.auth, visites = 1, visites_sites = excluded.visites_sites")
+              .bind(sub.endpoint, String((sub.keys && sub.keys.p256dh) || "").slice(0, 200) || null, String((sub.keys && sub.keys.auth) || "").slice(0, 100) || null, sites || null).run();
+            return json({ ok: true }, 200, origin);
+          }
+          if (url.pathname === "/api/admin/visits-push-off") {
+            if (sub.endpoint) await env.DB.prepare("DELETE FROM push_subs WHERE endpoint = ? AND visites = 1").bind(sub.endpoint).run();
+            return json({ ok: true }, 200, origin);
+          }
+          if (url.pathname === "/api/admin/visits-push-test") {
+            await sendAdminPush(env, { visits: true, msg: { title: "Alertes de visites activées", body: "Tu seras prévenu ici dès qu'un visiteur arrive sur un de tes sites.", url: "/" } });
+            return json({ ok: true }, 200, origin);
+          }
+        }
+        return json({ error: "Introuvable" }, 404, origin);
       }
 
       // GET /api/admin/visits-journey?session=<id> — toutes les pages vues dans la même session (admin)
