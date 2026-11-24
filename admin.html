@@ -3953,6 +3953,14 @@
       document.getElementById('periodTotalLabel').textContent = `${data.total || 0} page(s) vue(s) sur la période`;
       loadSocialStats();
       document.getElementById('kpiVisits').textContent = data.total || 0;
+      if (data.cloudflare){
+        const c = data.cloudflare; const jr = c.jours > 1 ? ' (somme des visiteurs de chaque jour)' : '';
+        document.getElementById('kpiUnique').textContent = c.visiteurs || 0;
+        document.getElementById('kpiUniqueSub').textContent = (c.visiteurs ? (data.total / c.visiteurs).toFixed(1).replace('.', ',') + ' page(s) vue(s) par visiteur' : '') + jr;
+        document.getElementById('kpiTopPage').textContent = '—'; document.getElementById('kpiTopPageSub').textContent = 'non relevé par Cloudflare';
+        document.getElementById('kpiMobile').textContent = '—'; document.getElementById('kpiMobileSub').textContent = 'non relevé par Cloudflare';
+        document.getElementById('periodTotalLabel').textContent = `${data.total || 0} page(s) vue(s) sur la période · source Cloudflare (robots compris)`;
+      }
       const renderList = (sel, list, dim) => {
         const rows = (list || []).slice(0, 12); const max = Math.max(1, ...rows.map(r => r.total));
         document.querySelector(sel + ' tbody').innerHTML = rows.length ? rows.map(row => `
@@ -4015,6 +4023,11 @@
 
   // ---- Visites v2 : indicateurs, pages les plus vues, flux des dernières visites ----
   function renderVisitsInsights(points){
+    if (currentVisitsSite === 'jolibois'){ // Auberge Jolibois : chiffres Cloudflare, posés par loadVisitsBreakdown
+      document.getElementById('vzTopPages').innerHTML = '<p class="vz-note">Pas de détail par page : Cloudflare ne le relève pas.</p>';
+      document.getElementById('vzFeed').innerHTML = '<p class="vz-note">Pas de flux de visites : Cloudflare ne relève que des totaux par jour.</p>';
+      return;
+    }
     const pts = (points || []);
     const sessions = new Set(pts.map(p => p.session_id).filter(Boolean));
     const uniq = sessions.size || pts.length;

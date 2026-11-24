@@ -808,6 +808,23 @@ function periodCutoff(period) {
   return null;
 }
 
+// Auberge Jolibois : pas de script de suivi sur le site, ses visites viennent des statistiques Cloudflare relevées chaque jour dans cf_jours
+// (toutes requêtes, robots compris). Renvoie null pour les autres sites, sinon la clause WHERE et ses paramètres.
+function cfJoliboisFilter(url) {
+  if (url.searchParams.get("site") !== "jolibois") return null;
+  const re = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+  const f = url.searchParams.get("from"), t = url.searchParams.get("to");
+  const w = ["site = 'jolibois'"]; const p = [];
+  if (f && re.test(f)) { w.push("jour >= ?"); p.push(f); }
+  else if (!(f || t)) { const c = periodCutoff(url.searchParams.get("period")); if (c) { w.push("jour >= ?"); p.push(c.slice(0, 10)); } }
+  if (t && re.test(t)) { w.push("jour <= ?"); p.push(t); }
+  return { where: w.join(" AND "), params: p };
+}
+async function cfJoliboisRows(env, url) {
+  const f = cfJoliboisFilter(url);
+  try { return (await env.DB.prepare("SELECT jour, requetes, pages_vues, visiteurs_uniques, pays_json FROM cf_jours WHERE " + f.where + " ORDER BY jour").bind(...f.params).all()).results || []; } catch (e) { return []; }
+}
+
 const FR_SITE = "https://soundlightprod.fr";
 const INTL_SITE = "https://soundlightprod.com";
 const INTL_LANGS = ["en", "es", "it"];
@@ -2460,6 +2477,7 @@ export default {
         return cachedAdminJson(url, 120, origin, async () => {
         const granularity = url.searchParams.get("granularity") === "month" ? "month" : "day";
         const substrLen = granularity === "month" ? 7 : 10;
+        if (cfJoliboisFilter(url)) { const u2 = new URL(url); u2.searchParams.delete("period"); const by = {}; for (const r of await cfJoliboisRows(env, u2)) { const k = r.jour.slice(0, substrLen); by[k] = (by[k] || 0) + (r.pages_vues || 0); } return { granularity, points: Object.entries(by).map(([period, count]) => ({ period, count })) }; }
         const { results } = await env.DB.prepare(
           `SELECT substr(visited_at, 1, ${substrLen}) as period, COUNT(*) as count
            FROM page_visits
@@ -2473,6 +2491,7 @@ export default {
       if (url.pathname === "/api/admin/visits-summary" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         return cachedAdminJson(url, 120, origin, async () => {
+        if (cfJoliboisFilter(url)) { const u2 = new URL(url); u2.searchParams.delete("period"); const rows = await cfJoliboisRows(env, u2); const tot = rows.reduce((a, r) => a + (r.pages_vues || 0), 0); const un = new URL(url); un.searchParams.delete("site"); const bySite = (await env.DB.prepare("SELECT site, COUNT(*) as n FROM page_visits WHERE " + siteWhere(un) + " GROUP BY site").all()).results.filter((r) => r.site !== "jolibois"); const all = await env.DB.prepare("SELECT COALESCE(SUM(pages_vues), 0) AS n FROM cf_jours WHERE site = 'jolibois'").first(); bySite.push({ site: "jolibois", n: all?.n || 0 }); return { grand_total: tot, pages: [], by_site: bySite, cloudflare: true }; }
         const { results } = await env.DB.prepare(
           `SELECT site, artist_slug as page, COUNT(*) as total, MAX(visited_at) as last_visit
            FROM page_visits WHERE ` + siteWhere(url) + ` GROUP BY site, artist_slug ORDER BY total DESC`
@@ -2485,6 +2504,7 @@ export default {
       if (url.pathname === "/api/admin/visits-map" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         return cachedAdminJson(url, 120, origin, async () => {
+        if (cfJoliboisFilter(url)) return [];
         const cutoff = periodCutoff(url.searchParams.get("period"));
         const { results } = await env.DB.prepare(
           `SELECT id, artist_slug as page, city, region, country, latitude, longitude, visited_at, session_id, site, network, device, referrer, is_bot, postal_code, lang, domaine
@@ -2499,6 +2519,7 @@ export default {
       if (url.pathname === "/api/admin/visits-breakdown" && request.method === "GET") {
         if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
         return cachedAdminJson(url, 120, origin, async () => {
+        if (cfJoliboisFilter(url)) { const rows = await cfJoliboisRows(env, url); const pays = {}; for (const r of rows) { try { for (const [c, n] of JSON.parse(r.pays_json || "[]")) pays[c] = (pays[c] || 0) + n; } catch (e) {} } return { total: rows.reduce((a, r) => a + (r.pages_vues || 0), 0), cloudflare: { visiteurs: rows.reduce((a, r) => a + (r.visiteurs_uniques || 0), 0), requetes: rows.reduce((a, r) => a + (r.requetes || 0), 0), jours: rows.length }, retours: null, by_country: Object.entries(pays).sort((a, b) => b[1] - a[1]).map(([label, total]) => ({ label, total })), by_region: [], by_city: [], by_postal: [], by_network: [], by_device: [], by_lang: [], store_redirects: null, by_domain: [], by_lang_place: [], by_referrer: [] }; }
         const cutoff = periodCutoff(url.searchParams.get("period"));
         const byCountry = await env.DB.prepare(
           `SELECT COALESCE(country, 'Inconnu') as label, COUNT(*) as total FROM page_visits
