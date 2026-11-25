@@ -856,6 +856,13 @@ function renamedProductPath(path) {
   return null;
 }
 
+// Page anglaise de la boutique demandée → fichier à servir (null : pas une page anglaise de la boutique)
+function storeEnglishAsset(path) {
+  if (path === "/en/") return "/store-en/boutique";
+  if (/^\/en\/(boutique-merci|contact-boutique|produits\/[a-z0-9-]+)$/.test(path)) return `/store-en/${path.slice(4)}`;
+  return null;
+}
+
 // Renvoie une redirection si la requête n'est pas sur le bon domaine pour sa langue, sinon null.
 function routeDomain(request, url) {
   const host = url.hostname.toLowerCase();
@@ -879,6 +886,12 @@ function routeDomain(request, url) {
       return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
     }
     if (path === "/" || path === "/sitemap.xml") return null; // réécrits vers boutique / sitemap-store.xml dans fetch
+    // Version anglaise : adresses /en/… (fichiers dans store-en/, le dossier en/ étant celui du .com)
+    if (path === "/en") return redirect(`${STORE_SITE}/en/${url.search}`);
+    if (path.startsWith("/store-en/")) return redirect(`${STORE_SITE}/en/${path.slice(10)}${url.search}`);
+    if (/^\/en\/(boutique(\.html)?|index\.html)$/.test(path)) return redirect(`${STORE_SITE}/en/${url.search}`);
+    if (path.startsWith("/en/") && path.endsWith(".html")) return redirect(`${STORE_SITE}${path.replace(/\.html$/, "")}${url.search}`);
+    if (storeEnglishAsset(path)) return null;
     // /boutique et /boutique.html → racine (même contenu, une seule adresse)
     if (/^\/boutique(\.html)?$/.test(path)) return redirect(`${STORE_SITE}/${url.search}`);
     if (path.startsWith("/produits/") && path.endsWith(".html")) return redirect(`${STORE_SITE}${path.replace(/\.html$/, "")}${url.search}`);
@@ -894,6 +907,11 @@ function routeDomain(request, url) {
     if (/^\/boutique(\.html)?$/.test(path)) return redirect(`${STORE_SITE}/${url.search}`);
     if (path.startsWith("/produits/")) return redirect(`${STORE_SITE}${path.replace(/\.html$/, "")}${url.search}`);
     if (/^\/cgv-boutique(\.html)?$/.test(path)) return redirect(`${STORE_SITE}/cgv-boutique${url.search}`);
+  }
+
+  // Les fichiers anglais de la boutique ne sont visibles que sur slpstore.fr
+  if (path.startsWith("/store-en/") && /soundlightprod\.(fr|com)$/.test(host)) {
+    return redirect(`${STORE_SITE}/en/${path.slice(10).replace(/^boutique(\.html)?$/, "").replace(/\.html$/, "")}`);
   }
 
   // Ancienne fiche DJ provisoire remplacée par la fiche DJ Animation
@@ -1358,7 +1376,7 @@ export default {
 
     // slpstore.fr : la racine affiche la boutique, /sitemap.xml sert le sitemap de la boutique
     if (STORE_MODE !== "off" && isStoreHost(url.hostname.toLowerCase()) && request.method === "GET") {
-      const rewrite = url.pathname === "/" ? "/boutique" : url.pathname === "/sitemap.xml" ? "/sitemap-store.xml" : null;
+      const rewrite = url.pathname === "/" ? "/boutique" : url.pathname === "/sitemap.xml" ? "/sitemap-store.xml" : storeEnglishAsset(url.pathname);
       if (rewrite) return env.ASSETS.fetch(new Request(new URL(rewrite + url.search, url.origin), request));
     }
 

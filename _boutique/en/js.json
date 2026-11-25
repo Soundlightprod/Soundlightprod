@@ -1,0 +1,392 @@
+{
+ "boutique": [
+  [
+   "function money(cents){ return (cents/100).toFixed(2).replace('.', ',') + ' €'; }",
+   "function money(cents){ return '€' + (cents/100).toFixed(2); }"
+  ],
+  [
+   "function moneyHT(cents){ return (cents/120).toFixed(2).replace('.', ',') + ' € HT'; }",
+   "function moneyHT(cents){ return '€' + (cents/120).toFixed(2) + ' excl. VAT'; }"
+  ],
+  [
+   "lumiere:{ name:'Éclairage scénique' }",
+   "lumiere:{ name:'Stage lighting' }"
+  ],
+  [
+   "effets:{ name:'Machines à effets' }",
+   "effets:{ name:'Effect machines' }"
+  ],
+  [
+   "consommables:{ name:'Consommables' }",
+   "consommables:{ name:'Consumables' }"
+  ],
+  [
+   "['Stroboscopes', /strobe/i",
+   "['Strobes', /strobe/i"
+  ],
+  [
+   "['Barres LED & Sunstrips', ",
+   "['LED bars & Sunstrips', "
+  ],
+  [
+   "['DMX & contrôle', ",
+   "['DMX & control', "
+  ],
+  [
+   "['Projecteurs PAR', ",
+   "['PAR lights', "
+  ],
+  [
+   "['Lyres & projecteurs mobiles', ",
+   "['Moving heads', "
+  ],
+  [
+   "['Projecteurs & floods', ",
+   "['Fixtures & floods', "
+  ],
+  [
+   "const subOf = p => SUBS.find(s => s[1].test(p.name))",
+   "const subOf = p => SUBS.find(s => s[1].test(p.fr || p.name))"
+  ],
+  [
+   "const name = plain(p.name), ref = plain(p.slug + ' slp-' + p.id), desc = plain(p.description),",
+   "const name = plain(p.name + ' ' + (p.fr || '')), ref = plain(p.slug + ' slp-' + p.id), desc = plain((p.description || '') + ' ' + (p.description || '').split('|').map(s => EN[s.trim()] || '').join(' ')),"
+  ],
+  [
+   "href=\"/produits/${p.slug}\"",
+   "href=\"/en/produits/${p.slug}\""
+  ],
+  [
+   "−${promoPct(p)} %</span>",
+   "−${promoPct(p)}%</span>"
+  ],
+  [
+   "<span class=\"badge-new\">Nouveau</span>",
+   "<span class=\"badge-new\">New</span>"
+  ],
+  [
+   "'Photo à venir'",
+   "'Photo coming soon'"
+  ],
+  [
+   "onclick=\"addToCart(${p.id})\">Ajouter</button>",
+   "onclick=\"addToCart(${p.id})\">Add</button>"
+  ],
+  [
+   "const line = `<p class=\"pack-line\"><b>Lot de ${i.n}</b>, soit ${money(i.unit)} l'unité${i.save > 0 ? `<span class=\"save\">${money(i.save)} d'économie par rapport à ${i.n} achetés séparément</span>` : ''}</p>`;",
+   "const line = `<p class=\"pack-line\"><b>Set of ${i.n}</b>, ${money(i.unit)} each${i.save > 0 ? `<span class=\"save\">save ${money(i.save)} compared with buying ${i.n} separately</span>` : ''}</p>`;"
+  ],
+  [
+   "list.find(p => p.image && re.test(p.name))",
+   "list.find(p => p.image && re.test(p.fr || p.name))"
+  ],
+  [
+   "<span class=\"pill\">Découvrir</span></a>`;",
+   "<span class=\"pill\">Discover</span></a>`;"
+  ],
+  [
+   "tile('t-lum', '#lumiere', 'Éclairage scénique'",
+   "tile('t-lum', '#lumiere', 'Stage lighting'"
+  ],
+  [
+   "tile('t-etc', '#effets', 'Machines à effets'",
+   "tile('t-etc', '#effets', 'Effect machines'"
+  ],
+  [
+   "tile('t-con', '#consommables', 'Consommables'",
+   "tile('t-con', '#consommables', 'Consumables'"
+  ],
+  [
+   "tile('t-new', '#nouveautes', 'Nouveautés'",
+   "tile('t-new', '#nouveautes', 'New arrivals'"
+  ],
+  [
+   "const pct = promoPct(one), end = new Date(PROMO.jusqu_au).toLocaleDateString('fr-FR'",
+   "const pct = promoPct(one), end = new Date(PROMO.jusqu_au).toLocaleDateString('en-GB'"
+  ],
+  [
+   "const pct = promoPct(ly), end = new Date(PROMO.jusqu_au).toLocaleDateString('fr-FR'",
+   "const pct = promoPct(ly), end = new Date(PROMO.jusqu_au).toLocaleDateString('en-GB'"
+  ],
+  [
+   "const d = new Date(PROMO.jusqu_au).toLocaleDateString('fr-FR'",
+   "const d = new Date(PROMO.jusqu_au).toLocaleDateString('en-GB'"
+  ],
+  [
+   "document.getElementById('bfTag').textContent = PROMO.nom + ' · jusqu\\'au ' + end;",
+   "document.getElementById('bfTag').textContent = PROMO.nom + ' · until ' + end;"
+  ],
+  [
+   "document.getElementById('bf2Tag').textContent = PROMO.nom + ' · jusqu\\'au ' + end;",
+   "document.getElementById('bf2Tag').textContent = PROMO.nom + ' · until ' + end;"
+  ],
+  [
+   "document.getElementById('bfBig').textContent = '−' + pct + ' %';",
+   "document.getElementById('bfBig').textContent = '−' + pct + '%';"
+  ],
+  [
+   "document.getElementById('bfBadge').textContent = '−' + pct + ' %';",
+   "document.getElementById('bfBadge').textContent = '−' + pct + '%';"
+  ],
+  [
+   "document.getElementById('bf2Big').textContent = '−' + pct + ' %';",
+   "document.getElementById('bf2Big').textContent = '−' + pct + '%';"
+  ],
+  [
+   "document.getElementById('bf2Badge').textContent = '−' + pct + ' %';",
+   "document.getElementById('bf2Badge').textContent = '−' + pct + '%';"
+  ],
+  [
+   "'Barres Sunstrip halogènes 10×50W';",
+   "'10×50W halogen Sunstrip bars';"
+  ],
+  [
+   "</s> TTC'",
+   "</s> incl. VAT'"
+  ],
+  [
+   "' · lot de ' + packInfo(q).n + ' : <b>'",
+   "' · set of ' + packInfo(q).n + ': <b>'"
+  ],
+  [
+   "+ '. Livraison partout en France.';",
+   "+ '. Delivery across France only.';"
+  ],
+  [
+   "</s> TTC le lot de 2 lyres wash 19×8W RGBW, zoom motorisé. Livraison partout en France.';",
+   "</s> incl. VAT for a set of 2 19×8W RGBW wash moving heads with motorised zoom. Delivery across France only.';"
+  ],
+  [
+   "'Barres Sunstrip 10×50W et lyres wash 220W à prix réduit, jusqu\\'au ' + d + ' inclus.';",
+   "'10×50W Sunstrip bars and 220W wash moving heads at reduced prices, until ' + d + ' inclusive.';"
+  ],
+  [
+   "b.setAttribute('aria-label', 'Offre ' + (k + 1));",
+   "b.setAttribute('aria-label', 'Offer ' + (k + 1));"
+  ],
+  [
+   "`<button data-s=\"\" class=\"${!curSub?'active':''}\">Tout<i>",
+   "`<button data-s=\"\" class=\"${!curSub?'active':''}\">All<i>"
+  ],
+  [
+   "opts.ranked ? 'Trier : pertinence' : 'Trier : sélection';",
+   "opts.ranked ? 'Sort: relevance' : 'Sort: featured';"
+  ],
+  [
+   "a.name.localeCompare(b.name, 'fr')",
+   "a.name.localeCompare(b.name, 'en')"
+  ],
+  [
+   "list.length + ' article' + (list.length > 1 ? 's' : '');",
+   "list.length + ' item' + (list.length > 1 ? 's' : '');"
+  ],
+  [
+   "'Aucun article pour le moment.'",
+   "'No items at the moment.'"
+  ],
+  [
+   "title: 'Résultats pour « ' + q + ' »'",
+   "title: 'Results for “' + q + '”'"
+  ],
+  [
+   "empty: 'Aucun produit ne correspond à cette recherche.'",
+   "empty: 'No product matches this search.'"
+  ],
+  [
+   "title:'Tout le catalogue'",
+   "title:'Full catalogue'"
+  ],
+  [
+   "title:'Nouveautés'",
+   "title:'New arrivals'"
+  ],
+  [
+   "products = await res.json();",
+   "products = await res.json();\n      products.forEach(p => { p.fr = p.name; p.name = EN[p.name] || p.name; });"
+  ],
+  [
+   ">Catalogue indisponible pour le moment.</p>';\n      document.getElementById('grid')",
+   ">The catalogue is unavailable at the moment.</p>';\n      document.getElementById('grid')"
+  ],
+  [
+   "document.getElementById('grid').innerHTML = '<p style=\"color:var(--muted);\">Catalogue indisponible pour le moment.</p>';",
+   "document.getElementById('grid').innerHTML = '<p style=\"color:var(--muted);\">The catalogue is unavailable at the moment.</p>';"
+  ],
+  [
+   ".test(nrm(p.name));",
+   ".test(nrm(p.fr || p.name));"
+  ],
+  [
+   "FX_KEYS.find(k => nrm(p.name).includes(k))",
+   "FX_KEYS.find(k => nrm(p.fr || p.name).includes(k))"
+  ],
+  [
+   "onclick=\"addToCart(${q.id})\">Ajouter</button></div>",
+   "onclick=\"addToCart(${q.id})\">Add</button></div>"
+  ],
+  [
+   "cart.push({ product_id: id, name: p.name,",
+   "cart.push({ product_id: id, name: p.fr || p.name,"
+  ],
+  [
+   "return 'Livraison estimée : environ ' + days + ' jour' + (days > 1 ? 's' : '') + ' après la commande.';",
+   "return 'Estimated delivery in France: about ' + days + ' day' + (days > 1 ? 's' : '') + ' after ordering.';"
+  ],
+  [
+   "' Délai du produit le plus long de votre panier.'",
+   "' Based on the longest lead time in your basket.'"
+  ],
+  [
+   "'<br>Livraison au plus tard sous ' + max + ' ' + (LIV.delai_max_unite || 'jours') + ' : engagement SLP, repris dans votre confirmation de commande.'",
+   "'<br>Delivery within ' + max + ' ' + ((LIV.delai_max_unite || 'jours') === 'jours ouvrés' ? 'working days' : 'days') + ' at the latest: SLP commitment, stated in your order confirmation.'"
+  ],
+  [
+   "itemsEl.innerHTML = '<p class=\"cart-empty\">Votre panier est vide.</p>';",
+   "itemsEl.innerHTML = '<p class=\"cart-empty\">Your basket is empty.</p>';"
+  ],
+  [
+   "<span>${c.name}</span>",
+   "<span>${EN[c.name] || c.name}</span>"
+  ],
+  [
+   "aria-label=\"Retirer une unité de ${c.name.replace(/\"/g, '&quot;')}\"",
+   "aria-label=\"Remove one ${(EN[c.name] || c.name).replace(/\"/g, '&quot;')}\""
+  ],
+  [
+   "aria-label=\"Ajouter une unité de ${c.name.replace(/\"/g, '&quot;')}\"",
+   "aria-label=\"Add one ${(EN[c.name] || c.name).replace(/\"/g, '&quot;')}\""
+  ],
+  [
+   "<b>N'oubliez pas le consommable de votre machine</b>",
+   "<b>Don't forget the consumable for your machine</b>"
+  ],
+  [
+   "<span>Sous-total</span>",
+   "<span>Subtotal</span>"
+  ],
+  [
+   "<span>Livraison en France</span>",
+   "<span>Delivery in France</span>"
+  ],
+  [
+   ": 'Offerte') + '</span></div>'",
+   ": 'Free') + '</span></div>'"
+  ],
+  [
+   "'<span class=\"hint\">Plus que ' + money(10000 - total) + ' pour la livraison offerte</span>'",
+   "'<span class=\"hint\">' + money(10000 - total) + ' more for free delivery</span>'"
+  ],
+  [
+   "opacity:.7\">soit ' + moneyHT(total)",
+   "opacity:.7\">' + moneyHT(total)"
+  ],
+  [
+   "{ son:'Son', lumiere:'Lumière', effets:'Effets', consommables:'Consommables' }",
+   "{ son:'Sound', lumiere:'Lighting', effets:'Effects', consommables:'Consumables' }"
+  ],
+  [
+   "specs.map(s => `<li>${s}</li>`).join('')",
+   "specs.map(s => `<li>${EN[s] || s}</li>`).join('')"
+  ],
+  [
+   "'<li>Caractéristiques à venir.</li>'",
+   "'<li>Specifications coming soon.</li>'"
+  ],
+  [
+   "<b>À prévoir avec cette machine (vendu séparément)</b>",
+   "<b>You will also need (sold separately)</b>"
+  ],
+  [
+   "'Merci d\\'accepter les conditions générales de vente.'",
+   "'Please accept the terms and conditions of sale.'"
+  ],
+  [
+   "'Merci de renseigner votre nom et votre email.'",
+   "'Please enter your name and email.'"
+  ],
+  [
+   "'Redirection vers le paiement…'",
+   "'Redirecting to payment…'"
+  ],
+  [
+   "customer_name: name, customer_email: email, customer_phone: phone",
+   "customer_name: name, customer_email: email, customer_phone: phone"
+  ],
+  [
+   "data.error || 'Erreur'",
+   "data.error || 'Error'"
+  ],
+  [
+   "msgEl.textContent = e.message;",
+   "msgEl.textContent = ({ 'Panier vide': 'Your basket is empty.', 'Aucun article valide': 'No valid item in the basket.' })[e.message] || e.message;"
+  ],
+  [
+   "<div class=\"need-row\"><span>${q.name}</span>",
+   "<div class=\"need-row\"><span>${q.name}</span>"
+  ],
+  [
+   "artist_slug: \"boutique\", session_id: sid,",
+   "artist_slug: \"boutique\", lang: \"en\", session_id: sid,"
+  ],
+  [
+   "sessionStorage.removeItem('slp_lang');",
+   "sessionStorage.setItem('slp_lang', 'en');"
+  ]
+ ],
+ "contact": [
+  [
+   "disponibilite:\"Disponibilité d'un produit\"",
+   "disponibilite:\"Disponibilité d'un produit\""
+  ],
+  [
+   "bad('nom', 'Indiquez votre nom.')",
+   "bad('nom', 'Please enter your name.')"
+  ],
+  [
+   "bad('email', 'Indiquez une adresse email valide.')",
+   "bad('email', 'Please enter a valid email address.')"
+  ],
+  [
+   "bad('telephone', 'Ce numéro semble trop court.')",
+   "bad('telephone', 'This number looks too short.')"
+  ],
+  [
+   "bad('sujet', 'Choisissez le motif de votre demande.')",
+   "bad('sujet', 'Please choose a reason for your enquiry.')"
+  ],
+  [
+   "bad('message', 'Précisez votre demande en quelques mots.')",
+   "bad('message', 'Please describe your enquiry in a few words.')"
+  ],
+  [
+   "page: '/contact-boutique', site: 'store', lang: 'fr',",
+   "page: '/en/contact-boutique', site: 'store', lang: 'en',"
+  ],
+  [
+   "show('ok', 'Merci, votre demande est bien enregistrée' + (x.d.reference ? ' (référence ' + x.d.reference + ')' : '') + '. Nous vous répondons par email.');",
+   "show('ok', 'Thank you, your enquiry has been recorded' + (x.d.reference ? ' (reference ' + x.d.reference + ')' : '') + '. We will reply by email.');"
+  ],
+  [
+   "if (x.d && x.d.champ && x.d.champ !== 'captcha') setErr(x.d.champ, x.d.error || '');",
+   "if (x.d && x.d.champ && x.d.champ !== 'captcha') setErr(x.d.champ, 'Please check this field.');"
+  ],
+  [
+   "show('ko', (x.d && x.d.error) || 'Votre demande n’a pas pu être envoyée. Réessayez, ou écrivez-nous à contact@slpstore.fr.');",
+   "show('ko', 'Your enquiry could not be sent. Please check the form, including the anti-spam answer, and try again, or email us at contact@slpstore.fr.');"
+  ],
+  [
+   "'Connexion impossible. Réessayez dans un instant, ou écrivez-nous à contact@slpstore.fr.'",
+   "'No connection. Please try again shortly, or email us at contact@slpstore.fr.'"
+  ]
+ ],
+ "merci": [
+  [
+   "textContent=\"Livraison estimée : environ \"+d+\" jour\"+(d>1?\"s\":\"\")+\" après la commande.\"+(l.delai_max_engage_jours>0?\" Engagement SLP : au plus tard sous \"+l.delai_max_engage_jours+\" \"+(l.delai_max_unite||\"jours\")+\".\":\"\");",
+   "textContent=\"Estimated delivery in France: about \"+d+\" day\"+(d>1?\"s\":\"\")+\" after ordering.\"+(l.delai_max_engage_jours>0?\" SLP commitment: within \"+l.delai_max_engage_jours+\" \"+((l.delai_max_unite||\"jours\")===\"jours ouvrés\"?\"working days\":\"days\")+\" at the latest.\":\"\");"
+  ],
+  [
+   "artist_slug: \"boutique-merci\",",
+   "artist_slug: \"boutique-merci\", lang: \"en\","
+  ]
+ ]
+}

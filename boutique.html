@@ -3,7 +3,9 @@
 <head>
 <script src="https://soundlightprod.fr/consent.js" data-legal="/mentions-legales-boutique"></script>
 <meta charset="UTF-8">
+<script>try{if(sessionStorage.getItem("slp_lang")==="en"&&/(^|\.)stripe\.com\//.test(document.referrer.replace(/^https:\/\//,"")))location.replace("/en/")}catch(e){}</script>
 <link rel="canonical" href="https://slpstore.fr/">
+<link rel="alternate" hreflang="fr" href="https://slpstore.fr/"><link rel="alternate" hreflang="en" href="https://slpstore.fr/en/"><link rel="alternate" hreflang="x-default" href="https://slpstore.fr/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Boutique Matériel Son & Lumière — Livraison France | SLP Sound Light Prod</title>
 <meta name="description" content="Matériel son et lumière garanti 2 ans à tarifs préférentiels, livré partout en France, avec SLP.">
@@ -411,7 +413,7 @@
 
 <div class="shop-light">
 <!-- shopbar:start -->
-<div class="shop-top"><div class="shop-top-in"><span>Livraison partout en France</span><span>Garantie 2 ans</span><span>Paiement sécurisé</span><span>Conseils d'experts : 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</span><a class="only-store" href="https://soundlightprod.fr/">Prestations &amp; spectacles SLP ↗</a></div></div>
+<div class="shop-top"><div class="shop-top-in"><span>Livraison partout en France</span><span>Garantie 2 ans</span><span>Paiement sécurisé</span><span>Conseils d'experts : 06&nbsp;31&nbsp;94&nbsp;96&nbsp;53</span><a class="lang-switch" href="https://slpstore.fr/en/" lang="en" hreflang="en" style="color:inherit">English</a><a class="only-store" href="https://soundlightprod.fr/">Prestations &amp; spectacles SLP ↗</a></div></div>
 <div class="shop-bar"><div class="shop-bar-in">
   <a class="shop-name" href="/boutique.html"><img class="shop-logo" src="/slp-store-logo.png" width="340" height="202" alt="SLP Store — Boutique SLP"></a>
   <form class="shop-search" action="/boutique.html" method="get" role="search"><input type="search" name="q" placeholder="Rechercher un produit (par, lyre, strobe, étincelles…)" aria-label="Rechercher"><button type="submit" aria-label="Rechercher">🔍</button></form>
@@ -1084,6 +1086,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erreur');
       sessionStorage.removeItem('slp_cart');
+      sessionStorage.removeItem('slp_lang');
       window.location.href = data.url;
     } catch(e){
       msgEl.textContent = e.message;

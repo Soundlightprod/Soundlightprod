@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://soundlightprod.fr/consent.js" data-legal="/mentions-legales-boutique"></script>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://slpstore.fr/en/">
+<link rel="alternate" hreflang="fr" href="https://slpstore.fr/"><link rel="alternate" hreflang="en" href="https://slpstore.fr/en/"><link rel="alternate" hreflang="x-default" href="https://slpstore.fr/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sound &amp; Lighting Equipment — Delivery in France | SLP Store</title>
+<meta name="description" content="Sound and lighting equipment with a 2-year warranty at great prices, delivered across France by SLP.">
+<meta name="robots" content="index, follow">
+<style>
+  :root{
+    --ink: #0c0a14; --ink-2: #17142a;
+    --paper: #f7f5f0; --muted: #a9a4bc;
+    --gold: #fbc608;
+    --violet: #8c3290; --blue: #3259be; --amber: #fc8024; --pink: #ff0953;
+    --line: rgba(255,255,255,0.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; line-height:1.6; overflow-x:hidden;}
+  .label{font-family:'DM Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber);}
+  h1,h2,h3{font-family:'League Spartan', sans-serif; font-weight:800; letter-spacing:-0.02em; color:var(--paper); line-height:1.05;}
+
+  /* Domaine slpstore.fr : uniquement la boutique, sans le menu du site principal */
+  .need-box{margin-top:6px; padding:12px 14px; border:1px dashed #3259be; border-radius:12px; background:#f3f6ff; color:#14213d; font-size:.86rem;}
+  .need-box b{display:block; margin-bottom:6px; font-size:.86rem;}
+  .need-row{display:flex; align-items:center; gap:10px; padding:6px 0; border-top:1px solid #dfe5f5;} .need-row:first-of-type{border-top:0;}
+  .need-row span{flex:1; line-height:1.25;} .need-row em{font-style:normal; font-weight:700; white-space:nowrap;}
+  .need-row button{background:#14213d; color:#fff; border:0; border-radius:100px; padding:7px 14px; font-weight:700; font-size:.8rem; cursor:pointer;}
+  .cart-sugg{margin:14px 0 0;} .cart-sugg .need-box{margin-top:10px;}
+  .only-store{display:none}
+  .on-store body>header{display:none}
+  .on-store .only-site{display:none}
+  .on-store a.only-store, .on-store p.only-store{display:inline}
+  .on-store img.only-store{display:inline-block; height:40px; width:auto; border-radius:0; vertical-align:middle; margin-right:10px}
+  .on-store .nav-site{display:none}
+  .shop-top a.only-store{color:#3259be; text-decoration:none; font-weight:700}
+  header{position:sticky; top:0; z-index:50; background:rgba(12,10,20,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-wrap{max-width:none; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:16px clamp(24px,3.5vw,72px);}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{height:58px; width:58px; display:block; border-radius:50%;}
+  nav ul{list-style:none; display:flex; gap:22px; flex-wrap:wrap;}
+  nav a{color:var(--muted); text-decoration:none; font-size:0.86rem; font-weight:600; transition:color 0.2s ease;}
+  nav a:hover, nav a.current{color:var(--paper);}
+  @media (max-width:1080px){ nav ul{display:none;} }
+
+  .page-hero{position:relative; padding:100px 24px 50px; overflow:hidden;}
+  .hero-blocks{position:absolute; inset:0; z-index:0;}
+  .hb{position:absolute; opacity:0.4; filter:blur(2px);}
+  .hb1{width:50vw; height:50vw; background:radial-gradient(circle, var(--blue), transparent 70%); top:-25vw; left:-10vw;}
+  .hb2{width:40vw; height:40vw; background:radial-gradient(circle, var(--amber), transparent 70%); top:-10vw; right:-10vw;}
+  .page-hero-inner{position:relative; z-index:2; max-width:800px;}
+  .page-hero h1{font-size:clamp(2.4rem, 6vw, 4rem); margin-bottom:16px;}
+  .page-hero p{color:var(--muted); font-size:1.1rem; max-width:600px;}
+
+  section{position:relative; z-index:2;}
+  .wrap{max-width:none; margin:0 auto; padding:20px clamp(24px,3.5vw,72px) 90px;}
+
+  .filters{display:flex; gap:10px; margin-bottom:32px; flex-wrap:wrap;}
+  .filter-btn{font-family:'DM Mono', monospace; font-size:0.78rem; padding:9px 18px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s ease;}
+  .filter-btn.active, .filter-btn:hover{color:var(--paper); box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:26px;}
+  .card{background:var(--ink-2); border:1px solid var(--line); border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:12px;}
+  .card-img{aspect-ratio:1/1; background:repeating-linear-gradient(45deg, #14121a, #14121a 10px, #191621 10px, #191621 20px); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.8rem; overflow:hidden; position:relative;}
+  .card-img img{width:100%; height:100%; object-fit:contain;}
+  .card-img.has-photo{background:#fff; cursor:pointer;}
+  .card-img.has-photo::after{content:'🔍 Voir les caractéristiques'; position:absolute; inset:auto 0 0 0; padding:8px 10px; background:rgba(12,10,20,0.82); color:var(--paper); font-size:0.68rem; text-align:center; font-family:'DM Mono',monospace; letter-spacing:0.03em; opacity:0; transition:opacity 0.2s ease;}
+  .card-img.has-photo:hover::after{opacity:1;}
+  .card h3{font-size:1.05rem;}
+  .card .cat{color:var(--amber); font-family:'DM Mono', monospace; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase;}
+  .card p.desc{color:var(--muted); font-size:0.82rem; flex-grow:1; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis; line-height:1.45;}
+  .card .price-row{display:flex; align-items:center; justify-content:space-between;}
+  .price{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.2rem;}
+  .price small.ht{display:block; font-family:'Instrument Sans', sans-serif; font-weight:400; font-size:.7rem; color:inherit; opacity:.7; line-height:1.2; margin-top:2px;}
+  .stock-low{color:var(--pink); font-size:0.75rem; font-family:'DM Mono', monospace;}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 20px; font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.9rem; text-decoration:none; border-radius:100px; border:none; cursor:pointer; transition:all 0.25s ease;}
+  .btn-primary{background:var(--paper); color:var(--ink);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(247,245,240,0.15);}
+  .btn-primary:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+  .btn-ghost{color:var(--paper); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.25); background:transparent;}
+  .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--paper);}
+
+  /* Panier flottant */
+  .cart-fab{position:fixed; bottom:24px; right:24px; z-index:60; background:var(--amber); color:var(--ink); width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'League Spartan',sans-serif; font-weight:800; cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,0.4); border:none;}
+  .cart-fab .count{position:absolute; top:-4px; right:-4px; background:var(--pink); color:#fff; width:22px; height:22px; border-radius:50%; font-size:0.72rem; display:flex; align-items:center; justify-content:center;}
+
+  .cart-panel{position:fixed; top:0; right:0; height:100%; width:min(420px, 100%); background:var(--ink-2); border-left:1px solid var(--line); z-index:70; transform:translateX(100%); transition:transform 0.3s ease; display:flex; flex-direction:column;}
+  .cart-panel.open{transform:translateX(0);}
+  .cart-head{padding:22px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
+  .cart-head h3{font-size:1.2rem;}
+  .cart-close{background:none; border:none; color:var(--muted); font-size:1.4rem; cursor:pointer;}
+  .cart-items{flex:1; overflow-y:auto; padding:16px 24px;}
+  .cart-item{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--line); font-size:0.9rem;}
+  .cart-item .qty-ctrl{display:flex; align-items:center; gap:8px;}
+  .cart-item .qty-ctrl button{width:24px; height:24px; border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--paper); cursor:pointer;}
+  .cart-empty{color:var(--muted); text-align:center; padding:40px 0; font-size:0.9rem;}
+  .cart-foot{padding:20px 24px; border-top:1px solid var(--line);}
+  .cart-ship{font-size:.88rem; color:var(--muted); margin-bottom:12px;} .cart-ship div{display:flex; justify-content:space-between; padding:2px 0;} .cart-ship .hint{display:block; color:#1d7a46; font-weight:600; padding-top:4px;}
+  .cart-eta{font-size:.84rem; color:var(--muted); margin:-4px 0 12px; line-height:1.4;} .cart-eta b{color:var(--navy);}
+  .eta-line{font-size:.85rem; color:var(--muted); margin:6px 0 0;}
+  .cart-total{display:flex; justify-content:space-between; margin-bottom:16px; font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.1rem;}
+  .cart-form input, .cart-form textarea{width:100%; margin-bottom:10px; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ink); color:var(--paper); font-family:'Instrument Sans', sans-serif; font-size:0.88rem;}
+  .cart-form label{display:block; font-size:.8rem; font-weight:600; margin:0 0 4px; color:var(--muted);} .cart-form label .opt{font-weight:400;}
+  /* Mobile : panneau à la hauteur visible (clavier ouvert), pied défilant pour garder total, délai et paiement accessibles */
+  .cart-panel{height:100vh; height:100dvh;}
+  .cart-foot{max-height:64vh; max-height:64dvh; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;}
+  @media (max-width:520px){
+    .cart-head{padding:14px 16px;} .cart-items{padding:8px 16px; min-height:70px;} .cart-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));}
+    .cart-item .qty-ctrl button{width:36px; height:36px; font-size:1.05rem;} .cart-close{min-width:44px; min-height:44px;}
+    .cart-form input{padding:10px 12px; font-size:1rem; margin-bottom:8px;} .cart-total{margin-bottom:10px;}
+  }
+  .cart-msg{font-size:0.82rem; margin-top:10px;}
+  .cart-msg.error{color:var(--pink);}
+  .cart-msg.ok{color:#fbc608;}
+  .overlay{position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:65; opacity:0; pointer-events:none; transition:opacity 0.3s ease;}
+  .overlay.open{opacity:1; pointer-events:auto;}
+
+  /* FICHE PRODUIT (modale caractéristiques techniques) */
+  .product-modal{position:fixed; top:50%; left:50%; transform:translate(-50%, -50%) scale(0.96); width:min(880px, 92vw); max-height:88vh; overflow-y:auto; background:var(--ink-2); border:1px solid var(--line); border-radius:18px; z-index:80; opacity:0; pointer-events:none; transition:opacity 0.25s ease, transform 0.25s ease; box-shadow:0 30px 80px rgba(0,0,0,0.5);}
+  .product-modal.open{opacity:1; pointer-events:auto; transform:translate(-50%, -50%) scale(1);}
+  .pd-close{position:absolute; top:14px; right:14px; z-index:2; width:36px; height:36px; border-radius:50%; border:none; background:rgba(12,10,20,0.7); color:var(--paper); font-size:1.3rem; cursor:pointer; line-height:1;}
+  .pd-inner{display:grid; grid-template-columns:1fr 1fr; gap:0;}
+  @media (max-width:700px){ .pd-inner{grid-template-columns:1fr;} }
+  .pd-img{background:#fff; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; border-radius:18px 0 0 18px; overflow:hidden;}
+  @media (max-width:700px){ .pd-img{border-radius:18px 18px 0 0;} }
+  .pd-img img{width:100%; height:100%; object-fit:contain;}
+  .pd-body{padding:30px 32px; display:flex; flex-direction:column; gap:10px;}
+  .pd-body h2{font-size:1.4rem;}
+  .pd-specs{list-style:none; margin:6px 0 0; padding:0; display:flex; flex-direction:column; gap:9px; flex-grow:1;}
+  .pd-specs li{color:var(--muted); font-size:0.86rem; line-height:1.4; padding-left:16px; position:relative;}
+  .pd-specs li::before{content:'—'; position:absolute; left:0; color:var(--amber);}
+
+  footer{border-top:1px solid var(--line); padding:56px 24px 36px;}
+  .footer-wrap{max-width:none; margin:0 auto; display:flex; flex-wrap:wrap; gap:36px; justify-content:space-between;}
+  .footer-brand{max-width:320px; display:flex; gap:12px;}
+  .footer-brand img{height:38px; width:38px; flex-shrink:0; border-radius:50%;}
+  .footer-brand h3{font-family:'League Spartan', sans-serif; font-weight:800; font-size:1.05rem; margin-bottom:6px; color:var(--paper);}
+  .footer-brand p{color:var(--muted); font-size:0.85rem;}
+  .footer-col h4{font-family:'DM Mono', monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;}
+  .footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:0.88rem; margin-bottom:10px;}
+  .footer-col a:hover{color:var(--paper);}
+  .legal{max-width:none; margin:44px auto 0; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:0.76rem; font-family:'DM Mono', monospace; text-align:center;}
+
+  /* Menu mobile (burger) */
+  .burger{display:none; background:none; border:1px solid var(--line); border-radius:8px; width:42px; height:42px; margin-left:10px; cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px; padding:0;}
+  .burger span{display:block; width:20px; height:2px; background:var(--paper); border-radius:2px; transition:transform .25s ease, opacity .25s ease;}
+  header.menu-open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  header.menu-open .burger span:nth-child(2){opacity:0;}
+  header.menu-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  @media (max-width:960px){
+    .burger{display:flex;}
+    .nav-wrap{position:relative; flex-wrap:nowrap;}
+    .nav-wrap .lang-switch{margin-left:auto;}
+    header.menu-open nav ul{display:flex; flex-direction:column; gap:0; position:absolute; top:100%; left:0; right:0; background:#0c0a14 !important; border-bottom:1px solid var(--line); padding:8px 24px 18px; z-index:60; box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    header.menu-open nav li{border-bottom:1px solid var(--line);}
+    header.menu-open nav li:last-child{border-bottom:0;}
+    header.menu-open nav a{display:block; padding:14px 2px; font-size:1rem;}
+  }
+  .refs{border-top:1px solid var(--line);}
+  .refs h2{margin:12px 0 28px;}
+  .refs-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:34px;}
+  @media (max-width:860px){ .refs-grid{grid-template-columns:1fr;} }
+  .refs-col h3{font-size:1rem; margin-bottom:12px;}
+  .refs-fold{padding:18px 0 26px;}
+  .refs-fold summary{cursor:pointer; color:var(--muted); font-size:.9rem; padding:6px 0; list-style:none;}
+  .refs-fold summary::-webkit-details-marker{display:none;}
+  .refs-fold summary::before{content:'▸ ';} .refs-fold details[open] summary::before{content:'▾ ';}
+  .refs-fold .refs-grid{margin-top:18px;}
+  .refs-col ul{list-style:none; padding:0; margin:0;}
+  .refs-col li{display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid var(--line); font-size:.88rem;}
+  .refs-col a{color:var(--paper); text-decoration:none;} .refs-col a:hover{text-decoration:underline;}
+  .refs-col li span{color:var(--muted); white-space:nowrap;}
+  .card h3 a{color:inherit; text-decoration:none;} .card h3 a:hover{text-decoration:underline;}
+
+  /* ===== Boutique v2 : rayons, grille compacte ===== */
+  .page-hero{padding:56px 24px 18px;}
+  .page-hero h1{font-size:clamp(2rem, 5vw, 3.2rem); margin-bottom:10px;}
+  .page-hero p{font-size:1rem;}
+  .wrap{padding-bottom:70px;}
+  .trust{list-style:none; display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:0 0 38px;}
+  .trust li{display:flex; align-items:center; gap:12px; background:var(--ink-2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-size:.82rem; color:var(--muted); line-height:1.3;}
+  .trust li b{display:block; color:var(--paper); font-size:.88rem;}
+  .trust .ic{font-size:1.4rem; flex-shrink:0;}
+  @media (max-width:900px){ .trust{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .trust li{padding:10px;} .trust .ic{font-size:1.15rem;} }
+  .intro-shop{max-width:860px; margin:0 0 38px;}
+  .intro-shop h2{font-size:1.35rem; margin:0 0 12px; color:var(--navy);}
+  .intro-shop p{color:var(--muted); font-size:.98rem; line-height:1.65; margin:0 0 10px;}
+  .intro-shop a{color:var(--navy); font-weight:600;}
+  .sec-title{font-size:1.35rem; margin:0 0 18px; display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
+  .sec-title a{font-family:'DM Mono',monospace; font-size:.74rem; font-weight:400; letter-spacing:.05em; color:var(--muted); text-decoration:none;}
+  .sec-title a:hover{color:var(--paper);}
+  .cat-tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:46px;}
+  @media (max-width:860px){ .cat-tiles{grid-template-columns:1fr;} }
+  .cat-tile{display:block; text-decoration:none; color:var(--paper); background:var(--ink-2); border:1px solid var(--line); border-radius:18px; overflow:hidden; transition:transform .25s, border-color .25s;}
+  .cat-tile:hover{transform:translateY(-4px); border-color:rgba(255,255,255,.3);}
+  .cat-tile .pics{display:flex; background:#fff; height:170px; align-items:center; justify-content:center; gap:4px; padding:10px;}
+  .cat-tile .pics img{height:100%; flex:1 1 0; min-width:0; object-fit:contain;}
+  .cat-tile .pics.emoji{background:linear-gradient(135deg,#2a2333,#14121a); font-size:4rem;}
+  .cat-tile .pics.cover{padding:0;} .cat-tile .pics.cover img{object-fit:cover; height:100%; width:100%;}
+  .cat-tile .tx{padding:16px 18px 18px; display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .cat-tile h3{font-size:1.2rem; margin-bottom:3px;}
+  .cat-tile .meta{color:var(--muted); font-size:.8rem; font-family:'DM Mono',monospace;}
+  .cat-tile .go{flex-shrink:0; width:38px; height:38px; border-radius:50%; background:var(--paper); color:var(--ink); display:flex; align-items:center; justify-content:center; font-weight:800;}
+  .crumb{font-family:'DM Mono',monospace; font-size:.76rem; letter-spacing:.05em; color:var(--muted); margin-bottom:14px;}
+  .crumb a{color:var(--muted); text-decoration:none;} .crumb a:hover{color:var(--paper);}
+  .cat-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px;}
+  .cat-head h1{font-size:clamp(1.8rem,4.5vw,2.6rem);}
+  .cat-head .cnt{color:var(--muted); font-size:.85rem; margin-left:8px; font-family:'DM Mono',monospace; font-weight:400;}
+  .sort{background:var(--ink-2); color:var(--paper); border:1px solid var(--line); border-radius:100px; padding:9px 16px; font-family:'DM Mono',monospace; font-size:.76rem;}
+  .subchips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
+  .subchips button, .tabs a{font-family:'DM Mono',monospace; font-size:.74rem; padding:8px 15px; border-radius:100px; box-shadow:inset 0 0 0 1.5px var(--line); background:transparent; color:var(--muted); cursor:pointer; border:none; text-decoration:none; transition:all .2s;}
+  .subchips button.active, .subchips button:hover, .tabs a.active, .tabs a:hover{color:var(--paper); box-shadow:inset 0 0 0 1.5px var(--paper);}
+  .subchips button i{font-style:normal; opacity:.55; margin-left:5px;}
+  .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
+  .grid-sm{display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:16px;}
+  @media (max-width:520px){ .grid-sm{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;} .grid-sm .card{min-width:0;} .grid-sm .card .price-row{flex-wrap:wrap;} }
+  .grid-sm .card{padding:10px; gap:8px; border-radius:14px;}
+  .grid-sm .card-img{aspect-ratio:1/1; max-height:190px; width:100%;}
+  .grid-sm .card-img img{padding:6%;}
+  .grid-sm .card-img.has-photo::after{display:none;}
+  .grid-sm .card h3{font-size:.92rem; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.4em;}
+  .grid-sm .card .price-row{margin-top:auto; gap:8px;}
+  .grid-sm .price{font-size:1.1rem; white-space:nowrap;}
+  @media (max-width:520px){ .grid-sm .price{font-size:.98rem;} .grid-sm .btn{padding:8px 11px !important;} }
+  .grid-sm .btn{padding:8px 14px !important; font-size:.8rem !important; min-height:0 !important; gap:0 !important;}
+  .grid-sm .btn::before, .grid-sm .btn::after{display:none !important;}
+  .grid-sm .card .desc{-webkit-line-clamp:2; font-size:.76rem;}
+  .grid-sm .card-img[style]{aspect-ratio:4/3;}
+  [hidden]{display:none !important;}
+
+  /* ===== Boutique v3 : habillage "magasin" clair ===== */
+  .shop-light{--ink:#ffffff; --ink-2:#ffffff; --paper:#14213d; --muted:#5b6475; --line:rgba(20,33,61,.14); --navy:#14213d; background:#f3f4f8; color:var(--paper);}
+  .shop-light .label{color:#c2410c;}
+  .shop-light .card{box-shadow:0 1px 3px rgba(20,33,61,.06);}
+  .shop-light .card .cat{color:#c2410c;}
+  .shop-light .btn-primary{background:#3259be !important; color:#fff !important;}
+  .shop-light .btn-primary:hover{background:#27489f !important;}
+  .shop-light .btn-primary::before{display:none !important;}
+  .shop-light .btn{min-height:46px;}
+  .shop-light .btn-primary:hover{box-shadow:0 10px 30px rgba(20,33,61,.25);}
+  .shop-light .btn-ghost{color:var(--navy) !important; box-shadow:inset 0 0 0 1.5px rgba(20,33,61,.35) !important; background:transparent !important;}
+  .shop-light .grid-sm .card-img{border:1px solid var(--line);}
+  .shop-light .refs{border-top:1px solid var(--line); background:#fff;}
+  .shop-light .refs-col a{color:var(--navy);}
+  .shop-light .cart-fab{background:#fc8024; color:#14213d;}
+  .shop-light .cart-panel{box-shadow:-10px 0 40px rgba(0,0,0,.2);}
+  .shop-light .overlay, .shop-light .product-modal{}
+  .shop-light .cart-form input, .shop-light .cart-form textarea{background:#f3f4f8;}
+  .shop-light .pd-img{border-right:1px solid var(--line);}
+
+  .shop-top{background:#e8eaf0; color:var(--navy); font-size:.78rem; font-weight:600;}
+  .shop-top-in{max-width:none; margin:0 auto; padding:8px clamp(24px,3.5vw,72px); display:flex; gap:26px; justify-content:center; flex-wrap:wrap;}
+  .shop-top span::before{content:'✓'; color:#3259be; margin-right:7px; font-weight:800;}
+  .shop-bar{background:#fff; border-bottom:1px solid var(--line);}
+  .shop-bar-in{max-width:none; margin:0 auto; padding:14px clamp(24px,3.5vw,72px); display:flex; align-items:center; gap:22px;}
+  .shop-name{font-family:'League Spartan',sans-serif; font-weight:800; font-size:1.35rem; color:var(--navy); text-decoration:none; letter-spacing:-.02em; white-space:nowrap;}
+  .shop-name i{font-style:normal; color:#8c3290;}
+  .shop-logo{display:block; height:48px; width:auto;}
+  @media (max-width:760px){ .shop-logo{height:40px;} }
+  .shop-search{flex:1; display:flex; border:1.5px solid rgba(20,33,61,.2); border-radius:100px; overflow:hidden; background:#fff;}
+  .shop-search input{flex:1; border:none; padding:12px 20px; font-family:'Instrument Sans',sans-serif; font-size:.92rem; color:var(--navy); background:transparent; min-width:0; outline:none;}
+  .shop-search button{border:none; background:transparent; padding:0 18px; cursor:pointer; font-size:1.05rem;}
+  .shop-cartlink{display:flex; flex-direction:column; align-items:center; font-size:.76rem; font-weight:700; color:var(--navy); text-decoration:none; position:relative; white-space:nowrap; line-height:1.2;}
+  .shop-cartlink b{font-size:1.3rem; font-weight:400;}
+  .shop-cartlink .n{position:absolute; top:-6px; right:-2px; background:#ff0953; color:#fff; border-radius:50%; min-width:19px; height:19px; font-size:.68rem; display:none; align-items:center; justify-content:center; padding:0 4px;}
+  .shop-nav{background:var(--navy);}
+  .shop-nav-in{max-width:none; margin:0 auto; padding:0 clamp(24px,3.5vw,72px); display:flex; gap:4px; flex-wrap:wrap;}
+  .shop-nav a.top{display:block; padding:15px 18px; color:#fff; text-decoration:none; font-weight:700; font-size:.88rem; white-space:nowrap;}
+  .shop-nav a.top:hover, .shop-nav .dd:hover > a.top{background:rgba(255,255,255,.12);}
+  .shop-nav .dd{position:relative;}
+  .shop-nav .dd-menu{display:none; position:absolute; top:100%; left:0; background:#fff; border:1px solid var(--line); border-radius:0 0 12px 12px; min-width:250px; padding:8px; z-index:40; box-shadow:0 16px 40px rgba(20,33,61,.2);}
+  .shop-nav .dd:hover .dd-menu, .shop-nav .dd:focus-within .dd-menu{display:block;}
+  .shop-nav .dd-menu a{display:block; padding:9px 12px; border-radius:8px; color:var(--navy); text-decoration:none; font-size:.86rem; font-weight:600;}
+  .shop-nav .dd-menu a:hover{background:#eef0f6;}
+  @media (max-width:760px){
+    .shop-top-in{gap:6px 16px; padding:7px 14px; justify-content:flex-start; font-size:.72rem;}
+    .shop-bar-in{flex-wrap:wrap; gap:10px 14px; padding:12px 14px;}
+    .shop-search{order:3; flex-basis:100%;}
+    .shop-nav-in{padding:0 8px; overflow-x:auto; flex-wrap:nowrap;}
+    .shop-nav a.top{padding:13px 12px; font-size:.82rem;}
+    .shop-nav .dd-menu{display:none !important;}
+  }
+
+  .hero-row{display:grid; grid-template-columns:2fr 1fr; gap:18px; margin-bottom:22px;}
+  @media (max-width:900px){ .hero-row{grid-template-columns:1fr;} }
+  .hero-ban{position:relative; border-radius:18px; overflow:hidden; min-height:330px; background:radial-gradient(circle at 80% 30%, #3b2a6e, transparent 55%), linear-gradient(135deg,#0c0a14,#1d2a5c); color:#fff; display:grid; grid-template-columns:1.1fr 1fr; align-items:center; text-decoration:none;}
+  .hero-ban .tx{padding:34px 8px 34px 38px; position:relative; z-index:2;}
+  .hero-ban .tag{display:inline-block; background:#ff0953; color:#fff; font-family:'DM Mono',monospace; font-size:.7rem; letter-spacing:.12em; padding:5px 12px; border-radius:100px; margin-bottom:14px; text-transform:uppercase;}
+  .hero-ban h2{color:#fff; font-size:clamp(1.8rem,3.6vw,2.7rem); margin-bottom:12px;}
+  .hero-ban p{color:#c9cde0; font-size:1rem; margin-bottom:22px;}
+  .hero-ban .pill{display:inline-block; background:#fff; color:#14213d; font-weight:700; padding:12px 24px; border-radius:100px; font-size:.92rem;}
+  .hero-ban .im{height:100%; display:flex; align-items:center; justify-content:center; padding:18px;}
+  .hero-ban .im img{max-height:290px; max-width:100%; object-fit:cover; -webkit-mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent); -webkit-mask-composite:source-in; mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent); mask-composite:intersect;}
+  @media (max-width:600px){ .hero-ban{grid-template-columns:1fr; min-height:0;} .hero-ban .tx{padding:18px 18px 4px;} .hero-ban .tag{margin-bottom:8px;} .hero-ban h2{font-size:1.45rem; margin-bottom:6px;} .hero-ban p{font-size:.9rem; margin-bottom:12px;} .hero-ban .pill{padding:10px 20px;} .hero-ban .im{padding:6px 18px 14px;} .hero-ban .im img{max-height:150px;}
+    .hero-row{gap:12px; margin-bottom:14px;} .hero-side{padding:16px 18px; gap:6px;} .hero-side h3{font-size:1.15rem; margin-bottom:0;} .hero-side ul{gap:6px; margin:2px 0 4px;} .hero-side li{font-size:.86rem;} .hero-side a{padding:10px; font-size:.86rem;} }
+  .hero-ban[hidden]{display:none;}
+  .hero-bf{margin-bottom:18px; min-height:300px; grid-template-columns:1.25fr 1fr; background:radial-gradient(circle at 78% 40%, rgba(255,212,0,.30), transparent 55%), linear-gradient(135deg,#0c0a14,#2a1650);}
+  .hero-bf .tag{background:#ffd400; color:#0c0a14; font-weight:700;}
+  .hero-bf .big{display:block; font-family:'League Spartan',sans-serif; font-weight:900; font-size:clamp(2.6rem,6.5vw,4.6rem); line-height:.95; color:#ffd400; margin-bottom:10px;}
+  .hero-bf h2{font-size:clamp(1.3rem,2.6vw,1.9rem); margin-bottom:10px;}
+  .hero-bf p b{color:#fff;} .hero-bf p s{opacity:.65;}
+  .hero-bf .pill{background:#ffd400; color:#0c0a14;}
+  .hero-bf .im{position:relative;}
+  .bf-badge{position:absolute; top:16px; right:22px; width:104px; height:104px; border-radius:50%; background:#ff0953; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'League Spartan',sans-serif; font-weight:900; font-size:1.8rem; transform:rotate(-10deg); box-shadow:0 6px 22px rgba(255,9,83,.45); z-index:3;}
+  @media (max-width:600px){ .hero-bf{grid-template-columns:1fr; margin-bottom:12px;} .hero-bf .big{font-size:2.4rem; margin-bottom:6px;} .hero-bf h2{font-size:1.1rem; margin-bottom:4px;} .bf-badge{width:68px; height:68px; font-size:1.15rem; top:6px; right:12px;} }
+  .bf-car{position:relative; margin-bottom:18px;} .bf-car[hidden]{display:none;}
+  .bf-car .hero-bf{display:none; margin-bottom:0;} .bf-car .hero-bf.on{display:grid; animation:bfIn .45s ease;}
+  @keyframes bfIn{from{opacity:0} to{opacity:1}}
+  .bf-nav{position:absolute; top:50%; transform:translateY(-50%); z-index:5; width:40px; height:40px; border-radius:50%; border:0; background:rgba(255,255,255,.92); color:#14213d; font-size:1.6rem; line-height:1; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .bf-prev{left:10px;} .bf-next{right:10px;}
+  .bf-dots{position:absolute; left:0; right:0; bottom:12px; display:flex; justify-content:center; gap:8px; z-index:5;}
+  .bf-dots button{width:10px; height:10px; padding:0; border-radius:50%; border:0; background:rgba(255,255,255,.45); cursor:pointer;} .bf-dots button.on{background:#ffd400; width:24px; border-radius:6px;}
+  .bf-car.single .bf-nav,.bf-car.single .bf-dots{display:none;}
+  @media (max-width:600px){ .bf-nav{top:36%; width:32px; height:32px; font-size:1.3rem;} .bf-prev{left:4px;} .bf-next{right:4px;} .bf-dots{bottom:6px;} }
+  @media (prefers-reduced-motion:reduce){ .bf-car .hero-bf.on{animation:none;} }
+  .hero-side{border-radius:18px; background:linear-gradient(160deg,#fc8024,#e8590c); color:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;}
+  .hero-side h3{color:#fff; font-size:1.5rem; margin-bottom:4px;}
+  .hero-side ul{list-style:none; display:flex; flex-direction:column; gap:11px; margin:6px 0 10px;}
+  .hero-side li{display:flex; gap:10px; font-weight:600; font-size:.95rem; line-height:1.3;}
+  .hero-side li::before{content:'☑'; font-size:1.15rem;}
+  .hero-side a{margin-top:auto; background:#fff; color:#14213d; font-weight:700; text-align:center; border-radius:100px; padding:12px; text-decoration:none; font-size:.92rem;}
+  .tiles4{display:grid; grid-template-columns:repeat(var(--n,5),1fr); gap:16px; margin-bottom:38px;}
+  @media (max-width:980px){ .tiles4{grid-template-columns:repeat(2,1fr);} .tiles4 .tile4:last-child:nth-child(odd){grid-column:1/-1;} }
+  .tile4{position:relative; border-radius:18px; overflow:hidden; min-height:310px; padding:22px; color:#fff; text-decoration:none; display:flex; flex-direction:column; justify-content:space-between; transition:transform .25s;}
+  .tile4:hover{transform:translateY(-4px);}
+  .tile4 h3{color:#fff; font-size:1.3rem; max-width:90%; position:relative; z-index:2;}
+  .tile4 .pill{align-self:flex-start; background:#fff; color:#14213d; font-weight:700; font-size:.85rem; padding:9px 18px; border-radius:100px; position:relative; z-index:2;}
+  .tile4 .pic{position:absolute; right:12px; top:62px; bottom:14px; width:60%; display:flex; align-items:center; justify-content:center;}
+  .tile4 .pic img{width:100%; height:100%; object-fit:contain; -webkit-mask-image:linear-gradient(to right,transparent,#000 18%,#000 82%,transparent),linear-gradient(to bottom,transparent,#000 18%,#000 82%,transparent); -webkit-mask-composite:source-in; mask-image:linear-gradient(to right,transparent,#000 18%,#000 82%,transparent),linear-gradient(to bottom,transparent,#000 18%,#000 82%,transparent); mask-composite:intersect;}
+  .tile4 .pic.big{font-size:2.4rem; align-items:center; letter-spacing:.05em; white-space:nowrap;}
+  .t-lum{background:linear-gradient(145deg,#3259be,#8c3290);} .t-etc{background:linear-gradient(145deg,#fc8024,#e8590c);} .t-con{background:linear-gradient(145deg,#0e9f8e,#3259be);} .t-new{background:linear-gradient(145deg,#0c0a14,#3259be);}
+  @media (max-width:520px){ .tile4{min-height:240px; padding:16px;} .tile4 h3{font-size:1.02rem; max-width:100%;} .tile4 .pic{top:56px; bottom:12px; right:8px; width:62%;} .tile4 .pic.big{font-size:2rem;} .tile4 .pill{padding:8px 14px; font-size:.78rem;} }
+  .badge-new{position:absolute; top:8px; left:8px; background:#ff0953; color:#fff; font-size:.66rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:4px 9px; border-radius:100px; z-index:3;}
+  .badge-promo{position:absolute; top:8px; left:8px; background:#0c0a14; color:#ffd400; font-size:.66rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:4px 9px; border-radius:100px; z-index:3;}
+  .price small.was{display:block; font-family:'Instrument Sans', sans-serif; font-weight:600; font-size:.74rem; text-decoration:line-through; opacity:.6; line-height:1.2;}
+  .bf-sub{color:var(--muted); margin:-6px 0 16px; font-size:.95rem;}
+  .grid-sm .card-img{position:relative;}
+  .grid-sm .card .price{color:var(--navy);}
+
+  /* Accueil Premium Performance : hero, réassurance, expertise */
+  .px-hero{position:relative; border-radius:18px; overflow:hidden; background:#0c0a14; color:#fff; margin-bottom:18px; min-height:420px; display:flex; align-items:center;}
+  .px-hero img{position:absolute; right:0; top:0; width:62%; height:100%; object-fit:cover; opacity:.92;}
+  .px-hero::before{content:''; position:absolute; inset:0; z-index:1; background:linear-gradient(90deg,#0c0a14 36%,rgba(12,10,20,.6) 62%,rgba(12,10,20,0) 100%);}
+  .px-hero .in{position:relative; z-index:2; padding:56px clamp(24px,4vw,64px); max-width:640px;}
+  .px-hero .k{font-family:'DM Mono',monospace; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:#fbc608;}
+  .px-hero h1{color:#fff; font-size:clamp(2.2rem,5.4vw,4.4rem); margin:14px 0 16px; line-height:1;}
+  .px-hero p{color:#e6e5ec; font-size:1.02rem; line-height:1.55; max-width:560px; margin-bottom:26px;}
+  .px-btns{display:flex; flex-wrap:wrap; gap:12px;}
+  .px-btn{display:inline-flex; align-items:center; justify-content:center; min-height:50px; padding:0 26px; border-radius:10px; font-weight:800; font-size:.92rem; letter-spacing:.02em; text-decoration:none; background:#3259be; color:#fff;}
+  .px-btn:hover{background:#27489f;}
+  .px-btn.line{background:transparent; box-shadow:inset 0 0 0 2px #fff;} .px-btn.line:hover{background:rgba(255,255,255,.12);}
+  .px-trust{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:30px;}
+  .px-trust div{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px; font-size:.86rem; color:var(--muted); line-height:1.35;}
+  .px-trust b{display:block; color:var(--paper); font-size:.95rem; margin-bottom:2px;}
+  .px-expert{background:#0c0a14; color:#fff; border-radius:18px; padding:clamp(28px,5vw,64px); margin:38px 0; display:grid; grid-template-columns:1.2fr 1fr; gap:36px; align-items:center;}
+  .px-expert h2{color:#fff; font-size:clamp(1.7rem,3.6vw,2.8rem); margin:12px 0 16px;}
+  .px-expert p{color:#cfcde0; max-width:520px; margin-bottom:22px;}
+  .px-expert .k{font-family:'DM Mono',monospace; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:#fbc608;}
+  .px-stats{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .px-stats div{border:1px solid #2a2740; border-radius:12px; padding:20px; color:#cfcde0; font-size:.86rem; line-height:1.35;}
+  .px-stats b{display:block; font-family:'League Spartan',sans-serif; font-size:2.4rem; font-weight:800; color:#fff; line-height:1.1;}
+  @media (max-width:860px){ .px-trust{grid-template-columns:repeat(2,1fr);} .px-expert{grid-template-columns:1fr;} }
+  @media (max-width:600px){ .px-hero{flex-direction:column; align-items:stretch; min-height:0;} .px-hero img{position:static; width:100%; height:190px;} .px-hero::before{display:none;} .px-hero .in{padding:24px 20px 28px;} .px-btn{width:100%;} .px-trust{grid-template-columns:1fr;} }
+  .px-filters{display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin:-6px 0 16px; font-size:.88rem; color:var(--muted);}
+  .px-filters label{display:flex; align-items:center; gap:10px; font-weight:600;}
+  .px-filters .chk input{width:20px; height:20px; accent-color:#3259be;}
+  .shop-wrap{max-width:none; margin:0 auto; padding:30px clamp(24px,3.5vw,72px) 70px;}
+  .shop-wrap .sec-title{color:var(--navy);}
+  .shop-wrap .crumb, .shop-wrap .cat-head .cnt{color:var(--muted);}
+  .shop-light .subchips button{color:var(--navy); box-shadow:inset 0 0 0 1.5px rgba(20,33,61,.25); background:#fff;}
+  .shop-light .subchips button.active{background:var(--navy); color:#fff; box-shadow:none;}
+  .shop-light .subchips button:hover{box-shadow:inset 0 0 0 1.5px var(--navy);}
+  .shop-light .subchips button.active:hover{box-shadow:none;}
+  .shop-light .sort{background:#fff; color:var(--navy);}
+  .shop-light .trust li{background:#fff; color:var(--muted);} .shop-light .trust li b{color:var(--navy);}
+  .shop-light .pp{padding-top:30px;}
+  .shop-light .pp-trust div{background:#fff;}
+  .pack-line{font-size:.8rem; color:var(--muted); line-height:1.4;}
+  .pack-line b{color:var(--navy);} .pack-line .save{display:block; color:#1d7a46; font-weight:600;}
+  .shop-light .pp-thumbs button{border-color:var(--line);} .shop-light .pp-thumbs button.on{border-color:var(--navy);}
+</style>
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0C0A14">
+<link rel="stylesheet" href="/pm-shop.css?v=1">
+</head>
+<body>
+
+<header><script>if(/(^|\.)slpstore\.fr$/.test(location.hostname))document.documentElement.classList.add("on-store")</script>
+  <div class="nav-wrap">
+    <a href="/en/" class="brand"><img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod"></a>
+    <nav>
+      <ul>
+        <li><a href="/en/">Home</a></li>
+        <li><a href="/artistes">Our artists and shows</a></li>
+        <li><a href="/concepts">Our concepts</a></li>
+        <li><a href="/galerie">Gallery</a></li>
+        <li><a href="https://slpstore.fr" class="current">Shop</a></li>
+        <li><a href="/en/contact-boutique" class="nav-cta">Contact</a></li>
+      </ul>
+    </nav>
+    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var h=this.closest('header');var o=h.classList.toggle('menu-open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="shop-light">
+<!-- shopbar:start -->
+<div class="shop-top"><div class="shop-top-in"><span>Delivery across France only</span><span>2-year warranty</span><span>Secure payment</span><span>Expert advice: +33 6 31 94 96 53</span><a class="lang-switch" href="/" lang="fr" hreflang="fr" style="color:inherit">Français</a><a class="only-store" href="https://soundlightprod.fr/">SLP services &amp; shows ↗</a></div></div>
+<div class="shop-bar"><div class="shop-bar-in">
+  <a class="shop-name" href="/en/"><img class="shop-logo" src="/slp-store-logo.png" width="340" height="202" alt="SLP Store — SLP shop"></a>
+  <form class="shop-search" action="/en/" method="get" role="search"><input type="search" name="q" placeholder="Search a product (par, moving head, strobe, spark…)" aria-label="Search"><button type="submit" aria-label="Search">🔍</button></form>
+  <a class="shop-cartlink" id="shopCartLink" href="/en/#panier"><b>🛒</b>My basket<span class="n" id="shopCartN"></span></a>
+</div></div>
+<nav class="shop-nav" aria-label="Departments"><div class="shop-nav-in">
+  <div class="dd"><a class="top" href="/en/#lumiere">Stage lighting ▾</a>
+    <div class="dd-menu"><a href="/en/#lumiere/par">PAR lights</a><a href="/en/#lumiere/lyres">Moving heads</a><a href="/en/#lumiere/barres">LED bars &amp; Sunstrips</a><a href="/en/#lumiere/strobes">Strobes</a><a href="/en/#lumiere/floods">Fixtures &amp; floods</a><a href="/en/#lumiere/dmx">DMX &amp; control</a><a href="/en/#lumiere/lasers">Lasers</a></div></div>
+  <a class="top" href="/en/#effets">Effect machines</a>
+  <a class="top" href="/en/#consommables">Consumables</a>
+  <a class="top" href="/en/#nouveautes">New arrivals</a>
+  <a class="top" href="/en/#tous">Full catalogue</a>
+</div></nav>
+<script>(function(){try{var c=JSON.parse(sessionStorage.getItem('slp_cart')||'[]'),n=c.reduce(function(s,x){return s+x.qty},0),e=document.getElementById('shopCartN');if(n&&e){e.textContent=n;e.style.display='flex'}}catch(e){}})();</script>
+<!-- shopbar:end -->
+
+
+
+<section>
+  <div class="shop-wrap">
+
+    <!-- Accueil de la boutique : les rayons -->
+    <div id="viewHome">
+      <section class="px-hero" aria-label="Overview">
+        <img src="/barre-led-sunstrip-10x50w.png" alt="10×50W halogen Sunstrip bar switched on" width="462" height="330" fetchpriority="high" decoding="async">
+        <div class="in">
+          <div class="k">Sound · Lighting · Stage effects</div>
+          <h1>GEAR TO MATCH YOUR AMBITIONS.</h1>
+          <p>Local event company, association, band or local authority: looking for quality equipment without breaking the bank? We have selected for you gear that our own team has used on jobs and that has proved itself. You don't always need to spend thousands of euros to get quality: we share our experience with you.</p>
+          <div class="px-btns"><a class="px-btn" href="/en/#tous">BROWSE OUR PRODUCTS</a><a class="px-btn line" href="/en/produits/barre-led-sunstrip-10x50w">SEE THE OFFERS</a></div>
+        </div>
+      </section>
+      <div class="px-trust">
+        <div><b>Free delivery from €100</b>€6.99 up to €20, €14.99 above that. France only.</div>
+        <div><b>2-year warranty</b>Business customers: exchange or credit note.</div>
+        <div><b>14-day returns</b>For consumers, under the <a href="/cgv-boutique" style="color:#3259be">terms of sale (in French)</a>.</div>
+        <div><b>Advice on +33 6 31 94 96 53</b>By phone, WhatsApp or email.</div>
+      </div>
+      <div class="bf-car" id="bfCar" role="region" aria-roledescription="carrousel" aria-label="Black Friday offers" hidden>
+        <a class="hero-ban hero-bf" id="bfHero" href="/en/produits/barre-led-sunstrip-10x50w" hidden>
+          <div class="tx"><span class="tag" id="bfTag"></span><span class="big" id="bfBig"></span><h2 id="bfH"></h2><p id="bfP"></p><span class="pill">Get the offer</span></div>
+          <div class="im"><span class="bf-badge" id="bfBadge"></span><img src="/barre-led-sunstrip-10x50w.png" alt="Halogen Sunstrip bar 10×50W" loading="eager" decoding="async"></div>
+        </a>
+        <a class="hero-ban hero-bf" id="bfHero2" href="/en/produits/lyre-wash-220w-19x8w-x2" hidden>
+          <div class="tx"><span class="tag" id="bf2Tag"></span><span class="big" id="bf2Big"></span><h2>Set of 2 220W LED zoom wash moving heads</h2><p id="bf2P"></p><span class="pill">Get the offer</span></div>
+          <div class="im"><span class="bf-badge" id="bf2Badge"></span><img src="/galerie-produits/lyre-wash-220w-19x8w-x2-1.png" alt="Set of 2 220W LED zoom wash moving heads — 19×8W RGBW" loading="lazy" decoding="async"></div>
+        </a>
+        <button type="button" class="bf-nav bf-prev" id="bfPrev" aria-label="Previous offer">‹</button>
+        <button type="button" class="bf-nav bf-next" id="bfNext" aria-label="Next offer">›</button>
+        <div class="bf-dots" id="bfDots"></div>
+      </div>
+      <div class="hero-row">
+        <a class="hero-ban" href="/en/produits/machine-etincelles-800w">
+          <div class="tx"><span class="tag">New</span><h2>800W spark machines</h2><p>4 heights up to 3.5 m, remote control included. From €199.99.</p><span class="pill">Discover</span></div>
+          <div class="im"><img src="/machine-etincelles-800w.png" srcset="/images/machine-etincelles-800w-462.webp 462w" sizes="(max-width:700px) 100vw, 1100px" alt="800W spark machine" loading="lazy" decoding="async"></div>
+        </a>
+        <div class="hero-side">
+          <h3>Why SLP?</h3>
+          <ul><li>Equipment selected by SLP</li><li>2-year warranty</li><li>Delivery across France only</li><li>Advice from live entertainment professionals</li></ul>
+          <a href="/en/contact-boutique" data-contact="devis">A question? Contact us</a>
+          <a href="https://wa.me/33631949653?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20la%20boutique%20SLP" target="_blank" rel="noopener" data-contact="whatsapp">or message us on WhatsApp</a>
+        </div>
+      </div>
+      <div id="bfBlock" hidden>
+        <h2 class="sec-title" id="bfTitle">Black Friday</h2>
+        <p class="bf-sub" id="bfSub"></p>
+        <div class="grid-sm" id="featuredBf" style="margin-bottom:38px;"></div>
+      </div>
+      <div class="tiles4" id="catTiles"></div>
+      <section class="px-expert">
+        <div>
+          <div class="k">SLP expertise</div>
+          <h2>GEAR MADE FOR THE STAGE.</h2>
+          <p>SLP Store is the shop of SLP, a company that produces and books live shows. Hands-on experience in entertainment, sound and lighting to help you choose your equipment, with advice before you buy.</p>
+          <a class="px-btn line" href="/en/contact-boutique" data-contact="devis">TALK TO AN ADVISER</a>
+        </div>
+        <div class="px-stats"><div><b>20 years</b>of experience in entertainment, sound and lighting</div><div><b>10 years</b>booking and producing live shows</div></div>
+      </section>
+      <div class="intro-shop">
+        <h2>Sound and lighting gear from live entertainment professionals</h2>
+        <p>SLP Store offers a selection of stage equipment: moving heads, LED PAR lights, LED bars, effect machines and consumables. Every item is selected by SLP, comes with a 2-year warranty and is delivered across France.</p>
+        <p>Not sure about power, the IP65 rating or DMX compatibility? Our team can advise you before you buy, through <a href="/en/contact-boutique" data-contact="devis">the contact form</a> or on <a href="https://wa.me/33631949653?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20la%20boutique%20SLP" target="_blank" rel="noopener" data-contact="whatsapp">WhatsApp</a>.</p>
+      </div>
+      <h2 class="sec-title">New arrivals <a href="#nouveautes">See all →</a></h2>
+      <div class="grid-sm" id="featured" style="margin-bottom:38px;"></div>
+      <h2 class="sec-title">Stage lighting <a href="#lumiere">See all →</a></h2>
+      <div class="grid-sm" id="featuredLum" style="margin-bottom:38px;"></div>
+      <div id="packsBlock" hidden>
+        <h2 class="sec-title">Packs and sets <a href="#tous">Full catalogue →</a></h2>
+        <div class="grid-sm" id="featuredPacks" style="margin-bottom:38px;"></div>
+      </div>
+      <ul class="trust">
+        <li><span class="ic">🛡️</span><span><b>2-year warranty</b>on all equipment</span></li>
+        <li><span class="ic">🚚</span><span><b>Delivery in France</b>shipped by SLP</span></li>
+        <li><span class="ic">🔒</span><span><b>Secure payment</b>by bank card</span></li>
+        <li><span class="ic">🎛️</span><span><b>Technicians' advice</b>on +33 6 31 94 96 53</span></li>
+      </ul>
+    </div>
+
+    <!-- Page d'un rayon -->
+    <div id="viewCat" hidden>
+      <nav class="crumb"><a href="#">Shop</a> / <span id="crumbCat"></span></nav>
+      <div class="cat-head">
+        <h1><span id="catTitle"></span><span class="cnt" id="catCount"></span></h1>
+        <select class="sort" id="sortSel" aria-label="Sort">
+          <option value="def" id="sortDef">Sort: featured</option>
+          <option value="asc">Price: low to high</option>
+          <option value="desc">Price: high to low</option>
+          <option value="name">Name A → Z</option>
+        </select>
+      </div>
+      <div class="px-filters" id="pxFilters">
+        <label>Price
+          <select class="sort" id="priceSel" aria-label="Filter by price">
+            <option value="">All prices</option>
+            <option value="0-100">Under €100</option>
+            <option value="100-200">€100 to €200</option>
+            <option value="200-300">€200 to €300</option>
+            <option value="300-99999">Over €300</option>
+          </select>
+        </label>
+        <label class="chk"><input type="checkbox" id="stockChk"> In stock only</label>
+      </div>
+      <div class="subchips" id="subchips"></div>
+      <div class="grid-sm" id="grid"><p style="color:var(--muted);">Loading the catalogue…</p></div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- Panier -->
+<div class="overlay" id="overlay"></div>
+<button class="cart-fab" id="cartFab" aria-label="Basket">
+  🛒<span class="count" id="cartCount" style="display:none;">0</span>
+</button>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-head">
+    <h3>Your basket</h3>
+    <button class="cart-close" id="cartClose" aria-label="Close basket">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <p class="cart-empty">Your basket is empty.</p>
+  </div>
+  <div class="cart-foot" id="cartFoot" style="display:none;">
+    <div class="cart-ship" id="cartShip"></div>
+    <p class="cart-eta" id="cartEta"></p>
+    <div class="cart-total"><span>Total</span><span id="cartTotal">€0.00</span></div>
+    <div class="cart-form">
+      <label for="custName">Full name <span aria-hidden="true">*</span></label>
+      <input type="text" id="custName" autocomplete="name" required>
+      <label for="custEmail">Email <span aria-hidden="true">*</span></label>
+      <input type="email" id="custEmail" autocomplete="email" inputmode="email" required>
+      <label for="custPhone">Phone <span class="opt">(optional)</span></label>
+      <input type="tel" id="custPhone" autocomplete="tel" inputmode="tel">
+    </div>
+    <label style="display:flex; align-items:flex-start; gap:8px; font-size:0.8rem; color:var(--muted); margin-bottom:14px; cursor:pointer;">
+      <input type="checkbox" id="acceptCgv" style="margin-top:3px;">
+      <span>I accept the <a href="/cgv-boutique" target="_blank" style="color:var(--paper);">terms and conditions of sale (in French)</a></span>
+    </label>
+    <button class="btn btn-primary" style="width:100%;" id="checkoutBtn">Pay by card</button>
+    <p class="cart-msg" id="cartMsg"></p>
+  </div>
+</div>
+
+<!-- Fiche produit (caractéristiques techniques) -->
+<div class="overlay" id="pdOverlay"></div>
+<div class="product-modal" id="productModal">
+  <button class="pd-close" id="pdClose" aria-label="Close">&times;</button>
+  <div class="pd-inner">
+    <div class="pd-img" id="pdImg"></div>
+    <div class="pd-body">
+      <span class="cat" id="pdCat"></span>
+      <h2 id="pdName"></h2>
+      <ul class="pd-specs" id="pdSpecs"></ul>
+      <div id="pdNeed"></div>
+      <div class="price-row" style="margin-top:auto;">
+        <span class="price" id="pdPrice"></span>
+        <button class="btn btn-primary" id="pdAddBtn">Add</button>
+      </div>
+      <p class="eta-line" id="pdEta"></p>
+    </div>
+  </div>
+</div>
+
+<!-- refs:start (généré par _boutique/build.py) -->
+<section class="refs refs-fold">
+  <div class="wrap">
+    <details><summary>All our products (45)</summary>
+    <div class="refs-grid"><div class="refs-col"><h3>Stage lighting</h3><ul><li><a href="/en/produits/par-led-7x40w-zoom-bee-eye">PAR LED 7×40W zoom Bee-Eye</a> <span>€137.99</span></li><li><a href="/en/produits/new-1940w-bee-eye-moving-light-power-750w">LED Bee-Eye moving head 19×40W</a> <span>€274.99</span></li><li><a href="/en/produits/par-led-19x15w-zoom-ip65">PAR LED 19×15W zoom IP65</a> <span>€121.99</span></li><li><a href="/en/produits/new-mini295w-beam-moving-light-with-ring">295W beam moving head with LED ring</a> <span>€199.99</span></li><li><a href="/en/produits/mini230w-beam-moving-light-with-ring">230W beam moving head with LED ring</a> <span>€234.99</span></li><li><a href="/en/produits/ip65-1940w-bee-eye-moving-light-">LED Bee-Eye moving head 19×40W IP65</a> <span>€274.99</span></li><li><a href="/en/produits/stage-light-bars-1810w-led-tubo">LED bar 18×10W RGBW 4-in-1</a> <span>€60.99</span></li><li><a href="/en/produits/ip65-4812-segments-control-strobe">400W IP65 RGBW LED strobe, 48+12 segments</a> <span>€155.99</span></li><li><a href="/en/produits/battery-3w-animated-laser-light">3W RGB battery-powered laser</a> <span>€130.99</span></li><li><a href="/en/produits/300w-zoom-cob-spotlight">300W COB LED fixture with motorised zoom</a> <span>€168.99</span></li><li><a href="/en/produits/ip65-4410w-segments-control-flood-light">IP65 LED fixture 44 LEDs 660W — 11 segments</a> <span>€153.99</span></li><li><a href="/en/produits/ip65-1818w-led-big-par-light">PAR LED 18×18W IP65 — die-cast aluminium housing</a> <span>€75.99</span></li><li><a href="/en/produits/lyre-big-bee-1940w-anneau">LED Big Bee moving head 19×40W with ring — Wash/Beam/Spot</a> <span>€274.99</span></li><li><a href="/en/produits/mini-230w-beam-moving-light">230W LED beam moving head</a> <span>€234.99</span></li><li><a href="/en/produits/1940w-big-bee-moving-light">LED Big Bee moving head 19×40W zoom</a> <span>€274.99</span></li><li><a href="/en/produits/lyre-500w-cmy-cto-3en1">500W CMY CTO 3-in-1 Spot Beam Wash moving head</a> <span>€572.99</span></li><li><a href="/en/produits/1925w-bee-beam-wash-moving-light-k15">LED Bee Beam-Wash moving head 19×25W</a> <span>€265.99</span></li><li><a href="/en/produits/8-way-dmx-splitter-booster-with-artnet">8-way Art-Net DMX splitter — 1U rack</a> <span>€45.99</span></li><li><a href="/en/produits/6-way-dmx-truss-splitter">6-way DMX splitter for truss</a> <span>€52.99</span></li><li><a href="/en/produits/200w-488-segment-strobe">200W LED strobe, 48+12 segments RGBW</a> <span>€58.99</span></li><li><a href="/en/produits/1818w-rgbwauv-pixel-control-bar-light">LED pixel bar 18×18W RGBWA+UV 6-in-1</a> <span>€106.99</span></li><li><a href="/en/produits/ip65-6010w-flood-light">IP65 LED fixture 60×10W</a> <span>€321.99</span></li><li><a href="/en/produits/ip65-4410w-flood-light">PAR LED 44 LEDs 528W IP65</a> <span>€153.99</span></li><li><a href="/en/produits/ip65-1818w-led-par-light-ultra">PAR LED 18 LEDs IP65 Ultra — 45° angle</a> <span>€75.99</span></li><li><a href="/en/produits/ip65-1818w-led-par-light">PAR LED 18×18W IP65 — 3 angles (25/35/45°)</a> <span>€75.99</span></li><li><a href="/en/produits/ip65-1218w-battery-par-light">Battery-powered PAR LED 12×18W IP65</a> <span>€130.99</span></li><li><a href="/en/produits/ip65-618w-mini-battery-par-light">Battery-powered PAR LED 6×18W IP65 — mini</a> <span>€79.99</span></li><li><a href="/en/produits/ip65-618w-battery-par-light">Battery-powered PAR LED 6×18W IP65</a> <span>€79.99</span></li><li><a href="/en/produits/1818w-rgbwauv-led-par-light">PAR LED 18×18W RGBWA+UV</a> <span>€75.99</span></li><li><a href="/en/produits/418w-battery-parlight">Battery-powered PAR LED 4×18W</a> <span>€45.99</span></li><li><a href="/en/produits/barre-led-sunstrip-10x50w">Halogen Sunstrip bar 10×50W</a> <span>€139.99</span></li><li><a href="/en/produits/barre-led-sunstrip-10x50w-x2">Set of 2 halogen Sunstrip bars 10×50W</a> <span>€258.99</span></li><li><a href="/en/produits/barre-led-sunstrip-10x50w-x4">Set of 4 halogen Sunstrip bars 10×50W</a> <span>€503.99</span></li><li><a href="/en/produits/lyre-wash-220w-19x8w-x2">Set of 2 220W LED zoom wash moving heads — 19×8W RGBW</a> <span>€235.99</span></li></ul></div><div class="refs-col"><h3>Effect machines</h3><ul><li><a href="/en/produits/machine-etincelles-800w">800W spark machine</a> <span>€199.99</span></li><li><a href="/en/produits/machine-etincelles-800w-x2">Set of 2 800W spark machines</a> <span>€379.99</span></li><li><a href="/en/produits/machine-etincelles-800w-x4">Set of 4 800W spark machines</a> <span>€749.99</span></li></ul></div><div class="refs-col"><h3>Consumables</h3><ul><li><a href="/en/produits/jet-de-scene-2m-30s-argent">Stage jet 2m 30sec — Silver</a> <span>€8.00</span></li><li><a href="/en/produits/jet-de-scene-2m-30s-or">Stage jet 2m 30sec — Gold</a> <span>€9.00</span></li><li><a href="/en/produits/jet-de-scene-3m-30s-argent">Stage jet 3m 30sec — Silver</a> <span>€10.00</span></li><li><a href="/en/produits/jet-de-scene-3m-30s-or">Stage jet 3m 30sec — Gold</a> <span>€12.00</span></li><li><a href="/en/produits/canon-confettis-electrique-50cm">Electric confetti cannon 50cm</a> <span>€12.00</span></li><li><a href="/en/produits/canon-confettis-electrique-80cm">Electric confetti cannon 80cm</a> <span>€15.00</span></li><li><a href="/en/produits/poudre-machine-etincelles-indoor">Spark machine powder — Indoor</a> <span>€19.99</span></li><li><a href="/en/produits/poudre-machine-etincelles-outdoor">Spark machine powder — Outdoor</a> <span>€19.99</span></li></ul></div></div>
+    </details>
+  </div>
+</section>
+<!-- refs:end -->
+</div><!-- /shop-light -->
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <img src="/slp-logo-dark.png" alt="SLP - Sound Light Prod">
+      <div>
+        <h3>Sound Light Prod</h3>
+        <p class="only-site">Event and artist management, sound and lighting, in France and Europe.</p>
+        <p class="only-store">Professional sound and lighting equipment with a 2-year warranty, delivered across France only.</p>
+      </div>
+    </div>
+    <div class="footer-col nav-site">
+      <h4>Navigation</h4>
+      <a href="/en/">Home</a>
+      <a href="/artistes">Our artists and shows</a>
+      <a href="/galerie">Gallery</a>
+      <a href="/en/contact-boutique">Contact</a>
+      <a href="https://slpstore.fr" target="_blank" rel="noopener">Shop</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:contact@slpstore.fr" data-contact="mail">contact@slpstore.fr</a>
+      <a href="tel:+33631949653" data-contact="appel">06 31 94 96 53</a>
+    </div>
+  </div>
+  <p class="legal">Sound Light Prod is an SLP brand · 173 rue de Courcelles, 75017 Paris, France · SIRET 130 415 045 00017 · Live entertainment licences no. 2 and 3: pending — © 2026 · <a href="/mentions-legales-boutique" style="color:inherit;">Legal notice (in French)</a> · <a href="/cgv-boutique" style="color:inherit;">Terms of sale (in French)</a> · Website by: <a href="https://slpdigital.fr" target="_blank" rel="noopener" style="color:inherit;">SLP Digital</a></p>
+</footer>
+
+<script>
+  // ⚠️ À remplacer par l'URL réelle du Worker une fois déployé (ex: https://api.soundlightprod.fr)
+  const EN = {"PAR LED 18 LED de 18W": "PAR LED, 18 × 18W LEDs", "RGBWA+UV": "RGBWA+UV", "Fiche technique complète sur demande au 06 31 94 96 53": "Full data sheet on request: +33 6 31 94 96 53", "Barre LED à contrôle pixel": "Pixel-control LED bar", "18 LED de 18W": "18 × 18W LEDs", "RGBWA+UV 6 en 1": "RGBWA+UV 6-in-1", "100-240V 50/60Hz": "100-240V 50/60Hz", "500W max": "500W max", "19x25W RGBW": "50000h", "6000K": "6000K", "50000h": "50000h", "Zoom électronique 4-60°": "Electronic zoom 4-60°", "Wash/Beam/FX (kaléidoscope)": "Wash/Beam/FX (kaleidoscope)", "Flash lent 1/s, rapide 25/s": "Slow flash 1/s, fast 25/s", "Pan/tilt 16bits résolution": "16-bit pan/tilt resolution", "DMX USITT512 art-net/RDM": "DMX USITT512 art-net/RDM", "XLR 3 broches": "3-pin XLR", "Canaux 21/23/35/78/192/97/99": "Channels 21/23/35/78/192/97/99", "Rotation vert 540°, horiz 270°": "Rotation: vert. 540°, horiz. 270°", "51x31x42.5cm, 13kg": "51x31x42.5cm, 13kg", "CA100-240V 50/60Hz": "AC100-240V 50/60Hz", "850W": "850W", "LED 40W RGBW 4en1 x19 (contrôlées individuellement)": "19 x 40W RGBW 4-in-1 LEDs (individually controlled)", "2500-9000K": "2500-9000K", "Zoom 4-60°, 37500lux@5m": "Zoom 4-60°, 37500lux@5m", "Dimmer 40-100%": "Dimmer 40-100%", "Stroboscope 1-25/s": "Stroboscope 1-25/s", "XY 540/270°": "XY 540/270°", "DMX512/réseau": "DMX512/network", "Canaux 21/23/35/78/92/97/99CH": "Channels 21/23/35/78/92/97/99CH", "Stroboscope LED 200W": "200W LED strobe", "48 + 12 segments": "48 + 12 segments", "LED RGBW": "RGBW LEDs", "CA110-240V/50-60Hz": "AC110-240V/50-60Hz", "300W": "300W", "LED COB 300W (BL/RVBB)": "300W COB LED (WW/RGBW)", "3200K/5600K linéaire": "3200K/5600K linear", "Zoom motorisé 8-60°": "Motorised zoom 8-60°", "IRC≥95": "CRI≥95", "Canal 3/6": "3/6 channels", "Dimmer 0-100%": "Dimmer 0-100%", "Stroboscope 1-25Hz": "Strobe 1-25Hz", "Son/auto/maître-esclave/DMX512": "Sound/auto/master-slave/DMX512", "Écran LCD": "LCD screen", "460x300x210mm": "460x300x210mm", "7.0kg net": "7.0kg net", "CA90-240V 50-60Hz": "AC90-240V 50-60Hz", "4x18W RGBWA+UV6en1": "4x18W RGBWA+UV 6-in-1", "16.7M couleurs": "16.7M colours", "DMX512/WDMX/WiFiApp/maître-esclave/auto/son/télécommande": "DMX512/WDMX/WiFi app/master-slave/auto/sound/remote control", "Canal 6/8/10": "6/8/10 channels", "Stroboscope, atténuation, dégradé, saut": "Strobe, dimming, fade, jump", "Angles 15/25°": "Angles 15/25°", "Batterie 5200mAh": "5200mAh battery", "WiFi App iOS/Android, DMX512 2.4G": "WiFi app iOS/Android, DMX512 2.4G", "IP20": "IP20", "12.8x12.8x5cm, 1.0kg": "12.8x12.8x5cm, 1.0kg", "Entrée": "Input", "XLR3": "XLR3", "Sorties": "Outputs", "6x XLR3 + 1x XLR3 Thru": "6x XLR3 + 1x XLR3 Thru", "130x115x115mm": "130x115x115mm", "0.95kg": "0.95kg", "CA100-240V 47/60Hz": "AC100-240V 47/60Hz", "Artnet TCP/IP": "Artnet TCP/IP", "MàJ firmware USB/réseau": "Firmware update via USB/network", "8 canaux E/S DMX512": "8 DMX512 I/O channels", "Rack 19\" 1U": "19\" 1U rack", "2.08kg net": "2.08kg net", "Contrôle DMX512": "DMX512 control", "intégration parfaite et contrôle précis pour des performances dynamiques": "seamless integration and precise control for dynamic performances", "Installation autonome": "Freestanding setup", "mise en place facile, idéale pour les changements rapides en déplacement": "easy to set up, ideal for quick changes on the road", "Tension": "Voltage", "AC220V 50/60Hz": "AC220V 50/60Hz", "Puissance": "Power", "500W": "500W", "Source lumineuse": "Light source", "10 lampes Osram Halopar16 GU10 230V/50W, angle de faisceau ≈35°": "10 Osram Halopar16 GU10 230V/50W lamps, beam angle ≈35°", "Température de couleur": "Colour temperature", "2900K": "2900K", "Durée de vie": "Lifespan", "2000h": "2000h", "Douille": "Lamp base", "GU10": "GU10", "Protocole de contrôle": "Control protocol", "DMX512, RDM": "DMX512, RDM", "Canaux DMX": "DMX channels", "1CH, 2CH, 3CH, 5CH, 10CH": "1CH, 2CH, 3CH, 5CH, 10CH", "Connexion du signal": "Signal connection", "Protection": "Protection rating", "Dimensions/poids": "Dimensions/weight", "104×13×15 cm / 5,7 kg": "104×13×15 cm / 5.7 kg", "Lot de 2 barres Sunstrip halogènes ultra-lumineuses 10×50W : projecteurs muraux parfaits pour les DJ professionnels et les décors de discothèque": "Set of 2 ultra-bright 10×50W halogen Sunstrip bars: wall-wash fixtures ideal for professional DJs and club décor", "Flux lumineux élevé pour un impact visuel vif sur toute scène ou événement": "High light output for a vivid visual impact on any stage or at any event", "Mise à jour du logiciel via connexion DMX": "Software update via DMX connection", "Supports de montage/sol inclus": "Mounting/floor brackets included", "Distance minimale des surfaces inflammables : 0,5 m": "Minimum distance from flammable surfaces: 0.5 m", "Distance minimale à l'objet éclairé : 0,8 m": "Minimum distance to the lit object: 0.8 m", "Gradation électronique 0-100 %": "Electronic dimming 0-100%", "Stroboscope 1-25 Hz": "Strobe 1-25 Hz", "Écran numérique pour régler les paramètres": "Digital display for settings", "Entrée et sortie d'alimentation (PowerCON), entrée et sortie DMX": "Power input and output (PowerCON), DMX input and output", "Livrée avec cordon d'alimentation et notice": "Supplied with power cord and manual", "Garantie 2 ans": "2-year warranty", "Lot de 4 barres Sunstrip halogènes ultra-lumineuses 10×50W : projecteurs muraux parfaits pour les DJ professionnels et les décors de discothèque": "Set of 4 ultra-bright 10×50W halogen Sunstrip bars: wall-wash fixtures ideal for professional DJs and club décor", "Barre Sunstrip halogène ultra-lumineuse 10×50W : projecteur mural parfait pour les DJ professionnels et les décors de discothèque": "Ultra-bright 10×50W halogen Sunstrip bar: a wall-wash fixture ideal for professional DJs and club décor", "DC12V 4A": "DC12V 4A", "Batterie 3x18650 rechargeable, 6000mAh": "Rechargeable 3x18650 battery, 6000mAh", "Conso <50W": "Power draw <50W", "Vert 520nm/Rouge 638nm/Bleu 450nm": "Green 520nm/Red 638nm/Blue 450nm", "Semi-conducteur": "Semiconductor", "Faisceau <8x6mm": "Beam <8x6mm", "Divergence <1.3mrad": "Divergence <1.3mrad", "Galvanomètre 15kpps, ±20°": "15kpps galvanometer, ±20°", "Modulation TTL/analogique": "TTL/analogue modulation", "App mobile (LightElf), iOS/Android": "Mobile app (LightElf), iOS/Android", "180 motifs+60 animations": "180 patterns + 60 animations", "Canon à confettis électrique rechargeable, longueur 50cm. Déclenchement instantané, sans poudre ni gaz.": "Rechargeable electric confetti cannon, 50cm long. Instant firing, no powder or gas.", "Canon à confettis électrique rechargeable, longueur 80cm. Déclenchement instantané, sans poudre ni gaz, portée renforcée.": "Rechargeable electric confetti cannon, 80cm long. Instant firing, no powder or gas, longer range.", "AC90-240V 50-60Hz": "AC90-240V 50-60Hz", "12x18W RGBWA+UV6en1": "12x18W RGBWA+UV 6-in-1", "Angle 15°": "15° angle", "DMX512/WDMX/WiFiApp/maître-esclave/auto/son": "DMX512/WDMX/WiFi app/master-slave/auto/sound", "Batterie 8800mAh": "8800mAh battery", "IP65": "IP65", "CE/FCC/ROHS": "CE/FCC/ROHS", "324W": "324W", "18x18W RGBWA+UV6en1": "18x18W RGBWA+UV 6-in-1", "Canaux 6/10, 4/8": "6/10, 4/8 channels", "Angle 25°": "25° angle", "DMX512/auto/voix/stroboscope/maître-esclave": "DMX512/auto/voice/strobe/master-slave", "Stroboscope 0-25Hz": "Strobe 0-25Hz", "Dimmer mécanique 16bits": "16-bit mechanical dimmer", "IP65 extérieur": "IP65 outdoor", "Alu moulé": "Die-cast aluminium", "36x27x15cm, 6.1kg": "36x27x15cm, 6.1kg", "120W": "120W", "18x10W RGBW4en1/RGBW+UV6en1": "18x10W RGBW 4-in-1 / RGBW+UV 6-in-1", "DMX512/maître-esclave/auto/son": "DMX512/master-slave/auto/sound", "Canal 4/8,6/10": "4/8, 6/10 channels", "Angle 45°": "45° angle", "Écran LED 4chiffres": "4-digit LED display", "32x24x20.5cm, 4.5kg net": "32x24x20.5cm, 4.5kg net", "18x18W RGBWA+UV": "18x18W RGBWA+UV", "DMX512/auto/son/mouvement/stroboscope/maître-esclave": "DMX512/auto/sound/motion/strobe/master-slave", "Angles 25/35/45°": "Angles 25/35/45°", "Stroboscope 1-20Hz": "Stroboscope 1-20Hz", "25x25x28cm, 5.0kg": "25x25x28cm, 5.0kg", "Canaux": "Channels", "18/21/35/78/94/111": "18/21/35/78/94/111", "Rotation": "Rotation", "horiz 540°, vert 210°": "horiz. 540°, vert. 210°", "AC90-240V/50-60Hz": "AC90-240V/50-60Hz", "19x40W LED RVBA 4en1": "19x40W RGBA 4-in-1 LEDs", "16.7M couleurs auto-corrigées": "16.7M auto-corrected colours", "DMX512, maître-esclave, auto, voix": "DMX512, master-slave, auto, voice", "2500-6500K linéaire": "2500-6500K linear", "Zoom électronique 10-40°": "Electronic zoom 10-40°", "Dimmer linéaire 0-100%": "Linear dimmer 0-100%", "Écran tactile LCD": "LCD touchscreen", "Ventilateur haute vitesse": "High-speed fan", "Seetronic + USB": "Seetronic + USB", "41x23x57cm, Ø29cm": "41x23x57cm, Ø29cm", "23.2kg": "23.2kg", "emballage 65x49.5x37cm": "packaging 65x49.5x37cm", "528W": "528W", "44x12W RGBW4en1": "44x12W RGBW 4-in-1", "DMX512/maître-esclave/auto/RDM": "DMX512/master-slave/auto/RDM", "Canal 4/8": "4/8 channels", "Angles 25°/35°": "Angles 25°/35°", "Écran LED 4bits": "4-bit LED display", "53x26x35cm": "53x26x35cm", "12.5kg emballage": "12.5kg packaged", "AC90-240V 50/60Hz": "AC90-240V 50/60Hz", "660W": "660W", "44x15W RGBW4en1": "44x15W RGBW 4-in-1", "2700-10000K": "2700-10000K", "Angles 15/25/35° et 25/45/60°": "Angles 15/25/35° and 25/45/60°", "Dimmer 0-100%, stroboscope, dégradé, saut, par section": "Dimmer 0-100%, strobe, fade, jump, per section", "11 segments (4 LED horiz)": "11 segments (4 horiz. LEDs)", "Canal 4/12/44": "4/12/44 channels", "DMX512/auto/son/maître-esclave": "DMX512/auto/sound/master-slave", "524x117x472mm": "524x117x472mm", "7.9kg": "7.9kg", "AC100-240V 50/60Hz": "AC100-240V 50/60Hz", "400W": "400W", "768 LED RGB3en1 0.5W (48 segments) + 96 LED 3535-3W 6500K (12 segments)": "768 x 0.5W RGB 3-in-1 LEDs (48 segments) + 96 x 3535-3W 6500K LEDs (12 segments)", "Y 185°": "Y 185°", "DMX512/auto/maître-esclave/son/RDM": "DMX512/auto/master-slave/sound/RDM", "Canaux 6-13-18-78-156-158": "Channels 6-13-18-78-156-158", "Dimmer linéaire 32bits": "32-bit linear dimmer", "57x32x23cm": "57x32x23cm", "8.6kg": "8.6kg", "400-600W": "400-600W", "60x10W RGBW4en1": "60x10W RGBW 4-in-1", "Écran LCD couleur": "Colour LCD screen", "3 ventilateurs": "3 fans", "55x15x38cm": "55x15x38cm", "14.8kg emballage": "14.8kg packaged", "PAR LED sur batterie": "Battery-powered PAR LED", "6 LED de 18W": "6 × 18W LEDs", "IP65, utilisable en extérieur": "IP65, suitable for outdoor use", "PAR LED sur batterie, format mini": "Battery-powered PAR LED, mini size", "Jet de scène à usage unique, portée 2 mètres, combustion 30 secondes, couleur argent. Effet spectaculaire pour entrée de scène ou final de show.": "Single-use stage jet, 2-metre range, 30-second burn, silver. A striking effect for a stage entrance or a show finale.", "Jet de scène à usage unique, portée 2 mètres, combustion 30 secondes, couleur or. Effet spectaculaire pour entrée de scène ou final de show.": "Single-use stage jet, 2-metre range, 30-second burn, gold. A striking effect for a stage entrance or a show finale.", "Jet de scène à usage unique, portée 3 mètres, combustion 30 secondes, couleur argent. Effet spectaculaire pour entrée de scène ou final de show.": "Single-use stage jet, 3-metre range, 30-second burn, silver. A striking effect for a stage entrance or a show finale.", "Jet de scène à usage unique, portée 3 mètres, combustion 30 secondes, couleur or. Effet spectaculaire pour entrée de scène ou final de show.": "Single-use stage jet, 3-metre range, 30-second burn, gold. A striking effect for a stage entrance or a show finale.", "CA110-240V 50-60Hz": "AC110-240V 50-60Hz", "Module LED blanc 400W": "400W white LED module", "IRC≥75": "CRI≥75", "100000lm@5m": "100000lm@5m", "8000K": "8000K", "8 couleurs+blanc": "8 colours + white", "8+8 gobos": "8+8 gobos", "DMX512/maître-esclave/son/auto/RDM": "DMX512/master-slave/sound/auto/RDM", "25 canaux": "25 channels", "Prismes 3/8 facettes": "3/8-facet prisms", "Zoom 3-45°": "Zoom 3-45°", "Pan 540°/Tilt 270° 16bits": "Pan 540°/Tilt 270° 16-bit", "AC100-240V 50-60Hz": "AC100-240V 50-60Hz", "Max 1000W": "Max 1000W", "LED Osram 1940W 4en1": "19 x 40W 4-in-1 Osram LEDs", "Bande 5050RGB 74pcs 0.12W": "5050RGB strip, 74 pcs, 0.12W", "2800-8500K": "2800-8500K", "Écran 1-25/s": "Strobe/flash 1-25/s", "Angle spot 0-60°": "Spot angle 0-60°", "DMX512/voix/auto/maître-esclave": "DMX512/voice/auto/master-slave", "Canaux 24/26/38/81/95/100/102": "Channels 24/26/38/81/95/100/102", "CTO, coloration, faisceau": "CTO, colouring, beam", "Tourbillon, kaléidoscope": "Whirlwind, kaleidoscope", "AC110-240V": "AC110-240V", "220W chacune": "220W each", "Source": "Source", "19x8W LED RGBW 4en1": "19x8W RGBW 4-in-1 LEDs", "Usage": "Use", "scène, DJ, discothèque, bar, soirées, karaoké": "stage, DJ, nightclub, bar, parties, karaoke", "Lot de 2 lyres": "Set of 2 moving heads", "Zoom motorisé (effet wash)": "Motorised zoom (wash effect)", "Bande lumineuse LED": "LED light strip", "DMX512, maître-esclave, son, auto": "DMX512, master-slave, sound, auto", "Pan/Tilt motorisés": "Motorised pan/tilt", "Design autoportant et compact": "Freestanding, compact design", "aucune installation complexe, transport et stockage faciles": "no complex installation, easy to carry and store", "Lot de 2 machines à étincelles électroniques mini 800W : effet visuel puissant pour les événements professionnels, idéales pour spectacles, mariages et clubs": "Set of 2 mini 800W electronic spark machines: a powerful visual effect for professional events, ideal for shows, weddings and clubs", "4 hauteurs d'étincelles réglables à la télécommande : 2 m, 2,5 m, 3 m ou 3,5 m, pour adapter l'effet à l'espace et au style du spectacle": "4 spark heights selectable by remote control: 2 m, 2.5 m, 3 m or 3.5 m, to suit the effect to the space and style of the show", "Effet de lumière professionnel pour scènes, DJ, karaoké, bars, clubs et spectacles en direct": "Professional lighting effect for stages, DJs, karaoke, bars, clubs and live shows", "Fonctionnement silencieux": "Quiet operation", "Télécommandes incluses": "Remote controls included", "Lot de 4 machines à étincelles électroniques mini 800W : effet visuel puissant pour les événements professionnels, idéales pour spectacles, mariages et clubs": "Set of 4 mini 800W electronic spark machines: a powerful visual effect for professional events, ideal for shows, weddings and clubs", "Machine à étincelles électroniques mini 800W : effet visuel puissant pour les événements professionnels, idéale pour spectacles, mariages et clubs": "Mini 800W electronic spark machine: a powerful visual effect for professional events, ideal for shows, weddings and clubs", "Télécommande incluse": "Remote control included", "LED custom 230W": "LED custom 230W", "On/off manuel": "Manual on/off", "Ballast électrique 380V": "380V electronic ballast", "Alim découpage 100-240V": "Switching power supply 100-240V", "14 couleurs+blanc": "14 colours + white", "17 motifs fixes": "17 fixed patterns", "Stroboscope 1-10/s": "Strobe 1-10/s", "Brouillard linéaire indép.": "Independent linear frost", "8+16+24 prismes": "8+16+24 prisms", "Focus électrique précis": "Precise electric focus", "X 540°/Y 280° auto-correction": "X 540°/Y 280°, auto-correction", "8/16bits": "8/16bits", "16 canaux DMX512": "16 DMX512 channels", "18 canaux DMX512, contrôle pixel anneau LED": "18 DMX512 channels, pixel control of the LED ring", "Pan 540° (16bits)": "Pan 540° (16-bit)", "Tilt 270° (16bits)": "Tilt 270° (16-bit)", "14 couleurs": "14 colours", "17 gobos": "17 gobos", "Roue arc-en-ciel+dépoli": "Rainbow wheel + frost", "Anneau 25xLED 5050 RGB": "Ring of 25 5050 RGB LEDs", "Focus mécanique, angle 2°": "Mechanical focus, 2° angle", "48 prismes": "48 prisms", "Protection surchauffe": "Overheat protection", "100-240V 50/60Hz, 450W": "100-240V 50/60Hz, 450W", "Boîte 50x34x36cm": "Box 50x34x36cm", "12kg": "12kg", "Tension AC100-240V, 750W, 19x40W LED RGBW 4en1, durée de vie 50000h, température couleur 2800-8500K, zoom 4-60°, canaux 21/22/35/36, DMX512, pan 540°/tilt 240°, IP20, 580x550x375mm, poids 12.5kg": "Voltage AC100-240V, 750W, 19x40W RGBW 4-in-1 LEDs, 50,000h lifespan, colour temperature 2800-8500K, zoom 4-60°, channels 21/22/35/36, DMX512, pan 540°/tilt 240°, IP20, 580x550x375mm, weight 12.5kg", "AC90-240V 450W, ampoule 295, IP20, faisceau 0-3.8°, 18 canaux, dimmer 16bits, 12 couleurs+blanc, 13 gobos, 8/8+8+8 prismes, mise au point électronique HD, pan 540°/tilt 270° auto-correction 16bits, DMX512/son/auto": "AC90-240V 450W, 295 lamp, IP20, beam 0-3.8°, 18 channels, 16-bit dimmer, 12 colours + white, 13 gobos, 8/8+8+8 prisms, HD electronic focus, pan 540°/tilt 270° 16-bit auto-correction, DMX512/sound/auto", "280W": "280W", "19 LED RGBW 4en1 15W": "19 x 15W RGBW 4-in-1 LEDs", "Zoom": "Zoom", "électronique 8°-60°": "electronic 8°-60°", "7/12/15/22": "7/12/15/22", "16,7M couleurs, CTO": "16.7M colours, CTO", "Dimmable 0-100%, 16bits": "Dimmable 0-100%, 16-bit", "-10°C à 45°C": "-10°C to 45°C", "330x340x240mm": "330x340x240mm", "7.5kg": "7.5kg", "7x40W LED RVBC 4en1": "7x40W RGBC 4-in-1 LEDs", "23/35/51": "23/35/51", "Zoom 4°-60°": "Zoom 4°-60°", "Dimmable 0-100%": "Dimmable 0-100%", "RVBC+CTO": "RGBC+CTO", "Écran LCD 1.4\"": "1.4\" LCD screen", "PowerCON": "PowerCON", "XLR 3/5 broches": "3/5-pin XLR", "33.5x24x18.5cm": "33.5x24x18.5cm", "4.5kg": "4.5kg", "Poudre pour machine à étincelles froides, version Indoor pour l'utilisation en intérieur": "Cold spark machine powder, Indoor version for use indoors", "Sachet de 200 g": "200 g bag", "Compatible avec nos machines à étincelles 800W": "Compatible with our 800W spark machines", "Poudre pour machine à étincelles froides, version Outdoor pour l'utilisation en extérieur": "Cold spark machine powder, Outdoor version for use outdoors", "CA110/240V 50/60Hz, alim 10.5V-100W": "AC110/240V 50/60Hz, 10.5V-100W power supply", "18 LED 4en1 haute puissance": "18 high-power 4-in-1 LEDs", "Lentille acrylique laiteuse": "Milky acrylic lens", "Angle 180°": "180° angle", "DMX512": "DMX512", "6 séquences intégrées": "6 built-in programmes", "DMX512/Auto/Maître-Esclave/son": "DMX512/Auto/Master-Slave/sound", "Alu auto-refroidi, sans ventilateur, 60-80W": "Self-cooling aluminium, fanless, 60-80W", "IP25": "IP25", "97x6x10cm": "97x6x10cm", "Canal 4/8/26": "4/8/26 channels", "Emballage 102x22.5x26cm, 16kg brut": "Packaged 102x22.5x26cm, 16kg gross", "Barre LED 18×10W RGBW 4 en 1": "LED bar 18×10W RGBW 4-in-1", "Barre LED pixel 18×18W RGBWA+UV 6 en 1": "LED pixel bar 18×18W RGBWA+UV 6-in-1", "Barre Sunstrip halogène 10×50W": "Halogen Sunstrip bar 10×50W", "Canon à confettis électrique 50cm": "Electric confetti cannon 50cm", "Canon à confettis électrique 80cm": "Electric confetti cannon 80cm", "Jet de scène 2m 30sec — Argent": "Stage jet 2m 30sec — Silver", "Jet de scène 2m 30sec — Or": "Stage jet 2m 30sec — Gold", "Jet de scène 3m 30sec — Argent": "Stage jet 3m 30sec — Silver", "Jet de scène 3m 30sec — Or": "Stage jet 3m 30sec — Gold", "Laser RVB 3W sur batterie": "3W RGB battery-powered laser", "Lot de 2 barres Sunstrip halogènes 10×50W": "Set of 2 halogen Sunstrip bars 10×50W", "Lot de 2 lyres wash zoom LED 220W — 19×8W RGBW": "Set of 2 220W LED zoom wash moving heads — 19×8W RGBW", "Lot de 2 machines à étincelles 800W": "Set of 2 800W spark machines", "Lot de 4 barres Sunstrip halogènes 10×50W": "Set of 4 halogen Sunstrip bars 10×50W", "Lot de 4 machines à étincelles 800W": "Set of 4 800W spark machines", "Lyre Beam 230W LED": "230W LED beam moving head", "Lyre Beam 230W avec anneau LED": "230W beam moving head with LED ring", "Lyre Beam 295W avec anneau LED": "295W beam moving head with LED ring", "Lyre LED Bee Beam-Wash 19×25W": "LED Bee Beam-Wash moving head 19×25W", "Lyre LED Bee-Eye 19×40W": "LED Bee-Eye moving head 19×40W", "Lyre LED Bee-Eye 19×40W IP65": "LED Bee-Eye moving head 19×40W IP65", "Lyre LED Big Bee 19×40W avec anneau — Wash/Beam/Spot": "LED Big Bee moving head 19×40W with ring — Wash/Beam/Spot", "Lyre LED Big Bee 19×40W zoom": "LED Big Bee moving head 19×40W zoom", "Lyre Spot Beam Wash 500W CMY CTO 3 en 1": "500W CMY CTO 3-in-1 Spot Beam Wash moving head", "Machine à étincelles 800W": "800W spark machine", "PAR LED 12×18W IP65 sur batterie": "Battery-powered PAR LED 12×18W IP65", "PAR LED 18 LED IP65 Ultra — angle 45°": "PAR LED 18 LEDs IP65 Ultra — 45° angle", "PAR LED 18×18W IP65 — 3 angles (25/35/45°)": "PAR LED 18×18W IP65 — 3 angles (25/35/45°)", "PAR LED 18×18W IP65 — boîtier alu moulé": "PAR LED 18×18W IP65 — die-cast aluminium housing", "PAR LED 18×18W RGBWA+UV": "PAR LED 18×18W RGBWA+UV", "PAR LED 19×15W zoom IP65": "PAR LED 19×15W zoom IP65", "PAR LED 44 LED 528W IP65": "PAR LED 44 LEDs 528W IP65", "PAR LED 4×18W sur batterie": "Battery-powered PAR LED 4×18W", "PAR LED 6×18W IP65 sur batterie": "Battery-powered PAR LED 6×18W IP65", "PAR LED 6×18W IP65 sur batterie — mini": "Battery-powered PAR LED 6×18W IP65 — mini", "PAR LED 7×40W zoom Bee-Eye": "PAR LED 7×40W zoom Bee-Eye", "Poudre pour machine à étincelles — Indoor": "Spark machine powder — Indoor", "Poudre pour machine à étincelles — Outdoor": "Spark machine powder — Outdoor", "Projecteur COB LED 300W zoom motorisé": "300W COB LED fixture with motorised zoom", "Projecteur LED IP65 44 LED 660W — 11 segments": "IP65 LED fixture 44 LEDs 660W — 11 segments", "Projecteur LED IP65 60×10W": "IP65 LED fixture 60×10W", "Répartiteur DMX 6 voies pour structure": "6-way DMX splitter for truss", "Répartiteur DMX 8 voies Art-Net — rack 1U": "8-way Art-Net DMX splitter — 1U rack", "Stroboscope LED 200W 48+12 segments RGBW": "200W LED strobe, 48+12 segments RGBW", "Stroboscope LED 400W IP65 RGBW 48+12 segments": "400W IP65 RGBW LED strobe, 48+12 segments"};
+  const API_BASE = "https://slp-api.raspy-silence-d4c7.workers.dev";
+
+  let products = [];
+  let cart = JSON.parse(sessionStorage.getItem('slp_cart') || '[]');
+
+  function money(cents){ return '€' + (cents/100).toFixed(2); }
+  function moneyHT(cents){ return '€' + (cents/120).toFixed(2) + ' excl. VAT'; }
+  // Promotions (promos.json) : ancien prix barré tant que la promo est en cours ; le prix payé reste celui de la base
+  let PROMO = null;
+  function promoWas(p){
+    if (!PROMO || !PROMO.prix_barres) return 0;
+    const w = PROMO.prix_barres[p.slug];
+    return (w && w > p.price_cents && Date.now() <= Date.parse(PROMO.jusqu_au)) ? w : 0;
+  }
+  function promoPct(p){ const w = promoWas(p); return w ? Math.round((1 - p.price_cents / w) * 100) : 0; }
+  function priceHTML(p){
+    const w = promoWas(p);
+    return (w ? '<small class="was">' + money(w) + '</small>' : '') + money(p.price_cents) + '<small class="ht">' + moneyHT(p.price_cents) + '</small>';
+  }
+
+  function saveCart(){ sessionStorage.setItem('slp_cart', JSON.stringify(cart)); renderCart(); }
+
+  const CATS = {
+    lumiere:{ name:'Stage lighting' },
+    effets:{ name:'Effect machines' },
+    consommables:{ name:'Consumables' }
+  };
+  const SUBS = [   // sous-rayons de l'éclairage, selon le nom du produit (premier qui correspond)
+    ['Lasers', /laser/i, 'lasers'],
+    ['Strobes', /strobe/i, 'strobes'],
+    ['LED bars & Sunstrips', /barre|bar light|sunstrip/i, 'barres'],
+    ['DMX & control', /dmx|r[ée]partiteur|console|grandma|tiger/i, 'dmx'],
+    ['PAR lights', /\bpar\b/i, 'par'],
+    ['Moving heads', /lyre|bee|mobile|beam|moving/i, 'lyres'],
+    ['Fixtures & floods', /./, 'floods']
+  ];
+  const subOf = p => SUBS.find(s => s[1].test(p.fr || p.name)) || SUBS[SUBS.length-1];
+  // Recherche par pertinence : nom et référence (fiche, SLP-n) avant la description ; accents normalisés, plusieurs mots (tous requis).
+  // À score égal, l'ordre du catalogue est conservé (tri stable).
+  function searchRank(words){
+    const scored = [];
+    products.forEach((p, i) => {
+      const name = plain(p.name + ' ' + (p.fr || '')), ref = plain(p.slug + ' slp-' + p.id), desc = plain((p.description || '') + ' ' + (p.description || '').split('|').map(s => EN[s.trim()] || '').join(' ')), cat = plain((CATS[p.category] || {}).name);
+      let score = 0, all = true;
+      for (const w of words){
+        if (name.includes(w)) score += 10 + (name.split(/[^a-z0-9]+/).includes(w) ? 2 : 0);
+        else if (ref.includes(w)) score += 8;
+        else if (cat.includes(w)) score += 3;
+        else if (desc.includes(w)) score += 1;
+        else { all = false; break; }
+      }
+      if (!all) return;
+      if (words.length > 1 && name.includes(words.join(' '))) score += 6;
+      if (ref === plain(words.join('-')) || ref.split(' ').includes(words.join('-'))) score += 20;
+      scored.push({ p, score, i });
+    });
+    return scored.sort((a, b) => (b.score - a.score) || (a.i - b.i)).map(x => x.p);
+  }
+  const plain = t => (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  // les plus récents d'abord ; les lots (-x2, -x4) restent derrière leur produit unitaire
+  const famOf = p => p.slug.replace(/-x[0-9]+$/, '');
+  const newest = () => {
+    const top = {}; products.forEach(p => { const f = famOf(p); top[f] = Math.max(top[f] || 0, p.id); });
+    return products.slice().sort((a,b) => (top[famOf(b)] - top[famOf(a)]) || (a.id - b.id));
+  };
+  const newIds = () => new Set(newest().slice(0,8).map(p => p.id));
+
+  function cardHTML(p, isNew){
+    return `
+      <div class="card">
+        <a class="card-img has-photo" href="/en/produits/${p.slug}" aria-label="${p.name}">${promoWas(p) ? `<span class="badge-promo">${PROMO.nom} −${promoPct(p)}%</span>` : (isNew ? '<span class="badge-new">New</span>' : '')}${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : 'Photo coming soon'}</a>
+        <h3><a href="/en/produits/${p.slug}">${p.name}</a></h3>
+        <div class="price-row">
+          <span class="price">${priceHTML(p)}</span>
+          <button class="btn btn-primary" onclick="addToCart(${p.id})">Add</button>
+        </div>
+      </div>`;
+  }
+
+  // Lot (-x2, -x4…) : prix à l'unité et économie par rapport à N produits achetés séparément (calculés, aucune remise ajoutée)
+  function packInfo(p){
+    const m = p.slug.match(/-x([0-9]+)$/);
+    if (!m) return null;
+    const n = parseInt(m[1], 10);
+    const base = products.find(q => q.slug === p.slug.replace(/-x[0-9]+$/, ''));
+    return { n, unit: Math.round(p.price_cents / n), save: base ? base.price_cents * n - p.price_cents : 0 };
+  }
+  function packHTML(p){
+    const i = packInfo(p);
+    const line = `<p class="pack-line"><b>Set of ${i.n}</b>, ${money(i.unit)} each${i.save > 0 ? `<span class="save">save ${money(i.save)} compared with buying ${i.n} separately</span>` : ''}</p>`;
+    return cardHTML(p, false).replace('<div class="price-row">', line + '<div class="price-row">');
+  }
+
+  function renderHome(){
+    const by = c => products.filter(p => p.category === c);
+    const lum = by('lumiere'), con = by('consommables');
+    const nw = newIds();
+    const pic = (list, re) => { const x = list.find(p => p.image && re.test(p.fr || p.name)); return x ? x.image : ''; };
+    const tile = (cls, href, title, img, emoji) => `
+      <a class="tile4 ${cls}" href="${href}"><h3>${title}</h3>
+        <div class="pic${img ? '' : ' big'}">${img ? `<img src="${img}" alt="" loading="lazy">` : emoji}</div>
+        <span class="pill">Discover</span></a>`;
+    document.getElementById('catTiles').innerHTML =
+      tile('t-lum', '#lumiere', 'Stage lighting', pic(lum, /lyre|bee/i), '') +
+      tile('t-etc', '#effets', 'Effect machines', '/machine-etincelles-800w.png', '') +
+      tile('t-con', '#consommables', 'Consumables', '/poudre-etincelles.png', '') +
+      tile('t-new', '#nouveautes', 'New arrivals', pic(lum, /sunstrip/i), '');
+    { const el = document.getElementById('catTiles'); el.style.setProperty('--n', el.children.length); }
+    document.getElementById('featured').innerHTML = newest().slice(0,10).map(p => cardHTML(p, true)).join('');
+    { const packs = products.filter(p => p.image && packInfo(p));
+      document.getElementById('packsBlock').hidden = !packs.length;
+      document.getElementById('featuredPacks').innerHTML = packs.map(packHTML).join(''); }
+    document.getElementById('featuredLum').innerHTML = lum.filter(p => p.image).slice(0,12).map(p => cardHTML(p, nw.has(p.id))).join('');
+    { const promo = products.filter(p => p.image && promoWas(p));
+      document.getElementById('bfBlock').hidden = !promo.length;
+      { const hero = document.getElementById('bfHero');
+        const isSun = p => /^barre-led-sunstrip/.test(p.slug);
+        const one = promo.find(p => isSun(p) && !packInfo(p));
+        hero.hidden = !one;
+        if (one){
+          const pct = promoPct(one), end = new Date(PROMO.jusqu_au).toLocaleDateString('en-GB', { day:'numeric', month:'long', timeZone:'Europe/Paris' });
+          const packs = promo.filter(p => isSun(p) && packInfo(p)).sort((a, b) => packInfo(a).n - packInfo(b).n);
+          document.getElementById('bfTag').textContent = PROMO.nom + ' · until ' + end;
+          document.getElementById('bfBig').textContent = '−' + pct + '%';
+          document.getElementById('bfH').textContent = '10×50W halogen Sunstrip bars';
+          document.getElementById('bfP').innerHTML = '<b>' + money(one.price_cents) + '</b> <s>' + money(promoWas(one)) + '</s> incl. VAT'
+            + packs.map(q => ' · set of ' + packInfo(q).n + ': <b>' + money(q.price_cents) + '</b>').join('') + '. Delivery across France only.';
+          document.getElementById('bfBadge').textContent = '−' + pct + '%';
+        }
+        const ly = promo.find(p => p.slug === 'lyre-wash-220w-19x8w-x2');
+        const h2 = document.getElementById('bfHero2'); h2.hidden = !ly;
+        if (ly){
+          const pct = promoPct(ly), end = new Date(PROMO.jusqu_au).toLocaleDateString('en-GB', { day:'numeric', month:'long', timeZone:'Europe/Paris' });
+          document.getElementById('bf2Tag').textContent = PROMO.nom + ' · until ' + end;
+          document.getElementById('bf2Big').textContent = '−' + pct + '%';
+          document.getElementById('bf2P').innerHTML = '<b>' + money(ly.price_cents) + '</b> <s>' + money(promoWas(ly)) + '</s> incl. VAT for a set of 2 19×8W RGBW wash moving heads with motorised zoom. Delivery across France only.';
+          document.getElementById('bf2Badge').textContent = '−' + pct + '%';
+        }
+        initBfCar(); }
+      if (promo.length){
+        document.getElementById('bfTitle').textContent = PROMO.nom;
+        const d = new Date(PROMO.jusqu_au).toLocaleDateString('en-GB', { day:'numeric', month:'long', timeZone:'Europe/Paris' });
+        document.getElementById('bfSub').textContent = '10×50W Sunstrip bars and 220W wash moving heads at reduced prices, until ' + d + ' inclusive.';
+        document.getElementById('featuredBf').innerHTML = promo.map(p => packInfo(p) ? packHTML(p) : cardHTML(p, false)).join('');
+      } }
+    fillRows();
+  }
+
+  // Carrousel Black Friday : défilement auto (pause au survol / au focus), flèches et pastilles
+  let bfTimer = null, bfIdx = 0;
+  function initBfCar(){
+    const car = document.getElementById('bfCar'); if (!car) return;
+    const slides = [...car.querySelectorAll('.hero-bf')].filter(a => !a.hidden);
+    car.hidden = !slides.length; car.classList.toggle('single', slides.length < 2);
+    if (!slides.length) return;
+    const dots = document.getElementById('bfDots'); dots.innerHTML = '';
+    const show = i => { bfIdx = (i + slides.length) % slides.length;
+      slides.forEach((a, k) => a.classList.toggle('on', k === bfIdx));
+      [...dots.children].forEach((d, k) => d.classList.toggle('on', k === bfIdx)); };
+    slides.forEach((a, k) => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Offer ' + (k + 1)); b.onclick = () => { show(k); play(); }; dots.appendChild(b); });
+    document.getElementById('bfPrev').onclick = () => { show(bfIdx - 1); play(); };
+    document.getElementById('bfNext').onclick = () => { show(bfIdx + 1); play(); };
+    const stop = () => { clearInterval(bfTimer); bfTimer = null; };
+    const play = () => { stop(); if (slides.length < 2 || matchMedia('(prefers-reduced-motion:reduce)').matches) return; bfTimer = setInterval(() => show(bfIdx + 1), 6000); };
+    car.onmouseenter = stop; car.onmouseleave = play; car.onfocusin = stop; car.onfocusout = play;
+    show(0); play();
+  }
+
+  // Rangées d'accueil toujours complètes : on n'affiche que des lignes entières (2 lignes au plus), quelle que soit la largeur
+  function fillRows(){
+    ['featured', 'featuredLum', 'featuredPacks'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || !el.children.length) return;
+      const kids = [...el.children]; kids.forEach(k => { k.hidden = false; });
+      const cols = getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length || 1;
+      const keep = Math.min(Math.floor(kids.length / cols), 2) * cols;
+      if (keep >= cols) kids.forEach((k, i) => { k.hidden = i >= keep; });
+    });
+  }
+  { let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(fillRows, 120); }); }
+
+  // vue liste : un rayon, un sous-rayon, les nouveautés, tout, ou une recherche
+  function renderList(opts){
+    const { title, base, subs, curSub, sortable = true } = opts;
+    document.getElementById('catTitle').textContent = title;
+    document.getElementById('crumbCat').textContent = title;
+    const subsEl = document.getElementById('subchips');
+    let list = base;
+    if (subs){
+      const counts = {}; base.forEach(p => { const k = subOf(p)[2]; counts[k] = (counts[k]||0) + 1; });
+      const keys = SUBS.filter(s => counts[s[2]]);
+      subsEl.innerHTML = `<button data-s="" class="${!curSub?'active':''}">All<i>${base.length}</i></button>` +
+        keys.map(s => `<button data-s="${s[2]}" class="${curSub===s[2]?'active':''}">${s[0]}<i>${counts[s[2]]}</i></button>`).join('');
+      subsEl.hidden = false;
+      subsEl.querySelectorAll('button').forEach(b => b.onclick = () => { location.hash = b.dataset.s ? '#lumiere/' + b.dataset.s : '#lumiere'; });
+      if (curSub) list = base.filter(p => subOf(p)[2] === curSub);
+    } else { subsEl.innerHTML = ''; subsEl.hidden = true; }
+    const sort = document.getElementById('sortSel').value;
+    document.getElementById('sortDef').textContent = opts.ranked ? 'Sort: relevance' : 'Sort: featured';
+    list = list.slice();
+    const pr = document.getElementById('priceSel').value;
+    if (pr){ const [lo, hi] = pr.split('-').map(Number); list = list.filter(p => p.price_cents >= lo * 100 && p.price_cents < hi * 100); }
+    if (document.getElementById('stockChk').checked) list = list.filter(p => (p.stock_qty == null ? 1 : p.stock_qty) > 0);
+    if (sort === 'asc') list.sort((a,b) => a.price_cents - b.price_cents);
+    else if (sort === 'desc') list.sort((a,b) => b.price_cents - a.price_cents);
+    else if (sort === 'name') list.sort((a,b) => a.name.localeCompare(b.name, 'en'));
+    document.getElementById('catCount').textContent = list.length + ' item' + (list.length > 1 ? 's' : '');
+    const nw = newIds();
+    const grid = document.getElementById('grid');
+    grid.innerHTML = list.map(p => cardHTML(p, nw.has(p.id))).join('');
+    grid.hidden = !list.length;
+    document.getElementById('catCount').hidden = !list.length;
+    document.getElementById('sortSel').hidden = !list.length;
+    if (!list.length){
+      grid.hidden = false;
+      grid.innerHTML = `<p style="color:var(--muted);">${opts.empty || 'No items at the moment.'}</p>`;
+    }
+  }
+
+  function route(){
+    const q = (new URLSearchParams(location.search).get('q') || '').trim();
+    const h = (location.hash || '').slice(1);
+    let [c, sub] = h.split('/');
+    const isList = !!q || c === 'tous' || c === 'nouveautes' || CATS[c];
+    document.getElementById('viewHome').hidden = isList;
+    document.getElementById('viewCat').hidden = !isList;
+    if (!loaded) return;
+    if (!isList){ renderHome(); return; }
+    window.scrollTo({top:0});
+    if (q && !h){
+      const words = plain(q).split(/\s+/).filter(Boolean);
+      const hit = searchRank(words);
+      renderList({ title: 'Results for “' + q + '”', ranked: true, base: hit, empty: 'No product matches this search.' });
+    }
+    else if (c === 'tous') renderList({ title:'Full catalogue', base: products });
+    else if (c === 'nouveautes') renderList({ title:'New arrivals', base: newest().slice(0,12) });
+    else if (c === 'lumiere') renderList({ title: CATS.lumiere.name, base: products.filter(p => p.category === 'lumiere'), subs:true, curSub: sub || '' });
+    else renderList({ title: CATS[c].name, base: products.filter(p => p.category === c) });
+  }
+  let loaded = false;
+  async function loadProducts(){
+    try {
+      const res = await fetch(`${API_BASE}/api/products`);
+      products = await res.json();
+      products.forEach(p => { p.fr = p.name; p.name = EN[p.name] || p.name; });
+      try { const lr = await fetch('/livraison.json', { cache: 'no-cache' }); if (lr.ok) { const l = await lr.json(); if (Number.isFinite(l.delai_estime_jours) && l.delai_estime_jours > 0) LIV = Object.assign(LIV, l); } } catch (e) {}
+      try { const pr = await fetch('/promos.json', { cache: 'no-cache' }); if (pr.ok) PROMO = await pr.json(); } catch (e) {}
+      loaded = true;
+      route();
+      const q = new URLSearchParams(location.search);
+      const bySlug = s => products.find(x => x.slug === s);
+      if (q.get('ajouter') && bySlug(q.get('ajouter'))) addToCart(bySlug(q.get('ajouter')).id);
+      else if (q.get('p') && bySlug(q.get('p'))) openProductDetail(bySlug(q.get('p')).id);
+      if (q.get('ajouter') || q.get('p')) history.replaceState(null, '', location.pathname + (q.get('q') ? '?q=' + encodeURIComponent(q.get('q')) : '') + location.hash);
+      if (location.hash === '#panier') openCartFromLink();
+    } catch(e){
+      document.getElementById('catTiles').innerHTML = '<p style="color:var(--muted);">The catalogue is unavailable at the moment.</p>';
+      document.getElementById('grid').innerHTML = '<p style="color:var(--muted);">The catalogue is unavailable at the moment.</p>';
+    }
+  }
+  function openCartFromLink(){
+    document.getElementById('cartPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+    history.replaceState(null, '', location.pathname + location.search);
+    route();
+  }
+  window.addEventListener('hashchange', () => {
+    if (location.hash === '#panier'){ openCartFromLink(); return; }
+    if (location.search.includes('q=')) history.replaceState(null, '', location.pathname + location.hash);  // un clic dans le menu quitte la recherche
+    route();
+  });
+  document.getElementById('sortSel').onchange = () => route();
+  document.getElementById('priceSel').onchange = () => route();
+  document.getElementById('stockChk').onchange = () => route();
+  document.getElementById('shopCartLink').addEventListener('click', e => { e.preventDefault(); openCartFromLink(); });
+
+  // Produits associés : une machine à effets nécessite un consommable (poudre, liquide…)
+  const FX_KEYS = ['etincelles','fumee','brouillard','mousse','bulles'];
+  const nrm = s => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const isAcc = p => /^(poudre|liquide|fluide|recharge)\b/.test(nrm(p.fr || p.name));
+  const fxKey = p => FX_KEYS.find(k => nrm(p.fr || p.name).includes(k)) || null;
+  function accFor(p){   // consommables à prévoir pour une machine
+    const k = fxKey(p);
+    if (!k || isAcc(p)) return [];
+    return products.filter(q => q.id !== p.id && isAcc(q) && fxKey(q) === k);
+  }
+  function needRows(list){
+    return list.map(q => `<div class="need-row"><span>${q.name}</span><em>${money(q.price_cents)}</em><button type="button" onclick="addToCart(${q.id})">Add</button></div>`).join('');
+  }
+
+  function addToCart(id){
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    const existing = cart.find(c => c.product_id === id);
+    if (existing) existing.qty += 1;
+    else cart.push({ product_id: id, name: p.fr || p.name, price_cents: p.price_cents, qty: 1 });
+    saveCart();
+    document.getElementById('cartPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function changeQty(id, delta){
+    const item = cart.find(c => c.product_id === id);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) cart = cart.filter(c => c.product_id !== id);
+    saveCart();
+  }
+
+  // Frais de livraison (TTC) : 6,99 € jusqu'à 20 €, 14,99 € de 20 € à 99,99 €, offerts dès 100 € — identique côté serveur (slp-api)
+  // Délai de livraison : estimé (valeur par produit dans /livraison.json, défaut 10 jours) ; panier mixte = produit le plus long.
+  // Un délai maximal ENGAGEANT n'est affiché que s'il est renseigné (delai_max_engage_jours) : jamais déduit de l'estimation.
+  let LIV = { delai_estime_jours: 10, delai_max_engage_jours: null, delai_max_unite: 'jours', par_produit: {} };
+  function etaDaysFor(slug){ const v = LIV.par_produit && LIV.par_produit[slug]; return Number.isFinite(v) && v > 0 ? v : LIV.delai_estime_jours; }
+  function etaText(days){ return 'Estimated delivery in France: about ' + days + ' day' + (days > 1 ? 's' : '') + ' after ordering.'; }
+  function etaHTML(slugs){
+    const days = Math.max(...slugs.map(etaDaysFor));
+    const mixed = new Set(slugs.map(etaDaysFor)).size > 1;
+    const max = LIV.delai_max_engage_jours;
+    return '<b>' + etaText(days) + '</b>' + (mixed ? ' Based on the longest lead time in your basket.' : '') +
+      (Number.isFinite(max) && max > 0 ? '<br>Delivery within ' + max + ' ' + ((LIV.delai_max_unite || 'jours') === 'jours ouvrés' ? 'working days' : 'days') + ' at the latest: SLP commitment, stated in your order confirmation.' : '');
+  }
+  function shipCents(sub){ return sub <= 2000 ? 699 : (sub < 10000 ? 1499 : 0); }
+
+  function renderCart(){
+    const itemsEl = document.getElementById('cartItems');
+    const footEl = document.getElementById('cartFoot');
+    const countEl = document.getElementById('cartCount');
+    const totalEl = document.getElementById('cartTotal');
+
+    if (!cart.length){
+      itemsEl.innerHTML = '<p class="cart-empty">Your basket is empty.</p>';
+      footEl.style.display = 'none';
+      countEl.style.display = 'none';
+      { const n = document.getElementById('shopCartN'); if (n) n.style.display = 'none'; }
+      return;
+    }
+    countEl.style.display = 'flex';
+    countEl.textContent = cart.reduce((s,c)=>s+c.qty,0);
+    { const n = document.getElementById('shopCartN'); if (n){ n.textContent = countEl.textContent; n.style.display = 'flex'; } }
+    footEl.style.display = 'block';
+    let total = 0;
+    itemsEl.innerHTML = cart.map(c => {
+      total += c.price_cents * c.qty;
+      return `
+        <div class="cart-item">
+          <span>${EN[c.name] || c.name}</span>
+          <div class="qty-ctrl">
+            <button onclick="changeQty(${c.product_id}, -1)" aria-label="Remove one ${(EN[c.name] || c.name).replace(/"/g, '&quot;')}">−</button>
+            <span>${c.qty}</span>
+            <button onclick="changeQty(${c.product_id}, 1)" aria-label="Add one ${(EN[c.name] || c.name).replace(/"/g, '&quot;')}">+</button>
+          </div>
+          <span>${money(c.price_cents * c.qty)}</span>
+        </div>
+      `;
+    }).join('');
+    // Suggestion : machine au panier sans son consommable
+    const sugg = [];
+    cart.forEach(c => {
+      const p = products.find(x => x.id === c.product_id);
+      if (!p) return;
+      const acc = accFor(p);
+      if (acc.length && !acc.some(a => cart.some(ci => ci.product_id === a.id)) && !sugg.some(s => s.key === fxKey(p))) sugg.push({ key: fxKey(p), acc });
+    });
+    if (sugg.length) itemsEl.innerHTML += '<div class="cart-sugg">' + sugg.map(s =>
+      `<div class="need-box"><b>Don't forget the consumable for your machine</b>${needRows(s.acc)}</div>`).join('') + '</div>';
+    const ship = shipCents(total), grand = total + ship;
+    document.getElementById('cartShip').innerHTML =
+      '<div><span>Subtotal</span><span>' + money(total) + '</span></div>' +
+      '<div><span>Delivery in France</span><span>' + (ship ? money(ship) : 'Free') + '</span></div>' +
+      (ship ? '<span class="hint">' + money(10000 - total) + ' more for free delivery</span>' : '');
+    total = grand;
+    document.getElementById('cartEta').innerHTML = etaHTML(cart.map(c => { const p = products.find(x => x.id === c.product_id); return p ? p.slug : ''; }));
+    totalEl.innerHTML = money(total) + '<small class="ht" style="display:block;text-align:right;font-weight:400;font-size:.7rem;opacity:.7">' + moneyHT(total) + '</small>';
+  }
+
+  document.getElementById('cartFab').onclick = () => {
+    document.getElementById('cartPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+  };
+  document.getElementById('cartClose').onclick = closeCart;
+  document.getElementById('overlay').onclick = closeCart;
+  function closeCart(){
+    document.getElementById('cartPanel').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+  }
+
+  function openProductDetail(id){
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('pdImg').innerHTML = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async">` : '';
+    document.getElementById('pdCat').textContent = { son:'Sound', lumiere:'Lighting', effets:'Effects', consommables:'Consumables' }[p.category] || p.category;
+    document.getElementById('pdName').textContent = p.name;
+    // Lignes non confirmées (contradiction avec le titre) : masquées tant que le modèle exact n'est pas confirmé
+    const HIDE_SPECS = { 'battery-3w-animated-laser-light': ['Laser RVB 300mW-5W'] };
+    const specs = (p.description || '').split('|').map(s => s.trim()).filter(s => s && !(HIDE_SPECS[p.slug] || []).some(h => s.startsWith(h)));
+    document.getElementById('pdSpecs').innerHTML = specs.length
+      ? specs.map(s => `<li>${EN[s] || s}</li>`).join('')
+      : '<li>Specifications coming soon.</li>';
+    { const acc = accFor(p);
+      document.getElementById('pdNeed').innerHTML = acc.length
+        ? `<div class="need-box"><b>You will also need (sold separately)</b>${needRows(acc)}</div>` : ''; }
+    document.getElementById('pdEta').textContent = etaText(etaDaysFor(p.slug));
+    document.getElementById('pdPrice').innerHTML = priceHTML(p);
+    document.getElementById('pdAddBtn').onclick = () => { addToCart(p.id); closeProductDetail(); };
+    document.getElementById('productModal').classList.add('open');
+    document.getElementById('pdOverlay').classList.add('open');
+  }
+  window.openProductDetail = openProductDetail;
+
+  function closeProductDetail(){
+    document.getElementById('productModal').classList.remove('open');
+    document.getElementById('pdOverlay').classList.remove('open');
+  }
+  document.getElementById('pdClose').onclick = closeProductDetail;
+  document.getElementById('pdOverlay').onclick = closeProductDetail;
+
+  document.getElementById('checkoutBtn').onclick = async () => {
+    const msgEl = document.getElementById('cartMsg');
+    const name = document.getElementById('custName').value.trim();
+    const email = document.getElementById('custEmail').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    if (!document.getElementById('acceptCgv').checked){
+      msgEl.textContent = 'Please accept the terms and conditions of sale.';
+      msgEl.className = 'cart-msg error';
+      return;
+    }
+    if (!name || !email){
+      msgEl.textContent = 'Please enter your name and email.';
+      msgEl.className = 'cart-msg error';
+      return;
+    }
+    msgEl.textContent = 'Redirecting to payment…';
+    msgEl.className = 'cart-msg';
+    try {
+      const res = await fetch(`${API_BASE}/api/checkout`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          items: cart.map(c => ({ product_id: c.product_id, qty: c.qty })),
+          customer_name: name, customer_email: email, customer_phone: phone
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error');
+      sessionStorage.removeItem('slp_cart');
+      sessionStorage.setItem('slp_lang', 'en');
+      window.location.href = data.url;
+    } catch(e){
+      msgEl.textContent = ({ 'Panier vide': 'Your basket is empty.', 'Aucun article valide': 'No valid item in the basket.' })[e.message] || e.message;
+      msgEl.className = 'cart-msg error';
+    }
+  };
+
+  renderCart();
+  loadProducts();
+</script>
+
+</body>
+<script>
+(function(){
+  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
+  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
+  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
+  if (localStorage.getItem('slp_admin_token')) return;
+  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  (function(){try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("slp_notrack","1");if(/[?&]notrack=0/.test(location.search))localStorage.removeItem("slp_notrack");if(localStorage.getItem("slp_notrack"))return Promise.resolve();}catch(e){}return fetch.apply(window,arguments);})("https://soundlightprod.fr/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_slug: "boutique", lang: "en", session_id: sid, ref:(function(){try{var q=new URLSearchParams(location.search),s=q.get("utm_source")||(q.get("utm_medium")==="email"?"email":"");if(s){var c=(q.get("utm_campaign")||"").toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,50);return "https://emailing-"+s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")+(c?"."+c:"")+"/";}}catch(e){}return document.referrer;})() })
+  }).catch(function(){});
+})();
+</script>
+</html>

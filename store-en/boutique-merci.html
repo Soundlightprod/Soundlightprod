@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://soundlightprod.fr/consent.js" data-legal="/mentions-legales-boutique"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank you for your order — SLP</title>
+<style>
+  :root{ --ink:#f3f4f8; --ink-2:#ffffff; --paper:#14213d; --muted:#5b6475; --amber:#3259be; --line:rgba(20,33,61,0.14); }
+  body{background:var(--ink); color:var(--paper); font-family:'Instrument Sans',sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px;}
+  h1{font-family:'League Spartan',sans-serif; font-size:2.2rem; margin-bottom:14px;}
+  p{color:var(--muted); margin-bottom:24px;}
+  a{color:var(--amber); text-decoration:none; font-weight:600;}
+</style>
+<link rel="preload" href="/fonts/league-spartan-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/charte.css?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#14213D">
+<link rel="stylesheet" href="/pm-shop.css?v=1">
+<link rel="canonical" href="https://slpstore.fr/en/boutique-merci">
+<link rel="alternate" hreflang="fr" href="https://slpstore.fr/boutique-merci"><link rel="alternate" hreflang="en" href="https://slpstore.fr/en/boutique-merci"><link rel="alternate" hreflang="x-default" href="https://slpstore.fr/boutique-merci">
+</head>
+<body>
+  <div>
+    <h1>Thank you for your order!</h1>
+    <p>Your payment has been recorded. A confirmation email will be sent to you shortly.</p>
+  <p id="eta" style="color:var(--paper);font-weight:600;"></p>
+    <a href="/en/">← Back to the shop</a>
+  </div>
+<script>fetch("/livraison.json",{cache:"no-cache"}).then(function(r){return r.json();}).then(function(l){var d=l&&l.delai_estime_jours;if(d>0){document.getElementById("eta").textContent="Estimated delivery in France: about "+d+" day"+(d>1?"s":"")+" after ordering."+(l.delai_max_engage_jours>0?" SLP commitment: within "+l.delai_max_engage_jours+" "+((l.delai_max_unite||"jours")==="jours ouvrés"?"working days":"days")+" at the latest.":"");}}).catch(function(){});</script>
+</body>
+<script>
+(function(){
+  // Ne compte pas les visites faites depuis un navigateur où l'admin est connecté
+  // (même origine soundlightprod.fr donc même localStorage) : évite de polluer les
+  // stats avec tes propres passages sur le site pendant que tu es dans l'admin.
+  if (localStorage.getItem('slp_admin_token')) return;
+  // Un même identifiant de session (par onglet) pour reconstituer le parcours de visite
+  var sid = sessionStorage.getItem('slp_visit_sid');
+  if (!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('slp_visit_sid', sid); }
+  (function(){try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("slp_notrack","1");if(/[?&]notrack=0/.test(location.search))localStorage.removeItem("slp_notrack");if(localStorage.getItem("slp_notrack"))return Promise.resolve();}catch(e){}return fetch.apply(window,arguments);})("https://soundlightprod.fr/api/track-visit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_slug: "boutique-merci", lang: "en", session_id: sid, ref:(function(){try{var q=new URLSearchParams(location.search),s=q.get("utm_source")||(q.get("utm_medium")==="email"?"email":"");if(s){var c=(q.get("utm_campaign")||"").toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,50);return "https://emailing-"+s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")+(c?"."+c:"")+"/";}}catch(e){}return document.referrer;})() })
+  }).catch(function(){});
+})();
+</script>
+</html>
