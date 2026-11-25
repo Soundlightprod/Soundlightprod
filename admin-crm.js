@@ -186,7 +186,7 @@
     const last = (c) => { if (!c._dern) { try { c._dern = c.dernier ? JSON.parse(c.dernier) : 0; } catch (e) { c._dern = 0; } } return c._dern; };
     const lastQ = (c) => { const d = last(c); return d ? quand({ date_echange: d.e, cree_le: d.c }) : ''; };
     const rows = filtered().sort((a, b) => {
-      const ra = isDaf(a) ? 2 : isOaf(a) ? 1 : 0, rb = isDaf(b) ? 2 : isOaf(b) ? 1 : 0;
+      const ra = isOaf(a) ? 2 : isDaf(a) ? 1 : 0, rb = isOaf(b) ? 2 : isDaf(b) ? 1 : 0;
       if (ra !== rb) return rb - ra; // « Devis à faire » toujours en tête
       if (vue === 'relance') return (a.date_relance || '').localeCompare(b.date_relance || '');
       // nouvelles demandes en tête (la plus récente d'abord), puis les autres par ancienneté (les plus anciennes d'abord)
@@ -219,8 +219,8 @@
         </div></div>`;
     };
     // affichage par catégories (sauf la vue « À relancer », triée par date de relance)
-    const catDe = (c) => isDaf(c) ? 'daf' : isOaf(c) ? 'oaf' : c.statut === 'perdu' ? 'perdu' : c.statut === 'client' ? 'signe' : c.etape === 'nouveau' ? 'nouv' : c.etape === 'devis' ? 'devis' : c.etape === 'proposition' ? 'prop' : c.etape === 'negociation' ? 'nego' : 'cours';
-    const CATS = [['daf', '🔴 Devis à faire'], ['oaf', '🔴 Offre commerciale à faire'], ['nouv', '🆕 Nouvelles demandes'], ['nego', '🔥 Négociation : intéressés'], ['prop', '📨 Proposition commerciale envoyée'], ['devis', '📄 Devis envoyé'], ['cours', '💬 Contactés / échange en cours'], ['signe', '✅ Devis signé : clients'], ['perdu', '✖ Perdus']];
+    const catDe = (c) => isOaf(c) ? 'oaf' : isDaf(c) ? 'daf' : c.statut === 'perdu' ? 'perdu' : c.statut === 'client' ? 'signe' : c.etape === 'nouveau' ? 'nouv' : c.etape === 'devis' ? 'devis' : c.etape === 'proposition' ? 'prop' : c.etape === 'negociation' ? 'nego' : 'cours';
+    const CATS = [['oaf', '🔴 Offre commerciale à faire'], ['daf', '🔴 Devis à faire'], ['nouv', '🆕 Nouvelles demandes'], ['nego', '🔥 Négociation : intéressés'], ['prop', '📨 Proposition commerciale envoyée'], ['devis', '📄 Devis envoyé'], ['cours', '💬 Contactés / échange en cours'], ['signe', '✅ Devis signé : clients'], ['perdu', '✖ Perdus']];
     const shown = rows.slice(0, 300);
     let html;
     if (vue === 'relance') html = shown.map(rowHtml).join('');
