@@ -3,7 +3,7 @@
 
 const COLS = ["statut", "etape", "organisation", "categorie", "prenom", "nom", "fonction", "email", "telephone", "ville", "code_postal",
   "departement", "source", "evenement", "date_evenement", "budget", "priorite", "notes", "prochaine_action", "date_relance",
-  "no_mailing", "perdu_raison"];
+  "no_mailing", "perdu_raison", "devis_a_faire"];
 const STATUTS = ["prospect", "client", "perdu"];
 const ETAPES = ["nouveau", "contacte", "echange", "proposition", "devis", "negociation"];
 const OFFRE_STATUTS = ["brouillon", "envoyee", "acceptee", "refusee"];
@@ -61,6 +61,8 @@ export async function ensureCrmSchema(env) {
   }
   // marque : « slp » (Sound Light Prod, Book My Band…) ou « digital » (SLP Digital) ; les deux ne se mélangent pas dans l'admin
   try { await env.DB.prepare("ALTER TABLE crm_contacts ADD COLUMN marque TEXT NOT NULL DEFAULT 'slp'").run(); } catch (e) { /* colonne déjà présente */ }
+  // case « Devis à faire » : le contact remonte en tête de liste, en rouge
+  try { await env.DB.prepare("ALTER TABLE crm_contacts ADD COLUMN devis_a_faire INTEGER NOT NULL DEFAULT 0").run(); } catch (e) { /* colonne déjà présente */ }
   ready = true;
 }
 
@@ -96,6 +98,7 @@ function sanitize(b, partial) {
   put("date_relance", clean(b.date_relance, 10));
   put("priorite", b.priorite ? 1 : 0);
   put("no_mailing", b.no_mailing ? 1 : 0);
+  put("devis_a_faire", b.devis_a_faire ? 1 : 0);
   put("marque", b.marque === "digital" ? "digital" : "slp");
   if (partial) for (const k of Object.keys(o)) if (b[k] === undefined) delete o[k];
   return o;
@@ -209,7 +212,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
   if (path === "/contacts" && method === "GET") {
     const { results } = await env.DB.prepare(
       `SELECT c.id, c.statut, c.etape, c.organisation, c.categorie, c.prenom, c.nom, c.fonction, c.email, c.telephone, c.ville, c.code_postal,
-              c.departement, c.source, c.evenement, c.date_evenement, c.priorite, c.prochaine_action, c.date_relance, c.no_mailing, c.brevo_le,
+              c.departement, c.source, c.evenement, c.date_evenement, c.priorite, c.prochaine_action, c.date_relance, c.no_mailing, c.devis_a_faire, c.brevo_le,
               c.client_depuis, c.maj_le, c.cree_le, c.marque,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'accepte') AS ca_accepte,
               (SELECT COALESCE(SUM(montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'envoye') AS devis_en_cours,
