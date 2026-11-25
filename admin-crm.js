@@ -424,7 +424,16 @@
     const refresh = async () => { const y = $('crmModal').scrollTop; await openDetail(id); $('crmModal').scrollTop = y; load(); };
     const saveFiche = async () => {
       const set = (t) => { $('dMsg').textContent = t; $('dMsg2').textContent = t; };
-      try { await api('/contacts/' + id, { method: 'PUT', body: readForm() }); set('Enregistré ✓'); load(); }
+      try {
+        // Un échange tapé mais pas encore « ajouté au suivi » est ajouté en même temps (sinon il était perdu à l'enregistrement de la fiche).
+        const txt = $('jTxt') ? $('jTxt').value.trim() : '';
+        if (txt) {
+          const b = { type: $('jType').value, texte: txt }; if ($('jRel').value) b.date_relance = $('jRel').value; if ($('jWhen').value) b.date_echange = $('jWhen').value;
+          await api('/contacts/' + id + '/journal', { method: 'POST', body: b });
+        }
+        await api('/contacts/' + id, { method: 'PUT', body: readForm() }); set(txt ? 'Enregistré ✓ (échange ajouté au suivi)' : 'Enregistré ✓');
+        if (txt) refresh(); else load();
+      }
       catch (e) { set(e.message); }
     };
     $('dSave').onclick = saveFiche;
