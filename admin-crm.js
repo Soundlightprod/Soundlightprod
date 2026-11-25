@@ -75,6 +75,7 @@
     #tab-crm .crm-row.signe{background:linear-gradient(90deg,rgba(34,197,94,.26),rgba(34,197,94,.08));border-color:#22c55e;box-shadow:inset 4px 0 0 #22c55e}
     #tab-crm .crm-row.daf{background:linear-gradient(90deg,rgba(239,68,68,.30),rgba(239,68,68,.10));border-color:#ef4444;box-shadow:inset 4px 0 0 #ef4444}
     #tab-crm .crm-row.daf .c-nom h4,#tab-crm .crm-row.daf .vil{color:#ff6b6b}
+    #tab-crm .crm-cat.oaf{border-color:#ef4444;color:#ff6b6b}
     #tab-crm .crm-cat.daf{border-color:#ef4444;color:#ff6b6b}
     #tab-crm .crm-badge.prop{background:#a855f7;color:#fff}
     #tab-crm .crm-badge.devis{background:#2f9bff;color:#04121f}
@@ -148,7 +149,8 @@
   const replie = {};
   const isNouv = (c) => c.statut === 'prospect' && c.etape === 'nouveau';
   const isDaf = (c) => !!c.devis_a_faire && c.statut !== 'perdu';
-  const clsEtat = (c) => isDaf(c) ? ' daf' : isNouv(c) ? ' nouv' : c.statut === 'client' ? ' signe' : c.statut === 'prospect' && c.etape === 'devis' ? ' devis' : c.statut === 'prospect' && c.etape === 'negociation' ? ' nego' : c.statut === 'prospect' && c.etape === 'proposition' ? ' prop' : '';
+  const isOaf = (c) => !!c.offre_a_faire && c.statut !== 'perdu';
+  const clsEtat = (c) => isDaf(c) || isOaf(c) ? ' daf' : isNouv(c) ? ' nouv' : c.statut === 'client' ? ' signe' : c.statut === 'prospect' && c.etape === 'devis' ? ' devis' : c.statut === 'prospect' && c.etape === 'negociation' ? ' nego' : c.statut === 'prospect' && c.etape === 'proposition' ? ' prop' : '';
   const isMarque = (c) => (c.marque || 'slp') === marque;
   function filtered() {
     return all.filter((c) => {
@@ -184,7 +186,8 @@
     const last = (c) => { if (!c._dern) { try { c._dern = c.dernier ? JSON.parse(c.dernier) : 0; } catch (e) { c._dern = 0; } } return c._dern; };
     const lastQ = (c) => { const d = last(c); return d ? quand({ date_echange: d.e, cree_le: d.c }) : ''; };
     const rows = filtered().sort((a, b) => {
-      if (isDaf(a) !== isDaf(b)) return isDaf(a) ? -1 : 1; // « Devis à faire » toujours en tête
+      const ra = isDaf(a) ? 2 : isOaf(a) ? 1 : 0, rb = isDaf(b) ? 2 : isOaf(b) ? 1 : 0;
+      if (ra !== rb) return rb - ra; // « Devis à faire » toujours en tête
       if (vue === 'relance') return (a.date_relance || '').localeCompare(b.date_relance || '');
       // nouvelles demandes en tête (la plus récente d'abord), puis les autres par ancienneté (les plus anciennes d'abord)
       const na = isNouv(a), nb = isNouv(b);
@@ -209,21 +212,22 @@
         <div class="c-money">${offLines(c)}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
         <div class="c-acts" onclick="event.stopPropagation()">
           <a href="#" data-daf="${c.id}" style="${c.devis_a_faire ? 'color:#ff6b6b;font-weight:700' : ''}">${c.devis_a_faire ? '☑' : '☐'} Devis à faire</a>
+          <a href="#" data-oaf="${c.id}" style="${c.offre_a_faire ? 'color:#ff6b6b;font-weight:700' : ''}">${c.offre_a_faire ? '☑' : '☐'} Offre à faire</a>
           <a href="#" data-resume="${c.id}" class="main">📋 Résumé</a>
           ${c.pdf_offre_id ? `<a href="#" data-pdf="${c.pdf_offre_id}" data-nom="${ce(c.pdf_offre_nom)}">👁 Proposition</a>` : ''}${c.pdf_devis_id ? `<a href="#" data-pdf="${c.pdf_devis_id}" data-nom="${ce(c.pdf_devis_nom)}">👁 Devis</a>` : ''}
           ${c.telephone ? `<a href="tel:${ce(c.telephone)}">📞</a>` : ''}${wa ? `<a href="${ce(wa)}" target="_blank" rel="noopener">💬</a>` : ''}${c.email ? `<a href="mailto:${ce(c.email)}">✉️</a>` : ''}
         </div></div>`;
     };
     // affichage par catégories (sauf la vue « À relancer », triée par date de relance)
-    const catDe = (c) => isDaf(c) ? 'daf' : c.statut === 'perdu' ? 'perdu' : c.statut === 'client' ? 'signe' : c.etape === 'nouveau' ? 'nouv' : c.etape === 'devis' ? 'devis' : c.etape === 'proposition' ? 'prop' : c.etape === 'negociation' ? 'nego' : 'cours';
-    const CATS = [['daf', '🔴 Devis à faire'], ['nouv', '🆕 Nouvelles demandes'], ['nego', '🔥 Négociation : intéressés'], ['prop', '📨 Proposition commerciale envoyée'], ['devis', '📄 Devis envoyé'], ['cours', '💬 Contactés / échange en cours'], ['signe', '✅ Devis signé : clients'], ['perdu', '✖ Perdus']];
+    const catDe = (c) => isDaf(c) ? 'daf' : isOaf(c) ? 'oaf' : c.statut === 'perdu' ? 'perdu' : c.statut === 'client' ? 'signe' : c.etape === 'nouveau' ? 'nouv' : c.etape === 'devis' ? 'devis' : c.etape === 'proposition' ? 'prop' : c.etape === 'negociation' ? 'nego' : 'cours';
+    const CATS = [['daf', '🔴 Devis à faire'], ['oaf', '🔴 Offre commerciale à faire'], ['nouv', '🆕 Nouvelles demandes'], ['nego', '🔥 Négociation : intéressés'], ['prop', '📨 Proposition commerciale envoyée'], ['devis', '📄 Devis envoyé'], ['cours', '💬 Contactés / échange en cours'], ['signe', '✅ Devis signé : clients'], ['perdu', '✖ Perdus']];
     const shown = rows.slice(0, 300);
     let html;
     if (vue === 'relance') html = shown.map(rowHtml).join('');
     else html = CATS.map(([k, titre]) => {
       const l = shown.filter((c) => catDe(c) === k); if (!l.length) return '';
       const off = replie[k];
-      const villes = k === 'daf' ? ' : ' + [...new Set(l.map((c) => c.ville).filter(Boolean))].map(ce).join(', ') : '';
+      const villes = k === 'daf' || k === 'oaf' ? ' : ' + [...new Set(l.map((c) => c.ville).filter(Boolean))].map(ce).join(', ') : '';
       return `<div class="crm-cat ${k}" data-cat="${k}"><span>${off ? '▸' : '▾'} ${titre}${villes}</span><b>${l.length}</b></div>${off ? '' : l.map(rowHtml).join('')}`;
     }).join('');
     $('crmList').innerHTML = (html ? head : '') + html || '<p class="vz-note">Aucun contact ici. Utilise « ＋ Nouveau » ou « ⬆ Importer ».</p>';
@@ -234,6 +238,12 @@
       const c = all.find((x) => x.id === +el.dataset.daf); if (!c) return;
       const v = c.devis_a_faire ? 0 : 1;
       try { await api('/contacts/' + c.id, { method: 'PUT', body: { devis_a_faire: v } }); c.devis_a_faire = v; render(); } catch (e) { alert(e.message); }
+    }));
+    $('crmList').querySelectorAll('[data-oaf]').forEach((el) => (el.onclick = async (ev) => {
+      ev.preventDefault(); ev.stopPropagation();
+      const c = all.find((x) => x.id === +el.dataset.oaf); if (!c) return;
+      const v = c.offre_a_faire ? 0 : 1;
+      try { await api('/contacts/' + c.id, { method: 'PUT', body: { offre_a_faire: v } }); c.offre_a_faire = v; render(); } catch (e) { alert(e.message); }
     }));
     $('crmList').querySelectorAll('[data-resume]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); openResume(+a.dataset.resume); }));
     $('crmList').querySelectorAll('[data-pdf]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); viewFile(a.dataset.pdf, a.dataset.nom); }));
@@ -270,6 +280,7 @@
       <div class="row one">${fld('evenement', 'Événement / besoin', c.evenement)}</div>
       <div class="row">${fld('date_relance', 'Date de relance', c.id ? c.date_relance : (c.date_relance || plus7()), 'date')}<div></div></div>
       <label style="display:block;margin:6px 0;color:#ff6b6b;font-weight:700"><input type="checkbox" id="cf_devis_a_faire" style="width:auto"${c.devis_a_faire ? ' checked' : ''}> 🔴 Devis à faire</label>
+      <label style="display:block;margin:6px 0;color:#ff6b6b;font-weight:700"><input type="checkbox" id="cf_offre_a_faire" style="width:auto"${c.offre_a_faire ? ' checked' : ''}> 🔴 Offre commerciale à faire</label>
       <div class="row one"><div><label>Notes</label><textarea id="cf_notes" rows="3">${ce(c.notes)}</textarea></div></div>
       ${quick ? `<details style="margin:6px 0"><summary class="vz-note" style="cursor:pointer;padding:6px 0">Plus de champs (ville, catégorie, budget…)</summary>${adv}</details>` : adv}`;
   }
@@ -280,6 +291,7 @@
     ['organisation', 'categorie', 'prenom', 'nom', 'fonction', 'telephone', 'email', 'ville', 'code_postal', 'evenement', 'date_evenement', 'budget', 'source', 'prochaine_action', 'date_relance', 'notes', 'etape', 'marque'].forEach((k) => { const v = g(k); if (v !== undefined) o[k] = v; });
     if (!o.marque) o.marque = marque;
     o.devis_a_faire = $('cf_devis_a_faire').checked ? 1 : 0;
+    o.offre_a_faire = $('cf_offre_a_faire').checked ? 1 : 0;
     o.priorite = $('cf_priorite').checked ? 1 : 0;
     o.no_mailing = $('cf_no_mailing').checked ? 1 : 0;
     return o;
