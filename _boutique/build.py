@@ -306,7 +306,8 @@ PAGE_CSS = """<style>
   @media (max-width:860px){ .pp-grid{grid-template-columns:1fr; gap:28px;} }
   .pp-img{background:#fff; border-radius:18px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid var(--line);}
   .pp-img img{width:100%; height:100%; object-fit:contain; padding:6%;}
-  .pp-thumbs{display:flex; gap:10px; margin-top:12px;}
+  .pp-thumbs{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;}
+  .pp-grid>div{min-width:0;}
   .pp-thumbs button{width:76px; height:76px; padding:4px; background:#fff; border:2px solid var(--line); border-radius:10px; cursor:pointer; opacity:.7;}
   .pp-thumbs button.on, .pp-thumbs button:hover{border-color:var(--paper); opacity:1;}
   .pp-thumbs img{width:100%; height:100%; object-fit:contain; display:block;}
@@ -532,6 +533,7 @@ def page(p, products, tpl):
             alt = esc(p['name']) + ' – photo ' + str(i + 1)
             btns.append(f'<button type="button" class="{cls}" data-src="{esc(u)}" onclick="{js}"><img src="{esc(u)}" alt="{alt}"></button>')
         thumbs = '<div class="pp-thumbs">' + ''.join(btns) + '</div>'
+    shopbar = shopbar.replace(f'href="{SITE}/en/" lang="en"', f'href="{SITE}/en/produits/{p["slug"]}" lang="en"')
     return f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -541,6 +543,7 @@ def page(p, products, tpl):
 <meta name="description" content="{esc(desc)}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{url}">
+<link rel="alternate" hreflang="fr" href="{url}"><link rel="alternate" hreflang="en" href="{SITE}/en/produits/{p['slug']}"><link rel="alternate" hreflang="x-default" href="{url}">
 <meta property="og:type" content="product">
 <meta property="og:title" content="{esc(p['name'])}">
 <meta property="og:description" content="{esc(desc)}">
@@ -659,7 +662,9 @@ def update_sitemap(products):
         f"\n  <url><loc>{SITE}/produits/{p['slug']}</loc><changefreq>weekly</changefreq><priority>0.7</priority>"
         + (f"<image:image><image:loc>{SITE}{esc(p['image'])}</image:loc></image:image>" if p.get('image') else '') + '</url>'
         for p in products)
-        + f"\n  <url><loc>{SITE}/contact-boutique</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>")
+        + f"\n  <url><loc>{SITE}/contact-boutique</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>"
+        + ''.join(f"\n  <url><loc>{SITE}/en/{u}</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>"
+                  for u in [''] + [f"produits/{p['slug']}" for p in products] + ['contact-boutique']))
     (ROOT / 'sitemap-store.xml').write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
         'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + urls + '\n</urlset>\n', encoding='utf-8')
@@ -685,6 +690,12 @@ def main():
     (out / 'flux-google.xml').write_text(feed(products), encoding='utf-8')
     update_boutique(products)
     update_sitemap(products)
+    try:  # une erreur sur l'anglais ne doit jamais bloquer la boutique française
+        sys.path.insert(0, str(pathlib.Path(__file__).parent))
+        import build_en
+        build_en.build(products)
+    except Exception as e:
+        print('::warning::Version anglaise non régénérée :', repr(e))
     print(f'{len(products)} produits générés')
 
 
