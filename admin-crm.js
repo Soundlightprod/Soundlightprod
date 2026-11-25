@@ -149,7 +149,7 @@
   const replie = {};
   const isNouv = (c) => c.statut === 'prospect' && c.etape === 'nouveau';
   const isDaf = (c) => !!c.devis_a_faire && c.statut !== 'perdu';
-  const isOaf = (c) => !!c.offre_a_faire && c.statut !== 'perdu';
+  const isOaf = (c) => !!c.offre_a_faire && !c.pdf_offre_id && c.statut !== 'perdu'; // proposition déjà jointe en PDF = envoyée, plus à faire
   const clsEtat = (c) => isDaf(c) || isOaf(c) ? ' daf' : isNouv(c) ? ' nouv' : c.statut === 'client' ? ' signe' : c.statut === 'prospect' && c.etape === 'devis' ? ' devis' : c.statut === 'prospect' && c.etape === 'negociation' ? ' nego' : c.statut === 'prospect' && c.etape === 'proposition' ? ' prop' : '';
   const isMarque = (c) => (c.marque || 'slp') === marque;
   function filtered() {
@@ -212,7 +212,7 @@
         <div class="c-money">${offLines(c)}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
         <div class="c-acts" onclick="event.stopPropagation()">
           <a href="#" data-daf="${c.id}" style="${c.devis_a_faire ? 'color:#ff6b6b;font-weight:700' : ''}">${c.devis_a_faire ? '☑' : '☐'} Devis à faire</a>
-          <a href="#" data-oaf="${c.id}" style="${c.offre_a_faire ? 'color:#ff6b6b;font-weight:700' : ''}">${c.offre_a_faire ? '☑' : '☐'} Offre à faire</a>
+          ${c.pdf_offre_id ? '' : `<a href="#" data-oaf="${c.id}" style="${c.offre_a_faire ? 'color:#ff6b6b;font-weight:700' : ''}">${c.offre_a_faire ? '☑' : '☐'} Offre à faire</a>`}
           <a href="#" data-resume="${c.id}" class="main">📋 Résumé</a>
           ${c.pdf_offre_id ? `<a href="#" data-pdf="${c.pdf_offre_id}" data-nom="${ce(c.pdf_offre_nom)}">👁 Proposition</a>` : ''}${c.pdf_devis_id ? `<a href="#" data-pdf="${c.pdf_devis_id}" data-nom="${ce(c.pdf_devis_nom)}">👁 Devis</a>` : ''}
           ${c.telephone ? `<a href="tel:${ce(c.telephone)}">📞</a>` : ''}${wa ? `<a href="${ce(wa)}" target="_blank" rel="noopener">💬</a>` : ''}${c.email ? `<a href="mailto:${ce(c.email)}">✉️</a>` : ''}
