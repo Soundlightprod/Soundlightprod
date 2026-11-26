@@ -41,7 +41,7 @@
       back: 'Hello, you are welcome to continue our conversation below.',
       sujet: 'Request via chat',
       m: 'Email',
-      live: { send: 'Send', online: 'Thank you, we have received your message. We will reply here in a few moments. If you leave the conversation before we reply, we will contact you by phone or email.', ph: 'Write your message…', err: 'Your message could not be sent. Please try again, or call us on +33 6 31 94 96 53.' }
+      live: { auto: 'Messages are translated automatically.', send: 'Send', online: 'Thank you, we have received your message. We will reply here in a few moments. If you leave the conversation before we reply, we will contact you by phone or email.', ph: 'Write your message…', err: 'Your message could not be sent. Please try again, or call us on +33 6 31 94 96 53.' }
     },
     es: {
       open: 'Abrir el chat', close: 'Cerrar', title: 'SLP', sub: 'Respuesta en 24 h', teaser: '¿Alguna pregunta? Estamos a su disposición.', call: 'Llamar', wa: 'WhatsApp', sending: 'Enviando…', fail: 'No se ha podido enviar su solicitud. Inténtelo de nuevo o llámenos al +33 6 31 94 96 53.', badTel: 'Le rogamos que revise su número de teléfono, que parece incompleto.', badMail: 'Le rogamos que revise su correo electrónico, que parece incompleto.',
@@ -55,7 +55,7 @@
       back: 'Hola, puede continuar nuestra conversación a continuación.',
       sujet: 'Solicitud vía chat',
       m: 'Correo',
-      live: { send: 'Enviar', online: 'Gracias, hemos recibido su mensaje. Le respondemos aquí en unos instantes. Si abandona la conversación antes de nuestra respuesta, le contactaremos por teléfono o por correo electrónico.', ph: 'Escriba su mensaje…', err: 'No se ha podido enviar su mensaje. Inténtelo de nuevo o llámenos al +33 6 31 94 96 53.' }
+      live: { auto: 'Los mensajes se traducen automáticamente.', send: 'Enviar', online: 'Gracias, hemos recibido su mensaje. Le respondemos aquí en unos instantes. Si abandona la conversación antes de nuestra respuesta, le contactaremos por teléfono o por correo electrónico.', ph: 'Escriba su mensaje…', err: 'No se ha podido enviar su mensaje. Inténtelo de nuevo o llámenos al +33 6 31 94 96 53.' }
     },
     it: {
       open: 'Apri la chat', close: 'Chiudi', title: 'SLP', sub: 'Risposta entro 24 h', teaser: 'Ha una domanda? Siamo a sua disposizione.', call: 'Chiama', wa: 'WhatsApp', sending: 'Invio in corso…', fail: 'Non è stato possibile inviare la richiesta. Riprovi o ci chiami al +33 6 31 94 96 53.', badTel: 'La preghiamo di controllare il numero di telefono, che sembra incompleto.', badMail: 'La preghiamo di controllare l’indirizzo email, che sembra incompleto.',
@@ -69,7 +69,7 @@
       back: 'Buongiorno, può proseguire la nostra conversazione qui sotto.',
       sujet: 'Richiesta via chat',
       m: 'Mail',
-      live: { send: 'Invia', online: 'Grazie, abbiamo ricevuto il suo messaggio. Le rispondiamo qui tra pochi istanti. Se lascia la conversazione prima della nostra risposta, la ricontatteremo per telefono o via email.', ph: 'Scriva il suo messaggio…', err: 'Non è stato possibile inviare il messaggio. Riprovi o ci chiami al +33 6 31 94 96 53.' }
+      live: { auto: 'I messaggi vengono tradotti automaticamente.', send: 'Invia', online: 'Grazie, abbiamo ricevuto il suo messaggio. Le rispondiamo qui tra pochi istanti. Se lascia la conversazione prima della nostra risposta, la ricontatteremo per telefono o via email.', ph: 'Scriva il suo messaggio…', err: 'Non è stato possibile inviare il messaggio. Riprovi o ci chiami al +33 6 31 94 96 53.' }
     }
   };
   var t = T[L];
@@ -111,6 +111,7 @@
     '.slpc-fo input,.slpc-fo textarea{box-sizing:border-box;width:100%;background:#0C0A14;color:#F7F5F0;border:1.5px solid rgba(247,245,240,.25);border-radius:12px;padding:10px 13px;font:400 16px/1.35 "Instrument Sans",system-ui,sans-serif;outline:none;resize:none}' +
     '.slpc-fo input:focus,.slpc-fo textarea:focus{border-color:#FBC608}.slpc-fo .ko{border-color:#FF0953}' +
     '.slpc-fo button{border:0;border-radius:100px;padding:12px;font:700 .95rem "Instrument Sans",system-ui,sans-serif;color:#0C0A14;background:linear-gradient(90deg,#FF0953,#FC8024 55%,#FBC608);cursor:pointer}.slpc-fo button:disabled{opacity:.6}' +
+    '.slpc-note{margin:0;align-self:center;text-align:center;color:#A9A4BC;font-size:.76rem;flex-shrink:0}' +
     '.slpc-err{margin:0;color:#FF8FAE;font-size:.82rem}.slpc-err:empty{display:none}.slpc-bot,.slpc-ch{flex-shrink:0}' +
     '@media(max-width:480px){#slpc{right:8px;left:8px;bottom:82px;width:auto;max-width:none;height:calc(100vh - 100px)}}' +
     // Téléphone : la barre de contact (.ctabar, ≤ 760 px) occupe le bas de l'écran → la bulle remonte au-dessus quand elle est affichée
@@ -222,7 +223,10 @@
   }
   function pollNext() { clearTimeout(pollT); pollT = setTimeout(poll, box.classList.contains('on') ? 4000 : 60000); }
   // Conversation ouverte : champ de message
+  var noted = false;
   function live() {
+    // Versions EN / ES / IT : le visiteur est prévenu que la conversation est traduite
+    if (t.live.auto && !noted) { noted = true; var n = document.createElement('p'); n.className = 'slpc-note'; n.textContent = t.live.auto; msgs.appendChild(n); scroll(); }
     form.classList.add('on'); inp.value = ''; inp.placeholder = t.live.ph;
     form.onsubmit = function (e) {
       e.preventDefault(); var v = inp.value.trim(); if (!v) return;
