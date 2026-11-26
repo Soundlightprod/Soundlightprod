@@ -31,6 +31,7 @@
   document.addEventListener('click', function (e) {
     var el = e.target && e.target.closest && e.target.closest('[data-contact], a[href]');
     if (!el) return;
+    if (el.closest('#slpc')) return; // les liens du chat sont déjà comptés par chat.js
     var explicit = el.getAttribute('data-contact');
     if (explicit) { send(explicit); return; }
     var h = el.getAttribute('href') || '';
