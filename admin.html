@@ -1360,7 +1360,7 @@
         <div id="chatHead" style="font-weight:700;margin-bottom:8px;">Choisis une conversation</div>
         <div id="chatMsgs" style="flex:1;overflow:auto;max-height:50vh;display:flex;flex-direction:column;gap:6px;"></div>
         <form id="chatForm" onsubmit="chatReply(event)" style="display:none;gap:8px;margin-top:10px;flex-wrap:wrap;">
-          <input id="chatInput" type="text" maxlength="2000" placeholder="Ta réponse…" style="flex:1 1 100%;min-width:0;padding:10px;border-radius:8px;border:1px solid #666;background:transparent;color:inherit;font-size:16px;">
+          <input id="chatInput" type="text" maxlength="2000" placeholder="Ta réponse en français…" style="flex:1 1 100%;min-width:0;padding:10px;border-radius:8px;border:1px solid #666;background:transparent;color:inherit;font-size:16px;">
           <button class="period-btn" type="submit">Envoyer</button>
           <button class="period-btn" type="button" onclick="chatClose(false)">Clore</button>
           <button class="period-btn" type="button" onclick="chatClose(true)">Suppr.</button>
@@ -2390,7 +2390,16 @@
     const t = j.thread;
     document.getElementById('chatHead').innerHTML = `${chatEsc(t.name||'Visiteur')}${t.city?' · '+chatEsc(t.city):''} <small style="font-weight:400;opacity:.7;">${t.contact?' · '+chatEsc(t.contact):''} · ${chatEsc(t.page||'')} · ${chatEsc(t.created_at)}</small>`;
     const box = document.getElementById('chatMsgs');
-    box.innerHTML = j.messages.map(m => `<div style="max-width:80%;padding:8px 12px;border-radius:12px;white-space:pre-wrap;${m.sender==='admin'?'align-self:flex-end;background:#FBC608;color:#0C0A14;':'align-self:flex-start;background:rgba(255,255,255,.12);'}">${chatEsc(m.body)}<div style="font-size:.68rem;opacity:.6;">${chatEsc(m.created_at)}</div></div>`).join('');
+    const NOMS_LANGUES = { en:'anglais', es:'espagnol', it:'italien' }, langue = NOMS_LANGUES[t.lang];
+    box.innerHTML = j.messages.map(m => {
+      const moi = m.sender === 'admin';
+      const texte = !moi && m.tr ? m.tr : m.body;
+      let note = '';
+      if (moi) { if (m.tr) note = `Envoyé en ${langue || 'langue du visiteur'} : ${m.tr}`; else if (langue) note = '⚠️ Traduction indisponible : envoyé en français'; }
+      else if (m.tr && m.tr !== m.body) note = `Original : ${m.body}`;
+      else if (!m.tr && langue) note = '⚠️ Non traduit';
+      return `<div style="max-width:80%;padding:8px 12px;border-radius:12px;white-space:pre-wrap;${moi?'align-self:flex-end;background:#FBC608;color:#0C0A14;':'align-self:flex-start;background:rgba(255,255,255,.12);'}">${chatEsc(texte)}${note?`<div style="font-size:.76rem;opacity:.7;margin-top:4px;">${chatEsc(note)}</div>`:''}<div style="font-size:.68rem;opacity:.6;">${chatEsc(m.created_at)}</div></div>`;
+    }).join('');
     if (!keepScroll || j.messages.length !== chatLastCount) box.scrollTop = box.scrollHeight;
     chatLastCount = j.messages.length;
     document.getElementById('chatForm').style.display = 'flex';
