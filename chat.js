@@ -23,11 +23,11 @@
       required: 'Merci de renseigner les quatre champs.',
       orElse: 'Vous pouvez aussi nous contacter directement :',
       received: 'Nous vous remercions, votre demande a bien été reçue. Nous reviendrons vers vous sous 24 h.',
-      later: 'Merci de votre patience. Nous vous recontacterons dans les meilleurs délais.',
+      later: 'Merci de votre patience. Vous pouvez quitter la conversation : nous vous recontacterons par téléphone ou par email dans les meilleurs délais.',
       back: 'Bonjour, vous pouvez poursuivre notre échange ci-dessous.',
       sujet: 'Demande via le chat',
       m: 'Mail',
-      live: { send: 'Envoyer', online: 'Merci, votre message nous est bien parvenu. Nous vous répondons ici dans quelques instants.', ph: 'Écrivez votre message…', err: 'Votre message n’a pas pu être envoyé. Merci de réessayer, ou de nous appeler au 06 31 94 96 53.' }
+      live: { send: 'Envoyer', online: 'Merci, votre message nous est bien parvenu. Nous vous répondons ici dans quelques instants. Si vous quittez la conversation avant notre réponse, nous vous recontacterons par téléphone ou par email.', ph: 'Écrivez votre message…', err: 'Votre message n’a pas pu être envoyé. Merci de réessayer, ou de nous appeler au 06 31 94 96 53.' }
     },
     en: {
       open: 'Open chat', close: 'Close', title: 'SLP', sub: 'Reply within 24 h', teaser: 'Any question? We are happy to help.', call: 'Call', wa: 'WhatsApp', sending: 'Sending…', fail: 'Your request could not be sent. Please try again, or call us on +33 6 31 94 96 53.', badTel: 'Please check your phone number, which appears to be incomplete.', badMail: 'Please check your email address, which appears to be incomplete.',
@@ -37,11 +37,11 @@
       required: 'Please fill in all four fields.',
       orElse: 'You can also contact us directly:',
       received: 'Thank you, we have received your request. We will get back to you within 24 h.',
-      later: 'Thank you for your patience. We will contact you as soon as possible.',
+      later: 'Thank you for your patience. You are welcome to leave the conversation: we will contact you by phone or email as soon as possible.',
       back: 'Hello, you are welcome to continue our conversation below.',
       sujet: 'Request via chat',
       m: 'Email',
-      live: { send: 'Send', online: 'Thank you, we have received your message. We will reply here in a few moments.', ph: 'Write your message…', err: 'Your message could not be sent. Please try again, or call us on +33 6 31 94 96 53.' }
+      live: { send: 'Send', online: 'Thank you, we have received your message. We will reply here in a few moments. If you leave the conversation before we reply, we will contact you by phone or email.', ph: 'Write your message…', err: 'Your message could not be sent. Please try again, or call us on +33 6 31 94 96 53.' }
     },
     es: {
       open: 'Abrir el chat', close: 'Cerrar', title: 'SLP', sub: 'Respuesta en 24 h', teaser: '¿Alguna pregunta? Estamos a su disposición.', call: 'Llamar', wa: 'WhatsApp', sending: 'Enviando…', fail: 'No se ha podido enviar su solicitud. Inténtelo de nuevo o llámenos al +33 6 31 94 96 53.', badTel: 'Le rogamos que revise su número de teléfono, que parece incompleto.', badMail: 'Le rogamos que revise su correo electrónico, que parece incompleto.',
@@ -51,11 +51,11 @@
       required: 'Le rogamos que complete los cuatro campos.',
       orElse: 'También puede contactarnos directamente:',
       received: 'Muchas gracias, hemos recibido su solicitud. Le responderemos en un plazo de 24 h.',
-      later: 'Gracias por su paciencia. Nos pondremos en contacto con usted lo antes posible.',
+      later: 'Gracias por su paciencia. Puede salir de la conversación: le contactaremos por teléfono o por correo electrónico lo antes posible.',
       back: 'Hola, puede continuar nuestra conversación a continuación.',
       sujet: 'Solicitud vía chat',
       m: 'Correo',
-      live: { send: 'Enviar', online: 'Gracias, hemos recibido su mensaje. Le respondemos aquí en unos instantes.', ph: 'Escriba su mensaje…', err: 'No se ha podido enviar su mensaje. Inténtelo de nuevo o llámenos al +33 6 31 94 96 53.' }
+      live: { send: 'Enviar', online: 'Gracias, hemos recibido su mensaje. Le respondemos aquí en unos instantes. Si abandona la conversación antes de nuestra respuesta, le contactaremos por teléfono o por correo electrónico.', ph: 'Escriba su mensaje…', err: 'No se ha podido enviar su mensaje. Inténtelo de nuevo o llámenos al +33 6 31 94 96 53.' }
     },
     it: {
       open: 'Apri la chat', close: 'Chiudi', title: 'SLP', sub: 'Risposta entro 24 h', teaser: 'Ha una domanda? Siamo a sua disposizione.', call: 'Chiama', wa: 'WhatsApp', sending: 'Invio in corso…', fail: 'Non è stato possibile inviare la richiesta. Riprovi o ci chiami al +33 6 31 94 96 53.', badTel: 'La preghiamo di controllare il numero di telefono, che sembra incompleto.', badMail: 'La preghiamo di controllare l’indirizzo email, che sembra incompleto.',
@@ -65,11 +65,11 @@
       required: 'La preghiamo di compilare tutti e quattro i campi.',
       orElse: 'Può anche contattarci direttamente:',
       received: 'La ringraziamo, abbiamo ricevuto la sua richiesta. Le risponderemo entro 24 h.',
-      later: 'Grazie per la pazienza. La ricontatteremo al più presto.',
+      later: 'Grazie per la pazienza. Può lasciare la conversazione: la ricontatteremo per telefono o via email al più presto.',
       back: 'Buongiorno, può proseguire la nostra conversazione qui sotto.',
       sujet: 'Richiesta via chat',
       m: 'Mail',
-      live: { send: 'Invia', online: 'Grazie, abbiamo ricevuto il suo messaggio. Le rispondiamo qui tra pochi istanti.', ph: 'Scriva il suo messaggio…', err: 'Non è stato possibile inviare il messaggio. Riprovi o ci chiami al +33 6 31 94 96 53.' }
+      live: { send: 'Invia', online: 'Grazie, abbiamo ricevuto il suo messaggio. Le rispondiamo qui tra pochi istanti. Se lascia la conversazione prima della nostra risposta, la ricontatteremo per telefono o via email.', ph: 'Scriva il suo messaggio…', err: 'Non è stato possibile inviare il messaggio. Riprovi o ci chiami al +33 6 31 94 96 53.' }
     }
   };
   var t = T[L];
