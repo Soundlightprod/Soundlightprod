@@ -1347,13 +1347,11 @@
   <!-- ============ ONGLET 11 : CHAT EN DIRECT ============ -->
   <div class="tab-content" id="tab-chat">
     <h2>Chat en direct</h2>
-    <p class="vz-sub">Les visiteurs du site t'écrivent ici ; tant que cet onglet est ouvert, ils te voient « en ligne ». Tu reçois aussi un mail à chaque nouvelle conversation.</p>
+    <p class="vz-sub">Les visiteurs du site t'écrivent ici ; si tu es disponible, la conversation s'ouvre ici ; sinon leur demande arrive dans les demandes de contact. Tu reçois aussi un mail à chaque nouvelle conversation.</p>
     <div class="vz-card" style="margin-bottom:12px;">
-      <div class="vz-card-h"><h3>Mes disponibilités <span id="chatOnlineState" style="font-weight:400;font-size:.85rem;"></span></h3></div>
-      <label style="display:block;margin-bottom:8px;"><input type="checkbox" id="chatEnabled" checked> Chat disponible (décoche pour te mettre hors ligne : les visiteurs sont invités à laisser leurs coordonnées)</label>
-      <div id="chatDays" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;"></div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">De <select id="chatStartH"></select> à <select id="chatEndH"></select> <small>(heure de Paris)</small>
-        <button class="period-btn" type="button" onclick="chatSaveSettings()">Enregistrer</button> <span id="chatSetMsg" class="vz-note"></span></div>
+      <div class="vz-card-h"><h3>Mes disponibilités</h3></div>
+      <button type="button" id="chatDispoBtn" onclick="chatToggleDispo()" aria-pressed="false" style="display:block;width:100%;max-width:420px;padding:16px;border:2px solid #888;border-radius:12px;background:transparent;color:inherit;font:700 1.1rem inherit;cursor:pointer;">…</button>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;">Coupure automatique à <select id="chatEndH" onchange="chatSaveSettings()"></select> <small>(heure de Paris ; après cette heure, à minuit)</small> <span id="chatSetMsg" class="vz-note"></span></div>
     </div>
     <p style="margin:0 0 12px;"><button class="period-btn" type="button" id="pushBtn" onclick="chatEnablePush()">🔔 Activer les notifications sur cet appareil</button> <span id="pushMsg" class="vz-note"></span></p>
     <div class="chat-grid">
@@ -1970,7 +1968,7 @@
     [['envoi', 'demandes envoyées'], ['devis', 'clics « Demander un devis »'], ['appel', 'clics Appeler'], ['whatsapp', 'clics WhatsApp'], ['chat', 'ouvertures du chat (bulle ou bouton Contact)'], ['mail', 'clics mail'], ['formulaire', 'formulaires commencés'], ['suivre', 'clics « Suivez-nous » (réseaux)']].forEach(([a, l]) => {
       const f = mtEl('div', 'mt-fig'); f.append(mtEl('b', null, mtFmt(n(a))), mtEl('span', null, l)); figs.appendChild(f);
     });
-    const menuLab = { devis:'Demander un devis', spectacle:'Programmer un spectacle', dj:'DJ / animation', tech:'Son & lumière', tarifs:'Tarifs', zone:'Zone d\'intervention', equipe:'Parler à un membre de SLP', contact:'Appeler / WhatsApp / mail', voir:'Voir les spectacles', 'devis-date':'Devis : date et commune données', 'devis-nom':'Devis : nom donné', 'devis-tel':'Devis : téléphone donné', 'devis-email':'Devis : email donné', 'devis-envoye':'Devis envoyé', 'message-ecrit':'Message écrit', 'message-tel':'Message : téléphone donné', 'message-email':'Message : email donné', 'message-envoye':'Message envoyé' };
+    const menuLab = { devis:'Demander un devis', spectacle:'Programmer un spectacle', dj:'DJ / animation', tech:'Son & lumière', tarifs:'Tarifs', zone:'Zone d\'intervention', equipe:'Parler à un membre de SLP', contact:'Appeler / WhatsApp / mail', voir:'Voir les spectacles', 'devis-date':'Devis : date et commune données', 'devis-nom':'Devis : nom donné', 'devis-tel':'Devis : téléphone donné', 'devis-email':'Devis : email donné', 'devis-envoye':'Devis envoyé', 'message-ecrit':'Message écrit', 'message-tel':'Message : téléphone donné', 'message-email':'Message : email donné', 'message-envoye':'Message envoyé', 'form-commence':'Formulaire commencé', 'form-nom':'Nom rempli', 'form-tel':'Téléphone rempli', 'form-email':'Email rempli', 'form-besoin':'Besoin rempli', 'form-envoye-direct':'Envoyé, conversation directe', 'form-envoye-absent':'Envoyé pendant ton absence' };
     if (c.menu && c.menu.length) figs.appendChild(mtEl('p', 'vz-note', 'Choix dans le chat (7 jours) : ' + c.menu.map((m) => `${menuLab[String(m.page).replace('chatmenu:', '')] || m.page} (${m.n})`).join(', ')));
     if (c.photos && c.photos.length) {
       const phLab = { abba:'Tribute ABBA', balavoine:'Tribute Balavoine', 'barry-white':'Tribute Barry White', acdc:'Tribute AC/DC', 'stayin-alive':'Tribute Bee Gees', calo:'Tribute Calogero', 'celine-dion':'Tribute Céline Dion', kool:'Tribute Kool & the Gang', matmatah:'Tribute Matmatah', 'phil-collins':'Tribute Phil Collins', panache:'Panache', 'bim-bam-boom':'Bim Bam Boom', 'clement-blouin':'Clément Blouin', alchimie:'Alchimie', noon:'NooN Coverband', 'cache-candy':'Cache Candy', 'fine-allies':'The Fine Allies' };
@@ -2346,30 +2344,31 @@
       msg.textContent = '✅ Activé : une notification de test vient de partir.';
     } catch(e){ msg.textContent = 'Échec : ' + (e && e.message || e); }
   }
-  const CHAT_DAYS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
-  function chatInitSettingsUi(){
-    document.getElementById('chatDays').innerHTML = CHAT_DAYS.map((d,i) => `<label><input type="checkbox" class="chatDay" value="${i+1}"> ${d}</label>`).join('');
-    const opts = n0 => Array.from({length:25-n0}, (_,i) => `<option value="${i+n0}">${String(i+n0).padStart(2,'0')}h</option>`).join('');
-    document.getElementById('chatStartH').innerHTML = opts(0); document.getElementById('chatEndH').innerHTML = opts(1);
-  }
+  let chatDispo = false;
   async function chatLoadSettings(){
     try {
-      if (!document.querySelector('.chatDay')) chatInitSettingsUi();
+      const sel = document.getElementById('chatEndH');
+      if (!sel.options.length) sel.innerHTML = Array.from({length:24}, (_,i) => `<option value="${i+1}">${String(i+1).padStart(2,'0')}h</option>`).join('');
       const j = await chatApi('/api/admin/chat/settings'); if (!j.ok) return;
       chatApplySettings(j);
     } catch(e){}
   }
   function chatApplySettings(j){
-    const c = j.settings, days = String(c.days).split(',');
-    document.getElementById('chatEnabled').checked = !!c.enabled;
-    document.querySelectorAll('.chatDay').forEach(el => el.checked = days.includes(el.value));
-    document.getElementById('chatStartH').value = c.start_h; document.getElementById('chatEndH').value = c.end_h;
-    document.getElementById('chatOnlineState').textContent = j.online ? '· 🟢 en ligne en ce moment' : '· ⚪ hors ligne en ce moment';
+    const c = j.settings; chatDispo = !!j.online;
+    document.getElementById('chatEndH').value = c.end_h;
+    const fin = chatDispo ? new Date(c.dispo_until).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit', timeZone:'Europe/Paris' }) : '';
+    const b = document.getElementById('chatDispoBtn');
+    b.textContent = chatDispo ? `🟢 Je suis dispo (jusqu'à ${fin}) · appuyer pour couper` : '⚪ Pas dispo · appuyer pour me rendre dispo';
+    b.style.borderColor = chatDispo ? '#25d366' : '#888'; b.setAttribute('aria-pressed', chatDispo ? 'true' : 'false');
+  }
+  async function chatToggleDispo(){
+    const msg = document.getElementById('chatSetMsg');
+    try { const j = await chatApi('/api/admin/chat/dispo', { on: !chatDispo }); if (!j.ok) throw 0; chatApplySettings(j); msg.textContent = ''; }
+    catch(e){ msg.textContent = 'Échec : réessaie.'; }
   }
   async function chatSaveSettings(){
-    const days = [...document.querySelectorAll('.chatDay:checked')].map(e => e.value).join(',');
-    const j = await chatApi('/api/admin/chat/settings', { enabled: document.getElementById('chatEnabled').checked, days, start_h: document.getElementById('chatStartH').value, end_h: document.getElementById('chatEndH').value });
-    if (j.ok) { chatApplySettings(j); document.getElementById('chatSetMsg').textContent = '✅ Enregistré'; setTimeout(() => document.getElementById('chatSetMsg').textContent = '', 2500); }
+    const j = await chatApi('/api/admin/chat/settings', { enabled: true, days: '1,2,3,4,5,6', start_h: 0, end_h: document.getElementById('chatEndH').value });
+    if (j.ok) { chatApplySettings(j); document.getElementById('chatSetMsg').textContent = '✅ Enregistré (appliqué à la prochaine activation)'; setTimeout(() => document.getElementById('chatSetMsg').textContent = '', 3000); }
   }
   async function chatLoadList(){
     if (!token) return;
@@ -2411,7 +2410,7 @@
     if (del) { chatCur = 0; document.getElementById('chatMsgs').innerHTML = ''; document.getElementById('chatForm').style.display = 'none'; document.getElementById('chatHead').textContent = 'Choisis une conversation'; }
     chatLoadList();
   }
-  function chatStartPolling(){ clearInterval(chatTimer); chatLoadList(); chatTimer = setInterval(() => { if (document.visibilityState === 'visible') chatLoadList(); }, 6000); }
+  function chatStartPolling(){ clearInterval(chatTimer); chatLoadList(); chatTimer = setInterval(() => { if (document.visibilityState === 'visible') { chatLoadList(); chatLoadSettings(); } }, 6000); }
 
 
   // ===== Cloudflare : une page par site (aujourd'hui Auberge Jolibois) =====

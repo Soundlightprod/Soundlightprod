@@ -489,6 +489,8 @@ async function ensureChatTables(env) {
   // Alertes « nouvelle visite » (SuiviStats) : visites = 1 → cet appareil ne reçoit que ces alertes ; visites_sites = sites choisis (vide = tous).
   try { await env.DB.prepare("ALTER TABLE push_subs ADD COLUMN visites INTEGER NOT NULL DEFAULT 0").run(); } catch (e) { /* colonne déjà présente */ }
   try { await env.DB.prepare("ALTER TABLE push_subs ADD COLUMN visites_sites TEXT").run(); } catch (e) { /* colonne déjà présente */ }
+  // Disponibilité réelle de l'admin : bouton « Je suis dispo », coupé automatiquement à l'heure choisie.
+  try { await env.DB.prepare("ALTER TABLE chat_settings ADD COLUMN dispo_until TEXT").run(); } catch (e) { /* colonne déjà présente */ }
   chatTablesReady = true;
 }
 
@@ -538,17 +540,21 @@ async function sendAdminPush(env, opts) {
 }
 
 async function chatSettings(env) {
-  const r = await env.DB.prepare("SELECT enabled, days, start_h, end_h FROM chat_settings WHERE id = 1").first();
+  const r = await env.DB.prepare("SELECT enabled, days, start_h, end_h, dispo_until FROM chat_settings WHERE id = 1").first();
   return r || { enabled: 1, days: "1,2,3,4,5", start_h: 9, end_h: 20 };
 }
-// En ligne = disponibilité activée ET jour/heure dans la plage (heure de Paris). Par défaut : lundi-vendredi 9h-20h.
+// En ligne = l'admin a appuyé sur « Je suis dispo » et l'heure de coupure n'est pas passée.
 async function chatIsOnline(env) {
   const c = await chatSettings(env);
-  if (!c.enabled) return false;
-  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", weekday: "short", hour: "numeric", hour12: false }).formatToParts(new Date());
-  const wd = ({ Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 })[parts.find((p) => p.type === "weekday").value];
-  const h = parseInt(parts.find((p) => p.type === "hour").value, 10) % 24;
-  return String(c.days).split(",").map(Number).includes(wd) && h >= c.start_h && h < c.end_h;
+  return !!c.dispo_until && Date.parse(c.dispo_until) > Date.now();
+}
+// Coupure : à end_h (heure de Paris) ; si cette heure est déjà passée, à minuit.
+function chatDispoUntil(endH) {
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date());
+  const val = (type) => parseInt(parts.find((p) => p.type === type).value, 10);
+  const nowMin = val("hour") * 60 + val("minute");
+  const end = nowMin < endH * 60 ? endH * 60 : 24 * 60;
+  return new Date(Math.floor(Date.now() / 60000) * 60000 + (end - nowMin) * 60000).toISOString();
 }
 function requireAdmin(request, env) {
   const auth = request.headers.get("Authorization") || "";
@@ -2018,7 +2024,7 @@ export default {
             const ipHash = ipRaw ? [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ipRaw + "slp")))].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("") : null;
             if (ipHash) {
               const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM chat_threads WHERE ip_hash = ? AND created_at >= datetime('now', '-1 hour')").bind(ipHash).first();
-              if (r && r.n >= 6) return json({ ok: false, error: "Trop de conversations d'un coup : appelez-nous au 06 31 94 96 53." }, 429, origin);
+              if (r && r.n >= 6) return json({ ok: false, error: "Nous ne pouvons pas ouvrir de nouvelle conversation pour le moment. Merci de nous appeler au 06 31 94 96 53." }, 429, origin);
             }
             token = [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, "0")).join("");
             await env.DB.prepare("INSERT INTO chat_threads (token, name, contact, page, lang, city, ip_hash, site, created_at, last_visitor_at) VALUES (?,?,?,?,?,?,?,?,?,?)")
@@ -2026,7 +2032,7 @@ export default {
             th = await env.DB.prepare("SELECT * FROM chat_threads WHERE token = ?").bind(token).first();
           } else {
             const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM chat_messages WHERE thread_id = ? AND sender = 'visitor' AND created_at >= datetime('now', '-10 minutes')").bind(th.id).first();
-            if (r && r.n >= 20) return json({ ok: false, error: "Un peu de calme 🙂 réessayez dans quelques minutes." }, 429, origin);
+            if (r && r.n >= 20) return json({ ok: false, error: "Merci de patienter quelques minutes avant d’envoyer un nouveau message, ou appelez-nous au 06 31 94 96 53." }, 429, origin);
           }
           if (th.status === "closed") await env.DB.prepare("UPDATE chat_threads SET status = 'open' WHERE id = ?").bind(th.id).run();
           const nm = t(body.name, 80), ct = t(body.contact, 120);
@@ -2075,6 +2081,14 @@ export default {
         // ----- Admin -----
         if (url.pathname.startsWith("/api/admin/chat/")) {
           if (!(await isAdminForMeteo(request, env))) return json({ error: "Non autorisé" }, 401, origin);
+          // POST /api/admin/chat/dispo — { on } : bouton « Je suis dispo / pas dispo »
+          if (url.pathname === "/api/admin/chat/dispo" && request.method === "POST") {
+            const b = await request.json().catch(() => ({}));
+            const c = await chatSettings(env);
+            await env.DB.prepare("INSERT INTO chat_settings (id, dispo_until) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET dispo_until = excluded.dispo_until")
+              .bind(b.on ? chatDispoUntil(c.end_h) : null).run();
+            return json({ ok: true, settings: await chatSettings(env), online: await chatIsOnline(env) }, 200, origin);
+          }
           if (url.pathname === "/api/admin/chat/settings") {
             if (request.method === "POST") {
               const b = await request.json().catch(() => ({}));
@@ -2253,24 +2267,8 @@ export default {
         const cf = request.cf || {}; const vp = visitProfile(request, body, cf);
         if (vp.isBot) return json({ ok: true }, 200, origin); // robots : rien d'enregistré
         const sidEv = String(body.session_id || "").slice(0, 60) || null;
-        // Alerte téléphone quand un visiteur ouvre le chat : au plus une par visiteur toutes les 30 min (5 min si on ne connaît pas sa session)
-        let alerteChat = false;
-        if (action === "chat") {
-          try {
-            const deja = sidEv
-              ? await env.DB.prepare("SELECT 1 AS ok FROM contact_events WHERE action = 'chat' AND session_id = ? AND cree_le >= datetime('now', '-30 minutes') LIMIT 1").bind(sidEv).first()
-              : await env.DB.prepare("SELECT 1 AS ok FROM contact_events WHERE action = 'chat' AND cree_le >= datetime('now', '-5 minutes') LIMIT 1").first();
-            alerteChat = !deja;
-          } catch (e) { /* pas d'alerte si le contrôle échoue */ }
-        }
-        let push = null;
-        if (alerteChat) {
-          push = sendAdminPush(env, { msg: { title: "💬 Un visiteur ouvre le chat", body: "Quelqu'un est en train de consulter le chat du site. Réponds vite s'il écrit.", url: "/admin.html" } }).catch((e) => console.error("chat: alerte téléphone", e && e.message));
-          if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(push);
-        }
         await env.DB.prepare("INSERT INTO contact_events (site, action, page, session_id, city, network, device, is_bot) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
           .bind(siteFromRequest(request, body), action, String(body.page || "").slice(0, 200) || null, sidEv, cf.city || null, vp.network, vp.device, vp.isBot).run();
-        if (push && !(ctx && typeof ctx.waitUntil === "function")) await push;
         return json({ ok: true }, 200, origin);
       }
 
