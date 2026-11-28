@@ -5,7 +5,7 @@
   const ETAPE_LBL = Object.fromEntries(ETAPES);
   const CATEGORIES = ['Mairie', 'Comité des fêtes', 'Association', 'Centre culturel', 'Entreprise', 'Particulier', 'Camping / hôtel', 'Autre'];
   const TYPES_J = [['appel', '📞 Appel'], ['mail', '✉️ Mail'], ['whatsapp', '💬 WhatsApp'], ['rdv', '🤝 RDV'], ['note', '📝 Note']];
-  const OFFRE_ST = [['brouillon', 'Brouillon'], ['envoyee', 'Envoyée'], ['acceptee', 'Acceptée'], ['refusee', 'Refusée']];
+  const OFFRE_ST = [['brouillon', 'Non envoyée (à envoyer)'], ['envoyee', 'Envoyée'], ['acceptee', 'Acceptée'], ['refusee', 'Refusée']];
   const DEVIS_ST = [['brouillon', 'Brouillon'], ['envoye', 'Envoyé'], ['accepte', 'Accepté'], ['refuse', 'Refusé']];
 
   let all = [], marque = 'slp', vue = 'prospect', filtreEtape = '', q = '', ready = false, cur = null;
@@ -207,7 +207,7 @@
     });
     const TL = (t) => (TYPES_J.find((x) => x[0] === t) || [0, t])[1];
     const offLines = (c) => { let l = []; try { l = c.offres_json ? JSON.parse(c.offres_json) : []; } catch (e) { l = []; }
-      return l.filter((o) => o.s !== 'brouillon').map((o) => `<span class="crm-badge prio money">${o.e ? ce(o.e) + ' · ' : ''}${o.m != null ? eur(o.m) + ' HT' : 'montant ?'}</span>${o.c ? `<span class="crm-sub">${ce(plus(o.c))}</span>` : ''}`).join(''); };
+      return l.filter((o) => o.s !== 'refusee').map((o) => `<span class="crm-badge prio money">${o.e ? ce(o.e) + ' · ' : ''}${o.m != null ? eur(o.m) + ' HT' : 'montant ?'}${o.s === 'brouillon' ? ' · non envoyée' : ''}</span>${o.c ? `<span class="crm-sub">${ce(plus(o.c))}</span>` : ''}`).join(''); };
     const head = '<div class="crm-row head"><span>Contact</span><span>Étape</span><span>Premier / dernier contact</span><span>Montant</span><span></span></div>';
     const rowHtml = (c) => {
       const late = c.statut !== 'perdu' && c.date_relance && c.date_relance <= today();
@@ -432,7 +432,7 @@
         <div class="row"><div><label>Prochaine relance (facultatif)</label><input id="jRel" type="date" value="${plus7()}"></div><div></div></div>
         <button class="period-btn" type="button" id="jAdd">Ajouter au suivi</button>
         <div id="jList">${parDate(d.journal).map((j) => `<div class="j"><small>${fmtDT(quand(j))} · ${ce((TYPES_J.find((t) => t[0] === j.type) || [0, j.type])[1])} <a href="#" data-jd="${j.id}" style="color:var(--pink)">suppr.</a></small>${ce(j.texte)}</div>`).join('') || '<p class="vz-note">Aucun échange noté.</p>'}</div></div>
-      ${docSection(d, 'offre', 'Propositions commerciales', d.offres || [], OFFRE_ST, 'envoyee', 'ex. P-2026-007', "Proposition « Envoyée » → le prospect passe à l'étape Proposition envoyée.")}
+      ${docSection(d, 'offre', 'Propositions commerciales', d.offres || [], OFFRE_ST, 'envoyee', 'ex. P-2026-007', "Proposition « Envoyée » → le prospect passe à l'étape Proposition envoyée. « Non envoyée » : tu peux l'enregistrer avant l'envoi, son montant est quand même compté dans « propositions en attente ».")}
       ${docSection(d, 'devis', 'Devis', d.devis, DEVIS_ST, 'envoye', 'ex. D-2026-014', "Devis « Envoyé » → le prospect passe à l'étape Devis. Devis « Accepté » → il devient client.")}
       <input type="file" id="fileIn" accept="application/pdf,.pdf" style="display:none">
       <div class="crm-sec"><button class="period-btn" type="button" id="dDel" style="color:var(--pink)">🗑 Supprimer ce contact</button></div>
