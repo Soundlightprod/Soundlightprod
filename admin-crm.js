@@ -95,11 +95,20 @@
     #tab-crm .crm-acts{display:flex;gap:6px;margin-top:8px}
     #tab-crm .crm-acts a{flex:1;text-align:center;background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 4px;color:var(--paper);text-decoration:none;font-size:.85rem}
     #crmModal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:16px}
-    #crmModal .crm-box{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;width:100%;max-width:720px;padding:16px;margin:auto;color:var(--paper)}
+    #crmModal .crm-box{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;width:100%;max-width:min(1100px,96vw);padding:16px;margin:auto;color:var(--paper)}
     #crmModal .row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
     #crmModal .row.one{grid-template-columns:1fr}
     #crmModal label{font-size:.74rem;color:var(--muted);display:block;margin-bottom:2px}
     #crmModal input,#crmModal select,#crmModal textarea{width:100%}
+    #crmModal textarea{resize:vertical;line-height:1.45}
+    #crmModal #jTxt{min-height:180px;font-size:1rem}
+    #crmModal #cf_notes{min-height:120px}
+    #crmModal .crm-doc{border:1.5px solid var(--dc);border-radius:14px;padding:14px 16px;margin-top:22px;background:linear-gradient(180deg,color-mix(in srgb,var(--dc) 10%,transparent),transparent)}
+    #crmModal .crm-doc.offre{--dc:#a855f7}
+    #crmModal .crm-doc.devis{--dc:#2f9bff}
+    #crmModal .crm-doc h4{color:var(--dc);font-size:1.1rem;margin:0 0 4px}
+    #crmModal .crm-doc .crm-sub{margin:0 0 10px}
+    #crmModal .crm-doc .crm-new{margin:16px 0 8px;padding-top:10px;border-top:1px dashed var(--dc);font-weight:700;color:var(--dc);font-size:.9rem}
     #crmModal .j{border-left:3px solid var(--violet);padding:4px 10px;margin:6px 0;font-size:.88rem;white-space:pre-wrap}
     #crmModal .j small{color:var(--muted);display:block}
     #crmModal .crm-sec{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
@@ -281,7 +290,7 @@
       <div class="row">${fld('date_relance', 'Date de relance', c.id ? c.date_relance : (c.date_relance || plus7()), 'date')}<div></div></div>
       <label style="display:block;margin:6px 0;color:#ff6b6b;font-weight:700"><input type="checkbox" id="cf_devis_a_faire" style="width:auto"${c.devis_a_faire ? ' checked' : ''}> 🔴 Devis à faire</label>
       <label style="display:block;margin:6px 0;color:#ff6b6b;font-weight:700"><input type="checkbox" id="cf_offre_a_faire" style="width:auto"${c.offre_a_faire ? ' checked' : ''}> 🔴 Offre commerciale à faire</label>
-      <div class="row one"><div><label>Notes</label><textarea id="cf_notes" rows="3">${ce(c.notes)}</textarea></div></div>
+      <div class="row one"><div><label>Notes</label><textarea id="cf_notes" rows="5">${ce(c.notes)}</textarea></div></div>
       ${quick ? `<details style="margin:6px 0"><summary class="vz-note" style="cursor:pointer;padding:6px 0">Plus de champs (ville, catégorie, budget…)</summary>${adv}</details>` : adv}`;
   }
 
@@ -315,8 +324,12 @@
   function docSection(d, kind, titre, items, statuts, defSt, refPh, note) {
     const p = kind === 'offre' ? 'o' : 'v';
     const sing = kind === 'devis' ? 'le devis' : 'la proposition';
+    const col = kind === 'devis' ? '#2f9bff' : '#a855f7';
+    const meta = kind === 'devis'
+      ? { h: '② 📄 Devis', exp: "Document chiffré officiel, envoyé après l'accord de principe sur la proposition. Une fois accepté, le contact devient client.", nw: 'Nouveau devis', add: 'Ajouter un devis' }
+      : { h: '① 📨 Propositions commerciales', exp: "PDF visuel d'une page par spectacle, envoyé en premier pour présenter le spectacle et le tarif. Ce n'est pas un devis.", nw: 'Nouvelle proposition commerciale', add: 'Ajouter une proposition commerciale' };
     const files = (pid) => (d.fichiers || []).filter((f) => f.kind === kind && f.parent_id === pid);
-    const line = (v) => `<div class="j" style="border-color:var(--amber)"><b>${ce(v.ref || (kind === 'devis' ? 'Devis' : 'Proposition'))}</b> ${ce(v.objet || '')} — <b style="font-size:1.05rem">${v.montant_ht != null ? eur(v.montant_ht) + ' HT' : 'montant ?'}</b>${v.date_envoi ? ' · envoyé(e) le ' + fmtD(v.date_envoi) : ''}
+    const line = (v) => `<div class="j" style="border-color:${col}"><b>${ce(v.ref || (kind === 'devis' ? 'Devis' : 'Proposition'))}</b> ${ce(v.objet || '')} — <b style="font-size:1.05rem">${v.montant_ht != null ? eur(v.montant_ht) + ' HT' : 'montant ?'}</b>${v.date_envoi ? ' · envoyé(e) le ' + fmtD(v.date_envoi) : ''}
         ${v.complement ? `<div style="font-size:.95rem;color:var(--amber)">${ce(plus(v.complement))}</div>` : ''}
         <div class="crm-files">${files(v.id).map((f) => `<span class="crm-file"><a href="#" data-fv="${f.id}" data-fn="${ce(f.nom)}">📄 ${ce(f.nom)}</a> <small>${ko(f.taille)}</small> <a href="#" data-fd="${f.id}" style="color:var(--pink)" title="Retirer ce PDF">✕</a></span>`).join('') || '<span class="vz-note">Aucun PDF joint</span>'}</div>
         <div class="crm-bar" style="margin:4px 0 0"><button class="period-btn" type="button" data-view="${kind}:${v.id}" style="padding:6px 14px;font-size:.85rem;background:var(--blue);color:#06121f;font-weight:700;border-color:var(--blue)">👁 Voir ${kind === 'devis' ? 'le devis' : 'la proposition'}</button>
@@ -331,8 +344,9 @@
       lines = groups.map((g) => (g.k ? `<div style="margin:12px 0 2px;font-size:1.02rem"><b>🎪 ${ce(g.k)}</b>${g.date ? ' · ' + fmtD(g.date) : ''}${g.list.length > 1 ? ` <span class="crm-badge prio">${g.list.length} propositions au choix</span>` : ''}</div>` : '') + g.list.map(line).join('')).join('');
     } else lines = items.map(line).join('');
     const evts = kind === 'offre' ? [...new Set([d.contact.evenement].concat(items.map((v) => v.evenement)).filter(Boolean))] : [];
-    return `<div class="crm-sec"><h4 style="margin:0 0 8px">${titre}</h4>
+    return `<div class="crm-sec crm-doc ${kind}"><h4>${meta.h}</h4><p class="crm-sub">${meta.exp}</p>
         <div>${lines || `<p class="vz-note">Aucun${kind === 'devis' ? ' devis' : 'e proposition'}.</p>`}</div>
+        <div class="crm-new">＋ ${meta.nw}</div>
         <div class="row"><div><label>Réf.</label><input id="${p}Ref" placeholder="${refPh}"></div><div><label>Montant HT (€)</label><input id="${p}Mt" inputmode="decimal"></div></div>
         <div class="row"><div><label>Objet</label><input id="${p}Obj" placeholder="Soirée, mariage, fête du village…"></div><div><label>Statut</label><select id="${p}St">${opt(statuts, defSt)}</select></div></div>
         ${kind === 'offre' ? `<div class="row"><div><label>Événement concerné</label><input id="oEvt" list="oEvtL" placeholder="ex. Noël 2026, fête du village 2027">
@@ -340,7 +354,7 @@
           <div class="row one"><div><label>En plus du tarif / conditions</label><input id="oCpl" placeholder="ex. + VHR + SACD + technique, TVA 5,5 %"></div></div>
           <p class="vz-note">Même événement = propositions au choix (un seul total compté). Autre événement = autre ligne, même dans l'année.</p>` : ''}
         <div class="row one"><div><label>PDF à joindre (facultatif)</label><input id="${p}File" type="file" accept="application/pdf,.pdf"></div></div>
-        <button class="period-btn" type="button" id="${p}Add">Ajouter ${sing}</button>
+        <button class="period-btn" type="button" id="${p}Add">${meta.add}</button>
         <p class="vz-note">${note}</p></div>`;
   }
 
@@ -412,7 +426,7 @@
         <div class="crm-bar"><button class="period-btn" style="background:var(--amber);color:#1b1300" id="dSave" type="button">Enregistrer</button><span id="dMsg" class="vz-note"></span></div></div>
       <div class="crm-sec"><h4 style="margin:0 0 8px">Suivi des échanges</h4>
         <div class="row"><div><label>Type d'échange</label><select id="jType">${opt(TYPES_J, 'appel')}</select></div><div><label>Date et heure de l'échange</label><input id="jWhen" type="datetime-local" value="${nowParis().replace(' ', 'T')}"></div></div>
-        <div class="row one"><textarea id="jTxt" rows="2" placeholder="Ce qui s'est dit, ce qui est convenu…"></textarea></div>
+        <div class="row one"><textarea id="jTxt" rows="7" placeholder="Ce qui s'est dit, ce qui est convenu…"></textarea></div>
         <div class="row"><div><label>Prochaine relance (facultatif)</label><input id="jRel" type="date" value="${plus7()}"></div><div></div></div>
         <button class="period-btn" type="button" id="jAdd">Ajouter au suivi</button>
         <div id="jList">${parDate(d.journal).map((j) => `<div class="j"><small>${fmtDT(quand(j))} · ${ce((TYPES_J.find((t) => t[0] === j.type) || [0, j.type])[1])} <a href="#" data-jd="${j.id}" style="color:var(--pink)">suppr.</a></small>${ce(j.texte)}</div>`).join('') || '<p class="vz-note">Aucun échange noté.</p>'}</div></div>
