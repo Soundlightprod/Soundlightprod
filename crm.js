@@ -394,6 +394,9 @@ export async function handleCrm(request, env, url, origin, json, cors) {
       const montant = b.montant_ht === undefined ? undefined : (b.montant_ht === "" || b.montant_ht == null ? null : Number(String(b.montant_ht).replace(",", ".")));
       await env.DB.prepare("UPDATE crm_devis SET ref = COALESCE(?, ref), objet = COALESCE(?, objet), statut = ?, montant_ht = CASE WHEN ? = 1 THEN ? ELSE montant_ht END, date_envoi = CASE WHEN ? = 'envoye' AND date_envoi IS NULL THEN date('now') ELSE date_envoi END WHERE id = ?")
         .bind(clean(b.ref, 60), clean(b.objet, 200), statut, montant === undefined ? 0 : 1, Number.isFinite(montant) ? montant : null, statut, did).run();
+      for (const [k, max] of [["ref", 60], ["objet", 200]]) { // permet aussi de vider ces champs
+        if (b[k] !== undefined) await env.DB.prepare("UPDATE crm_devis SET " + k + " = ? WHERE id = ?").bind(clean(b[k], max), did).run();
+      }
       if (statut !== cur.statut) await afterDevis(env, cur.contact_id, statut, cur.ref);
       return json({ ok: true }, 200, origin);
     }
@@ -421,6 +424,9 @@ export async function handleCrm(request, env, url, origin, json, cors) {
       const montant = b.montant_ht === undefined ? undefined : (b.montant_ht === "" || b.montant_ht == null ? null : Number(String(b.montant_ht).replace(",", ".")));
       await env.DB.prepare("UPDATE crm_offres SET ref = COALESCE(?, ref), objet = COALESCE(?, objet), statut = ?, montant_ht = CASE WHEN ? = 1 THEN ? ELSE montant_ht END, date_envoi = CASE WHEN ? = 'envoyee' AND date_envoi IS NULL THEN date('now') ELSE date_envoi END WHERE id = ?")
         .bind(clean(b.ref, 60), clean(b.objet, 200), statut, montant === undefined ? 0 : 1, Number.isFinite(montant) ? montant : null, statut, oid).run();
+      for (const [k, max] of [["ref", 60], ["objet", 200]]) { // permet aussi de vider ces champs
+        if (b[k] !== undefined) await env.DB.prepare("UPDATE crm_offres SET " + k + " = ? WHERE id = ?").bind(clean(b[k], max), oid).run();
+      }
       for (const [k, max] of [["evenement", 120], ["date_evenement", 10], ["complement", 300]]) {
         if (b[k] !== undefined) await env.DB.prepare("UPDATE crm_offres SET " + k + " = ? WHERE id = ?").bind(clean(b[k], max), oid).run();
       }

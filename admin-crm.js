@@ -337,7 +337,7 @@
         <div class="crm-bar" style="margin:4px 0 0"><button class="period-btn" type="button" data-view="${kind}:${v.id}" style="padding:6px 14px;font-size:.85rem;background:var(--blue);color:#06121f;font-weight:700;border-color:var(--blue)">👁 Voir ${kind === 'devis' ? 'le devis' : 'la proposition'}</button>
           <select data-st="${kind}:${v.id}" style="padding:6px 8px;font-size:14px">${opt(statuts, v.statut)}</select>
           <button class="period-btn" type="button" data-up="${kind}:${v.id}" style="padding:5px 12px;font-size:.78rem">📎 Joindre un PDF</button>
-          ${kind === 'offre' ? `<a href="#" data-edit="${v.id}" style="font-size:.8rem">modifier</a>` : ''}
+          <a href="#" data-edit="${kind}:${v.id}" style="font-size:.8rem">✏️ modifier</a>
           <a href="#" data-del="${kind}:${v.id}" style="color:var(--pink);font-size:.8rem">supprimer</a></div></div>`;
     let lines;
     if (kind === 'offre') {
@@ -348,7 +348,7 @@
     const evts = kind === 'offre' ? [...new Set([d.contact.evenement].concat(items.map((v) => v.evenement)).filter(Boolean))] : [];
     return `<div class="crm-sec crm-doc ${kind}"><h4>${meta.h}</h4><p class="crm-sub">${meta.exp}</p>
         <div>${lines || `<p class="vz-note">Aucun${kind === 'devis' ? ' devis' : 'e proposition'}.</p>`}</div>
-        <div class="crm-new">＋ ${meta.nw}</div>
+        <div class="crm-new" id="${p}NewT" data-def="＋ ${meta.nw}">＋ ${meta.nw}</div>
         <div class="row"><div><label>Réf.</label><input id="${p}Ref" placeholder="${refPh}"></div><div><label>Montant HT (€)</label><input id="${p}Mt" inputmode="decimal"></div></div>
         <div class="row"><div><label>Objet</label><input id="${p}Obj" placeholder="Soirée, mariage, fête du village…"></div><div><label>Statut</label><select id="${p}St">${opt(statuts, defSt)}</select></div></div>
         ${kind === 'offre' ? `<div class="row"><div><label>Événement concerné</label><input id="oEvt" list="oEvtL" placeholder="ex. Noël 2026, fête du village 2027">
@@ -356,7 +356,7 @@
           <div class="row one"><div><label>En plus du tarif / conditions</label><input id="oCpl" placeholder="ex. + VHR + SACD + technique, TVA 5,5 %"></div></div>
           <p class="vz-note">Même événement = propositions au choix (un seul total compté). Autre événement = autre ligne, même dans l'année.</p>` : ''}
         <div class="row one"><div><label>PDF à joindre (facultatif)</label><input id="${p}File" type="file" accept="application/pdf,.pdf"></div></div>
-        <button class="period-btn" type="button" id="${p}Add">${meta.add}</button>
+        <button class="period-btn" type="button" id="${p}Add" data-def="${meta.add}">${meta.add}</button> <button class="period-btn" type="button" id="${p}Cancel" style="display:none">Annuler la modification</button>
         <p class="vz-note">${note}</p></div>`;
   }
 
@@ -464,14 +464,26 @@
     };
     $('jList').querySelectorAll('[data-jd]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); if (confirm('Supprimer cette ligne du suivi ?')) { await api('/journal/' + a.dataset.jd, { method: 'DELETE' }); refresh(); } }));
     const BASE = { offre: 'offres', devis: 'devis' };
+    const editing = { offre: null, devis: null };
     ['offre', 'devis'].forEach((kind) => {
       const p = kind === 'offre' ? 'o' : 'v';
+      // le même formulaire sert à créer et à modifier : editing[kind] = id de l'élément en cours de modification
+      const resetForm = () => {
+        editing[kind] = null;
+        [p + 'Ref', p + 'Mt', p + 'Obj', p + 'File'].concat(kind === 'offre' ? ['oEvt', 'oEvD', 'oCpl'] : []).forEach((x) => { $(x).value = ''; });
+        $(p + 'St').value = kind === 'offre' ? 'envoyee' : 'envoye';
+        $(p + 'NewT').textContent = $(p + 'NewT').dataset.def; $(p + 'Add').textContent = $(p + 'Add').dataset.def; $(p + 'Cancel').style.display = 'none';
+      };
+      $(p + 'Cancel').onclick = resetForm;
       $(p + 'Add').onclick = async () => {
         const btn = $(p + 'Add'); btn.disabled = true;
         try {
-          const r = await api('/contacts/' + id + '/' + BASE[kind], { method: 'POST', body: Object.assign({ ref: $(p + 'Ref').value, objet: $(p + 'Obj').value, montant_ht: $(p + 'Mt').value, statut: $(p + 'St').value }, kind === 'offre' ? { evenement: $('oEvt').value, date_evenement: $('oEvD').value, complement: $('oCpl').value } : {}) });
+          const data = Object.assign({ ref: $(p + 'Ref').value, objet: $(p + 'Obj').value, montant_ht: $(p + 'Mt').value, statut: $(p + 'St').value }, kind === 'offre' ? { evenement: $('oEvt').value, date_evenement: $('oEvD').value, complement: $('oCpl').value } : {});
+          let rid;
+          if (editing[kind]) { await api('/' + BASE[kind] + '/' + editing[kind], { method: 'PUT', body: data }); rid = editing[kind]; }
+          else { const r = await api('/contacts/' + id + '/' + BASE[kind], { method: 'POST', body: data }); rid = r.id; }
           const f = $(p + 'File').files[0];
-          if (f) await upload(kind, r.id, f);
+          if (f) await upload(kind, rid, f);
           refresh();
         } catch (e) { alert(e.message); btn.disabled = false; }
       };
@@ -479,13 +491,16 @@
     const root = $('crmModal');
     root.querySelectorAll('select[data-st]').forEach((sel) => (sel.onchange = async () => { const [k, pid] = sel.dataset.st.split(':'); await api('/' + BASE[k] + '/' + pid, { method: 'PUT', body: { statut: sel.value } }); refresh(); }));
     root.querySelectorAll('[data-del]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); const [k, pid] = a.dataset.del.split(':'); if (confirm('Supprimer ' + (k === 'devis' ? 'ce devis' : 'cette proposition') + ' et ses PDF ?')) { await api('/' + BASE[k] + '/' + pid, { method: 'DELETE' }); refresh(); } }));
-    root.querySelectorAll('[data-edit]').forEach((a) => (a.onclick = async (ev) => {
+    // « modifier » : remet la proposition (ou le devis) dans le formulaire du bas, tous les champs sont modifiables
+    root.querySelectorAll('[data-edit]').forEach((a) => (a.onclick = (ev) => {
       ev.preventDefault();
-      const o = (d.offres || []).find((x) => String(x.id) === a.dataset.edit); if (!o) return;
-      const evt = prompt('Événement concerné (ex. Noël 2026) :', o.evenement || ''); if (evt === null) return;
-      const mt = prompt('Montant HT (€) :', o.montant_ht != null ? o.montant_ht : ''); if (mt === null) return;
-      const cpl = prompt('En plus du tarif / conditions (ex. + VHR + SACD + technique) :', o.complement || ''); if (cpl === null) return;
-      try { await api('/offres/' + o.id, { method: 'PUT', body: { evenement: evt, montant_ht: mt, complement: cpl } }); refresh(); } catch (e) { alert(e.message); }
+      const [k, eid] = a.dataset.edit.split(':'), p = k === 'offre' ? 'o' : 'v';
+      const o = ((k === 'offre' ? d.offres : d.devis) || []).find((x) => String(x.id) === eid); if (!o) return;
+      $(p + 'Ref').value = o.ref || ''; $(p + 'Obj').value = o.objet || ''; $(p + 'Mt').value = o.montant_ht != null ? o.montant_ht : ''; $(p + 'St').value = o.statut;
+      if (k === 'offre') { $('oEvt').value = o.evenement || ''; $('oEvD').value = o.date_evenement || ''; $('oCpl').value = o.complement || ''; }
+      editing[k] = o.id;
+      $(p + 'NewT').textContent = '✏️ Modification : ' + (o.ref || (k === 'offre' ? 'proposition' : 'devis')); $(p + 'Add').textContent = '💾 Enregistrer les modifications'; $(p + 'Cancel').style.display = '';
+      $(p + 'NewT').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }));
     root.querySelectorAll('[data-fv]').forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); viewFile(a.dataset.fv, a.dataset.fn); }));
     root.querySelectorAll('[data-fd]').forEach((a) => (a.onclick = async (ev) => { ev.preventDefault(); if (confirm('Retirer ce PDF ?')) { await api('/fichiers/' + a.dataset.fd, { method: 'DELETE' }); refresh(); } }));
