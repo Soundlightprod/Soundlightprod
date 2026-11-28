@@ -222,7 +222,7 @@ export async function handleCrm(request, env, url, origin, json, cors) {
               (SELECT json_group_array(json_object('e', o3.evenement, 'm', o3.montant_ht, 'c', o3.complement, 's', o3.statut)) FROM crm_offres o3 WHERE o3.contact_id = c.id AND o3.statut IN ('brouillon','envoyee','acceptee')) AS offres_json,
               (SELECT json_object('t', j.type, 'x', substr(COALESCE(j.texte,''), 1, 140), 'e', j.date_echange, 'c', j.cree_le) FROM crm_journal j WHERE j.contact_id = c.id AND j.type != 'note' ORDER BY COALESCE(j.date_echange, datetime(j.cree_le, '+1 hour')) DESC, j.id DESC LIMIT 1) AS dernier,
               (SELECT MIN(COALESCE(j.date_echange, datetime(j.cree_le, '+1 hour'))) FROM crm_journal j WHERE j.contact_id = c.id AND j.type != 'note') AS premier_echange,
-              (SELECT COUNT(*) FROM crm_offres o WHERE o.contact_id = c.id AND o.statut = 'brouillon') AS offres_pretes,
+              (SELECT COUNT(*) FROM crm_offres o WHERE o.contact_id = c.id AND o.statut = 'brouillon' AND EXISTS (SELECT 1 FROM crm_fichiers f WHERE f.kind = 'offre' AND f.parent_id = o.id)) AS offres_pretes,
               (SELECT COUNT(*) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'brouillon' AND EXISTS (SELECT 1 FROM crm_fichiers f WHERE f.kind = 'devis' AND f.parent_id = d.id)) AS devis_prets,
               (SELECT COALESCE(SUM(d.montant_ht),0) FROM crm_devis d WHERE d.contact_id = c.id AND d.statut = 'brouillon' AND EXISTS (SELECT 1 FROM crm_fichiers f WHERE f.kind = 'devis' AND f.parent_id = d.id)) AS devis_prets_ht,
               (SELECT f.id FROM crm_fichiers f WHERE f.contact_id = c.id AND f.kind = 'offre' ORDER BY f.id DESC LIMIT 1) AS pdf_offre_id,
