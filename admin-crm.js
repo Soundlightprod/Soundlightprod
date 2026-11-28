@@ -5,8 +5,8 @@
   const ETAPE_LBL = Object.fromEntries(ETAPES);
   const CATEGORIES = ['Mairie', 'Comité des fêtes', 'Association', 'Centre culturel', 'Entreprise', 'Particulier', 'Camping / hôtel', 'Autre'];
   const TYPES_J = [['appel', '📞 Appel'], ['mail', '✉️ Mail'], ['whatsapp', '💬 WhatsApp'], ['rdv', '🤝 RDV'], ['note', '📝 Note']];
-  const OFFRE_ST = [['brouillon', 'Non envoyée (à envoyer)'], ['envoyee', 'Envoyée'], ['acceptee', 'Acceptée'], ['refusee', 'Refusée']];
-  const DEVIS_ST = [['brouillon', 'Brouillon'], ['envoye', 'Envoyé'], ['accepte', 'Accepté'], ['refuse', 'Refusé']];
+  const OFFRE_ST = [['brouillon', 'Prête à envoyer (pas encore envoyée)'], ['envoyee', 'Envoyée'], ['acceptee', 'Acceptée'], ['refusee', 'Refusée']];
+  const DEVIS_ST = [['brouillon', 'Prêt à envoyer (pas encore envoyé)'], ['envoye', 'Envoyé'], ['accepte', 'Accepté'], ['refuse', 'Refusé']];
 
   let all = [], marque = 'slp', vue = 'prospect', filtreEtape = '', q = '', ready = false, cur = null;
   const $ = (id) => document.getElementById(id);
@@ -83,6 +83,8 @@
     #tab-crm .crm-cat{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px;padding:9px 14px;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;user-select:none;background:var(--ink-2);border-left:6px solid var(--muted)}
     #tab-crm .crm-cat b{background:rgba(255,255,255,.14);border-radius:100px;padding:1px 11px;font-size:.9rem}
     #tab-crm .crm-cat.nouv{border-color:var(--amber);color:var(--amber)}
+    #tab-crm .crm-cat.opret{border-color:#a855f7;color:#d8b4fe;border-style:dashed}
+    #tab-crm .crm-cat.dpret{border-color:#2f9bff;color:#b9dcff;border-style:dashed}
     #tab-crm .crm-cat.prop{border-color:#a855f7;color:#d8b4fe}
     #tab-crm .crm-cat.devis{border-color:#2f9bff;color:#b9dcff}
     #tab-crm .crm-cat.nego{border-color:#ff7a1a;color:#ffb27a}
@@ -157,8 +159,8 @@
 
   const replie = {};
   const isNouv = (c) => c.statut === 'prospect' && c.etape === 'nouveau';
-  const isDaf = (c) => !!c.devis_a_faire && !c.pdf_devis_id && c.statut !== 'perdu'; // devis déjà joint en PDF = envoyé, plus à faire
-  const isOaf = (c) => !!c.offre_a_faire && !c.pdf_offre_id && c.statut !== 'perdu'; // proposition déjà jointe en PDF = envoyée, plus à faire
+  const isDaf = (c) => !!c.devis_a_faire && !c.pdf_devis_id && !c.devis_prets && c.statut !== 'perdu'; // devis déjà joint en PDF = envoyé, plus à faire
+  const isOaf = (c) => !!c.offre_a_faire && !c.pdf_offre_id && !c.offres_pretes && c.statut !== 'perdu'; // proposition déjà jointe en PDF = envoyée, plus à faire
   const clsEtat = (c) => isDaf(c) || isOaf(c) ? ' daf' : isNouv(c) ? ' nouv' : c.statut === 'client' ? ' signe' : c.statut === 'prospect' && c.etape === 'devis' ? ' devis' : c.statut === 'prospect' && c.etape === 'negociation' ? ' nego' : c.statut === 'prospect' && c.etape === 'proposition' ? ' prop' : '';
   const isMarque = (c) => (c.marque || 'slp') === marque;
   function filtered() {
@@ -207,7 +209,7 @@
     });
     const TL = (t) => (TYPES_J.find((x) => x[0] === t) || [0, t])[1];
     const offLines = (c) => { let l = []; try { l = c.offres_json ? JSON.parse(c.offres_json) : []; } catch (e) { l = []; }
-      return l.filter((o) => o.s !== 'refusee').map((o) => `<span class="crm-badge prio money">${o.e ? ce(o.e) + ' · ' : ''}${o.m != null ? eur(o.m) + ' HT' : 'montant ?'}${o.s === 'brouillon' ? ' · non envoyée' : ''}</span>${o.c ? `<span class="crm-sub">${ce(plus(o.c))}</span>` : ''}`).join(''); };
+      return l.filter((o) => o.s !== 'refusee').map((o) => `<span class="crm-badge prio money">${o.e ? ce(o.e) + ' · ' : ''}${o.m != null ? eur(o.m) + ' HT' : 'montant ?'}${o.s === 'brouillon' ? ' · prête à envoyer' : ''}</span>${o.c ? `<span class="crm-sub">${ce(plus(o.c))}</span>` : ''}`).join(''); };
     const head = '<div class="crm-row head"><span>Contact</span><span>Étape</span><span>Premier / dernier contact</span><span>Montant</span><span></span></div>';
     const rowHtml = (c) => {
       const late = c.statut !== 'perdu' && c.date_relance && c.date_relance <= today();
@@ -220,7 +222,7 @@
         <div class="c-etape">${isNouv(c) ? '<span class="crm-badge nouv">🆕 Nouvelle demande</span>' : ''}${c.statut === 'client' ? '<span class="crm-badge signe">✅ Devis signé</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : isNouv(c) ? '' : `<span class="crm-badge${c.etape === 'devis' ? ' devis' : c.etape === 'proposition' ? ' prop' : c.etape === 'negociation' ? ' nego' : ''}">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
           ${late ? `<span class="crm-badge late">⏰ relance ${fmtD(c.date_relance)}</span>` : c.date_relance ? `<span class="crm-sub">relance ${fmtD(c.date_relance)}</span>` : ''}</div>
         <div class="c-last"><span class="crm-sub">📅 Premier contact : <b>${fmtD(origine(c).slice(0, 10))}</b></span>${d ? `<b>Dernier contact : ${fmtDT(q)}</b><span class="crm-sub">${ce(TL(d.t))}${ex ? ' · ' + ce(ex) : ''}</span>` : '<span class="crm-sub">Aucun échange noté</span>'}</div>
-        <div class="c-money">${offLines(c)}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
+        <div class="c-money">${offLines(c)}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}${c.devis_prets ? `<span class="crm-badge prio money">Devis ${c.devis_prets_ht ? eur(c.devis_prets_ht) + ' HT' : 'montant ?'} · prêt à envoyer</span>` : ''}</div>
         <div class="c-acts" onclick="event.stopPropagation()">
           ${c.pdf_devis_id ? '' : `<a href="#" data-daf="${c.id}" style="${c.devis_a_faire ? 'color:#ff6b6b;font-weight:700' : ''}">${c.devis_a_faire ? '☑' : '☐'} Devis à faire</a>`}
           ${c.pdf_offre_id ? '' : `<a href="#" data-oaf="${c.id}" style="${c.offre_a_faire ? 'color:#ff6b6b;font-weight:700' : ''}">${c.offre_a_faire ? '☑' : '☐'} Offre à faire</a>`}
@@ -230,8 +232,8 @@
         </div></div>`;
     };
     // affichage par catégories (sauf la vue « À relancer », triée par date de relance)
-    const catDe = (c) => isOaf(c) ? 'oaf' : isDaf(c) ? 'daf' : c.statut === 'perdu' ? 'perdu' : c.statut === 'client' ? 'signe' : c.etape === 'nouveau' ? 'nouv' : c.etape === 'devis' ? 'devis' : c.etape === 'proposition' ? 'prop' : c.etape === 'negociation' ? 'nego' : 'cours';
-    const CATS = [['oaf', '🔴 Offre commerciale à faire'], ['daf', '🔴 Devis à faire'], ['nouv', '🆕 Nouvelles demandes'], ['nego', '🔥 Négociation : intéressés'], ['prop', '📨 Proposition commerciale envoyée'], ['devis', '📄 Devis envoyé'], ['cours', '💬 Contactés / échange en cours'], ['signe', '✅ Devis signé : clients'], ['perdu', '✖ Perdus']];
+    const catDe = (c) => isOaf(c) ? 'oaf' : isDaf(c) ? 'daf' : c.statut !== 'perdu' && c.statut !== 'client' && c.offres_pretes ? 'opret' : c.statut !== 'perdu' && c.statut !== 'client' && c.devis_prets ? 'dpret' : c.statut === 'perdu' ? 'perdu' : c.statut === 'client' ? 'signe' : c.etape === 'nouveau' ? 'nouv' : c.etape === 'devis' ? 'devis' : c.etape === 'proposition' ? 'prop' : c.etape === 'negociation' ? 'nego' : 'cours';
+    const CATS = [['oaf', '🔴 Offre commerciale à faire'], ['daf', '🔴 Devis à faire'], ['opret', '📬 Propositions commerciales prêtes à être envoyées'], ['dpret', '📬 Devis prêts à être envoyés'], ['nouv', '🆕 Nouvelles demandes'], ['nego', '🔥 Négociation : intéressés'], ['prop', '📨 Proposition commerciale envoyée'], ['devis', '📄 Devis envoyé'], ['cours', '💬 Contactés / échange en cours'], ['signe', '✅ Devis signé : clients'], ['perdu', '✖ Perdus']];
     const shown = rows.slice(0, 300);
     let html;
     if (vue === 'relance') html = shown.map(rowHtml).join('');
@@ -432,7 +434,7 @@
         <div class="row"><div><label>Prochaine relance (facultatif)</label><input id="jRel" type="date" value="${plus7()}"></div><div></div></div>
         <button class="period-btn" type="button" id="jAdd">Ajouter au suivi</button>
         <div id="jList">${parDate(d.journal).map((j) => `<div class="j"><small>${fmtDT(quand(j))} · ${ce((TYPES_J.find((t) => t[0] === j.type) || [0, j.type])[1])} <a href="#" data-jd="${j.id}" style="color:var(--pink)">suppr.</a></small>${ce(j.texte)}</div>`).join('') || '<p class="vz-note">Aucun échange noté.</p>'}</div></div>
-      ${docSection(d, 'offre', 'Propositions commerciales', d.offres || [], OFFRE_ST, 'envoyee', 'ex. P-2026-007', "Proposition « Envoyée » → le prospect passe à l'étape Proposition envoyée. « Non envoyée » : tu peux l'enregistrer avant l'envoi, son montant est quand même compté dans « propositions en attente ».")}
+      ${docSection(d, 'offre', 'Propositions commerciales', d.offres || [], OFFRE_ST, 'envoyee', 'ex. P-2026-007', "Proposition « Envoyée » → le prospect passe à l'étape Proposition envoyée. « Prête à envoyer » : tu peux l'enregistrer avant l'envoi ; elle apparaît dans la section « prêtes à être envoyées » et son montant est compté dans « propositions en attente ».")}
       ${docSection(d, 'devis', 'Devis', d.devis, DEVIS_ST, 'envoye', 'ex. D-2026-014', "Devis « Envoyé » → le prospect passe à l'étape Devis. Devis « Accepté » → il devient client.")}
       <input type="file" id="fileIn" accept="application/pdf,.pdf" style="display:none">
       <div class="crm-sec"><button class="period-btn" type="button" id="dDel" style="color:var(--pink)">🗑 Supprimer ce contact</button></div>
