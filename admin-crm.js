@@ -208,7 +208,7 @@
     const TL = (t) => (TYPES_J.find((x) => x[0] === t) || [0, t])[1];
     const offLines = (c) => { let l = []; try { l = c.offres_json ? JSON.parse(c.offres_json) : []; } catch (e) { l = []; }
       return l.filter((o) => o.s !== 'brouillon').map((o) => `<span class="crm-badge prio money">${o.e ? ce(o.e) + ' · ' : ''}${o.m != null ? eur(o.m) + ' HT' : 'montant ?'}</span>${o.c ? `<span class="crm-sub">${ce(plus(o.c))}</span>` : ''}`).join(''); };
-    const head = '<div class="crm-row head"><span>Contact</span><span>Étape</span><span>Dernier contact</span><span>Montant</span><span></span></div>';
+    const head = '<div class="crm-row head"><span>Contact</span><span>Étape</span><span>Premier / dernier contact</span><span>Montant</span><span></span></div>';
     const rowHtml = (c) => {
       const late = c.statut !== 'perdu' && c.date_relance && c.date_relance <= today();
       const wa = c.telephone ? 'https://wa.me/' + c.telephone.replace(/^0/, '33').replace(/^\+/, '') : '';
@@ -219,7 +219,7 @@
         <div class="c-nom"><h4>${c.priorite ? '⭐ ' : ''}${ce(nomAff(c))}</h4><div class="crm-sub">${sub}</div>${c.prochaine_action ? `<div class="crm-sub">→ ${ce(c.prochaine_action)}</div>` : ''}</div>
         <div class="c-etape">${isNouv(c) ? '<span class="crm-badge nouv">🆕 Nouvelle demande</span>' : ''}${c.statut === 'client' ? '<span class="crm-badge signe">✅ Devis signé</span>' : c.statut === 'perdu' ? '<span class="crm-badge">Perdu</span>' : isNouv(c) ? '' : `<span class="crm-badge${c.etape === 'devis' ? ' devis' : c.etape === 'proposition' ? ' prop' : c.etape === 'negociation' ? ' nego' : ''}">${ce(ETAPE_LBL[c.etape] || c.etape)}</span>`}
           ${late ? `<span class="crm-badge late">⏰ relance ${fmtD(c.date_relance)}</span>` : c.date_relance ? `<span class="crm-sub">relance ${fmtD(c.date_relance)}</span>` : ''}</div>
-        <div class="c-last">${d ? `<b>${fmtDT(q)}</b><span class="crm-sub">${ce(TL(d.t))}${ex ? ' · ' + ce(ex) : ''}</span>` : '<span class="crm-sub">Aucun échange noté</span>'}<span class="crm-sub">📅 Contact d'origine : ${fmtD(origine(c).slice(0, 10))}</span></div>
+        <div class="c-last"><span class="crm-sub">📅 Premier contact : <b>${fmtD(origine(c).slice(0, 10))}</b></span>${d ? `<b>Dernier contact : ${fmtDT(q)}</b><span class="crm-sub">${ce(TL(d.t))}${ex ? ' · ' + ce(ex) : ''}</span>` : '<span class="crm-sub">Aucun échange noté</span>'}</div>
         <div class="c-money">${offLines(c)}${c.devis_en_cours ? `<span class="crm-badge prio money">Devis ${eur(c.devis_en_cours)} HT</span>` : ''}</div>
         <div class="c-acts" onclick="event.stopPropagation()">
           ${c.pdf_devis_id ? '' : `<a href="#" data-daf="${c.id}" style="${c.devis_a_faire ? 'color:#ff6b6b;font-weight:700' : ''}">${c.devis_a_faire ? '☑' : '☐'} Devis à faire</a>`}
